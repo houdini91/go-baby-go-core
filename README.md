@@ -40,11 +40,15 @@ We replace foot pedals with accessible hand- or head-activated push buttons. The
 * Stable, flexible **mounting connectors** for various control schemes
 * Mods and Extentions models for different use cases.
 
-![Pedal Jack Adaptor](assets/pedal_jack_adaptor.jpeg)
+<!-- ![Pedal Jack Adaptor](assets/pedal_jack_adaptor.jpeg)
 ![Assembly Top](assets/pedal_jack_assembled_top.jpeg)
 ![Assembly buttom](assets/pedal_jack_assembled_buttom.jpeg)
 ![Pedal Jack Adaptor 3D](assets/pedal_jack_pcb_front_v1.png)
-![Pedal Jack Adaptor 3D](assets/pedal_jack_pcb_back_v1.png)
+![Pedal Jack Adaptor 3D](assets/pedal_jack_pcb_back_v1.png) -->
+
+| ![Pedal Jack Adaptor](assets/pedal_jack_adaptor.jpeg)| ![Assembly Top](assets/pedal_jack_assembled_top.jpeg) |
+| ![Assembly buttom](assets/pedal_jack_assembled_buttom.jpeg)| ![Pedal Jack Adaptor 3D](assets/pedal_jack_pcb_front_v1.png) |
+
 
 #### 🪑 **Seating Customization**
 
@@ -54,7 +58,6 @@ Standard seat belts rarely meet the needs of children with disabilities. Our app
 * Low-profile mounts for use with adaptive bike seats and close-fitting car frames
 
 ![Seat with head mount](assets/head_mount.jpg)
-![Seat with head mount](assets/head_mount2.jpg)
 
 #### 🧩 **Modular PVC Mounts**
 
