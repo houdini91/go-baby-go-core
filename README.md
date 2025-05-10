@@ -44,7 +44,7 @@ We replace foot pedals with accessible hand- or head-activated push buttons. The
 ![Assembly Top](assets/pedal_jack_assembled_top.jpeg)
 ![Assembly buttom](assets/pedal_jack_assembled_buttom.jpeg)
 ![Pedal Jack Adaptor 3D](assets/pedal_jack_pcb_front_v1.png)
-![Pedal Jack Adaptor](assets/pedal_jack_pcb_back_v1)
+![Pedal Jack Adaptor 3D](assets/pedal_jack_pcb_back_v1.png)
 
 #### 🪑 **Seating Customization**
 
