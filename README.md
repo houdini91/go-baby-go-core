@@ -15,6 +15,10 @@ Maintainers:
 * Christaphor - 
 * Barbara 
 
+![Kit View](assets/kit_outside_bags.jpg)
+![Car View](assets/side_car_view2.jpeg)
+
+
 ### Empowering Mobility Through Open, Accessible Design
 
 At **GoBabyGo**, we believe every child deserves the freedom to move, explore, and experience independence. The **Core Build Kit** is our open-source effort to share the core components and lessons from years of building customized electric cars for children with disabilities.
@@ -36,12 +40,21 @@ We replace foot pedals with accessible hand- or head-activated push buttons. The
 * Stable, flexible **mounting connectors** for various control schemes
 * Mods and Extentions models for different use cases.
 
+![Pedal Jack Adaptor](assets/pedal_jack_adaptor.jpeg)
+![Assembly Top](assets/pedal_jack_assembled_top.jpeg)
+![Assembly buttom](assets/pedal_jack_assembled_buttom.jpeg)
+![Pedal Jack Adaptor 3D](assets/pedal_jack_pcb_front_v1.png)
+![Pedal Jack Adaptor](assets/pedal_jack_pcb_back_v1)
+
 #### 🪑 **Seating Customization**
 
 Standard seat belts rarely meet the needs of children with disabilities. Our approach:
 
 * Wide, adjustable belts with printed mounts and tri-glide adjusters
 * Low-profile mounts for use with adaptive bike seats and close-fitting car frames
+
+![Seat with head mount](assets/head_mount.jpg)
+![Seat with head mount](assets/head_mount2.jpg)
 
 #### 🧩 **Modular PVC Mounts**
 

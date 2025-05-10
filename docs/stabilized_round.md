@@ -9,6 +9,10 @@ This adaptive push button is designed as a robust, modular interface for childre
 
 ---
 
+![Top View](assets/stabilized_button1.jpeg)
+![Internal View](assets/stabilized_button_internal_view.jpeg)
+
+
 ### 🔧 Key Features
 
 * **X/Y Stabilization:** Reinforced structure minimizes lateral wobble, ensuring consistent and reliable activation.
