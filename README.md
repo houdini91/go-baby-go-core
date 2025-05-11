@@ -12,8 +12,8 @@ This repository contains the core set of open-source 3D-printed components devel
 
 Maintainers:
 * Mikey Strauss - GoBabyGo Israel - `mdstrauss91@gmail.com`
-* Christaphor - 
-* Barbara 
+* Christopher Auger-Dominguez - Center for Initiatives in Jewish Education  
+* Barbara Sehgal - Center for Initiatives in Jewish Education  
 
 ![Kit View](assets/kit_outside_bags.jpg)
 ![Car View](assets/side_car_view2.jpeg)
