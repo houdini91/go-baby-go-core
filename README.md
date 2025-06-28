@@ -115,3 +115,4 @@ Join our informal WhatsApp group for builders and volunteers — request access 
 💼 [LinkedIn](https://www.linkedin.com/in/mikey-strauss-a4312999/)
 
 > Need help building or printing parts? Reach out — we have parts in stock and are happy to support new builders.
+
