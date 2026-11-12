@@ -1,15 +1,14 @@
 FeatureScript 3112;
 import(path : "onshape/std/common.fs", version : "3112.0");
 
-// GoBabyGo pommel v0.7: saddle + 90 deg hook + triangle bracing (design sketch: claude.ai artifact "GbG pommel v0.7b").
-// Everything in CHAIR coordinates (GbG_chair_forth base: seat-pan bottom z = 0, top z = 20, front face y = -96, -Y = front).
-// - Saddle: triangle in plan (30 wide at the rear bolt, 80 wide at the seat edge), 7.5 mm thick at the rear bolt (1.5 mm proud of the seat in the 6 mm recess), ~16 mm at the edge.
-//   Held by the chair's 3 existing M3 holes (x 0, y -45/-60/-75) into the existing nut pockets under the pan.
-// - Hook: 90 deg down the pan front face to z 0. Pressing down on the pommel pushes the hook into the front face.
-// - Short (S): one part, solid down to z 0 (the brace triangle), pad reaches 75 past the seat edge.
-// - Long (K): same saddle + slim neck + knee pad; 2x 6 mm carbon rods (x +-12, z 7) run from the chair's rod holes
-//   through the hook into blind channels with crush ribs. One printed part; rods are trapped once the seat bolts are in.
-// - "Chair has recess" = the chair branch with the 6 mm recess + rod holes (feature gbgPommelMount); off = today's chair.
+// GoBabyGo pommel v0.7 (PRE-FIRST-PRINT): saddle + 90 deg hook, short (S) or long (K) with 2x 6 mm carbon rods.
+// Chair coordinates (GbG_chair_forth: seat-pan bottom z 0, top z 20, front face y -96, -Y = front).
+// - Saddle: low plate in a 6 mm seat recess (keep-low groin zone), 3 existing M3 screws. Hook bears on the seat front face.
+// - Long sizes: low 36 mm neck under the thighs (wider 56 mm base below seat level), knee pad at the knees.
+//   Rods run in teardrop channels with crush ribs, from the chair's rod holes into the pad.
+// - Leg-contact edges rounded 10 mm (K45A 6.5), 45 deg bed chamfer, seat-level filler (no groove at the recess).
+// - Print flat-bottom down; the only overhang (hidden saddle underside) takes slicer support. Optional built-in support.
+// - "Chair has recess" = chair with feature gbgPommelMount (6 mm recess + rod holes); off = the older chair print.
 
 export enum PommelSize
 {
@@ -30,6 +29,7 @@ const ROD_X = 12;
 const ROD_Z = 7;
 const BOLTS_Y = [-45, -60, -75];
 const SEAT_EDGE = -96;
+const NECK_BASE_HW = 28;  // long sizes: half width of the neck base below seat level (36 mm neck above)
 const SUP_GAP = 0.25;       // integral support: air gap under the saddle (about one 0.2 mm layer)
 const LEG_R = [10, 8, 6.5, 5, 4, 3];   // tried in order on every edge the legs can touch
 // ---- print fits (P1S / PETG first guesses; confirm with the "Rod fit test" part, then edit here) ----
@@ -85,6 +85,8 @@ export const gbgPommelV07 = defineFeature(function(context is Context, id is Id,
         definition.gallery is boolean;
         annotation { "Name" : "Print set: all 6 sizes + rod fit test, side by side, print-ready" }
         definition.printSet is boolean;
+        annotation { "Name" : "Print set: add built-in snap-off supports (optional; normally use slicer supports)" }
+        definition.integralSupport is boolean;
     }
     {
         if (definition.printSet)
@@ -94,7 +96,7 @@ export const gbgPommelV07 = defineFeature(function(context is Context, id is Id,
             for (var i = 0; i < size(sizes); i += 1)
             {
                 const pid = id + ("p" ~ i);
-                buildPommel(context, pid, sizeSpec(sizes[i]), 0, definition.recess, false, true);
+                buildPommel(context, pid, sizeSpec(sizes[i]), 0, definition.recess, false, definition.integralSupport);
                 opTransform(context, pid + "mv", { "bodies" : qBodyType(qCreatedBy(pid, EntityType.BODY), BodyType.SOLID), "transform" : transform(vector(140 * (i - 2.5), -320, 0) * millimeter) });
             }
             buildFitTest(context, id + "fit", 0, -320);
@@ -109,7 +111,7 @@ export const gbgPommelV07 = defineFeature(function(context is Context, id is Id,
                 for (var rc in [true, false])
                 {
                     const gid = id + ("g" ~ i);
-                    buildPommel(context, gid, sizeSpec(s), 0, rc, false, true);
+                    buildPommel(context, gid, sizeSpec(s), 0, rc, false, false);
                     opDeleteBodies(context, id + ("gd" ~ i), { "entities" : qCreatedBy(gid, EntityType.BODY) });
                     i += 1;
                 }
@@ -117,7 +119,7 @@ export const gbgPommelV07 = defineFeature(function(context is Context, id is Id,
         }
         buildPommel(context, id + "m", sizeSpec(definition.pommelSize), definition.step, definition.recess, definition.showRods, false);
         reportFeatureInfo(context, id, getVariable(context, "gbgLog"));
-    }, { pommelSize : PommelSize.S23A, step : 0, recess : true, showRods : true, gallery : false, printSet : false });
+    }, { pommelSize : PommelSize.S23A, step : 0, recess : true, showRods : true, gallery : false, printSet : false, integralSupport : false });
 
 function buildPommel(context is Context, id is Id, sp is map, step is number, recess is boolean, showRods is boolean, withSupport is boolean) returns Query
 {
@@ -208,6 +210,31 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
                     "operationType" : BooleanOperationType.INTERSECTION });
         opBoolean(context, id + "fillU", { "tools" : qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.SOLID),
                     "operationType" : BooleanOperationType.UNION });
+    }
+    // ---- long sizes: wider neck base, BELOW seat level only (under the thighs, so no leg contact) ----
+    // Trapezoid section: 56 wide on the bed, 2 mm upright, then 45 deg in to 36 wide at z 12 (the neck width).
+    // ~2x the sideways and ~1.5x the downward strength of the 36 mm neck; plastic beside the rod channels 2.8 -> ~8 mm.
+    if (sp.long)
+    {
+        const yS = HF + 1;                   // starts inside the hook
+        const yE = -(a + 6);                 // ends inside the knee pad
+        const fsk = newSketchOnPlane(context, id + "nfSk", { "sketchPlane" : plane(p3(0, yS, 0), vector(0, -1, 0), vector(1, 0, 0)) });
+        const fp = [pt(-NECK_BASE_HW, 0), pt(NECK_BASE_HW, 0), pt(NECK_BASE_HW, 2), pt(18, 12), pt(-18, 12), pt(-NECK_BASE_HW, 2)];
+        for (var i = 0; i < size(fp); i += 1)
+            skLineSegment(fsk, "e" ~ i, { "start" : fp[i], "end" : fp[(i + 1) % size(fp)] });
+        skSolve(fsk);
+        opExtrude(context, id + "nf", { "entities" : qSketchRegion(id + "nfSk"), "direction" : vector(0, -1, 0),
+                    "endBound" : BoundingType.BLIND, "endDepth" : mmv(yS - yE) });
+        opDeleteBodies(context, id + "nfDel", { "entities" : qCreatedBy(id + "nfSk", EntityType.BODY) });
+        const nf = qCreatedBy(id + "nf", EntityType.BODY);
+        const nfBed = qAdjacent(qCoincidesWithPlane(qOwnedByBody(nf, EntityType.FACE), XY_PLANE), AdjacencyType.EDGE, EntityType.EDGE);
+        roundLoop(context, id + "nfR", qEdgeConvexityTypeFilter(qSubtraction(qOwnedByBody(nf, EntityType.EDGE), nfBed), EdgeConvexityType.CONVEX), [3, 2, 1]);
+        try silent
+        {
+            opChamfer(context, id + "nfC", { "entities" : qAdjacent(qCoincidesWithPlane(qOwnedByBody(nf, EntityType.FACE), XY_PLANE), AdjacencyType.EDGE, EntityType.EDGE),
+                        "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : mmv(1) });
+        }
+        opBoolean(context, id + "nfU", { "tools" : qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.SOLID), "operationType" : BooleanOperationType.UNION });
     }
     body = qUnion(evaluateQuery(context, qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.SOLID)));
     if (size(evaluateQuery(context, body)) != 1)
