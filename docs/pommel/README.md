@@ -10,5 +10,6 @@ Supporting material for [`models/seating/pommel`](../../models/seating/pommel/).
 | `research/background_research.md` | Clinical guidance, commercial pommel sizes and child anthropometric tables (NIST AnthroKids 1977), with sources. |
 | `research/anthro_calc.py` | Knee-gap and knee-position calculation used by the panel. |
 | `tools/pommel_body_page.py` | Regenerates `body_measurements_reference.html`. |
+| `tools/slice_v07.sh` | Headless Bambu Studio slice with the print-guide settings (needs your own P1S/PETG preset JSONs). |
 
 All measurements are estimates from typically developing children. Children in the programme are often smaller. Confirm the fit with a PT/OT.

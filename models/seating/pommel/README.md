@@ -14,6 +14,7 @@ A printed pommel that keeps a seated child's knees apart (alignment, or abductio
 - **Long sizes (K):** the same saddle, plus a low neck and a knee pad further out. Two Ø6 mm solid carbon rods run from holes in the chair, through the hook and into the pommel.
 - **Low over the screws on purpose.** That area is under the child's groin, so the saddle stays 1.5–10 mm above the seat. The tall pad sits at the knees. See the [body measurements reference](../../../docs/pommel/body_measurements_reference.html).
 - **Leg-friendly.** Every edge a leg can touch is rounded 10 mm (6.5 mm on K45A).
+- **Long sizes:** the neck stays low (1–6 mm above the seat) and 36 mm wide under the thighs, widening to 56 mm below seat level for strength. See `PRINT_GUIDE.md` section 7 for the strength estimates.
 
 ## Sizes
 | Code | Age | Use | Width thigh → knee (mm) | Pad height above seat | Pad position past seat edge | Rods |
@@ -32,16 +33,18 @@ The long sizes have a reach adjustment of ±15 or ±30 mm.
 |---|---|
 | `featurescript/gbg_pommel_v07.fs` | Onshape FeatureScript: the pommel feature (all sizes, "Print set" layout, rod fit-test bar, built-in snap-off supports). Also contains the chair mount feature. |
 | `featurescript/gbg_pommel_mount_chair.fs` | The chair change only: the 6 mm saddle recess and 2 teardrop rod holes. Used on the chair branch. |
-| `PRINT_GUIDE.md` | Material (PETG), P1S slicer settings, weights, hardware, first-prototype order, assembly. |
+| `PRINT_GUIDE.md` | Material (PETG), P1S slicer settings, real and estimated weights, hardware, first-prototype order, strength, assembly. |
+| `stl/gbg_pommel_v07_rod_fit_test.stl` | Rod fit-test bar. Print this first (12.9 g, 28 min). |
+| `stl/gbg_pommel_v07_S23A_todays_chair.stl` | First prototype: short S23A for a chair without the recess (114 g, 3 h 40 min, with slicer supports). |
 | [`docs/pommel/`](../../../docs/pommel/) | Design sketch, body-measurement reference, expert-panel review and background research. |
 
 ## CAD (Onshape)
-- Pommel: "GbG Pommel add-on (for GbG_chair_forth)": https://cad.onshape.com/documents/344bce461e4ccbed87302a1e
+- Pommel: "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7 pre-first-print**: https://cad.onshape.com/documents/344bce461e4ccbed87302a1e
   - Part Studio 1 has feature 1 (one size shown on the chair) and feature 2 (print set: all 6 sizes, their supports and the fit test).
   - Assembly 1 shows the pommel on the chair.
-- Chair: GbG_chair_forth, **branch `pommel-mount`, version V10**. Main is unchanged.
+- Chair: GbG_chair_forth **Main, version V11**. The `pommel-mount` branch (6 mm saddle recess and 2 teardrop rod holes) is merged into Main.
 
-STL files aren't committed yet. Export them from the print set after the first print confirms the fits.
+Only the first-prototype STLs are committed. Export the other sizes from the print set after the fit test confirms the hole sizes.
 
 ## Before this can drop "pre-first-print"
 - [ ] Print the rod fit-test bar, then set `CHAIR_BORE_D` / `RIB_I` from the results.
@@ -49,4 +52,5 @@ STL files aren't committed yet. Export them from the print set after the first p
 - [ ] Print the chair seat from branch `pommel-mount` and a long size, then check rod fit and pad flex.
 - [ ] Load tests: 300 N down, 200 N sideways at the pad, 150 N up. No cracks, less than 3 mm movement.
 - [ ] Add 10–15 mm foam padding, then a PT/OT fit on a real child.
-- [ ] Real slice weights and times, then export and commit the STLs.
+- [x] Real slice for the fit test and S23A (see the print guide).
+- [ ] Export and commit the STLs for the other sizes (after the fit test).
