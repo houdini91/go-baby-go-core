@@ -14,7 +14,7 @@ A printed pommel that keeps a seated child's knees apart (alignment, or abductio
 - **Long sizes (K):** the same saddle, plus a low neck and a knee pad further out. Two Ø6 mm solid carbon rods run from holes in the chair, through the hook and into the pommel.
 - **Low over the screws on purpose.** That area is under the child's groin, so the saddle stays 1.5–10 mm above the seat. The tall pad sits at the knees. See the [body measurements reference](../../../docs/pommel/body_measurements_reference.html).
 - **Leg-friendly.** Every edge a leg can touch is rounded 10 mm (6.5 mm on K45A).
-- **Long sizes:** the neck stays low (1–6 mm above the seat) and 36 mm wide under the thighs, widening to 56 mm below seat level for strength. See `PRINT_GUIDE.md` section 7 for the strength estimates.
+- **Long sizes:** the neck stays low (1–6 mm above the seat) and 36 mm wide under the thighs. Print it nearly solid for strength; see `PRINT_GUIDE.md` sections 3 and 7.
 
 ## Sizes
 | Code | Age | Use | Width thigh → knee (mm) | Pad height above seat | Pad position past seat edge | Rods |
@@ -39,7 +39,7 @@ The long sizes have a reach adjustment of ±15 or ±30 mm.
 | [`docs/pommel/`](../../../docs/pommel/) | Design sketch, body-measurement reference, expert-panel review and background research. |
 
 ## CAD (Onshape)
-- Pommel: "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7 pre-first-print**: https://cad.onshape.com/documents/344bce461e4ccbed87302a1e
+- Pommel: "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7.1 pre-first-print**: https://cad.onshape.com/documents/344bce461e4ccbed87302a1e
   - Part Studio 1 has feature 1 (one size shown on the chair) and feature 2 (print set: all 6 sizes, their supports and the fit test).
   - Assembly 1 shows the pommel on the chair.
 - Chair: GbG_chair_forth **Main, version V11**. The `pommel-mount` branch (6 mm saddle recess and 2 teardrop rod holes) is merged into Main.
