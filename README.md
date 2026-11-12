@@ -59,6 +59,7 @@ Standard seat belts rarely meet the needs of children with disabilities. Our app
 
 * Wide, adjustable belts with printed mounts and tri-glide adjusters
 * Low-profile mounts for use with adaptive bike seats and close-fitting car frames
+* 🚧 **Pommel / medial knee support (v0.7, pre-first-print, work in progress):** see [models/seating/pommel](models/seating/pommel/)
 
 ![Seat with head mount](assets/head_mount.jpg)
 
