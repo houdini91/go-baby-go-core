@@ -2,7 +2,7 @@
 
 > **Status: PRE-FIRST-PRINT.** Nothing here has been printed or tested on a child yet. Fits and strength figures are CAD/hand estimates; the two sliced weights below are real slicer output.
 
-CAD: Onshape "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7 pre-first-print**. Chair: GbG_chair_forth **Main, version V11** (includes the 6 mm saddle recess and the 2 rod holes).
+CAD: Onshape "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7.1 pre-first-print**. Chair: GbG_chair_forth **Main, version V11** (includes the 6 mm saddle recess and the 2 rod holes).
 
 ## 1. Files
 | File (in `stl/`) | What | Sliced (PETG, settings below) |
@@ -62,7 +62,9 @@ All of them fit the P1S plate (256 × 256 mm).
 3. **Full system:** print the chair seat from Main V11 (recess and rod holes) and a long size (K23A or K45A), recess version. Press on the pad by hand. If K45 feels too springy, switch it to 8 mm rods.
 
 ## 7. Strength (hand estimates, untested)
-The long sizes' neck is deliberately low (1–6 mm above the seat) and 36 mm wide, because the thighs pass over it. Below seat level it widens to 56 mm, under the thighs and within the knee pad's width. That extra width adds only about 10–15% strength, but it gives about 8 mm of plastic beside each rod channel instead of 2.8 mm.
+The long sizes' neck is deliberately low (1–6 mm above the seat) and 36 mm wide, because the thighs pass over it. Strength comes from printing that neck nearly solid (section 3), not from making it bigger.
+
+A wider base under the neck was tried in v0.7. It added only about 10–15% strength, didn't flow into the part, and left an edge a calf could catch, so v0.7.1 removed it.
 
 Worst case is K45, at the base of the neck. Load cases come from the expert-panel review.
 
@@ -73,6 +75,7 @@ Worst case is K45, at the base of the neck. Load cases come from the expert-pane
 
 - The carbon rods carry only about 15% of the downward bending, because they sit low, near the neck's bending centre.
 - They are the fail-safe: if the printed neck ever cracked, the rods would still hold the pad to the chair.
+- Beside each rod channel there is 2.8 mm of plastic. With 4 walls that prints fully solid, but it's the spot to inspect after the load test.
 - K23 is about twice as strong as K45, because its pad sits closer to the chair.
 
 ## 8. Assembly (long sizes)
