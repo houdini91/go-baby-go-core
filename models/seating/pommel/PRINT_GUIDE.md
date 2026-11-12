@@ -2,7 +2,7 @@
 
 > **Status: PRE-FIRST-PRINT.** Nothing here has been printed or tested on a child yet. Fits and strength figures are CAD/hand estimates; the two sliced weights below are real slicer output.
 
-CAD: Onshape "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7.1 pre-first-print**. Chair: GbG_chair_forth **Main, version V11** (includes the 6 mm saddle recess and the 2 rod holes).
+CAD: Onshape "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7.2 pre-first-print**. Chair: GbG_chair_forth **Main, version V11** (includes the 6 mm saddle recess and the 2 rod holes).
 
 ## 1. Files
 | File (in `stl/`) | What | Sliced (PETG, settings below) |
@@ -25,7 +25,7 @@ Use PLA only to check fit and shape. Don't put a child on a PLA pommel.
 - Orientation: as exported, flat bottom on the plate. Don't rotate the part; the rod holes are teardrops with the peak pointing up.
 - **Walls 4** (about 1.7 mm). Top layers 5, bottom layers 4.
 - **Infill: gyroid 15%.**
-- **Long sizes (K23/K45): print the neck nearly solid.** Add a modifier box over the neck (from the hook to the start of the knee pad) with 6 walls and 60–100% infill. This is the cheapest way to add strength (see section 7).
+- **Long sizes (K23/K45), optional:** for extra margin, add a modifier box over the neck (from the hook to the start of the knee pad) with 6 walls and 60–100% infill (see section 7).
 - **Supports: ON, tree (auto), "On build plate only", threshold 30°.** The only overhang is the flat underside of the saddle, which is hidden in the chair recess, so support marks there don't matter. Check in the preview that no support grows inside the rod channels or the countersinks.
   - Optional: the Onshape feature can also generate a built-in snap-off rib support ("Print set: add built-in snap-off supports"). It's off by default; normal slicer supports are simpler.
 - Seam: Back or aligned, kept off the knee pad. No brim needed.
@@ -62,21 +62,21 @@ All of them fit the P1S plate (256 × 256 mm).
 3. **Full system:** print the chair seat from Main V11 (recess and rod holes) and a long size (K23A or K45A), recess version. Press on the pad by hand. If K45 feels too springy, switch it to 8 mm rods.
 
 ## 7. Strength (hand estimates, untested)
-The long sizes' neck is deliberately low (1–6 mm above the seat) and 36 mm wide, because the thighs pass over it. Strength comes from printing that neck nearly solid (section 3), not from making it bigger.
+On the long sizes the neck is 46 mm wide and its top stays 10 mm above the seat, level with the hook lip, with no dip. It sits in the wedge-shaped space under and between the thighs; near their undersides the thighs curve apart, leaving roughly 54 mm for the smallest child. It flows straight from the hook into the knee pad.
 
-A wider base under the neck was tried in v0.7. It added only about 10–15% strength, didn't flow into the part, and left an edge a calf could catch, so v0.7.1 removed it.
+- v0.7–v0.7.1 had a 36 mm-wide neck that dipped to 1 mm above the seat. It looked pinched and was about half as strong.
+- A separately added base under the neck (v0.7) didn't flow into the part and was removed.
 
 Worst case is K45, at the base of the neck. Load cases come from the expert-panel review.
 
 | Load | Safety factor (15% infill) | Safety factor (neck printed nearly solid) |
 |---|---|---|
-| 300 N down on the pad tip (an adult leaning on it) | ~3 | ~4.5 |
-| 200 N sideways knee push | ~6 | ~9 |
+| 300 N down on the pad tip (an adult leaning on it) | ~6 | ~9 |
+| 200 N sideways knee push | ~12 | ~18 |
 
-- The carbon rods carry only about 15% of the downward bending, because they sit low, near the neck's bending centre.
-- They are the fail-safe: if the printed neck ever cracked, the rods would still hold the pad to the chair.
-- Beside each rod channel there is 2.8 mm of plastic. With 4 walls that prints fully solid, but it's the spot to inspect after the load test.
-- K23 is about twice as strong as K45, because its pad sits closer to the chair.
+- The carbon rods sit low in the neck and are the fail-safe: if the printed neck ever cracked, the rods would still hold the pad to the chair.
+- There's about 8 mm of plastic beside each rod channel.
+- K23 is stronger than K45, because its pad sits closer to the chair.
 
 ## 8. Assembly (long sizes)
 1. Push both rods into the pommel channels until they stop. About 57 mm stays sticking out behind the hook.
@@ -85,7 +85,7 @@ Worst case is K45, at the base of the neck. Load cases come from the expert-pane
 4. To remove: undo the 3 screws and slide the pommel forward.
 
 ## 9. Checks after printing
-- Run a finger over every edge. Leg-contact edges should be rounded 10 mm (6.5 mm on K45A).
+- Run a finger over every edge. Leg-contact edges should be rounded 10 mm.
 - The rods enter the channels and the chair holes cleanly.
 - The screw heads sit flush or slightly below the surface.
 - Rock the pommel by hand: no movement at the hook or the saddle.

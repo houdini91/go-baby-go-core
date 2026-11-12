@@ -4,9 +4,9 @@ import(path : "onshape/std/common.fs", version : "3112.0");
 // GoBabyGo pommel v0.7 (PRE-FIRST-PRINT): saddle + 90 deg hook, short (S) or long (K) with 2x 6 mm carbon rods.
 // Chair coordinates (GbG_chair_forth: seat-pan bottom z 0, top z 20, front face y -96, -Y = front).
 // - Saddle: low plate in a 6 mm seat recess (keep-low groin zone), 3 existing M3 screws. Hook bears on the seat front face.
-// - Long sizes: low 36 mm neck under the thighs (print it near-solid: slicer modifier), knee pad at the knees.
+// - Long sizes: 46 mm wide neck, top 10 mm above the seat (level with the hook lip), under the thighs; knee pad at the knees.
 //   Rods run in teardrop channels with crush ribs, from the chair's rod holes into the pad.
-// - Leg-contact edges rounded 10 mm (K45A 6.5), 45 deg bed chamfer, seat-level filler (no groove at the recess).
+// - Leg-contact edges rounded 10 mm, 45 deg bed chamfer, seat-level filler (no groove at the recess).
 // - Print flat-bottom down; the only overhang (hidden saddle underside) takes slicer support. Optional built-in support.
 // - "Chair has recess" = chair with feature gbgPommelMount (6 mm recess + rod holes); off = the older chair print.
 
@@ -29,6 +29,8 @@ const ROD_X = 12;
 const ROD_Z = 7;
 const BOLTS_Y = [-45, -60, -75];
 const SEAT_EDGE = -96;
+const NECK_HW = 23;        // long sizes: neck half width (46 mm) - fits in the wedge under/between the thighs
+const NECK_TOP = 30;       // long sizes: neck top z (10 mm above the seat, same as the hook lip) - no dip
 const SUP_GAP = 0.25;       // integral support: air gap under the saddle (about one 0.2 mm layer)
 const LEG_R = [10, 8, 6.5, 5, 4, 3];   // tried in order on every edge the legs can touch
 // ---- print fits (P1S / PETG first guesses; confirm with the "Rod fit test" part, then edit here) ----
@@ -136,7 +138,7 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
     // ---- sideSk profile (y, z), extruded across x ----
     var topPts = [pt(SAD_REAR, F + 7.5), pt(-55, F + 8.5), pt(-75, F + 11), pt(Y0 + 2, max(LIP_TOP - 1, F + 13)), pt(HF, max(LIP_TOP, F + 14))];
     if (sp.long)
-        topPts = concatenateArrays([topPts, [pt(HF - 10, 25), pt(-(a - 22), 21), pt(-(a - 4), 26), pt(-(a + 12), zT - 12), pt(-(a + 28), zT), pt(-(b - 14), zT - 1), pt(-b, zT - 22)]]);
+        topPts = concatenateArrays([topPts, [pt(HF - 10, NECK_TOP), pt(-(a - 20), NECK_TOP), pt(-(a - 2), NECK_TOP + 6), pt(-(a + 12), zT - 12), pt(-(a + 28), zT), pt(-(b - 14), zT - 1), pt(-b, zT - 22)]]);
     else
         topPts = concatenateArrays([topPts, [pt(HF - 10, 42), pt(-124, zT - 10), pt(-140, zT), pt(-(b - 13), zT - 2), pt(-b, zT - 22)]]);
     const sideSk = newSketchOnPlane(context, id + "side", { "sketchPlane" : plane(p3(0, 0, 0), vector(1, 0, 0), vector(0, 1, 0)) });
@@ -158,7 +160,7 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
     // ---- plan profile (x half width vs y), extruded along z ----
     var half = [pt(SAD_HW_REAR, SAD_REAR), pt((SAD_HW_REAR + HOOK_HW) / 2, (SAD_REAR + Y0) / 2), pt(HOOK_HW, Y0), pt(HOOK_HW - 3, HF - 2)];
     if (sp.long)
-        half = concatenateArrays([half, [pt(18, HF - 16), pt(18, -(a - 14)), pt(sp.wR / 2, -(a + 6)), pt(sp.wF / 2, -(b - 12))]]);
+        half = concatenateArrays([half, [pt(NECK_HW, HF - 16), pt(NECK_HW, -(a - 14)), pt(max(sp.wR / 2, NECK_HW + 2), -(a + 6)), pt(sp.wF / 2, -(b - 12))]]);
     else
         half = concatenateArrays([half, [pt(max(sp.wR / 2, 30), HF - 14), pt(sp.wF / 2, -(b - 12))]]);
     var mir = [];
