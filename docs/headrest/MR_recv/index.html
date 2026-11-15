@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GbG headrest M1/B1: how slim can the chair connection be? (review)</title><style>
+:root{--ink:#1d232b;--mute:#5b6570;--line:#dfe3e8;--acc:#2f6fb5;--bg:#fff}
+@media (prefers-color-scheme:dark){:root{--ink:#e7ebef;--mute:#a3adb8;--line:#38404a;--acc:#7fb0ea;--bg:#15191e}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1000px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:26px;margin:0 0 6px}h2{font-size:19px;margin:34px 0 8px;border-top:1px solid var(--line);padding-top:18px}
+.sub{color:var(--mute);margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+figure img{width:100%;display:block}figcaption{padding:8px 12px;font-size:14px;color:#3d4650;background:#f6f8fa}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{color:var(--mute);font-weight:600}
+.q{border-left:4px solid var(--acc);padding:8px 14px;margin:10px 0}
+.rec{display:inline-block;font-size:13px;padding:1px 9px;border-radius:9px;background:#e3f4e8;color:#1f6b3a;margin-left:6px}.wide img{max-width:100%}</style></head><body><main></head><body><main>
+<h1>M1 / B1: how slim can the connection to the chair be?</h1>
+<p class="sub">Locked: M1 stem, B1 receiver, with the relief window. This page asks only how far the receiver should stick out behind the chair and how far down the back it should run. All four versions are drawn at H100.</p>
+
+<h2>Where the bulk comes from (and what was exaggerated)</h2>
+<p>In the version you saw (R0), the receiver stuck out 22 mm behind the chair's back face and ran down to z 269. Here is where that comes from:</p>
+<ul>
+<li><b>+11 mm: carbon rod positions (fixed).</b> The rods sit at y 146.8, set by the locked pad's rod sockets, and that is already 3 mm behind the chair's back face. Add the rod radius (4) and a plastic wall and you are about 11 mm out before the receiver even starts.</li>
+<li><b>+8 mm: receiver back wall (needed, but 6 mm is enough).</b> In a backward knock the top of the plug presses on this wall, at about 2.5 MPa at H100. 6 mm carries that.</li>
+<li><b>+3 mm: the socket sat further back than it had to.</b> Its front wall was 8.5 mm, but that wall is backed by the whole backrest plate, so 4.5 mm is fine. Moving the socket 4 mm forward saves 4 mm at the back.</li>
+<li><b>Running down to z 269: pure styling (exaggerated).</b> Below the socket floor (z 345) the receiver carries nothing. It only needs a sloped bottom so top_back still prints upright without supports. Ending it at z 303 is enough.</li>
+<li><b>Width ±42: partly exaggerated.</b> The plug is ±28, and the side walls take the side bashes. ±36–38 mm is enough.</li>
+</ul>
+<p>Because the chair only touches the car's rear wall up to about 2/3 of its height, everything here (z 303 and up) is above where it touches.</p>
+
+<h2>Four versions, cut through the middle</h2>
+<div class="wide"><figure><img src="img/cut_all.png" alt="Left to right: R0, R1, R2, R3. Blue = mast (with plug), black = carbon rod, grey = M5 bolts, light tan = new receiver material, tan = original chair."><figcaption>Left to right: R0, R1, R2, R3. Blue = mast (with plug), black = carbon rod, grey = M5 bolts, light tan = new receiver material, tan = original chair.</figcaption></figure></div>
+<div class="grid" style="margin-top:14px"><figure><img src="img/R0_corner.png" alt="R0 today: 22 mm, down to z 269"><figcaption>R0 today: 22 mm, down to z 269</figcaption></figure><figure><img src="img/R1_corner.png" alt="R1 trimmed: 20 mm, down to z 303"><figcaption>R1 trimmed: 20 mm, down to z 303</figcaption></figure><figure><img src="img/R2_corner.png" alt="R2 socket forward: 16 mm, z 303"><figcaption>R2 socket forward: 16 mm, z 303</figcaption></figure><figure><img src="img/R3_corner.png" alt="R3 rods forward: 10 mm, z 303"><figcaption>R3 rods forward: 10 mm, z 303</figcaption></figure></div>
+<div class="grid" style="margin-top:14px"><figure><img src="img/R0_side.png" alt="R0 side"><figcaption>R0 side</figcaption></figure><figure><img src="img/R1_side.png" alt="R1 side"><figcaption>R1 side</figcaption></figure><figure><img src="img/R2_side.png" alt="R2 side"><figcaption>R2 side</figcaption></figure><figure><img src="img/R3_side.png" alt="R3 side"><figcaption>R3 side</figcaption></figure></div>
+<div class="grid" style="margin-top:14px"><figure><img src="img/R0_low.png" alt="R0 from low behind"><figcaption>R0 from low behind</figcaption></figure><figure><img src="img/R1_low.png" alt="R1 from low behind"><figcaption>R1 from low behind</figcaption></figure><figure><img src="img/R2_low.png" alt="R2 from low behind"><figcaption>R2 from low behind</figcaption></figure><figure><img src="img/R3_low.png" alt="R3 from low behind"><figcaption>R3 from low behind</figcaption></figure></div>
+
+<h2>Numbers (H100, 300 N knock)</h2>
+<table>
+<tr><th></th><th>R0 today</th><th>R1 trim</th><th><b>R2 socket forward</b></th><th>R3 rods forward</th></tr>
+<tr><td>Behind the chair back</td><td>22 mm</td><td>20 mm</td><td><b>16 mm</b></td><td>10 mm</td></tr>
+<tr><td>Runs down to</td><td>z 269</td><td>z 303</td><td><b>z 303</b></td><td>z 303</td></tr>
+<tr><td>Width</td><td>±42</td><td>±36</td><td>±38</td><td>±38</td></tr>
+<tr><td>New material on the chair</td><td>106 cm³</td><td>44 cm³</td><td>43 cm³</td><td>33 cm³</td></tr>
+<tr><td>Plug safety factor (in the socket)</td><td>6.0</td><td>6.0</td><td>5.7</td><td>4.7</td></tr>
+<tr><td>Mast's weakest spot: the stem at the window (H100 / H50)</td><td>4.0 / 6.4</td><td>4.0 / 6.4</td><td>3.9 / 5.7</td><td>3.9 / 5.6</td></tr>
+<tr><td>Pad flex, 150 N push</td><td>1.45 mm</td><td>1.47 mm</td><td>1.49 mm</td><td>1.56 mm</td></tr>
+<tr><td>Carbon backup</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>Changes to locked parts</td><td>none</td><td>none</td><td>none</td><td><b>moves the pad's rod sockets 6 mm forward</b></td></tr>
+</table>
+<p>For all four: every wall around the socket is at least 3 mm thick, the mast has no clashes, it lifts out cleanly, the rods are fully enclosed, and nothing hangs in the air underneath.</p>
+<div class="q"><b>Correction to my earlier pages:</b> I found a bug. The step that trims the mast to fit the chair was also removing the part of the plug that sits inside the backrest, so I had been rating a thin sliver of the plug. With the full plug, the plug is no longer the weak point. The mast's weakest spot is the stem around the relief window, with a safety factor of 4.0 at H100. So my earlier statement that "M1 and M3 share the plug as their weak spot" was wrong. M1 is fine either way.</div>
+
+<h2>My recommendation: R2</h2>
+<p>It sticks out 6 mm less, stops 34 mm higher up the back, and is narrower, with no real loss of strength and no change to anything already locked. R3 gets close to flush (10 mm), but only by moving the rod sockets in the locked pad and thinning the plug. I'd only do that if the last 6 mm matter for fitting the car.</p>
+</main></body></html>
