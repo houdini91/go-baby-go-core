@@ -14,7 +14,7 @@ def stencil():
         c = CS([p.tolist()]); c = c if c.area() > 0 else CS([p[::-1].tolist()])
         if c.area() < 120: continue                      # the Ø9 screwdriver holes: replaced by exact punch guides below
         holes = holes + c                                # strap slots: trace inside
-    for x, z in Q.punch_centres(): holes = holes + CS.circle(4.85, 48).translate([x, z])      # Ø9.7: the Ø9 punch goes straight through
+    pass                                                     # v1.1: no screwdriver holes (pod/blank screws come from outside)
     for x, z in Q.dot_centres(): holes = holes + CS.circle(2.0, 32).translate([x, z])        # Ø4 pen mark = dot centre
     b = outer.bounds() if hasattr(outer, "bounds") else None
     allp = polys[i0]; zt, zb = allp[:, 1].max(), allp[:, 1].min()

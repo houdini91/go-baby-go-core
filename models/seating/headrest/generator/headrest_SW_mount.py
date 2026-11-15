@@ -87,7 +87,10 @@ def _mount(var, yaw, side=1):
 def blank(side=1, var="W1"):
     tri = place(P._to_pad(B3.B_tri_solid(-0.1, P.BTN_UP - B3.B_D + 0.2, P.BTN_UP + 4).translate([0, F.BTN_SHIFT, 0])), P.BTN_ANG)
     if var == "W2": tri = tri + lane(1)
-    b = tri - skin(CS.square([300, 160]).translate([-150, -80]), 0.0, 30, refine=3.0) - _screw_nut()
+    b = tri - skin(CS.square([300, 160]).translate([-150, -80]), 0.0, 30, refine=3.0)
+    # v1.1: 1 countersunk M3 from outside at the blank screw (x 0, z 4), nut trapped in the pad
+    yTop = R + T + F.D(K, np.array([4.0]), np.array([P.BTN_ANG]))[0] + (F.r_face(np.array([4.0]), np.array([P.BTN_ANG]))[0] - R)
+    b = b - place(ycyl(3.4, 40, 0, R - 2, 4.0) + M.cylinder(1.8, 1.5, 3.15, 24).rotate([-90, 0, 0]).translate([0, yTop - 1.75, 4.0]), P.BTN_ANG)
     if var == "W2": b = b - pad("W2")
     return b if side > 0 else b.mirror([1, 0, 0])
 def pvc(var, yaw, side=1, L=None):

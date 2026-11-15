@@ -14,7 +14,8 @@ def pad():
     if "pad" not in _C: _C["pad"] = Q.pad("V")
     return _C["pad"]
 def mast(H): return MB.mast("B1", 0, H, window=True)
-def pod(yaw, side): return W._mount_final(yaw, side)
+import headrest_POD11 as P11
+def pod(yaw, side): return P11.pod(yaw, side)          # v1.1: hull pod, 2 screws from outside
 def blank(side): return W.blank(side)
 def receiver(): return MM.receiver_chair()
 # W uses F.pad(K) (slotted pad) to trim the pod; for the final pad trim against the slit-free pad (same outer surface)

@@ -1,7 +1,7 @@
 # Exports the data the Onshape FeatureScript port needs that is NOT a closed-form formula:
 #   the W1 button-pod outer hull (convex hull of the surface footprint band + the PVC collar), as planar sections
 #   perpendicular to the collar axis, one set per yaw (right side; the FS mirrors for the left).
-import math, os, numpy as np
+import math, numpy as np
 from manifold3d import Manifold as M, CrossSection as CS
 import headrest_SW_mount as W, headrest_F_flow as F
 def rot_to_z(d):
@@ -37,13 +37,5 @@ def sections(yaw, n=16, npts=40):
         out.append(P3)
     return out, h
 if __name__ == "__main__":
-    # writes pod_sections.fsdata = the POD_SECTIONS + POD_AXIS block pasted at the end of featurescript/gbg_headrest_v10.fs
-    import headrest_SW_mount as W
-    lines, axes = [], []
-    for yaw in W.YAWS:
-        secs, h = sections(yaw, n=14, npts=32)
-        lines.append('    "%d" : [\n        ' % yaw + ",\n        ".join("[" + ",".join("%.1f,%.1f,%.1f" % tuple(p) for p in s) + "]" for s in secs) + "]")
-        E, d = W.axis("W1", yaw, 1)
-        axes.append('    "%d" : [[%.4f, %.4f, %.4f], [%.6f, %.6f, %.6f]]' % (yaw, *E, *d))
-    open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "pod_sections.fsdata"), "w").write(
-        "const POD_SECTIONS = {\n" + ",\n".join(lines) + "\n};\nconst POD_AXIS = {\n" + ",\n".join(axes) + "\n};\n")
+    # v1.1: the pod data now comes from headrest_POD11.write_fsdata(); this module keeps rot_to_z() and sections() helpers
+    import headrest_POD11 as P11; P11.write_fsdata(); print("pod_sections.fsdata written")

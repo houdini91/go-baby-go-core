@@ -18,6 +18,7 @@ PATCHES = [(0, 33, 40, 22), (-40, 30, 25, 30), (40, 30, 25, 30), (-28, -26, 30, 
 def U(a): return -math.radians(a) * R
 # Mikey 2026-11-15: pre-cut Ø25 hook-and-loop DOTS (peel-and-stick pairs) instead of tape patches -> 8 round pockets Ø26
 DOT_D, DOT_POCKET = 25.0, 26.0
+POD_SCREWS, BLANK_SCREW, NUT_TRAP_D = [(-14.0, -9.0), (14.0, -12.0)], (0.0, 4.0), 3.0     # v1.1 (= the FeatureScript)
 DOTS = [(-16, 36), (16, 36), (-42, 32), (42, 32), (-26, 4), (26, 4), (-22, -28), (22, -28)]
 ATTACH = "dots"
 def _shapes(pocket=True, inset=0.0):
@@ -57,7 +58,11 @@ def _pad_noslots():
         sl = M.batch_hull([M.cylinder(50, 2.25, 2.25, 24).rotate([-90, 0, 0]).translate([0, R - 15, z]) for z in (P.STRAP_Z[0] + 2.25, P.STRAP_Z[1] - 2.25)])
         cuts.append(place(sl, s_ * P.STRAP_ANG))
         cuts.append(place(P.btn_cuts().translate([0, F.BTN_SHIFT, 0]), s_ * P.BTN_ANG))
-        cuts.append(place(ycyl(3.4, T + F.BTN_SHIFT + P.BTN_UP + 2, 0, R - 1, F.BTN_Z) + M.cylinder(1.8, 3.1, 1.5, 24).rotate([-90, 0, 0]).translate([0, R - 0.05, F.BTN_Z]), s_ * P.BTN_ANG))
+        # v1.1: pod (2) + blank (1) screws come from OUTSIDE; clearance holes + hex nut traps (corner up) on the head side
+        for x, z in POD_SCREWS + [BLANK_SCREW]:
+            th = s_ * (P.BTN_ANG + math.degrees(x / R))
+            nut = CS.circle(F.NUT_M3_AF / math.sqrt(3), 6).rotate(90).extrude(NUT_TRAP_D + 1).rotate([-90, 0, 0]).translate([0, R - 1, z])
+            cuts.append(place(ycyl(3.4, 40, 0, R - 2, z) + nut, th))
     m = m - M.batch_boolean(cuts, 0)
     m = m - K._taper(K.channel()) - K.col_socket() - K.spine_boss(K.TCL, 30)
     for g in (1, -1): m = m - F.screw_cut_pad(g)
@@ -70,7 +75,7 @@ def foam_cs():
     for s_ in (1, -1):    # strap slot (22.5 x 4.5 in the shell) -> 26 x 7 in the foam, rounded
         a = s_ * P.STRAP_ANG; zc = sum(P.STRAP_Z) / 2; h = P.STRAP_Z[1] - P.STRAP_Z[0] + 3
         cs = cs - rrect(U(a), zc, 7.0, h, 3.4)
-        cs = cs - CS.circle(4.5, 32).translate([U(s_ * P.BTN_ANG), F.BTN_Z])     # Ø9 screwdriver hole to the button-mount screw
+        pass                                                                      # v1.1: no screwdriver hole (screws come from outside)
     return cs
 def foam(th=FOAM_T, gap=VEL_GAP):
     pl = F._plate(foam_cs(), th, min(3.0, th / 2 - 0.6)).refine_to_length(1.6)

@@ -36,7 +36,7 @@ def chin_z(n, H): return frame(n, H)[0] + BOT       # pad bottom line, local
 def oval_back(x, cy):
     """local y of the pad's back oval (r = TO) at x"""
     return cy + ELL * np.sqrt(np.maximum(TO ** 2 - x ** 2, 1.0))
-def section(hw, y0, y1, p=3.2, back=None, n=72):
+def section(hw, y0, y1, p=3.2, back=None, n=72, bw=1.0):
     """convex rounded section: superellipse |x/hw|^p + |v|^p = 1; front flat-ish at y0, back at y1 or following `back(x)` (convex)"""
     t = np.linspace(0, 2 * np.pi, n, endpoint=False)
     c, s = np.cos(t), np.sin(t)
@@ -44,7 +44,7 @@ def section(hw, y0, y1, p=3.2, back=None, n=72):
     ym = (y0 + y1) / 2; hd = (y1 - y0) / 2
     y = ym + hd * v
     if back is not None:
-        yb = np.minimum(back(x), y1)
+        yb = y1 + (np.minimum(back(x), y1) - y1) * bw          # bw: 0 = flat back, 1 = follows the pad oval (blended, no step)
         y = np.where(v > 0, ym + (yb - ym) * v, y)
     return np.stack([x, y], 1)
 def slab(pts, z, th=0.02):
@@ -132,17 +132,17 @@ def m1_body(n, H, foot_hw=FOOT[0], chin_hw=44.0, waist=0.9):
     ff = min(30.0, 0.42 * gap); cf = min(26.0, 0.45 * gap)       # foot flare / chin flare heights
     ybk = oval_back(0, cy) - 0.4
     secs = []
-    zs = np.unique(np.concatenate([np.linspace(z_foot, z_foot + ff, 9), np.linspace(z_foot + ff, zch - cf, max(2, int((gap - ff - cf) / 12) + 2)), np.linspace(zch - cf, zch, 9)]))
+    zs = np.append(np.arange(z_foot, zch - 0.5, 1.5), zch)          # FINAL v1.0.1: dense uniform sections (= the smooth Onshape surface)
     for z in zs:
         tf = sm((z - z_foot) / max(ff, 1e-3))            # 0 at the foot -> 1 at stem
         tc = sm((z - (zch - cf)) / max(cf, 1e-3))        # 0 in the stem -> 1 at the chin
-        mid = 1 - abs(((z - z_foot) / max(gap, 1)) - 0.5) * 2
+        mid = 1 - (2 * ((z - z_foot) / max(gap, 1)) - 1) ** 2          # FINAL v1.0.1: smooth waist (was 1-|2u-1|: a crease at mid-height)
         hw_stem = 28.0 * lerp(1.0, waist, sm(mid))
         hw = lerp(lerp(foot_hw, hw_stem, tf), chin_hw, tc)
         y0 = lerp(lerp(FOOT[1], 132.0, tf), cy + 103.2, tc)
         y1 = lerp(lerp(FOOT[2], ybk, tf), ybk, tc)
-        back = (lambda x, cy=cy: oval_back(x, cy) - 0.4) if tf > 0.5 else None
-        secs.append((z, section(hw, y0, y1, p=lerp(lerp(FOOT[3], 2.6, tf), 3.0, tc), back=back)))
+        back = (lambda x, cy=cy: oval_back(x, cy) - 0.4)            # FINAL v1.0.1: blended in (was switched on at tf > 0.5: a step)
+        secs.append((z, section(hw, y0, y1, p=lerp(lerp(FOOT[3], 2.6, tf), 3.0, tc), back=back, bw=sm((tf - 0.25) / 0.5))))
     return loft(secs)
 def m1(n, H):
     m = plug() + m1_body(n, H) + L(head_locked(), n, H)
