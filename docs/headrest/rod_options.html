@@ -153,21 +153,44 @@ td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
   <div class="plan"><h3>First prototype (H50)</h3>
     <div class="cut"><span style="width:27%">135</span><span style="width:27%">135</span><span class="w" style="width:46%">230 → H25 pair later</span></div><div class="mut">Buy one 8×500 rod</div></div>
 
-  <h2 style="margin-top:34px">Proposal: a printed cutting gauge</h2>
-  <p>To make every cut the same without measuring: a small printed block with a groove for the rod, an end stop, and a saw slot at each length. Push the rod against the stop, saw through the slot for the height you need. The slot keeps the cut square, and tape round the rod at the slot stops splintering. <b>Not built yet</b>; it's a 1-hour print if you want it.</p>
+  <h2 style="margin-top:34px" id="gauge">Holding the rod: printed gauge with a clamp, or a small bar clamp</h2>
+  <p><b>Option 1, printed (proposal, not built yet):</b> a block with a V-groove for the rod, an end stop, and a saw slot at each length. A printed lid near the stop is pulled down by 2× M3 screws and nuts (already in the order) and grips the rod. Screw the flanges to a scrap board, or hold the block flat. Push the rod against the stop, tighten the lid, cut through the slot for your height. You get the length, a square cut, and your hand stays away from the disc. About a 1–1.5 h print.</p>
   <figure>
-    <svg viewBox="0 0 720 150" role="img" aria-label="Cutting gauge: a block with a groove, an end stop on the left and saw slots at 85, 110, 135, 160 and 185 mm, with a carbon rod lying in the groove.">
-      <!-- 2 px per mm, stop face at x=40 -->
-      <rect class="petg" x="22" y="48" width="18" height="70"/>
-      <rect class="petg" x="40" y="70" width="400" height="48"/>
-      <line class="rod" x1="40" y1="78" x2="520" y2="78"/>
-      <g class="con" stroke-width="0"><rect x="208" y="66" width="4" height="52"/><rect x="258" y="66" width="4" height="52"/><rect x="308" y="66" width="4" height="52"/><rect x="358" y="66" width="4" height="52"/><rect x="408" y="66" width="4" height="52"/></g>
-      <g class="ink"><line x1="210" y1="66" x2="210" y2="118"/><line x1="260" y1="66" x2="260" y2="118"/><line x1="310" y1="66" x2="310" y2="118"/><line x1="360" y1="66" x2="360" y2="118"/><line x1="410" y1="66" x2="410" y2="118"/></g>
-      <g text-anchor="middle"><text x="210" y="56">H0 85</text><text x="260" y="40">H25 110</text><text x="310" y="56">H50 135</text><text x="360" y="40">H75 160</text><text x="410" y="56">H100 185</text></g>
-      <text class="m" x="22" y="140">end stop</text><text class="m" x="200" y="140">saw slots</text><text class="m" x="470" y="100">carbon rod in the groove</text>
+    <svg viewBox="0 -14 720 180" role="img" aria-label="Top view of the printed gauge: end stop on the left, a clamp lid with two screws near the stop, saw slots at 85, 110, 135, 160 and 185 mm, and the carbon rod lying in the groove.">
+      <rect class="petg" x="22" y="30" width="18" height="100"/>
+      <rect class="petg" x="40" y="40" width="400" height="80"/>
+      <line class="rod" x1="40" y1="80" x2="520" y2="80"/>
+      <rect class="dash" x="60" y="46" width="120" height="68"/>
+      <circle cx="120" cy="56" r="6" class="ink"/><circle cx="120" cy="104" r="6" class="ink"/>
+      <g class="con" stroke-width="0"><rect x="208" y="36" width="4" height="88"/><rect x="258" y="36" width="4" height="88"/><rect x="308" y="36" width="4" height="88"/><rect x="358" y="36" width="4" height="88"/><rect x="408" y="36" width="4" height="88"/></g>
+      <g class="ink"><line x1="210" y1="36" x2="210" y2="124"/><line x1="260" y1="36" x2="260" y2="124"/><line x1="310" y1="36" x2="310" y2="124"/><line x1="360" y1="36" x2="360" y2="124"/><line x1="410" y1="36" x2="410" y2="124"/></g>
+      <g text-anchor="middle"><text x="210" y="26">H0 85</text><text x="260" y="8">H25 110</text><text x="310" y="26">H50 135</text><text x="360" y="8">H75 160</text><text x="410" y="26">H100 185</text></g>
+      <text class="m" x="10" y="152">end stop</text><text class="m" x="80" y="152">clamp lid</text><text class="m" x="230" y="152">saw slots</text><text class="m" x="460" y="104">carbon rod</text>
     </svg>
-    <figcaption>Top view of the proposed gauge, 2 units per mm.</figcaption>
+    <figcaption>Top view, 2 units per mm. Dashed = the clamp lid, circles = its 2 M3 screws.</figcaption>
   </figure>
+  <figure>
+    <svg viewBox="0 0 680 230" role="img" aria-label="Cross-section through the clamp: the rod sits in a V-groove in the base, the lid presses on top of it, two M3 screws through lid and base pull them together into nuts trapped underneath; flanges at the sides have holes for screwing to a board.">
+      <!-- 6 units per mm -->
+      <path class="petg" d="M80 90 L160 90 L200 130 L240 90 L320 90 L320 186 L380 186 L380 210 L20 210 L20 186 L80 186 Z"/>
+      <rect class="petg" x="80" y="30" width="240" height="42"/>
+      <circle cx="200" cy="96" r="24" class="rodf"/>
+      <g class="ink"><rect x="101" y="22" width="30" height="8"/><line x1="116" y1="30" x2="116" y2="200"/><rect x="269" y="22" width="30" height="8"/><line x1="284" y1="30" x2="284" y2="200"/></g>
+      <g class="petg"><rect x="100" y="192" width="32" height="18"/><rect x="268" y="192" width="32" height="18"/></g>
+      <g class="dash"><line x1="50" y1="186" x2="50" y2="210"/><line x1="350" y1="186" x2="350" y2="210"/></g>
+      <rect class="hi" x="80" y="72" width="240" height="4"/>
+      <text x="400" y="40">printed lid</text>
+      <text x="400" y="62">gap (yellow) closes as you tighten</text>
+      <text x="400" y="100">V-groove centres the Ø8 rod</text>
+      <text x="400" y="140">2× M3 screw, nut trapped underneath</text>
+      <text x="400" y="204">flange holes: screw to a board</text>
+    </svg>
+    <figcaption>Cross-section through the clamp, about 6 units per mm. Black circle = the rod.</figcaption>
+  </figure>
+  <p><b>Option 2, a small bar clamp (buy):</b> a 6-inch (150 mm) one-handed ratchet clamp holds the gauge or a piece of wood on the table, or the rod itself (wrap it in tape so the jaws don't crush the fibres). It's useful for other jobs too, but on its own a round rod can roll, so it works best together with the gauge or a V-groove.</p>
+  <p><b>Use both:</b> the clamp holds the gauge on the table, and the gauge holds the rod. That's the safest setup once you start cutting carbon regularly.</p>
+  <h3 style="margin-top:22px">Sealing the cut ends</h3>
+  <p>A cut end has loose fibres. Seal it with a drop of <b>thin CA (superglue)</b> on the end and about 5 mm along the side. It soaks in, hardens, and adds no thickness; sand lightly and add a second drop. A <b>heat-shrink sleeve</b> is also a common way, but it adds 0.5–1 mm and no longer fits the 8.3 mm hole; it would need the hole widened to about 9 mm (a model change). Once the rod is in the mast it is fully enclosed in plastic, so the dust risk is only while cutting and handling.</p>
 </div></section>
 
 <section class="band alt"><div class="wrap">
