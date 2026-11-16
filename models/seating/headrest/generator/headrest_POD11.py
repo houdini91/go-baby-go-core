@@ -2,7 +2,7 @@
 #  - footprint grown to carry 2 screw seats (pocket r21, exit r14, screw seats r8),
 #  - 2 M3 countersunk from OUTSIDE on flat spot-faces, into hex nuts trapped in the pad's head side (pod -> pad, unchanged),
 #  - v1.2: the M3x30 through-bolt PVC clamp (2 bolts, nut traps, lands) is GONE: 3 radial Ø4 holes (top / outward side /
-#    60 deg below the side) for ST3.5 x 6.5 pan-head self-tappers that bite the PVC wall; Ø8 spot-faced seats, flared rims,
+#    50 deg below the side (v1.2b; was 60)) for ST3.5 x 6.5 pan-head self-tappers that bite the PVC wall; Ø8 spot-faced seats, flared rims,
 #  - v1.2: no sharp hull edges: collar Ø28 with both ends rounded r2, band top edge rounded r2 and run 1 mm below the pad
 #    surface (so the trim cuts a smooth wall: no loft ripple / sawtooth at the underside edge),
 #  - v1.2: PVC bore Ø20.8 slip fit (tolerance block), teardrop truncated (the old Ø20.3 teardrop tip broke through the collar
@@ -24,10 +24,11 @@ BORE_CAP = 0.6                  # teardrop truncated 0.6 mm over the bore radius
 BORE_CH = 0.8                   # 45 deg chamfer at the bore mouth (ends at the mouth plane: in the open trough in front of the
                                 #   mouth a longer cone would break through the 1.8 mm floor)
 # PVC lock: 3 radial wood/self-tapping screws, K_WS mm back from the collar mouth (half the bore depth), at angles in the
-# plane normal to the bore: +90 = top, 0 = outward side (away from the pad), -60 = below the side (the collar is still a
+# plane normal to the bore: +90 = top, 0 = outward side (away from the pad), -50 = below the side (v1.2b; was -60) (the collar is still a
 # plain Ø28 cylinder there; straight down (-90) runs into the band, 18-19 mm of wall)
 K_WS = 13.0
-WS_ANG = (90.0, 1.0, -60.0)       # side hole 1 deg up from the outward normal: at exactly 0 a mesh-boolean coincidence pinched the yaw-28 STL
+WS_ANG = (90.0, 1.0, -50.0)       # side hole 1 deg up from the outward normal: at exactly 0 a mesh-boolean coincidence pinched the yaw-28 STL;
+                                  # v1.2b: the low hole at -50 (was -60: its seat flare left a < 1.2 mm ridge against pod screw 2's nut pocket mouth)
 WS_SEAT = 13.3                  # flat seat (pan head) radius from the bore axis: Ø8 floor fully flat on the Ø28 collar
 WS_CB = 4.0                     # seat radius (Ø8: Ø7 pan head + driver)
 WS_CH = 0.5                     # 45 deg chamfer at the hole mouth in the seat floor
@@ -197,15 +198,19 @@ def pod(yaw, side=1):
     m = ps[0]
     return m if side > 0 else m.mirror([1, 0, 0])
 TURN_W = 0.5
+MIN_SEC_GAP, MIN_PT_GAP = 1.5, 0.2   # v1.2b loft-safety limits for the Onshape section data
 def sections(yaw, step=2.5, npts=64):
     """planar sections of the exact hull perpendicular to d, arc-length resampled from the point furthest along +n"""
     h, E, d = hull(yaw); Rm = X.rot_to_z(d)
     v = np.asarray(h.to_mesh().vert_properties)[:, :3]
     hz = M.hull_points(((v - E) @ Rm.T).tolist()); bb = hz.bounding_box()
     a = math.radians(60); ne = np.array([math.sin(a), math.cos(a) / ELL, 0]); ne = (Rm @ ne)[:2]; ne /= np.linalg.norm(ne)
-    zs = np.append(np.arange(bb[2] + 1.0, bb[5] - 0.6, step), bb[5] - 0.6)
-    extra = np.array([-LC - 0.6, -LC + 0.6, -LC + 1.2, -LC + 1.8, -1.8, -1.2, -0.6, 0.6])       # v1.2: collar end round-overs
-    zs = np.sort(np.concatenate([[z for z in zs if np.min(np.abs(extra - z)) > 0.45], extra[(extra > bb[2] + 1.0) & (extra < bb[5] - 0.6)]]))
+    # v1.2b: plain 2.5 mm steps, sections never closer than MIN_SEC_GAP.  The v1.2 extra sections 0.3-0.6 mm apart at the
+    # collar round-overs (+ duplicate points, below) made Onshape's loft create INVALID geometry (0 parts); v1.1 lofted fine.
+    zs = list(np.arange(bb[2] + 1.0, bb[5] - 0.6, step))
+    if bb[5] - 0.6 - zs[-1] >= MIN_SEC_GAP: zs.append(bb[5] - 0.6)
+    else: zs[-1] = bb[5] - 0.6
+    zs = np.array(zs); assert np.diff(zs).min() >= MIN_SEC_GAP - 1e-9
     out = []
     for z in zs:
         p = np.asarray(hz.slice(z).to_polygons()[0])
@@ -216,9 +221,13 @@ def sections(yaw, step=2.5, npts=64):
         # resampling left the spline 0.6-0.7 mm off the hull there, which showed as ripples / lines along the loft)
         e = np.diff(q, axis=0); ang = np.unwrap(np.arctan2(e[:, 1], e[:, 0])); turn = np.abs(np.diff(np.r_[ang, ang[0] + 2 * math.pi]))
         Th = np.r_[0, np.cumsum(np.r_[0.5 * (turn[-1] + turn[0]), 0.5 * (turn[:-1] + turn[1:])][:len(e)])]
-        Th = Th / Th[-1]; t = (1 - TURN_W) * L / L[-1] + TURN_W * Th
+        Th = Th / Th[-1]
         s = np.linspace(0, 1, npts, endpoint=False)
-        r = np.column_stack([np.interp(s, t, q[:, 0]), np.interp(s, t, q[:, 1])])
+        for w in (TURN_W, TURN_W / 2, 0.0):     # v1.2b: no (near-)duplicate points: every gap >= MIN_PT_GAP
+            t = (1 - w) * L / L[-1] + w * Th
+            r = np.column_stack([np.interp(s, t, q[:, 0]), np.interp(s, t, q[:, 1])])
+            if np.linalg.norm(np.diff(np.vstack([r, r[:1]]), axis=0), axis=1).min() >= MIN_PT_GAP: break
+        assert np.linalg.norm(np.diff(np.vstack([r, r[:1]]), axis=0), axis=1).min() >= MIN_PT_GAP, z
         out.append(np.column_stack([r, np.full(npts, z)]) @ Rm + E)
     return out
 def write_fsdata(path=None):
