@@ -20,12 +20,14 @@ All quoted Nov 29 – Dec 6. Listings and prices change; check the variant befor
 
 | What | Listing | Variant | Seller (rating) |
 |---|---|---|---|
-| Diamond cut-off discs for a rotary tool (Dremel), mandrel included | https://www.aliexpress.com/item/32263047495.html | **30mm 12pcs** (12 mm cutting depth, more than the 8 mm rod) | xcan Official Store (4.9★, 354 reviews, 98 %) |
+| Diamond cut-off discs for a rotary tool (Dremel), mandrel included. **Skip if you have a 30–40 mm diamond or reinforced cut-off disc.** | https://www.aliexpress.com/item/32263047495.html | **30mm 12pcs** (12 mm cutting depth, more than the 8 mm rod) | xcan Official Store (4.9★, 354 reviews, 98 %) |
 | FFP3 dust masks | https://www.aliexpress.com/item/1005011564945077.html | 10PCS | Shop1105324081 (4.8★, 73 reviews, 95.9 %) |
 | Safety goggles, anti-fog | https://www.aliexpress.com/item/1005009256334951.html | – | A High End Supermarket Store (4.6★, 83 reviews) |
 | Thin CA glue (seals the cut ends) | https://www.aliexpress.com/item/1005010340781499.html | 50g 1 bottle | IWFIX ADHESIVE Store (4.8★, 186 reviews, 98 %) |
 
-Also used, usually already at hand: masking tape (wrap the cut line), nitrile gloves, 240–400 grit sandpaper (deburr the ends), a damp cloth or spray bottle, and a vise or clamp.
+Also used, usually already at hand: masking tape (wrap the cut line), nitrile gloves, 240–400 grit sandpaper (deburr the ends), a damp cloth or spray bottle, and a small clamp (any hardware store) to hold the printed **rod cutting gauge** on the table.
+
+**Pommel (long sizes K23/K45), same seller as the 8 mm rod:** solid carbon rod **6x500mm 1pcs** from the same listing (#3). Each long pommel needs 2 × 155 mm (K23) or 2 × 200 mm (K45), so one rod per pommel. The printed gauge is for the 8 mm headrest rods; mark the pommel rods with tape and a ruler (±1.5 mm).
 
 **Only if you don't already have them:**
 - Ø3.2 mm drill bit (to drill the PVC rod through the pod's clamp holes) and an 8 mm drill bit (to ream the rod bores if tight). Any HSS set.
