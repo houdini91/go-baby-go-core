@@ -448,7 +448,7 @@ function cyl(context is Context, id is Id, a is Vector, b is Vector, r is ValueW
     return qCreatedBy(id, EntityType.BODY);
 }
 
-// Round (or 45 deg chamfer) a set of edges as large as possible: all together at the first two sizes, otherwise edge by edge
+// Round (or 45 deg chamfer) a set of edges as large as possible: all together at each size in turn, otherwise edge by edge
 // down the ladder, so one awkward edge can't pull every other edge down to its size. Returns the smallest size used.
 function roundAdaptive(context is Context, id is Id, edges is Query, sizes is array, chamfer is boolean) returns number
 {

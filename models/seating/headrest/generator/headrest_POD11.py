@@ -31,6 +31,9 @@ WS_ANG = (90.0, 1.0, -60.0)       # side hole 1 deg up from the outward normal: 
 WS_SEAT = 13.3                  # flat seat (pan head) radius from the bore axis: Ø8 floor fully flat on the Ø28 collar
 WS_CB = 4.0                     # seat radius (Ø8: Ø7 pan head + driver)
 WS_CH = 0.5                     # 45 deg chamfer at the hole mouth in the seat floor
+WS_FL = 2.75                    # 45 deg rim flare from WS_SEAT + 0.25 up to WS_SEAT + 3.0: round the Ø8 seat the hull stands
+                                #   0.7-2.3 mm over the seat floor within r5.5 (the -60 deg hole at yaw 20/28 up to 2.0-2.3: the first 1.85 mm
+                                #   flare left a 0.01-0.02 mm overhanging lip there)
 def U(a): return -math.radians(a) * R
 def rOut(z, ad): return F.r_face(np.array([z]), np.array([abs(ad)]))[0] + 5 + F.D("F3", np.array([z]), np.array([abs(ad)]))[0]
 def footprint():
@@ -98,7 +101,7 @@ def ws_cuts(yaw):
         out.append(td_hole(A + v * 5.0, A + v * (WS_SEAT + 1.0), FIT.WOOD_SCREW_HOLE / 2, POD_UP))
         out.append(cone_along(A + v * (WS_SEAT - WS_CH - 0.05), v, WS_CH + 0.1, FIT.WOOD_SCREW_HOLE / 2 - 0.05, FIT.WOOD_SCREW_HOLE / 2 + WS_CH + 0.05, 41))   # odd segment counts: no coincident vertices
         out.append(W.cyl_along(A + v * WS_SEAT, v, 0.3, WS_CB, 67))
-        out.append(cone_along(A + v * (WS_SEAT + 0.25), v, 1.6, WS_CB - 0.05, WS_CB + 1.55, 71))        # 45 deg flared rim (surface is 0.7-1.1 over the seat)
+        out.append(cone_along(A + v * (WS_SEAT + 0.25), v, WS_FL, WS_CB - 0.05, WS_CB - 0.05 + WS_FL, 71))   # 45 deg flared rim, up to WS_SEAT + 3.0
     return out
 def bore_cuts(yaw):
     E, d = W.axis("W1", float(yaw), 1); r = FIT.PVC_BORE / 2
@@ -116,14 +119,23 @@ def surf_y(th, z, outer=True):
         if rc > rs: hi = y
         else: lo = y
     return y
+SEAT_MIN_PLASTIC = 3.5          # plastic between the pod underside (pad + 0.3) and the pocket mouth, along the screw axis
+# v1.2b SCREWS FLIPPED: M3x20 from the pad's head side (head top POD_HEAD_D under the head-side face R), hex nut on a pocket
+# floor at POD_NUT_Y in the pod, pocket open to the outside through the round mouth at seat_y() (= the .fs)
+POD_HEAD_D, POD_NUT_Y = [1.0, 0.2], [103.9, 103.1]
 def seat_y():
-    """v1.2 seat floors (local y): >= 4 mm of plastic under the flat seat (pad surface measured ALONG the screw axis: v1.1 used
-       the oval radius rOut and left only 2.1-3.2 mm), and the M3x20 tip 0.2 mm short of the pad's head-side face where that
-       allows (full nut: the nut sits 0.4-2.8 mm into its trap).  -> the .fs POD_SEAT_Y"""
+    """local y where the nut pocket's round Ø7.2 mouth starts (kept from the v1.2 seat: the hull, rim flare and lip checks are
+       unchanged).  v1.2 history: the seat floor for a screw from OUTSIDE, set so that its M3x20 tip ended 0.2 mm short of the pad's head-side face, i.e. 0.2 mm PAST the nut
+       (the nut sits 0.4-2.8 mm into its trap), so the screw passes through the whole nut and nothing reaches the foam.
+       Plastic under each seat (pad surface measured ALONG the screw axis) must stay >= SEAT_MIN_PLASTIC: 3.5-4.0 mm.
+       (The first v1.2 rule kept >= 4.0 mm and left screw 1 with its tip 0.29 mm short of the nut: 2.11 of 2.4 engaged.)
+       -> the .fs POD_SEAT_Y"""
     out = []
     for x, z in SCREWS:
         th = 46 + math.degrees(x / R)
-        out.append(round(max(surf_y(th, z) + 0.3 + 4.0, surf_y(th, z, False) + 0.2 + POD_SCREW_L), 2))
+        y = round(surf_y(th, z, False) + 0.2 + POD_SCREW_L, 2)
+        assert y - (surf_y(th, z) + 0.3) >= SEAT_MIN_PLASTIC - 1e-6, (x, z, y)
+        out.append(y)
     return out
 SEAT_CB, SEAT_FL = 3.6, 1.5     # pod -> pad M3 seats: counterbore r3.6 over the countersink, 45 deg flare 1.5 at the rim
 _SR = {}
@@ -149,8 +161,11 @@ def seat_cuts(yaw):
     for (x, z), hr, yf in zip(SCREWS, seat_rim(yaw), seat_y()):
         th = 46 + math.degrees(x / R)
         def ya(L, r0, r1, y0, n=48): return place(M.cylinder(L, r0, r1, n).rotate([-90, 0, 0]).translate([0, y0, z]), th)
-        out += [ya(40, FIT.M3_CLEAR / 2, FIT.M3_CLEAR / 2, R - 2, 24),
-                ya(1.80, 1.5, CSK_M3_R + 0.05, yf - 1.75),                    # DIN 7991 countersink (= the .fs fCone "sk")
+        hexp = CS.circle(FIT.NUT_M3_AF / math.sqrt(3), 6)                     # one corner along +x of the local frame
+        yn = POD_NUT_Y[SCREWS.index((x, z))]
+        # corner toward print-up (+x world for the right pod): local x of place() at th is ~ the print-up direction projected
+        nut = place(hexp.extrude(yf + 0.1 - yn).rotate([-90, 0, 0]).translate([0, yn, z]), th)
+        out += [ya(40, FIT.M3_CLEAR / 2, FIT.M3_CLEAR / 2, R - 2, 24), nut,
                 ya(hr + 0.05, SEAT_CB, SEAT_CB, yf),
                 ya(SEAT_FL, SEAT_CB - 0.02, SEAT_CB + SEAT_FL, yf + hr),
                 ya(30, SEAT_CB + SEAT_FL - 0.03, SEAT_CB + SEAT_FL - 0.03, yf + hr + SEAT_FL - 0.05)]
@@ -170,7 +185,9 @@ def lift_cuts():
     return _LC[0]
 def pod(yaw, side=1):
     h, E, d = hull(yaw)
-    m = h - W.skin(CS.square([300, 160]).translate([-150, -80]), -40, 0.3, refine=2.0)
+    # trim skin over the pod's side of the pad only, refined to 0.7 mm: at 2 mm its chords sagged ~0.4 mm in the concave
+    # strap-slot thickening fade (z 13-20) and the pod met the pad there (2.49 mm3 "overlap" = mesh error, not the fit)
+    m = h - W.skin(CS.square([150, 130]).translate([U(91), -65]), -40, 0.3, refine=0.7)
     m = m - lift_cuts()
     m = m + W._wedge()
     cuts = bore_cuts(yaw) + ws_cuts(yaw) + seat_cuts(yaw)
@@ -216,7 +233,7 @@ def write_fsdata(path=None):
     txt = ("const POD_SECTIONS = {\n" + ",\n".join(lines) + "\n};\nconst POD_AXIS = {\n" + ",\n".join(axes) + "\n};\n"
            "// pod -> pad seats (generated, headrest_POD11.py): rim flare start over each seat floor (= lowest flank height there - 0.3)\n"
            "const POD_SEAT_RIM = { " + ", ".join(rims) + " };\n"
-           "// seat floor, local y along the screw axis (>= 4 mm plastic under the seat; M3x20 tip at the nut)\n"
+           "// seat floor, local y along the screw axis (M3x20 tip 0.2 past the nut, 0.2 short of the head-side face; >= 3.5 mm plastic under the seat)\n"
            "const POD_SEAT_Y = [%s];\n" % ", ".join("%.2f" % v for v in seat_y()))
     path = path or os.path.join(os.path.dirname(os.path.abspath(__file__)), "pod_sections.fsdata")
     open(path, "w").write(txt); return txt

@@ -84,13 +84,34 @@ def _mount(var, yaw, side=1):
     for k in (8.0, 18.0): pod = pod - cyl_along(E - d * k, [0, 0, 1], 20, 1.4)          # 2 kit wood-screw pilots from above, into the PVC
     pod = pod - pad(var)
     return pod if side > 0 else pod.mirror([1, 0, 0])
+BLANK_FL_GAP, BLANK_FL_T = 0.15, 1.5     # v1.2 blank cover flange: 0.15 over the pad's back, 1.5 thick (top edge r0.6 in the .fs only)
+BLANK_TOP_Y = 103.57             # flange top along the blank screw axis (local y) (= the .fs)
+BLANK_HEAD_D, BLANK_NUT_Y = 0.2, 95.1   # v1.2b: M3x12 head top 0.2 under the pad's head-side face; nut pocket floor (= the .fs)
+POD_SCREWS = [(-14.0, -9.0), (14.0, -12.0)]
+def blank_outline():
+    """(u, z) of the cover flange (right side): hull of the pocket triangle grown 3 mm and Ø10 discs over the 2 unused
+       pod-screw holes (= the .fs blankOutline)"""
+    tri = [(x, z + P.BTN_DZ) for x, z in B3.B_TRI]
+    cs = CS([[(U(P.BTN_ANG) - x, z) for x, z in tri]]); cs = cs if cs.area() > 0 else CS([[(U(P.BTN_ANG) - x, z) for x, z in tri[::-1]]])
+    parts = [cs.offset(-5, JoinType.Round).offset(8, JoinType.Round, circular_segments=96)]
+    for x, z in POD_SCREWS: parts.append(CS.circle(5.0, 48).translate([U(P.BTN_ANG) - x, z]))
+    return CS.batch_hull(parts)
 def blank(side=1, var="W1"):
+    """v1.2b pocket blank (= the .fs buildBlank): triangle plug + a 1.5 mm cover flange lying 0.15 over the pad's back (hides
+       the pocket rim and the 2 unused pod-screw holes); 1 countersunk M3x12 from the pad's HEAD side into a hex nut in a
+       pocket in the blank (v1.2 had it from outside into a nut in the pad)"""
     tri = place(P._to_pad(B3.B_tri_solid(-0.1, P.BTN_UP - B3.B_D + 0.2, P.BTN_UP + 4).translate([0, F.BTN_SHIFT, 0])), P.BTN_ANG)
     if var == "W2": tri = tri + lane(1)
-    b = tri - skin(CS.square([300, 160]).translate([-150, -80]), 0.0, 30, refine=3.0)
-    # v1.1: 1 countersunk M3 from outside at the blank screw (x 0, z 4), nut trapped in the pad
-    yTop = R + T + F.D(K, np.array([4.0]), np.array([P.BTN_ANG]))[0] + (F.r_face(np.array([4.0]), np.array([P.BTN_ANG]))[0] - R)
-    b = b - place(ycyl(F.FIT.M3_CLEAR, 40, 0, R - 2, 4.0) + M.cylinder(1.8, 1.5, 3.15, 24).rotate([-90, 0, 0]).translate([0, yTop - 1.75, 4.0]), P.BTN_ANG)
+    b = tri - skin(CS.square([300, 160]).translate([-150, -80]), BLANK_FL_GAP + 0.3, 30, refine=1.0)   # plug top 0.3 into the flange
+    if var == "W1": b = b + skin(blank_outline(), BLANK_FL_GAP, BLANK_FL_GAP + BLANK_FL_T, refine=0.7)
+    # v1.2b: M3x12 from the pad's head side (head in the pad); hex nut on a pocket floor at BLANK_NUT_Y, pocket open through
+    # the flange top with a 0.5 mm 45 deg chamfer (= the .fs)
+    hexp = CS.circle(F.NUT_M3_AF / math.sqrt(3), 6)
+    def ya(L, r0, r1, y0, n=48): return M.cylinder(L, r0, r1, n).rotate([-90, 0, 0]).translate([0, y0, 4.0])
+    cut = (ycyl(F.FIT.M3_CLEAR, BLANK_NUT_Y + 1 - (R - 2), 0, R - 2, 4.0)
+           + hexp.extrude(BLANK_TOP_Y + 3 - BLANK_NUT_Y).rotate([-90, 0, 0]).translate([0, BLANK_NUT_Y, 4.0])
+           + ya(0.9, F.NUT_M3_AF / math.sqrt(3), F.NUT_M3_AF / math.sqrt(3) + 0.9, BLANK_TOP_Y - 0.5))
+    b = b - place(cut, P.BTN_ANG)
     if var == "W2": b = b - pad("W2")
     return b if side > 0 else b.mirror([1, 0, 0])
 def pvc(var, yaw, side=1, L=None):

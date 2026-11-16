@@ -31,6 +31,10 @@ def frame(n, H):
     zc, cy = G.frame(n, H); return zc, cy           # pad-frame origin in local coords (zc = 451 + H, cy = 28.8 - n)
 def L(m, n, H): zc, cy = frame(n, H); return m.translate([0, cy, zc])
 def chin_z(n, H): return frame(n, H)[0] + BOT       # pad bottom line, local
+# v1.2: the M1 stem top sits STEM_DROP under the chin line = 0.1 mm under the pad's flat bottom (outline z -52.5).  At 0.3 it
+# poked 0.2 mm into the pad: cutting the pad out of the mast left 0.2 mm feather ridges along the column-socket / channel
+# clearances and the chin screw spot-faces.  The head (column, bosses) now starts HEAD_DROP under the chin, 0.3 into the stem.
+STEM_DROP, HEAD_DROP = 0.6, 0.9
 
 # ---------------- convex section + loft ----------------
 def oval_back(x, cy):
@@ -62,7 +66,7 @@ _C = {}
 def head_locked():
     """F3 mast above the pad's bottom line (pad frame): tenon, column stub, spine bosses, nut slots"""
     if "head" not in _C:
-        _C["head"] = F.mast() ^ M.cube([400, 400, 200]).translate([-200, -200, BOT - 0.3])
+        _C["head"] = F.mast() ^ M.cube([400, 400, 200]).translate([-200, -200, BOT - HEAD_DROP])
     return _C["head"]
 def pad(n, H): return L(F.pad(KP), n, H)
 def foam(n, H): return L(F.foam(KP), n, H)
@@ -126,7 +130,7 @@ def plug(z1=TOP + 0.5):
 def _chin_sec(cy, hw, y0, p=3.0):
     return section(hw, y0, oval_back(0, cy), p=p, back=lambda x: oval_back(x, cy) - 0.4)
 def m1_body(n, H, foot_hw=FOOT[0], chin_hw=44.0, waist=0.9):
-    zc, cy = frame(n, H); zch = chin_z(n, H) - 0.3
+    zc, cy = frame(n, H); zch = chin_z(n, H) - STEM_DROP
     z_foot = TOP + 0.3
     gap = zch - z_foot
     ff = min(30.0, 0.42 * gap); cf = min(26.0, 0.45 * gap)       # foot flare / chin flare heights

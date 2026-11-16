@@ -214,6 +214,59 @@ function cleanup(context is Context, id is Id, of is Id)
         opDeleteBodies(context, id, { "entities" : junk });
 }
 function solids(context is Context, of is Id) returns Query { return qBodyType(qCreatedBy(of, EntityType.BODY), BodyType.SOLID); }
+// A finish (fillet, chamfer, lift step) that fails is skipped so the part still builds, but NOT silently: skipped() notes it
+// and reportSkipped() shows the list as a feature warning (yellow) at the end of the feature.
+function skipped(context is Context, what is string)
+{
+    var prev = "";
+    try silent
+    {
+        prev = getVariable(context, "gbgSkipped") ~ "; ";
+    }
+    setVariable(context, "gbgSkipped", prev ~ what);
+    println("SKIPPED: " ~ what);
+}
+function reportSkipped(context is Context, id is Id)
+{
+    var msg = "";
+    try silent
+    {
+        msg = getVariable(context, "gbgSkipped");
+    }
+    if (msg != "")
+        reportFeatureWarning(context, id, "Finish skipped (edge left sharp, check it): " ~ msg);
+}
+// fillet (or 45 deg chamfer) a set of edges: all together, else edge by edge; every edge that fails is reported by skipped()
+function finishEdges(context is Context, id is Id, edges is Query, r is number, chamfer is boolean, what is string)
+{
+    const list = evaluateQuery(context, edges);
+    if (size(list) == 0)
+    {
+        skipped(context, what ~ " (no edges found)");
+        return;
+    }
+    if (blendOnce(context, id + "all", edges, r, chamfer))
+        return;
+    var failed = 0;
+    for (var e = 0; e < size(list); e += 1)
+        if (!blendOnce(context, id + ("e" ~ e), list[e], r, chamfer))
+            failed += 1;
+    if (failed > 0)
+        skipped(context, what ~ " (" ~ failed ~ " of " ~ size(list) ~ " edges)");
+}
+function blendOnce(context is Context, id is Id, edges is Query, r is number, chamfer is boolean) returns boolean
+{
+    var ok = false;
+    try silent
+    {
+        if (chamfer)
+            opChamfer(context, id, { "entities" : edges, "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : r * millimeter });
+        else
+            opFillet(context, id, { "entities" : edges, "radius" : r * millimeter });
+        ok = true;
+    }
+    return ok;
+}
 
 // place(): a part built at angle 0 (radial = +y, reference radius R) -> normal to the oval at circle angle theta
 function placeXf(theta is number) returns Transform
@@ -328,15 +381,22 @@ function hull2d(pts is array) returns array
     for (var i = size(p) - 1; i >= 0; i -= 1) { const q = p[i]; while (size(hi) >= 2 && cr(hi[size(hi) - 2], hi[size(hi) - 1], q) <= 0) hi = resize(hi, size(hi) - 1); hi = append(hi, q); }
     return concatenateArrays([resize(lo, size(lo) - 1), resize(hi, size(hi) - 1)]);
 }
-// v1.1 pod / blank fixing: 2 M3 button-head screws from OUTSIDE through the pod saddle into hex nuts trapped on the pad's
-// head side (under the foam); the blank: 1 countersunk M3 from outside.  (x mm along the surface from the pocket centre, +fwd; z)
+// pod / blank fixing (v1.2b): M3 countersunk from the pad's HEAD side (under the foam liner) out through the pad into hex nuts
+// in pockets in the pod / blank, open to the outside (see POD_HEAD_D).  (x mm along the surface from the pocket centre, +fwd; z)
 // PRINT-UP directions (chosen by surface-class support study, v1.1): pad prints UPSIDE DOWN -> up = -z (pad frame);
 // pod prints lying on its pad-side underside -> up = +x for the right pod (s = +1), -x for the left.
 const PAD_UP = vector(0, 0, -1);
 function podUp(s is number) returns Vector { return vector(s, 0, 0); }
 const POD_SCREWS = [[-14, -9], [14, -12]];
 const BLANK_SCREW = [0, 4];
-const NUT_TRAP_D = NUT_M3_TRAP;  // hex trap depth from the head-side face: M3 nut 2.4 + 0.4 (was 3.0)
+// v1.2b SCREWS FLIPPED (owner, 2026-11-16): pod -> pad and blank -> pad screws go in from the pad's HEAD side (DIN 7991 head
+// in a countersink in the shell, under the foam liner), the shank runs OUT through the pad, the hex nut is trapped in a pocket
+// in the pod / blank, open to the outside: a screw that is too long can only ever point AWAY from the child's head.
+// Local y along each screw axis (place() frame at the screw; the pad's head-side face is at y = R = 86.0 there):
+//   head top = R + HEAD_D (0.2 below flush; pod screw 1 sits 1.0 down a Ø6.6 spot-face so its M3x20 reaches through the nut)
+//   tip = head top + L | nut pocket floor = *_NUT_Y (nut 2.4 on it, tip 0.7 past the nut, >= 1.2 plastic under the pocket)
+const POD_HEAD_D = [1.0, 0.2];   const POD_NUT_Y = [103.9, 103.1];   const POD_SCREW_L = 20;
+const BLANK_HEAD_D = 0.2;        const BLANK_NUT_Y = 95.1;           const BLANK_SCREW_L = 12;
 function screwXf(s is number, sc is array) returns Transform { return placeXf(s * (BTN_ANG + sc[0] / R * 180 / PI)); }
 // rounded box (every edge rounded r) = Python rrbox
 function rrbox(context is Context, id is Id, x0, x1, y0, y1, z0, z1, r)
@@ -481,7 +541,8 @@ export function buildPad(context is Context, id is Id, strap is boolean) returns
     const ol = padOutline();
     bentSolid(context, id + "body", ol, function(z, ad) { return rIn(z, ad); }, function(z, ad) { return rOut(z, ad); }, 2.5, 2.0);
     const pad = solids(context, id + "body");
-    try silent { opFillet(context, id + "rnd", { "entities" : qOwnedByBody(pad, EntityType.EDGE), "radius" : RR * millimeter }); }
+    if (!blendOnce(context, id + "rnd", qOwnedByBody(pad, EntityType.EDGE), RR, false))
+        skipped(context, "pad outline round r" ~ RR);
     // ---- cuts ----
     const C = id + "cut";
     for (var s in [1, -1])
@@ -500,14 +561,16 @@ export function buildPad(context is Context, id is Id, strap is boolean) returns
         opSphere(context, sid + "b" + "d1", { "center" : v3(9.3, POCKET_Y0 + B_D / 2, 4), "radius" : 1.3 * millimeter });
         opSphere(context, sid + "b" + "d2", { "center" : v3(-9.3, POCKET_Y0 + B_D / 2, 4), "radius" : 1.3 * millimeter });
         moveSolids(context, sid + "bpm", sid + "b", placeXf(s * BTN_ANG));
-        // pod (2) + blank (1) screws: clearance through the shell (teardrop toward PAD_UP: the pad prints upside down) + hex nut
-        // traps on the head side (depth NUT_TRAP_D: the nut sits 0.4 mm under the head-side face)
+        // pod (2) + blank (1) screws (v1.2b, from the HEAD side): clearance through the shell (teardrop toward PAD_UP: the pad
+        // prints upside down) + DIN 7991 countersink on the head side, head top HEAD_D under the face (a Ø6.6 spot-face above it)
         const scs = concatenateArrays([POD_SCREWS, [BLANK_SCREW]]);
+        const hds = concatenateArrays([POD_HEAD_D, [BLANK_HEAD_D]]);
         for (var k = 0; k < size(scs); k += 1)
         {
-            const xf = screwXf(s, scs[k]);  const z = scs[k][1];
+            const xf = screwXf(s, scs[k]);  const z = scs[k][1];  const yh = R + hds[k];
             tdHole(context, sid + ("sh" ~ k), xp(xf, vector(0, R - 2, z)), xp(xf, vector(0, R + 30, z)), M3_CLEAR / 2, PAD_UP);
-            hexPrism(context, sid + ("st" ~ k), xp(xf, vector(0, R - 1 + (NUT_TRAP_D + 1) / 2, z)) * millimeter, xd(xf, vector(0, 1, 0)), vector(0, 0, 1), NUT_M3_AF, NUT_TRAP_D + 1, 0);
+            fCone(context, sid + ("sk" ~ k), { "bottomCenter" : xp(xf, vector(0, yh - 0.05, z)) * millimeter, "topCenter" : xp(xf, vector(0, yh + CSK_M3_R - 1.5, z)) * millimeter, "bottomRadius" : CSK_M3_R * millimeter, "topRadius" : 1.5 * millimeter });
+            fCylinder(context, sid + ("sp" ~ k), { "bottomCenter" : xp(xf, vector(0, R - 4, z)) * millimeter, "topCenter" : xp(xf, vector(0, yh, z)) * millimeter, "radius" : 3.3 * millimeter });
         }
         // K2 lock screw (M3x25 DIN 7991): clearance + countersink at the chin.  The axis is ~41 deg off the chin face, so a bare
         // countersink left the head up to 2.6 mm proud: a flat Ø6.6 spot-face down the axis seats it, head top CHIN_SINK into it
@@ -533,14 +596,26 @@ export function buildPad(context is Context, id is Id, strap is boolean) returns
         opSphere(context, bid + "s", { "center" : v3(x, SPINE_Y, BOSS_TOP - BOSS_R), "radius" : (BOSS_R + CH_CL) * millimeter });
     }
     opBoolean(context, id + "sub", { "tools" : solids(context, C), "targets" : pad, "operationType" : BooleanOperationType.SUBTRACTION });
+    // v1.2: strap-slot rims rounded r0.5 (both faces of the shell)
+    if (strap)
+        for (var s in [1, -1])
+        {
+            const sf = qCreatedBy(C + (s > 0 ? "R" : "L") + "st", EntityType.FACE);
+            const rest = qSubtraction(qOwnedByBody(pad, EntityType.FACE), sf);
+            finishEdges(context, id + ("srim" ~ (s > 0 ? "R" : "L")), qIntersection([qAdjacent(sf, AdjacencyType.EDGE, EntityType.EDGE), qAdjacent(rest, AdjacencyType.EDGE, EntityType.EDGE)]), 0.5, false, "strap-slot rim r0.5");
+        }
     return pad;
 }
 
 // =============================================== MAST (LOCAL frame) ===============================================
 function chinZ(H is number) returns number { return 451 + H + BOT; }
+// v1.2: the stem top sits STEM_DROP under the chin line = 0.1 under the pad's flat bottom (outline z -52.5).  At 0.3 it poked
+// 0.2 mm into the pad and the pad cut left 0.2 mm feather ridges on the stem top (column-socket / channel clearances, chin
+// spot-faces).  The head (column, bosses) starts HEAD_DROP under the chin, 0.3 into the stem.  (= headrest_M_mast.py)
+const STEM_DROP = 0.6;  const HEAD_DROP = 0.9;
 export function windowSpan(H is number) returns array
 {
-    const zch = chinZ(H) - 0.3;  const gap = zch - (TOP + 0.3);
+    const zch = chinZ(H) - STEM_DROP;  const gap = zch - (TOP + 0.3);
     const ff = min(30, 0.42 * gap);  const cf = min(26, 0.45 * gap);
     return [TOP + 0.3 + ff + 6, zch - cf - 2];
 }
@@ -548,7 +623,7 @@ export function windowSpan(H is number) returns array
 // a blended back (the v1.0 hard switch + |x| waist left creases and forced a stepped loft)
 function stemSection(H is number, z is number) returns array
 {
-    const zch = chinZ(H) - 0.3;  const zf = TOP + 0.3;  const gap = zch - zf;
+    const zch = chinZ(H) - STEM_DROP;  const zf = TOP + 0.3;  const gap = zch - zf;
     const ff = min(30, 0.42 * gap);  const cf = min(26, 0.45 * gap);
     const ybk = CY + ELL * TO - 0.4;
     const tf = sm((z - zf) / max(ff, 1e-3));  const tc = sm((z - (zch - cf)) / max(cf, 1e-3));
@@ -563,7 +638,7 @@ function stemSection(H is number, z is number) returns array
 // through the samples), cut to length by a box: no loft solver, no section seams
 function buildStem(context is Context, id is Id, H is number)
 {
-    const zf = TOP + 0.3;  const zch = chinZ(H) - 0.3;
+    const zf = TOP + 0.3;  const zch = chinZ(H) - STEM_DROP;
     const n = max(4, ceil((zch - zf) / 2));  const dz = (zch - zf) / n;
     var cols = [];
     for (var j = -1; j <= n + 1; j += 1) cols = append(cols, stemSection(H, zf + j * dz));
@@ -611,14 +686,14 @@ export function buildMast(context is Context, id is Id, H is number) returns Que
     var ovp = [];
     for (var k = 0; k < 120; k += 1) ovp = append(ovp, [TO * sin((3 * k) * degree), ELL * TO * cos((3 * k) * degree), BOT - 20]);
     opExtrude(context, hd + "ov", { "entities" : sectionFace(context, hd + "ovs", ovp), "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : 40 * millimeter });
-    fCuboid(context, hd + "clip", { "corner1" : v3(-200, -200, BOT - 0.3), "corner2" : v3(200, 300, 100) });
+    fCuboid(context, hd + "clip", { "corner1" : v3(-200, -200, BOT - HEAD_DROP), "corner2" : v3(200, 300, 100) });
     opBoolean(context, hd + "colx", { "tools" : qUnion([solids(context, hd + "col"), solids(context, hd + "ov"), solids(context, hd + "clip")]), "operationType" : BooleanOperationType.INTERSECTION });
     cleanup(context, hd + "dov", hd);
     tSolid(context, hd + "ten", BOT, TZ1, TI, R0 + LIPT, TO, TA, TA + LIPW - 0.3);
     for (var x in [-SPINE_X, SPINE_X])
     {
         const bid = hd + (x < 0 ? "bossL" : "bossR");
-        fCylinder(context, bid + "c", { "bottomCenter" : v3(x, SPINE_Y, BOT - 0.3), "topCenter" : v3(x, SPINE_Y, BOSS_TOP - BOSS_R), "radius" : BOSS_R * millimeter });
+        fCylinder(context, bid + "c", { "bottomCenter" : v3(x, SPINE_Y, BOT - HEAD_DROP), "topCenter" : v3(x, SPINE_Y, BOSS_TOP - BOSS_R), "radius" : BOSS_R * millimeter });
         opSphere(context, bid + "s", { "center" : v3(x, SPINE_Y, BOSS_TOP - BOSS_R), "radius" : BOSS_R * millimeter });
     }
     moveSolids(context, hd + "mv", hd, toLocal);
@@ -661,9 +736,42 @@ export function buildMast(context is Context, id is Id, H is number) returns Que
     {
         const wf = qCreatedBy(C + "win", EntityType.FACE);
         const other = qSubtraction(qOwnedByBody(mast, EntityType.FACE), wf);
-        try silent { opFillet(context, id + "winr", { "entities" : qIntersection([qAdjacent(wf, AdjacencyType.EDGE, EntityType.EDGE), qAdjacent(other, AdjacencyType.EDGE, EntityType.EDGE)]), "radius" : 2 * millimeter }); }
+        finishEdges(context, id + "winr", qIntersection([qAdjacent(wf, AdjacencyType.EDGE, EntityType.EDGE), qAdjacent(other, AdjacencyType.EDGE, EntityType.EDGE)]), 2, false, "mast relief-window rim r2");
     }
+    tenonBackChamfer(context, id + "tbc", mast, hd, zc);
     return solids(context, id);
+}
+
+// v1.2: 0.5 mm 45 deg chamfer round the outline of the head's flush back face (tenon + column on the TO oval: the seam seen
+// on the pad's back).  Back faces = head faces whose mid point lies on the TO oval, facing back; outline = their edges shared
+// with any other face, except the 0.4 mm ledge under the chin (column bottom, from the clip box).
+function tenonBackChamfer(context is Context, id is Id, mast is Query, hd is Id, zc is number)
+{
+    var back = [];
+    for (var f in evaluateQuery(context, qIntersection([qOwnedByBody(mast, EntityType.FACE), qCreatedBy(hd, EntityType.FACE)])))
+    {
+        const tp = evFaceTangentPlane(context, { "face" : f, "parameter" : vector(0.5, 0.5) });
+        const p = tp.origin / millimeter - vector(0, CY, zc);
+        const rc = sqrt(p[0] * p[0] + p[1] * p[1] / (ELL * ELL));
+        if (abs(rc - TO) < 0.05 && tp.normal[1] > 0.5)
+            back = append(back, f);
+    }
+    if (size(back) == 0)
+    {
+        skipped(context, "tenon back-face chamfer 0.5 (back face not found)");
+        return;
+    }
+    const bq = qUnion(back);
+    const ledge = qCreatedBy(hd + "clip", EntityType.FACE);
+    var edges = [];
+    for (var e in evaluateQuery(context, qAdjacent(bq, AdjacencyType.EDGE, EntityType.EDGE)))
+    {
+        const adj = qAdjacent(e, AdjacencyType.EDGE, EntityType.FACE);
+        const other = qSubtraction(adj, bq);
+        if (size(evaluateQuery(context, other)) == 1 && size(evaluateQuery(context, qIntersection([other, ledge]))) == 0)
+            edges = append(edges, e);
+    }
+    finishEdges(context, id, qUnion(edges), 0.5, true, "tenon back-face outline chamfer 0.5");
 }
 
 // =============================================== BUTTON POD / BLANK (PAD frame) ===============================================
@@ -692,10 +800,10 @@ function trimBySurface(context is Context, id is Id, scope is Id, s is number, o
 // the pad (top edge rounded r2, run 1 mm under the pad surface so the trim cuts a smooth wall); the footprint also carries the
 // 2 screw seats.  Built as ONE loft through POD_SECTIONS (planar sections of the exact hull, resampled from a fixed start point,
 // points crowded into the round-overs: smooth, no ripples), underside trimmed to the pad + 0.3, wedge into the triangle pocket
-// (carries the load), 2 M3 countersunk from OUTSIDE on flat spot-faces into nuts trapped in the pad.
+// (carries the load), 2 M3x20 from the pad's head side into hex nuts in pockets in the pod (v1.2b, flipped).
 // v1.2: the PVC is locked by 3 radial ST3.5 x 6.5 pan-head self-tappers (top / outward side / 60 deg below the side, half-way
 // down the bore) through Ø4 holes with Ø8 flat seats; the old M3x30 through-bolt clamp (2 bolts, nut traps, lands) is gone.
-// HARDWARE (v1.2): M3x25 DIN 7991 x2 (chin locks), M3x20 DIN 7991 x2 per pod, M3x12 DIN 7991 x1 per blank, M5x30 DIN 7991 x2 (receiver -> plug),
+// HARDWARE (v1.2): M3x25 DIN 7991 x2 (chin locks), M3x20 DIN 7991 x2 per pod + M3x12 x1 per blank (both from the pad's head side, nuts in the pod / blank), M5x30 DIN 7991 x2 (receiver -> plug),
 // every M screw into a hex nut; ST3.5 x 6.5 pan head x3 per pod (PVC lock). Countersink: M3 head Ø6.3 (seat Ø6.5), M5 Ø10.4 (Ø10.6).
 const CSK_M3_R = 3.25;  const CSK_M5_R = 5.3;
 const SEAT_CB = 3.6;  const SEAT_FL = 1.5;   // pod -> pad seats: counterbore r3.6, 45 deg rim flare 1.5 starting at POD_SEAT_RIM
@@ -703,6 +811,7 @@ const BORE_DEPTH = 26;  const BORE_CAP = 0.6;  const BORE_CH = 0.8;   // blind P
 const K_WS = 13;                 // PVC lock screws: mm back from the collar mouth (half the bore depth)
 const WS_ANG = [90, 1, -60];     // deg round the bore: +90 top, ~0 outward side (away from the pad; 1 deg = the Python mesh export), -60 below the side
 const WS_SEAT = 13.3;  const WS_CB = 4.0;  const WS_CH = 0.5;   // flat Ø8 seat radius from the bore axis, seat radius, hole-mouth chamfer
+const WS_FL = 2.75;  // 45 deg rim flare from WS_SEAT + 0.25 up to WS_SEAT + 3.0 (the hull stands 0.7-2.3 mm over the seats within r5.5, most on the -60 deg seat at yaw 20/28: a 1.85 flare left a lip)
 const LIFT_STEPS = 4;  const LIFT_STEP = 0.26;
 // pod footprint on the pad (u, z) = hull of the pocket / exit / 2 screw-seat circles (Python headrest_POD11.footprint), grown by g
 function podFootprint(s is number, g is number) returns array
@@ -724,13 +833,17 @@ function podLift(context is Context, id is Id, scope is Id, s is number)
     {
         const w = 0.3 + LIFT_STEP * j;  const g = j == 1 ? -0.02 : LIFT_STEP * (j - 1);
         const jid = id + ("j" ~ j);
+        var ok = false;
         try silent
         {
             bentSolid(context, jid + "slab", box, function(z, ad) { return rOut(z, ad) - 3; }, function(z, ad) { return rOut(z, ad) + w; }, 3, 3);
             bentSolid(context, jid + "keep", podFootprint(s, g), function(z, ad) { return rOut(z, ad) - 4; }, function(z, ad) { return rOut(z, ad) + 2; }, 3, 3);
             opBoolean(context, jid + "cut", { "tools" : solids(context, jid + "keep"), "targets" : solids(context, jid + "slab"), "operationType" : BooleanOperationType.SUBTRACTION });
             opBoolean(context, jid + "sub", { "tools" : solids(context, jid + "slab"), "targets" : qSubtraction(solids(context, scope), solids(context, id)), "operationType" : BooleanOperationType.SUBTRACTION });
+            ok = true;
         }
+        if (!ok)
+            skipped(context, "pod underside lift step " ~ j ~ " of " ~ LIFT_STEPS ~ " (feather edge may remain)");
         const left = qUnion([qCreatedBy(jid + "slab", EntityType.BODY), qCreatedBy(jid + "keep", EntityType.BODY)]);   // leftovers only if a step failed
         if (size(evaluateQuery(context, left)) > 0)
             opDeleteBodies(context, jid + "del", { "entities" : left });
@@ -752,7 +865,7 @@ export function buildPod(context is Context, id is Id, yaw is HeadrestYaw, s is 
     trimBySurface(context, id + "trim", id, s, 0.3, true);          // underside = the pad surface + 0.3
     podLift(context, id + "lift", id, s);                            // outside the footprint: lifted to 1.3 in 45 deg steps
     triPrism(context, id + "wg", -0.05, POCKET_Y0 + 0.2, R + T + 7.6 + 3.3);
-    try silent { opChamfer(context, id + "wgc", { "entities" : qAdjacent(qCapEntity(id + "wg" + "ex", CapType.START), AdjacencyType.EDGE, EntityType.EDGE), "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : 0.5 * millimeter }); }   // lead-in
+    finishEdges(context, id + "wgc", qAdjacent(qCapEntity(id + "wg" + "ex", CapType.START, EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), 0.5, true, "pod wedge lead-in chamfer 0.5");   // lead-in
     moveSolids(context, id + "wgm", id + "wg", placeXf(s * BTN_ANG));
     opBoolean(context, id + "uw", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const C = id + "cut";
@@ -774,38 +887,68 @@ export function buildPod(context is Context, id is Id, yaw is HeadrestYaw, s is 
         tdHole(context, C + ("wh" ~ i), A + v * 5, A + v * (WS_SEAT + 1), WOOD_SCREW_HOLE / 2, podUp(s));
         fCone(context, C + ("wc" ~ i), { "bottomCenter" : (A + v * (WS_SEAT - WS_CH - 0.05)) * millimeter, "topCenter" : (A + v * (WS_SEAT + 0.05)) * millimeter, "bottomRadius" : (WOOD_SCREW_HOLE / 2 - 0.05) * millimeter, "topRadius" : (WOOD_SCREW_HOLE / 2 + WS_CH + 0.05) * millimeter });
         fCylinder(context, C + ("ws" ~ i), { "bottomCenter" : (A + v * WS_SEAT) * millimeter, "topCenter" : (A + v * (WS_SEAT + 0.3)) * millimeter, "radius" : WS_CB * millimeter });
-        fCone(context, C + ("wf" ~ i), { "bottomCenter" : (A + v * (WS_SEAT + 0.25)) * millimeter, "topCenter" : (A + v * (WS_SEAT + 1.85)) * millimeter, "bottomRadius" : (WS_CB - 0.05) * millimeter, "topRadius" : (WS_CB + 1.55) * millimeter });
+        fCone(context, C + ("wf" ~ i), { "bottomCenter" : (A + v * (WS_SEAT + 0.25)) * millimeter, "topCenter" : (A + v * (WS_SEAT + 0.25 + WS_FL)) * millimeter, "bottomRadius" : (WS_CB - 0.05) * millimeter, "topRadius" : (WS_CB - 0.05 + WS_FL) * millimeter });
     }
     for (var k = 0; k < size(POD_SCREWS); k += 1)
     {
         const xf = screwXf(s, POD_SCREWS[k]);  const z = POD_SCREWS[k][1];
-        const yFloor = POD_SEAT_Y[k];          // seat floor along the screw axis: >= 4 mm plastic under it, M3x20 reaches through the nut
+        const yFloor = POD_SEAT_Y[k];          // v1.2b: start of the round Ø7.2 mouth of the nut pocket (flared rim above it)
         const hr = POD_SEAT_RIM[key][k];       // lowest flank height over the seat round the counterbore (from the Python hull)
         tdHole(context, C + ("sh" ~ k), xp(xf, vector(0, R - 2, z)), xp(xf, vector(0, yFloor + 1, z)), M3_CLEAR / 2, podUp(s));
         fCylinder(context, C + ("sf" ~ k), { "bottomCenter" : xp(xf, vector(0, yFloor, z)) * millimeter, "topCenter" : xp(xf, vector(0, yFloor + hr + 0.05, z)) * millimeter, "radius" : SEAT_CB * millimeter });
         fCone(context, C + ("sl" ~ k), { "bottomCenter" : xp(xf, vector(0, yFloor + hr, z)) * millimeter, "topCenter" : xp(xf, vector(0, yFloor + hr + SEAT_FL, z)) * millimeter, "bottomRadius" : (SEAT_CB - 0.02) * millimeter, "topRadius" : (SEAT_CB + SEAT_FL) * millimeter });
         fCylinder(context, C + ("so" ~ k), { "bottomCenter" : xp(xf, vector(0, yFloor + hr + SEAT_FL - 0.05, z)) * millimeter, "topCenter" : xp(xf, vector(0, yFloor + 30, z)) * millimeter, "radius" : (SEAT_CB + SEAT_FL - 0.03) * millimeter });
-        fCone(context, C + ("sk" ~ k), { "bottomCenter" : xp(xf, vector(0, yFloor - (CSK_M3_R - 1.5), z)) * millimeter, "topCenter" : xp(xf, vector(0, yFloor + 0.05, z)) * millimeter, "bottomRadius" : 1.5 * millimeter, "topRadius" : CSK_M3_R * millimeter });
+        // v1.2b hex NUT POCKET (AF 5.8) from POD_NUT_Y out to the round mouth, one corner toward print-up (podUp): the M3x20
+        // from the head side pulls the nut onto the pocket floor; the mouth's 45 deg flare is the opening chamfer
+        const ax = xd(xf, vector(0, 1, 0));  var cu = podUp(s) - ax * dot(podUp(s), ax);  cu = normalize(cu);
+        const yn = POD_NUT_Y[k];  const hl = yFloor + 0.1 - yn;
+        hexPrism(context, C + ("nt" ~ k), xp(xf, vector(0, yn + hl / 2, z)) * millimeter, ax, cu, NUT_M3_AF, hl, 0);
     }
     opBoolean(context, id + "sub", { "tools" : solids(context, C), "targets" : pod, "operationType" : BooleanOperationType.SUBTRACTION });
     return solids(context, id);
 }
-// pocket BLANK: flush with the pad's back, 1 countersunk M3x12 from outside into the nut trapped on the head side
-const BLANK_SURF_Y = 101.75;     // pad's back along the blank screw axis (local y; the oval radius rOut is 1.5 lower there)
+// pocket BLANK v1.2: the triangle plug + a 1.5 mm cover FLANGE lying 0.15 over the pad's back: it hides the pocket rim and the
+// 2 unused pod-screw holes (outline = hull of the triangle grown 3 mm and Ø10 discs over the holes, top edge rounded r0.6).
+// v1.2b: 1 countersunk M3x12 from the pad's head side into a hex nut in a pocket in the blank.  Prints wedge-down: the flange
+// underside lies on the pad (hidden) and is the only face that takes support.
+const BLANK_TOP_Y = 103.57;      // flange top along the blank screw axis (rOut + 1.65; headrest_SW_mount.py)
+const BLANK_FL_GAP = 0.15;  const BLANK_FL_T = 1.5;  const BLANK_FL_R = 0.6;
+function blankOutline(s is number) returns array
+{
+    var V = [];
+    for (var p in TRI) V = append(V, vector(p[0], p[1]));
+    const a = norm(V[1] - V[2]);  const b = norm(V[0] - V[2]);  const c = norm(V[0] - V[1]);
+    const I = (a * V[0] + b * V[1] + c * V[2]) / (a + b + c);
+    const sp = (a + b + c) / 2;
+    const ri = sqrt(sp * (sp - a) * (sp - b) * (sp - c)) / sp;
+    const k = (ri - 5) / ri;
+    var pts = [];
+    for (var i = 0; i < 3; i += 1)
+    {
+        const w = I + (V[i] - I) * k;                                              // rounded-corner centre (as triPrism)
+        pts = concatenateArrays([pts, circlePts(-s * (BTN_ANG * PI / 180 * R + w[0]), w[1], 8, 32)]);
+    }
+    for (var sc in POD_SCREWS)
+        pts = concatenateArrays([pts, circlePts(-s * (BTN_ANG * PI / 180 * R + sc[0]), sc[1], 5, 24)]);
+    return hull2d(pts);
+}
 export function buildBlank(context is Context, id is Id, s is number) returns Query
 {
     triPrism(context, id + "tri", -0.1, POCKET_Y0 + 0.2, R + T + 7.6 + 7);
     moveSolids(context, id + "mv", id + "tri", placeXf(s * BTN_ANG));
-    trimBySurface(context, id + "trim", id, s, 0, false);           // flush with the pad's back
-    // 0.4 mm round on the flush top edge (the face furthest out along the pocket normal)
+    trimBySurface(context, id + "trim", id, s, BLANK_FL_GAP + 0.3, false);           // plug top 0.3 into the flange
+    bentSolid(context, id + "fl", blankOutline(s), function(z, ad) { return rOut(z, ad) + BLANK_FL_GAP; }, function(z, ad) { return rOut(z, ad) + BLANK_FL_GAP + BLANK_FL_T; }, 2, 2);
+    opBoolean(context, id + "un", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
+    // r0.6 round on the flange's top edge (its top face is the face furthest out along the pocket normal)
     const nb = normalize(vector(sin((s * BTN_ANG) * degree), cos((s * BTN_ANG) * degree) / ELL, 0));
-    try silent { opFillet(context, id + "rt", { "entities" : qAdjacent(qFarthestAlong(qOwnedByBody(solids(context, id), EntityType.FACE), nb), AdjacencyType.EDGE, EntityType.EDGE), "radius" : 0.4 * millimeter }); }
+    finishEdges(context, id + "rt", qAdjacent(qFarthestAlong(qOwnedByBody(solids(context, id), EntityType.FACE), nb), AdjacencyType.EDGE, EntityType.EDGE), BLANK_FL_R, false, "blank flange top edge r" ~ BLANK_FL_R);
+    // v1.2b: M3x12 from the pad's head side (head in the pad); the shank comes out through the pocket floor into the plug and
+    // a hex nut sits on a pocket floor at BLANK_NUT_Y, the pocket open through the flange top (0.5 mm chamfer at its mouth)
     const xf = screwXf(s, BLANK_SCREW);  const z = BLANK_SCREW[1];
-    const yTop = rOut(z, BTN_ANG);   // head top at yTop - 2 = 3.5 mm under the flush face: the M3x12 tip ends 0.25 mm inside the pad's head-side face, through the whole nut
-    fCylinder(context, id + "cut" + "h", { "bottomCenter" : xp(xf, vector(0, R - 2, z)) * millimeter, "topCenter" : xp(xf, vector(0, yTop + 5, z)) * millimeter, "radius" : M3_CLEAR / 2 * millimeter });
-    fCone(context, id + "cut" + "k", { "bottomCenter" : xp(xf, vector(0, yTop - 2 - (CSK_M3_R - 1.5), z)) * millimeter, "topCenter" : xp(xf, vector(0, yTop - 1.95, z)) * millimeter, "bottomRadius" : 1.5 * millimeter, "topRadius" : CSK_M3_R * millimeter });
-    fCylinder(context, id + "cut" + "r", { "bottomCenter" : xp(xf, vector(0, yTop - 2, z)) * millimeter, "topCenter" : xp(xf, vector(0, yTop + 5, z)) * millimeter, "radius" : CSK_M3_R * millimeter });   // head recess (3.5 mm deep at the flush face)
-    fCone(context, id + "cut" + "f", { "bottomCenter" : xp(xf, vector(0, BLANK_SURF_Y - 0.6, z)) * millimeter, "topCenter" : xp(xf, vector(0, BLANK_SURF_Y + 0.3, z)) * millimeter, "bottomRadius" : (CSK_M3_R - 0.02) * millimeter, "topRadius" : (CSK_M3_R + 0.9) * millimeter });   // 45 deg rim chamfer
+    fCylinder(context, id + "cut" + "h", { "bottomCenter" : xp(xf, vector(0, R - 2, z)) * millimeter, "topCenter" : xp(xf, vector(0, BLANK_NUT_Y + 1, z)) * millimeter, "radius" : M3_CLEAR / 2 * millimeter });
+    const ax = xd(xf, vector(0, 1, 0));
+    hexPrism(context, id + "cut" + "n", xp(xf, vector(0, (BLANK_NUT_Y + BLANK_TOP_Y + 3) / 2, z)) * millimeter, ax, vector(0, 0, 1), NUT_M3_AF, BLANK_TOP_Y + 3 - BLANK_NUT_Y, 0);
+    fCone(context, id + "cut" + "f", { "bottomCenter" : xp(xf, vector(0, BLANK_TOP_Y - 0.5, z)) * millimeter, "topCenter" : xp(xf, vector(0, BLANK_TOP_Y + 0.4, z)) * millimeter, "bottomRadius" : (NUT_M3_AF / sqrt(3)) * millimeter, "topRadius" : (NUT_M3_AF / sqrt(3) + 0.9) * millimeter });   // 45 deg mouth chamfer
     opBoolean(context, id + "sub", { "tools" : solids(context, id + "cut"), "targets" : qSubtraction(solids(context, id), solids(context, id + "cut")), "operationType" : BooleanOperationType.SUBTRACTION });
     return solids(context, id);
 }
@@ -924,6 +1067,7 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
             opTransform(context, id + "gpt", { "bodies" : padQ, "transform" : atH(50) });
             nameParts(context, padQ, "rev0_pad_F3");
             report(context, "rev0 pad", padQ);
+            reportSkipped(context, id);
             return;
         }
         const H = heightOf(definition.height);
@@ -964,6 +1108,7 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
                 i += 1;
             }
         }
+        reportSkipped(context, id);
     }, { height : HeadrestHeight.H50, button : HeadrestButton.RIGHT, yaw : HeadrestYaw.Y20, strapSlots : true, showRods : true, printSet : false, selfTest : false });
 
 // =============================================== CHAIR: RECEIVER IN top_back ===============================================
@@ -979,7 +1124,7 @@ export function receiverTools(context is Context, id is Id) returns map
     loftSections(context, id + "lens", secs);
     const top = sectionFace(context, id + "tops", section(FOOT[0], FOOT[1], FOOT[2], FOOT[3], undefined, SOCK_Z0 - 6));
     opExtrude(context, id + "up", { "entities" : top, "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : (TOP - (SOCK_Z0 - 6)) * millimeter });
-    try silent { opFillet(context, id + "upf", { "entities" : qAdjacent(qCapEntity(id + "up", CapType.END), AdjacencyType.EDGE, EntityType.EDGE), "radius" : 1.5 * millimeter }); }   // housing top edge
+    finishEdges(context, id + "upf", qAdjacent(qCapEntity(id + "up", CapType.END, EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), 1.5, false, "receiver housing top edge r1.5");   // housing top edge
     rrbox(context, id + "fill", PLUG[0] - 7, PLUG[1] + 7, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2);
     cleanup(context, id + "cl", id);
     const add = qUnion([solids(context, id + "lens"), solids(context, id + "up"), solids(context, id + "fill")]);
@@ -987,15 +1132,19 @@ export function receiverTools(context is Context, id is Id) returns map
     rrbox(context, C + "sock", PLUG[0] - SOCK_CL, PLUG[1] + SOCK_CL, PLUG[2] - SOCK_CL, PLUG[3] + SOCK_CL, SOCK_Z0, TOP + 40, 6);
     // socket mouth: 1 mm x 45 deg chamfer (no sharp rim; lead-in for the plug) = a box 1 mm bigger all round from TOP - 1 up,
     // vertical edges rounded to the socket's r6 + 1, bottom loop chamfered 1 mm back to the socket outline
-    try
+    var mouthOk = false;
+    try silent
     {
         fCuboid(context, C + "mc", { "corner1" : v3(PLUG[0] - SOCK_CL - 1, PLUG[2] - SOCK_CL - 1, TOP - 1), "corner2" : v3(PLUG[1] + SOCK_CL + 1, PLUG[3] + SOCK_CL + 1, TOP + 40) });
         opFillet(context, C + "mcf", { "entities" : qParallelEdges(qOwnedByBody(qCreatedBy(C + "mc", EntityType.BODY), EntityType.EDGE), vector(0, 0, 1)), "radius" : 7 * millimeter });
         opChamfer(context, C + "mcc", { "entities" : qAdjacent(qFarthestAlong(qOwnedByBody(qCreatedBy(C + "mc", EntityType.BODY), EntityType.FACE), vector(0, 0, -1)), AdjacencyType.EDGE, EntityType.EDGE), "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : 1 * millimeter });
+        mouthOk = true;
     }
-    catch (error)
+    if (!mouthOk)
     {
-        opDeleteBodies(context, C + "mcd", { "entities" : qCreatedBy(C + "mc", EntityType.BODY) });   // no chamfer rather than a raw step
+        if (size(evaluateQuery(context, qCreatedBy(C + "mc", EntityType.BODY))) > 0)
+            opDeleteBodies(context, C + "mcd", { "entities" : qCreatedBy(C + "mc", EntityType.BODY) });   // no chamfer rather than a raw step
+        skipped(context, "receiver socket-mouth chamfer 1 mm");
     }
     for (var i = 0; i < 2; i += 1)
     {
@@ -1015,6 +1164,7 @@ export const gbgHeadrestReceiver = defineFeature(function(context is Context, id
         definition.standIn is boolean;
     }
     {
+        const before = size(evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID))) + (definition.standIn ? 1 : 0);   // every solid must survive
         var tb = definition.topBack;
         if (definition.standIn)
         {
@@ -1028,17 +1178,23 @@ export const gbgHeadrestReceiver = defineFeature(function(context is Context, id
             for (var p in [[-50, 134, 330], [50, 134, 330], [-70, 134, 360], [0, 134, 385]])
             {
                 const q = qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), reclineXf() * v3(p[0], p[1], p[2]));
-                if (size(evaluateQuery(context, q)) == 1) { tb = q; break; }
+                const hit = evaluateQuery(context, q);
+            if (size(hit) == 1) { tb = hit[0]; break; }     // freeze it: a lazy qContainsPoint re-evaluated after receiverTools would also match the new tool bodies
             }
         }
         if (size(evaluateQuery(context, tb)) != 1) throw regenError("No top_back part found: select it");
         const t = receiverTools(context, id + "rx");
         opBoolean(context, id + "add", { "tools" : qUnion([tb, t.add]), "operationType" : BooleanOperationType.UNION });
         const inside = reclineXf() * v3(0, 140, 330);                  // in the lens, below the socket: always material
-        const merged = qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), inside);
+        const mq = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), inside));
+        if (size(mq) != 1) throw regenError("Receiver: expected 1 merged top_back body, found " ~ size(mq));
+        const merged = mq[0];
         opBoolean(context, id + "cut", { "tools" : t.cut, "targets" : merged, "operationType" : BooleanOperationType.SUBTRACTION });
         setProperty(context, { "entities" : merged, "propertyType" : PropertyType.NAME, "value" : "top_back" });
         report(context, "top_back with receiver", merged);
+        const after = size(evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID)));
+        if (after != before) reportFeatureWarning(context, id, "Receiver changed the number of solid bodies: " ~ before ~ " -> " ~ after);
+        reportSkipped(context, id);
     }, { topBack : qNothing(), standIn : false });
 
 // ---------------- DATA: W1 pod hull sections + PVC axis (PAD frame, right side; generator/headrest_POD11.py) ----------------
@@ -1153,6 +1309,6 @@ const POD_AXIS = {
     "28" : [[98.2136, 69.2996, 8.0000], [0.468828, -0.881738, -0.052336]]
 };
 // pod -> pad seats (generated, headrest_POD11.py): rim flare start over each seat floor (= lowest flank height there - 0.3)
-const POD_SEAT_RIM = { "12" : [3.24, 1.37], "20" : [2.83, 1.28], "28" : [2.27, 1.14] };
-// seat floor, local y along the screw axis (>= 4 mm plastic under the seat; M3x20 tip at the nut)
-const POD_SEAT_Y = [106.69, 106.20];
+const POD_SEAT_RIM = { "12" : [3.73, 1.37], "20" : [3.32, 1.28], "28" : [2.76, 1.14] };
+// seat floor, local y along the screw axis (M3x20 tip 0.2 past the nut, 0.2 short of the head-side face; >= 3.5 mm plastic under the seat)
+const POD_SEAT_Y = [106.20, 106.20];

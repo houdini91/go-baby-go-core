@@ -3,7 +3,7 @@
 > PRE-FIRST-PRINT. The settings below are first guesses, checked only by slicing. Update them after the first prints.
 
 ## 1. Files
-Everything is in `stl/`, already in print orientation (on z = 0). Exported from Onshape, except the v1.2 pods and fit-test bar (Python reference export: re-export them from Onshape once the v1.2 FeatureScript is on a branch). The Onshape **Headrest v1.0** Part Studio has the same parts in its "print layout" feature; export from there if you change a parameter.
+Everything is in `stl/`, already in print orientation (on z = 0). **The folder mixes versions for now:** the pods and the fit-test bar are v1.2 (Python reference export), while the pad, masts, blanks and chair `top_back` are still v1.1 from Onshape. Print from the official set, re-exported from Onshape after the v1.2 FeatureScript has been inspected there. The Onshape **Headrest v1.0** Part Studio has the same parts in its "print layout" feature; export from there if you change a parameter.
 
 ## 2. Material
 PETG for every printed part. PLA is OK only for a throwaway fit check: it creeps and cracks under the head load and in a hot car.
@@ -16,7 +16,7 @@ Every surface was sorted into **visible** (finish matters), **hidden** (under th
 | Pad | **upside down** (top edge on the bed, brim) | fit 0 mm², visible 818 mm² near the rim, 10 g | upright: 1628 mm² of support inside the joint (tenon channel, column socket), 16 g; on its sides/back: 21–43 g |
 | Mast | **on its side** (+x down, nut slots face up) | some on the stem underside (sand it), 10.8 g | strongest: knock and side loads run along the layers. Upright or upside down is cleaner but bends across the layers. |
 | Pod | **lying on its pad-side underside** | almost all on the hidden underside (visible 92 mm²) | bore-up put 1202 mm² of support on the visible shell |
-| Blank | wedge down | none | – |
+| Blank | wedge down | v1.2: under the cover flange only (its underside lies on the pad, hidden) | the flange is the cover for the unused pod-screw holes |
 
 The triangle pocket already suits these orientations: in the upside-down pad it prints point-up (self-supporting), and in the pod the wedge points straight down.
 
@@ -28,7 +28,7 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 | Pad | 4 | 20 % gyroid | 4 / 3 | tree, build plate only; brim on | 5.43 h, 172.0 g |
 | Mast H0 / H25 / H50 / H75 / H100 | 6 | 40 % gyroid | 4 / 3 | tree, build plate only | 4.31 / 5.12 / 5.87 / 6.59 / 7.26 h; 120.2 / 147.2 / 170.9 / 191.6 / 207.1 g |
 | Pod yaw 12 / 20 / 28 | 4 | 40 % gyroid | 4 / 3 | tree, build plate only | v1.1: 1.67 / 1.61 / 1.53 h; 33.3 / 32.2 / 30.1 g (v1.2 not re-sliced yet; solid volume 36.0 / 33.4 / 30.5 cm³) |
-| Blank | 4 | 40 % | 4 / 3 | none | 0.16 h, 2.6 g |
+| Blank | 4 | 40 % | 4 / 3 | v1.2: tree, build plate only (under the flange) | v1.1: 0.16 h, 2.6 g (v1.2 with flange not sliced yet) |
 | Fit-test bar | 3 | 20 % | 4 / 3 | none | 1.37 h, 43.5 g |
 | Template part | 2 | 15 % | 4 / 3 | none | 1.27 h, 44.2 g |
 | Rod cutting gauge base / lid (`stl/tools/`) | 3 | 15 % | 4 / 3 | none | 2.16 h, 70.0 g / 0.24 h, 6.7 g |
@@ -50,9 +50,9 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 4. Push the rods into the mast from the plug end until they stop.
 5. Push the plug into the `top_back` socket. Fit 2× **M5×30** countersunk from behind (flush). Snug only: they lock, the socket carries the load.
 6. Slide the pad down onto the tenon until the taper wedges. Fit 2× **M3×25** countersunk from under the chin; the heads sit 1 mm down in flat spot-faces.
-7. Press 3 M3 nuts into the traps on the pad's head side, at each pocket you use (2 per pod, 1 per blank).
-8. Pod: push the wedge into the pocket until it clicks, then fit 2× **M3×20** countersunk from outside on the flat seats. Push the PVC rod in to the bottom of the bore (slip fit), turn the switch to its angle, and pull the switch cable to the **pad side** of the pipe. Drill the PVC **Ø2.5** through each of the 3 Ø4 holes (top, outward side, below the side) using the pod as the jig, then fit 3× **ST3.5 × 6.5 pan-head** self-tappers. Snug only: they lock the rod against sliding and turning; overtightening strips the PVC.
-9. Blank: push it in, then fit 1× **M3×12** from outside.
+7. (v1.2b: there are no nut traps in the pad any more; the M3 nuts go into pockets in the pod and the blank, see 8 and 9.)
+8. Pod: push the wedge into the pocket until it clicks. Drop an M3 nut into each of the 2 hex pockets on the outside of the pod and push it to the bottom (a strip of tape over the pocket keeps it there). Lift the foam liner (it is held by the Velcro dots) and fit 2× **M3×20** countersunk **from the head side**, through the pad into the nuts; the heads sit flush or just below the shell surface. Put the liner back. Push the PVC rod in to the bottom of the bore (slip fit), turn the switch to its angle, and pull the switch cable to the **pad side** of the pipe, away from the 3 lock holes (top, outward side, below the side), and keep it there while drilling. Wrap a **tape flag on a Ø2.5 bit about 5 mm from its tip** as a depth stop, then drill a pilot through each Ø4 hole into the PVC, using the pod as the jig: only ~5 mm deep from the flat seat, i.e. just through the pipe wall (stop when the flag touches the seat; never drill across the pipe). Fit 3× **ST3.5 × 6.5 pan-head** self-tappers. Snug only: overtightening strips the PVC. They pin the pipe against **turning and sliding**; they are not meant to hold it against a hard **pull-out**, so don't use the rod as a handle.
+9. Blank: push it in until its cover flange lies on the pad's back (it hides the two unused pod-screw holes). Drop an M3 nut down its hex pocket from the outside, then lift the liner and fit 1× **M3×12** from the head side into it.
 10. Foam: cut 10 mm EVA from the template (no screw holes are needed any more), heat-form only the roll, stick the loop dots on the foam and the hook dots in the shell pockets.
 
 ## 7. Checks after printing

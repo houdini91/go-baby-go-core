@@ -18,7 +18,9 @@ PATCHES = [(0, 33, 40, 22), (-40, 30, 25, 30), (40, 30, 25, 30), (-28, -26, 30, 
 def U(a): return -math.radians(a) * R
 # Mikey 2026-11-15: pre-cut Ø25 hook-and-loop DOTS (peel-and-stick pairs) instead of tape patches -> 8 round pockets Ø26
 DOT_D, DOT_POCKET = 25.0, 26.0
-POD_SCREWS, BLANK_SCREW, NUT_TRAP_D = [(-14.0, -9.0), (14.0, -12.0)], (0.0, 4.0), F.FIT.NUT_M3_TRAP     # v1.1 (= the FeatureScript); trap depth 2.8 = nut 2.4 + 0.4
+POD_SCREWS, BLANK_SCREW = [(-14.0, -9.0), (14.0, -12.0)], (0.0, 4.0)     # (= the FeatureScript)
+# v1.2b (screws flipped): head top HEAD_D under the pad's head-side face (= the .fs POD_HEAD_D + BLANK_HEAD_D)
+HEAD_D = [1.0, 0.2, 0.2]; CSK_M3_R = 3.25
 DOTS = [(-16, 36), (16, 36), (-42, 32), (42, 32), (-26, 4), (26, 4), (-22, -28), (22, -28)]
 ATTACH = "dots"
 def _shapes(pocket=True, inset=0.0):
@@ -58,11 +60,13 @@ def _pad_noslots():
         sl = M.batch_hull([M.cylinder(50, 2.25, 2.25, 24).rotate([-90, 0, 0]).translate([0, R - 15, z]) for z in (P.STRAP_Z[0] + 2.25, P.STRAP_Z[1] - 2.25)])
         cuts.append(place(sl, s_ * P.STRAP_ANG))
         cuts.append(place(P.btn_cuts().translate([0, F.BTN_SHIFT, 0]), s_ * P.BTN_ANG))
-        # v1.1: pod (2) + blank (1) screws come from OUTSIDE; clearance holes + hex nut traps (corner up) on the head side
-        for x, z in POD_SCREWS + [BLANK_SCREW]:
-            th = s_ * (P.BTN_ANG + math.degrees(x / R))
-            nut = CS.circle(F.NUT_M3_AF / math.sqrt(3), 6).rotate(90).extrude(NUT_TRAP_D + 1).rotate([-90, 0, 0]).translate([0, R - 1, z])
-            cuts.append(place(ycyl(F.FIT.M3_CLEAR, 40, 0, R - 2, z) + nut, th))
+        # v1.2b: pod (2) + blank (1) screws go in from the HEAD side: clearance hole + DIN 7991 countersink (head top HEAD_D under
+        # the head-side face) + Ø6.6 spot-face above it; the nuts are in the pod / blank (no nut traps in the pad any more)
+        for (x, z), hd in zip(POD_SCREWS + [BLANK_SCREW], HEAD_D):
+            th = s_ * (P.BTN_ANG + math.degrees(x / R)); yh = R + hd
+            csk = M.cylinder(CSK_M3_R - 1.5 + 0.05, CSK_M3_R, 1.5, 32).rotate([-90, 0, 0]).translate([0, yh - 0.05, z])
+            spot = ycyl(6.6, yh - (R - 4), 0, R - 4, z)
+            cuts.append(place(ycyl(F.FIT.M3_CLEAR, 40, 0, R - 2, z) + csk + spot, th))
     m = m - M.batch_boolean(cuts, 0)
     m = m - K._taper(K.channel()) - K.col_socket() - K.spine_boss(K.TCL, 30)
     for g in (1, -1): m = m - F.screw_cut_pad(g)
