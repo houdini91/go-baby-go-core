@@ -103,7 +103,7 @@ def _lip_chamfer():
     out = None
     for sgn in (-1, 1):
         y = sgn * HALF_TOP
-        tri = [(y, H - CH), (y + sgn * CH, H + 0.001), (y + sgn * CH, H + 3), (y - sgn * 3, H + 3)] if sgn > 0 else [(y - sgn * 3, H + 3), (y + sgn * CH, H + 3), (y + sgn * CH, H + 0.001), (y, H - CH)]
+        tri = [(y - sgn * CH, H - CH), (y + sgn * CH, H + 0.001), (y + sgn * CH, H + 3), (y - sgn * 3, H + 3)] if sgn > 0 else [(y - sgn * 3, H + 3), (y + sgn * CH, H + 3), (y + sgn * CH, H + 0.001), (y - sgn * CH, H - CH)]
         p = _prism_x(tri, 0, X_END + 1)
         out = p if out is None else out + p
     return out
