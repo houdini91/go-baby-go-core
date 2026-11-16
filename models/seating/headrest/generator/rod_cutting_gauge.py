@@ -28,7 +28,8 @@ FL_HOLES_X = [20.0, 98.0, 172.0]   # between slots; Ø4.5 wood-screw holes
 LID_X0, LID_X1 = 12.0, 62.0    # lid sits between the stop and the first slot
 LID_T = 8.0
 SCREW_X, SCREW_Y = 37.0, 12.0
-M3_CLR, M3_CSK_D = 3.4, 6.5    # countersink 90 deg, DIN 7991 head Ø6
+M3_CLR, M3_CSK_D = 3.5, 6.5    # clearance +0.5 (P1S/PETG policy); countersink 90 deg, DIN 7991 head Ø6
+CH = 1.0             # 45 deg chamfer on every outside edge (no sharp corners; bed edges print without overhang)
 NUT_AF, NUT_DEPTH = 5.8, 5.4   # trap AF as the headrest; pocket 5.4 deep so the nut sits 2.2 mm up (screw tip never pokes out)
 TXT_H, TXT_DEPTH = 4.0, 0.6
 
@@ -40,6 +41,11 @@ HALF_TOP = H - Z_APEX              # groove half-width at the top face
 
 def box(x0, x1, y0, y1, z0, z1):
     return M.cube([x1 - x0, y1 - y0, z1 - z0]).translate([x0, y0, z0])
+
+
+def cbox(x0, x1, y0, y1, z0, z1, c=CH):
+    """Box with all 12 edges chamfered 45 deg by c (hull of two inset boxes)."""
+    return M.batch_hull([box(x0 + c, x1 - c, y0 + c, y1 - c, z0, z1), box(x0, x1, y0, y1, z0 + c, z1 - c)])
 
 
 def _prism_x(poly_yz, x0, x1):
@@ -92,12 +98,24 @@ def engrave(part, s, x_center, y_center, z_top, size=TXT_H, rot=0):
     return part - cut
 
 
+def _lip_chamfer():
+    # two 45-deg chamfers along the groove lips (convex prisms)
+    out = None
+    for sgn in (-1, 1):
+        y = sgn * HALF_TOP
+        tri = [(y, H - CH), (y + sgn * CH, H + 0.001), (y + sgn * CH, H + 3), (y - sgn * 3, H + 3)] if sgn > 0 else [(y - sgn * 3, H + 3), (y + sgn * CH, H + 3), (y + sgn * CH, H + 0.001), (y, H - CH)]
+        p = _prism_x(tri, 0, X_END + 1)
+        out = p if out is None else out + p
+    return out
+
+
 def base():
-    b = box(-STOP_T, X_END, -W / 2, W / 2, 0, H)
-    b += box(-STOP_T, 0, -W / 2, W / 2, H, H + PROUD + STOP_UP)                    # end stop
-    b += box(-STOP_T, X_END, -W / 2 - FL_W, W / 2 + FL_W, 0, FL_T)                  # flanges
+    b = cbox(-STOP_T, X_END, -W / 2, W / 2, 0, H)
+    b += cbox(-STOP_T, 0, -W / 2, W / 2, H - 2 * CH, H + PROUD + STOP_UP)          # end stop
+    b += cbox(-STOP_T, X_END, -W / 2 - FL_W, W / 2 + FL_W, 0, FL_T)                # flanges
     groove = _prism_x([(-HALF_TOP, H + 5), (-HALF_TOP, H + 0.001), (0, Z_APEX), (HALF_TOP, H + 0.001), (HALF_TOP, H + 5)], 0, X_END + 1)
     b -= groove
+    b -= _lip_chamfer()                                                             # 45 deg chamfer on the groove lips
     z_floor = ZC - R - SLOT_CLEAR
     for _, L in LENGTHS:                                                             # saw slots, near edge at L
         b -= box(L, L + SLOT_W, -W / 2 - 1, W / 2 + 1, z_floor, H + 1)
@@ -117,7 +135,7 @@ def base():
 
 def lid():
     z0 = H + PROUD
-    l = box(LID_X0, LID_X1, -W / 2, W / 2, z0, z0 + LID_T)
+    l = cbox(LID_X0, LID_X1, -W / 2, W / 2, z0, z0 + LID_T)
     for y in (-SCREW_Y, SCREW_Y):
         l -= cyl_z(SCREW_X, y, M3_CLR, z0 - 1, z0 + LID_T + 1)
         l -= cone_z(SCREW_X, y, M3_CLR, M3_CSK_D + 0.4, z0 + LID_T - (M3_CSK_D + 0.4 - M3_CLR) / 2, z0 + LID_T + 0.01)
