@@ -14,6 +14,7 @@ Supporting material for [`models/seating/headrest`](../../models/seating/headres
 | `PAD_foam/` | Padding: material, cutting from a 1:1 template, hook-and-loop attachment, slit-free shell. |
 | `PAD_buy/` | Padding options with AliExpress links, process and end-result sketches. |
 | `PAD_kit/` | The full test kit: every material and attachment option, heat-forming notes, test plan. |
+| `rod_options.html` | Rods: why carbon at full length (85 + H), cut plans, the printed cutting gauge with its clamp, sealing the ends, and the steel alternatives on hold. |
 | `shopping_list.md` | **v1.1 POC shopping list**: 5 AliExpress listings from 3 sellers, all Choice, consolidated delivery. |
 | `padding_shopping_list.md` | The v1.0 padding-kit links (all material options, for comparing). |
 

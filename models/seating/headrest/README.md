@@ -25,6 +25,8 @@ A printed head support for children aged 2–5 with low head control. It mounts 
 | Fit-test bar (**print first**) | `headrest_fit_test.stl` (v1.0, still valid) | flat | 3 / 20 % | 1.4 h | 44 g |
 | Chair `top_back` with receiver | `chair_top_back_with_headrest_receiver.stl` | chair coordinates: print upright (top edge up) | 4+ walls round the socket | – | – |
 | Foam template part | `padding/foam_template_part_2mm.stl` | flat | 2 / 15 % | 1.3 h | 44 g |
+| Rod cutting gauge, base (workshop tool) | `stl/tools/rod_cutting_gauge_base.stl` | flat, as exported, no supports | 3 / 15 % | 2.2 h | 70 g |
+| Rod cutting gauge, clamp lid | `stl/tools/rod_cutting_gauge_lid.stl` | flat, countersinks up | 3 / 15 % | 0.25 h | 7 g |
 
 One headrest (pad + H50 mast + 1 pod + 1 blank) is about **378 g of PETG and 13 h**. Why these orientations: see [`PRINT_GUIDE.md`](PRINT_GUIDE.md) §3.
 
@@ -69,6 +71,8 @@ With a pod on both sides: 6× M3×30, 4× M3×16.
 ### Rod lengths (carbon, full length, cut by hand)
 Each rod runs the full bore: **85 + H mm**, so the series is **85 / 110 / 135 / 160 / 185** (one step of 25 mm per mast step). The bore is 87 + H, so a cut within ±1 mm is fine. Full length is not stronger at the weak point (the socket exit) than the shortest working rod, but it is a little stiffer (H75: 0.71 vs 0.78 mm flex) and leaves no rod tip inside the stem. Without rods the strength roughly halves.
 
+Cut them with the printed **rod cutting gauge** (`stl/tools/`, generator `generator/rod_cutting_gauge.py`, picture `review/rod_cutting_gauge.png`): a V-groove, an end stop, a clamp lid (2× M3×30 + 2 M3 nuts from the same packs) and a saw slot at each length, labelled H0…H100. The slot's near edge is at the rod length, so the piece between the stop and the slot is exactly 85 + H. Seal both cut ends with a drop of thin CA.
+
 Cut plans from one 8×500 rod (≈1 mm per saw cut):
 | Rod gives | Pieces | Left over |
 |---|---|---|
@@ -85,7 +89,8 @@ Other rod materials and borrowed standard parts are being reviewed in [`docs/hea
 | `stl/` | Final parts exported from **Onshape's geometry**, in print orientation (decimated to ≤ 0.02 mm deviation). |
 | `padding/` | 1:1 foam template (A4 PDF), the 2 mm template part to trace and mark, and `test_kit/coupon_F3_attach_test.stl`. |
 | `review/` | v1.1 shape-review evidence: pod renders from Onshape, support-by-surface-class study. |
-| `generator/` | The Python reference model (manifold3d): `headrest_FINAL.py` (all parts + checks), `headrest_POD11.py` (pod + `write_fsdata()` for the FeatureScript), `headrest_MB_strength.py`, `headrest_SURF.py` / `headrest_ORIENT.py` (orientation study), `headrest_REVIEW.py` (Onshape vs reference), `headrest_STL_FROM_ONSHAPE.py`. Needs `numpy manifold3d trimesh scipy`. |
+| `stl/tools/` | Workshop tools: the rod cutting gauge (base + clamp lid). |
+| `generator/` | The Python reference model (manifold3d), plus `rod_cutting_gauge.py`: `headrest_FINAL.py` (all parts + checks), `headrest_POD11.py` (pod + `write_fsdata()` for the FeatureScript), `headrest_MB_strength.py`, `headrest_SURF.py` / `headrest_ORIENT.py` (orientation study), `headrest_REVIEW.py` (Onshape vs reference), `headrest_STL_FROM_ONSHAPE.py`. Needs `numpy manifold3d trimesh scipy`. |
 | [`docs/headrest/`](../../../docs/headrest/) | Design-review pages and the padding shopping list. |
 
 ## CAD (Onshape)
