@@ -1114,6 +1114,11 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
     }, { height : HeadrestHeight.H50, button : HeadrestButton.RIGHT, yaw : HeadrestYaw.Y20, strapSlots : true, showRods : true, printSet : false, selfTest : false });
 
 // =============================================== CHAIR: RECEIVER IN top_back ===============================================
+// top_back's own mounting holes near the receiver (measured on chair_mesh/chair_top_back.stl, LOCAL frame): the side M5
+// pair at z 373.6 (Ø5.6 through, Ø9 counterbore from the front 6.3 deep, back face y 143.9).  The centre one (x 0, z 373.6)
+// lies inside the socket and is lost.  The others (z 278 / 296 / 315) are below the receiver and untouched.
+const TB_SIDE_MOUNTS = [[-37.5, 373.6], [37.5, 373.6]];  const TB_MOUNT_SEAT_Y = 143.0;  const TB_MOUNT_SEAT_R = 5.5;
+const TB_FILL_X = 3;
 export function receiverTools(context is Context, id is Id) returns map
 {
     // lens housing growing up the back (z FADE -> SOCK_Z0 - 6), full size round the socket up to the top edge, + fill of the old centre recess
@@ -1127,11 +1132,16 @@ export function receiverTools(context is Context, id is Id) returns map
     const top = sectionFace(context, id + "tops", section(FOOT[0], FOOT[1], FOOT[2], FOOT[3], undefined, SOCK_Z0 - 6));
     opExtrude(context, id + "up", { "entities" : top, "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : (TOP - (SOCK_Z0 - 6)) * millimeter });
     finishEdges(context, id + "upf", qAdjacent(qCapEntity(id + "up", CapType.END, EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), 1.5, false, "receiver housing top edge r1.5");   // housing top edge
-    rrbox(context, id + "fill", PLUG[0] - 7, PLUG[1] + 7, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2);
+    rrbox(context, id + "fill", PLUG[0] - TB_FILL_X, PLUG[1] + TB_FILL_X, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2);   // v1.2b: +-31 (was +-35: it ran 0.3 mm into the side mount holes)
     cleanup(context, id + "cl", id);
     const add = qUnion([solids(context, id + "lens"), solids(context, id + "up"), solids(context, id + "fill")]);
     const C = id + "cut";
     rrbox(context, C + "sock", PLUG[0] - SOCK_CL, PLUG[1] + SOCK_CL, PLUG[2] - SOCK_CL, PLUG[3] + SOCK_CL, SOCK_Z0, TOP + 40, 6);
+    // v1.2b: keep top_back's two side M5 mounts (x +-37.5, z 373.6, bolted from the front through a counterbore) usable: the
+    // housing flank (half-width 38) covered their back exits.  A Ø11 seat for the washer / nut, 0.9 mm into the original back
+    // face (flat), cleared backwards through the housing; >= 3.8 mm wall to the socket.
+    for (var m = 0; m < size(TB_SIDE_MOUNTS); m += 1)
+        fCylinder(context, C + ("tbm" ~ m), { "bottomCenter" : v3(TB_SIDE_MOUNTS[m][0], TB_MOUNT_SEAT_Y, TB_SIDE_MOUNTS[m][1]), "topCenter" : v3(TB_SIDE_MOUNTS[m][0], FOOT[2] + 20, TB_SIDE_MOUNTS[m][1]), "radius" : TB_MOUNT_SEAT_R * millimeter });
     // socket mouth: 1 mm x 45 deg chamfer (no sharp rim; lead-in for the plug) = a box 1 mm bigger all round from TOP - 1 up,
     // vertical edges rounded to the socket's r6 + 1, bottom loop chamfered 1 mm back to the socket outline
     var mouthOk = false;
@@ -1185,13 +1195,20 @@ export const gbgHeadrestReceiver = defineFeature(function(context is Context, id
             }
         }
         if (size(evaluateQuery(context, tb)) != 1) throw regenError("No top_back part found: select it");
+        // v1.2b: the receiver housing overlaps top_back's side M5 mounts (hole + front counterbore): keep their exact original
+        // voids ("cores" = a cylinder round each mount minus a copy of top_back) and cut them out again after the union
+        for (var m = 0; m < size(TB_SIDE_MOUNTS); m += 1)
+            fCylinder(context, id + ("core" ~ m), { "bottomCenter" : reclineXf() * v3(TB_SIDE_MOUNTS[m][0], 123, TB_SIDE_MOUNTS[m][1]), "topCenter" : reclineXf() * v3(TB_SIDE_MOUNTS[m][0], TB_MOUNT_SEAT_Y + 0.1, TB_SIDE_MOUNTS[m][1]), "radius" : 5.2 * millimeter });
+        opPattern(context, id + "tbcopy", { "entities" : tb, "transforms" : [identityTransform()], "instanceNames" : ["c"] });
+        opBoolean(context, id + "cores", { "tools" : qCreatedBy(id + "tbcopy", EntityType.BODY), "targets" : qCreatedBy(id + "core", EntityType.BODY), "operationType" : BooleanOperationType.SUBTRACTION });
+        const cores = qBodyType(qCreatedBy(id + "core", EntityType.BODY), BodyType.SOLID);
         const t = receiverTools(context, id + "rx");
         opBoolean(context, id + "add", { "tools" : qUnion([tb, t.add]), "operationType" : BooleanOperationType.UNION });
         const inside = reclineXf() * v3(0, 140, 330);                  // in the lens, below the socket: always material
         const mq = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), inside));
         if (size(mq) != 1) throw regenError("Receiver: expected 1 merged top_back body, found " ~ size(mq));
         const merged = mq[0];
-        opBoolean(context, id + "cut", { "tools" : t.cut, "targets" : merged, "operationType" : BooleanOperationType.SUBTRACTION });
+        opBoolean(context, id + "cut", { "tools" : qUnion([t.cut, cores]), "targets" : merged, "operationType" : BooleanOperationType.SUBTRACTION });
         setProperty(context, { "entities" : merged, "propertyType" : PropertyType.NAME, "value" : "top_back" });
         report(context, "top_back with receiver", merged);
         const after = size(evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID)));

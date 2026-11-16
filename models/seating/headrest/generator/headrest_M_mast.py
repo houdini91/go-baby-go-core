@@ -117,10 +117,16 @@ def top_back_local():
     return _C["tb"]
 def receiver_chair(spine_bores=True):
     """top_back with the restyled receiver (local frame)"""
-    fill = rrbox(PLUG[0] - 7, PLUG[1] + 7, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2.0) ^ M.cube([300, 300, 100]).translate([-150, 0, SOCK_Z0 - 6])
+    fill = rrbox(PLUG[0] - 3, PLUG[1] + 3, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2.0) ^ M.cube([300, 300, 100]).translate([-150, 0, SOCK_Z0 - 6])   # v1.2b: +-31 (was +-35: ran into the side mount holes)
     r = top_back_local() + fill + (receiver_shell() - M.cube([300, 300, 100]).translate([-150, 0, TOP]))   # fill = the old front recess / centre hole round the socket
-    r = r - socket() - bolt_cuts()
+    cores = M.batch_boolean([M.cylinder(TB_MOUNT_SEAT_Y + 0.1 - 123, 5.2, 5.2, 64).rotate([-90, 0, 0]).translate([x, 123, z]) for x, z in TB_SIDE_MOUNTS], 0) - top_back_local()
+    r = r - socket() - bolt_cuts() - tb_mount_seats() - cores        # cores = the side mounts' original voids, restored
     return r
+TB_SIDE_MOUNTS, TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R = [(-37.5, 373.6), (37.5, 373.6)], 143.0, 5.5   # (= the .fs)
+def tb_mount_seats():
+    """v1.2b: top_back's side M5 mounts (x +-37.5, z 373.6) stay usable: Ø11 washer/nut seat 0.9 mm into the original back
+       face, cleared backwards through the receiver housing"""
+    return M.batch_boolean([M.cylinder(FOOT[2] + 20 - TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R, TB_MOUNT_SEAT_R, 64).rotate([-90, 0, 0]).translate([x, TB_MOUNT_SEAT_Y, z]) for x, z in TB_SIDE_MOUNTS], 0)
 
 # ---------------- the plug (inside the receiver), shared ----------------
 def plug(z1=TOP + 0.5):
