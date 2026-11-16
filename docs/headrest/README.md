@@ -1,4 +1,6 @@
-# Headrest v1.0 — design resources (PRE-FIRST-PRINT)
+# Headrest — design resources (PRE-FIRST-PRINT)
+
+> The review pages below show the design as it was chosen (v1.0). **v1.1** changed the pod (clean shell, 2 screws from outside, PVC clamp bolts), the screws (3 types, all DIN 7991) and the print orientations; see [`models/seating/headrest/README.md`](../../models/seating/headrest/README.md).
 
 Supporting material for [`models/seating/headrest`](../../models/seating/headrest/). Open the HTML pages in a browser. They are the review pages the design was chosen from, in order.
 
@@ -12,6 +14,7 @@ Supporting material for [`models/seating/headrest`](../../models/seating/headres
 | `PAD_foam/` | Padding: material, cutting from a 1:1 template, hook-and-loop attachment, slit-free shell. |
 | `PAD_buy/` | Padding options with AliExpress links, process and end-result sketches. |
 | `PAD_kit/` | The full test kit: every material and attachment option, heat-forming notes, test plan. |
-| `padding_shopping_list.md` | The links from the kit page in one list. |
+| `shopping_list.md` | **v1.1 POC shopping list**: 5 AliExpress listings from 3 sellers, all Choice, consolidated delivery. |
+| `padding_shopping_list.md` | The v1.0 padding-kit links (all material options, for comparing). |
 
 Final decisions (2026-11-15): F3 pad (slit-free, 8 Ø25 Velcro-dot pockets, 8 mm button pocket), K2 joint, M1 mast with B1 + relief window, R2 receiver, W1 pod (default yaw 20°), one pad size, masts H0–H100. Magnets were dropped (swallowing hazard). The forehead strap slots are only for use when the child's therapist prescribes a strap.
