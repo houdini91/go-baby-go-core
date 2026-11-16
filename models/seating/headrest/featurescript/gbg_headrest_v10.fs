@@ -825,10 +825,12 @@ function podFootprint(s is number, g is number) returns array
 // v1.2 underside LIFT: outside the footprint the pod's underside rises to 1.3 mm over the pad in 4 x 0.26 steps (a 45 deg
 // chamfer): the v1.1 trim left a feather lip / thin rear tail where the collar and hull flank came down to the pad at a
 // grazing angle; now every free edge is >= 1 mm thick.  Inside the footprint the pod still sits on the pad + 0.3.
-function podLift(context is Context, id is Id, scope is Id, s is number)
+// NOTE: do not name locals/params `scope`, `box` or `left` here: with them Onshape silently failed to load the whole
+// Feature Studio (no feature specs, no notices -> 0 parts in every Part Studio using it), 2026-11-16.
+function podLift(context is Context, id is Id, scopeId is Id, s is number)
 {
     const ua = -(s * BTN_ANG + 45) * PI / 180 * R;  const ub = -(s * BTN_ANG - 45) * PI / 180 * R;
-    const box = [[min(ua, ub), -55], [max(ua, ub), -55], [max(ua, ub), 60], [min(ua, ub), 60]];
+    const slabUZ = [[min(ua, ub), -55], [max(ua, ub), -55], [max(ua, ub), 60], [min(ua, ub), 60]];
     for (var j = 1; j <= LIFT_STEPS; j += 1)
     {
         const w = 0.3 + LIFT_STEP * j;  const g = j == 1 ? -0.02 : LIFT_STEP * (j - 1);
@@ -836,17 +838,17 @@ function podLift(context is Context, id is Id, scope is Id, s is number)
         var ok = false;
         try silent
         {
-            bentSolid(context, jid + "slab", box, function(z, ad) { return rOut(z, ad) - 3; }, function(z, ad) { return rOut(z, ad) + w; }, 3, 3);
+            bentSolid(context, jid + "slab", slabUZ, function(z, ad) { return rOut(z, ad) - 3; }, function(z, ad) { return rOut(z, ad) + w; }, 3, 3);
             bentSolid(context, jid + "keep", podFootprint(s, g), function(z, ad) { return rOut(z, ad) - 4; }, function(z, ad) { return rOut(z, ad) + 2; }, 3, 3);
             opBoolean(context, jid + "cut", { "tools" : solids(context, jid + "keep"), "targets" : solids(context, jid + "slab"), "operationType" : BooleanOperationType.SUBTRACTION });
-            opBoolean(context, jid + "sub", { "tools" : solids(context, jid + "slab"), "targets" : qSubtraction(solids(context, scope), solids(context, id)), "operationType" : BooleanOperationType.SUBTRACTION });
+            opBoolean(context, jid + "sub", { "tools" : solids(context, jid + "slab"), "targets" : qSubtraction(solids(context, scopeId), solids(context, id)), "operationType" : BooleanOperationType.SUBTRACTION });
             ok = true;
         }
         if (!ok)
             skipped(context, "pod underside lift step " ~ j ~ " of " ~ LIFT_STEPS ~ " (feather edge may remain)");
-        const left = qUnion([qCreatedBy(jid + "slab", EntityType.BODY), qCreatedBy(jid + "keep", EntityType.BODY)]);   // leftovers only if a step failed
-        if (size(evaluateQuery(context, left)) > 0)
-            opDeleteBodies(context, jid + "del", { "entities" : left });
+        const leftovers = qUnion([qCreatedBy(jid + "slab", EntityType.BODY), qCreatedBy(jid + "keep", EntityType.BODY)]);   // leftovers only if a step failed
+        if (size(evaluateQuery(context, leftovers)) > 0)
+            opDeleteBodies(context, jid + "del", { "entities" : leftovers });
     }
 }
 export function buildPod(context is Context, id is Id, yaw is HeadrestYaw, s is number) returns Query
