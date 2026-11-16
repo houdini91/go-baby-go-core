@@ -13,7 +13,8 @@ import headrest_K_options as K
 import headrest_P3_button as B3
 from headrest_E3_geom import place
 from headrest_E_geom import ycyl
-NUT_M3_AF = 5.8                              # FINAL 2026-11-15: printed M3 nut trap across flats (nut 5.5; was 5.6 = too tight in PETG)
+import headrest_FITS as FIT
+NUT_M3_AF = FIT.NUT_M3_AF                    # printed M3 nut trap across flats (tolerance block: headrest_FITS.py)
 BTN_Z = 18.0 + P.BTN_DZ                      # button-mount screw height (pad frame)
 
 R, ELL, T, RR, FOAM = P.R, P.ELL, P.T, P.RR, P.FOAM
@@ -78,20 +79,23 @@ def _scr_local(t0, t1, d):
     return c.translate([0, SR0, BOT - 0.5])
 def _xf(m, sgn): return m.rotate([0, 0, -sgn * SA]).scale([1, ELL, 1])
 T_NUT = (96.0 - SR0) / math.sin(math.radians(SANG))      # nut centre ~ mid-tenon
+CSK_M3_R, CHIN_SINK, CHIN_HOLE_END = 3.25, 1.0, 4.2       # v1.2 (= the .fs): M3x25 tip at T_NUT + 1.6; blind mast hole to T_NUT + 4.2
 def screw_cut_pad(sgn):
     s = math.radians(SANG)
-    cone = M.cylinder(1.8, 3.15, 1.5, 24).rotate([-SANG, 0, 0]).translate([0, SR0, BOT - 0.55])
-    return _xf(_scr_local(-8, T_NUT + 6, 3.4) + cone, sgn)
+    # v1.2: M3x25, head top CHIN_SINK down a flat Ø6.6 spot-face (the axis is ~41 deg off the chin face: a bare countersink
+    # left the head up to 2.6 mm proud); countersink = CSK_M3_R like every other seat (= the .fs)
+    cone = M.cylinder(CSK_M3_R - 1.5 + 0.05, CSK_M3_R, 1.5, 24).translate([0, 0, CHIN_SINK - 0.05]).rotate([-SANG, 0, 0]).translate([0, SR0, BOT - 0.5])
+    return _xf(_scr_local(-8, T_NUT + 6, FIT.M3_CLEAR) + cone + _scr_local(-12, CHIN_SINK, 6.6), sgn)
 def screw_cut_mast(sgn):
     s = math.radians(SANG)
-    nut = CS.circle(NUT_M3_AF / math.sqrt(3), 6).extrude(2.7).translate([0, 0, -1.35])
+    nut = CS.circle(NUT_M3_AF / math.sqrt(3), 6).extrude(FIT.NUT_M3_TRAP).translate([0, 0, -FIT.NUT_M3_TRAP / 2])
     slot = M.batch_hull([nut, nut.translate([sgn * 30, 0, 0])])                           # slides in from the tenon side edge
     slot = slot.translate([0, 0, T_NUT]).rotate([-SANG, 0, 0]).translate([0, SR0, BOT - 0.5])
-    return _xf(_scr_local(0, T_NUT + 8, 3.4) + slot.rotate([0, 0, 0]), sgn)
+    return _xf(_scr_local(0, T_NUT + CHIN_HOLE_END, FIT.M3_CLEAR) + slot.rotate([0, 0, 0]), sgn)
 def screws():
     out = []
     for g in (1, -1):
-        sh = _scr_local(0, 30, 3.0) + M.cylinder(1.7, 2.9, 1.5, 24).rotate([-SANG, 0, 0]).translate([0, SR0, BOT - 0.5])
+        sh = _scr_local(CHIN_SINK, CHIN_SINK + 25, 3.0) + M.cylinder(1.7, 2.9, 1.5, 24).translate([0, 0, CHIN_SINK]).rotate([-SANG, 0, 0]).translate([0, SR0, BOT - 0.5])   # M3x25
         nut = CS.circle(5.5 / math.sqrt(3), 6).extrude(2.4).translate([0, 0, T_NUT - 1.2]).rotate([-SANG, 0, 0]).translate([0, SR0, BOT - 0.5])
         out.append(_xf(sh + nut, g))
     return M.batch_boolean(out, 0)

@@ -18,7 +18,7 @@ PATCHES = [(0, 33, 40, 22), (-40, 30, 25, 30), (40, 30, 25, 30), (-28, -26, 30, 
 def U(a): return -math.radians(a) * R
 # Mikey 2026-11-15: pre-cut Ø25 hook-and-loop DOTS (peel-and-stick pairs) instead of tape patches -> 8 round pockets Ø26
 DOT_D, DOT_POCKET = 25.0, 26.0
-POD_SCREWS, BLANK_SCREW, NUT_TRAP_D = [(-14.0, -9.0), (14.0, -12.0)], (0.0, 4.0), 3.0     # v1.1 (= the FeatureScript)
+POD_SCREWS, BLANK_SCREW, NUT_TRAP_D = [(-14.0, -9.0), (14.0, -12.0)], (0.0, 4.0), F.FIT.NUT_M3_TRAP     # v1.1 (= the FeatureScript); trap depth 2.8 = nut 2.4 + 0.4
 DOTS = [(-16, 36), (16, 36), (-42, 32), (42, 32), (-26, 4), (26, 4), (-22, -28), (22, -28)]
 ATTACH = "dots"
 def _shapes(pocket=True, inset=0.0):
@@ -62,7 +62,7 @@ def _pad_noslots():
         for x, z in POD_SCREWS + [BLANK_SCREW]:
             th = s_ * (P.BTN_ANG + math.degrees(x / R))
             nut = CS.circle(F.NUT_M3_AF / math.sqrt(3), 6).rotate(90).extrude(NUT_TRAP_D + 1).rotate([-90, 0, 0]).translate([0, R - 1, z])
-            cuts.append(place(ycyl(3.4, 40, 0, R - 2, z) + nut, th))
+            cuts.append(place(ycyl(F.FIT.M3_CLEAR, 40, 0, R - 2, z) + nut, th))
     m = m - M.batch_boolean(cuts, 0)
     m = m - K._taper(K.channel()) - K.col_socket() - K.spine_boss(K.TCL, 30)
     for g in (1, -1): m = m - F.screw_cut_pad(g)

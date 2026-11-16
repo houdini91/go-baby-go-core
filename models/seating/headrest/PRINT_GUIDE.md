@@ -3,7 +3,7 @@
 > PRE-FIRST-PRINT. The settings below are first guesses, checked only by slicing. Update them after the first prints.
 
 ## 1. Files
-Everything is in `stl/`, exported from Onshape and already in print orientation (on z = 0). The Onshape **Headrest v1.0** Part Studio has the same parts in its "print layout" feature; export from there if you change a parameter.
+Everything is in `stl/`, already in print orientation (on z = 0). Exported from Onshape, except the v1.2 pods and fit-test bar (Python reference export: re-export them from Onshape once the v1.2 FeatureScript is on a branch). The Onshape **Headrest v1.0** Part Studio has the same parts in its "print layout" feature; export from there if you change a parameter.
 
 ## 2. Material
 PETG for every printed part. PLA is OK only for a throwaway fit check: it creeps and cracks under the head load and in a hot car.
@@ -27,7 +27,7 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 |---|---|---|---|---|---|
 | Pad | 4 | 20 % gyroid | 4 / 3 | tree, build plate only; brim on | 5.43 h, 172.0 g |
 | Mast H0 / H25 / H50 / H75 / H100 | 6 | 40 % gyroid | 4 / 3 | tree, build plate only | 4.31 / 5.12 / 5.87 / 6.59 / 7.26 h; 120.2 / 147.2 / 170.9 / 191.6 / 207.1 g |
-| Pod yaw 12 / 20 / 28 | 4 | 40 % gyroid | 4 / 3 | tree, build plate only | 1.67 / 1.61 / 1.53 h; 33.3 / 32.2 / 30.1 g |
+| Pod yaw 12 / 20 / 28 | 4 | 40 % gyroid | 4 / 3 | tree, build plate only | v1.1: 1.67 / 1.61 / 1.53 h; 33.3 / 32.2 / 30.1 g (v1.2 not re-sliced yet; solid volume 36.0 / 33.4 / 30.5 cm³) |
 | Blank | 4 | 40 % | 4 / 3 | none | 0.16 h, 2.6 g |
 | Fit-test bar | 3 | 20 % | 4 / 3 | none | 1.37 h, 43.5 g |
 | Template part | 2 | 15 % | 4 / 3 | none | 1.27 h, 44.2 g |
@@ -35,7 +35,7 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 | Chair `top_back` with receiver | follow the chair's settings, at least 4 walls round the socket; print upright (top edge up) so the M5 teardrops point up | | | | |
 
 ## 5. Order for the first prototype
-1. **Fit-test bar** (1.4 h). Check the Ø8 rod slide, the nuts in their traps, the PVC in the rings, and the wedge clicking into the pocket. Edit the constants at the top of `featurescript/gbg_headrest_v10.fs` if needed.
+1. **Fit-test bar** (1.4 h). Check the Ø8 rod slide (Ø8.3/8.5/8.7), the nuts in their traps (2.8 / 4.4 deep), the PVC in the rings (Ø20.6/20.8/21.0: it should slide in by hand), and the wedge clicking into the pocket. Edit the constants at the top of `featurescript/gbg_headrest_v10.fs` if needed.
 2. **Rod cutting gauge** (base + lid, 2.4 h), so the rods are cut to length, square, and held still.
 3. **Chair `top_back` with the receiver** (from the Onshape branch `headrest-v1`).
 4. **Mast H50 + pad** (about 11.3 h together). Check the slide-in, the taper wedge, the lock screws and the rods.
@@ -49,15 +49,16 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 3. Slide the 2 M3 nuts into the slots on the tenon side edges.
 4. Push the rods into the mast from the plug end until they stop.
 5. Push the plug into the `top_back` socket. Fit 2× **M5×30** countersunk from behind (flush). Snug only: they lock, the socket carries the load.
-6. Slide the pad down onto the tenon until the taper wedges. Fit 2× **M3×30** countersunk from under the chin.
+6. Slide the pad down onto the tenon until the taper wedges. Fit 2× **M3×25** countersunk from under the chin; the heads sit 1 mm down in flat spot-faces.
 7. Press 3 M3 nuts into the traps on the pad's head side, at each pocket you use (2 per pod, 1 per blank).
-8. Pod: push the wedge into the pocket until it clicks, then fit 2× **M3×16** countersunk from outside on the flat seats. Push in the PVC rod, drill it Ø3.2 through the 2 clamp holes using the pod as the jig, then fit 2× **M3×30** with nuts underneath.
-9. Blank: push it in, then fit 1× **M3×16** from outside.
+8. Pod: push the wedge into the pocket until it clicks, then fit 2× **M3×20** countersunk from outside on the flat seats. Push the PVC rod in to the bottom of the bore (slip fit), turn the switch to its angle, and pull the switch cable to the **pad side** of the pipe. Drill the PVC **Ø2.5** through each of the 3 Ø4 holes (top, outward side, below the side) using the pod as the jig, then fit 3× **ST3.5 × 6.5 pan-head** self-tappers. Snug only: they lock the rod against sliding and turning; overtightening strips the PVC.
+9. Blank: push it in, then fit 1× **M3×12** from outside.
 10. Foam: cut 10 mm EVA from the template (no screw holes are needed any more), heat-form only the roll, stick the loop dots on the foam and the hook dots in the shell pockets.
 
 ## 7. Checks after printing
 - The tenon slides in without force for the last 10 mm and then wedges. No rattle after the screws are in.
 - The plug goes fully into the socket, and both M5 reach their nuts.
 - The rods slide; ream with an 8 mm drill if tight.
+- The 20 mm PVC slides into the pod by hand; the 3 lock screws stop it sliding and turning.
 - No sharp edges on the head side or the wings; sand the support marks on the mast underside and the pad rim. The foam covers the whole head side.
 - Weigh each part and write the weight next to the slice figure.

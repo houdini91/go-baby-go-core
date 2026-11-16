@@ -10,9 +10,9 @@ A printed head support for children aged 2–5 with low head control. It mounts 
 
 ## How it works
 - **Pad (F3).** One curved shell, 5 mm thick, that cups the back of the head. It has wings above the ears and a soft roll under the occiput. The back thickens smoothly where the joint and the button pocket are, with no added blocks. The head side has 8 shallow pockets for Ø25 mm hook-and-loop (Velcro) dots that hold a 10 mm EVA foam liner.
-- **Mast (M1).** One smooth printed stem with two Ø8 mm carbon rods inside it as a backup spine. At the top, a tapered curved tenon (K2) slides into a channel in the pad and wedges tight. 2× M3×30 from under the chin lock it; **the shape carries the load, the screws only lock**. The bottom is a 56×26 plug in a 45 mm deep socket in the backrest, locked by 2× M5 from behind.
+- **Mast (M1).** One smooth printed stem with two Ø8 mm carbon rods inside it as a backup spine. At the top, a tapered curved tenon (K2) slides into a channel in the pad and wedges tight. 2× M3×25 from under the chin (heads in flat spot-faces) lock it; **the shape carries the load, the screws only lock**. The bottom is a 56×26 plug in a 45 mm deep socket in the backrest, locked by 2× M5 from behind.
 - **Receiver (chair change, R2).** The chair's `top_back` part is reprinted with the socket. Behind the backrest it is a slim lens, 16 mm deep, that stays inside `top_back` (z ≥ 303; nothing reaches `mid_back` or below 2/3 of the chair's height). The rods stay inside the mast.
-- **Button pod (W1).** A smooth pod that sits on the pad side. Its wedge clicks into an 8 mm triangle pocket and carries the load. 2× M3 from **outside**, on flat seats, go into nuts trapped on the pad's head side under the foam, so the pod comes off without removing the foam. The 20 mm PVC rod is clamped by 2× M3×30 through-bolts with nuts (drill the PVC through the pod). Angles 12°, 20° or 28° toward the outside. The final switch position and angle are the therapist's call at fitting. A flush **blank** (1× M3 from outside) plugs an unused pocket.
+- **Button pod (W1).** A smooth pod that sits on the pad side. Its wedge clicks into an 8 mm triangle pocket and carries the load. 2× M3×20 from **outside**, on flat seats (≥ 4 mm of plastic under each), go into nuts trapped on the pad's head side under the foam, so the pod comes off without removing the foam. **v1.2:** the 20 mm PVC rod slides into a Ø20.8 bore and is locked by **3 small self-tapping screws** (ST3.5 × 6.5 pan head) through Ø4 holes at the top, the outward side and 60° below the side, half-way down the bore, each on a flat Ø8 seat (the v1.1 2× M3×30 through-bolt clamp and its nut traps are gone). No sharp edges: collar ends rounded r2, band edge rounded r2, underside lifted 1.3 mm with a 45° step-chamfer outside the footprint, bore mouth and every hole mouth chamfered. Angles 12°, 20° or 28° toward the outside. The final switch position and angle are the therapist's call at fitting. A flush **blank** (1× M3 from outside) plugs an unused pocket.
 - **Heights.** One pad, five masts: H0/H25/H50/H75/H100 (pad centre 431–531 mm above the seat). The relief window in the stem appears only where the stem is long enough (H100).
 
 ## Parts and print data (real Bambu Studio slices, P1S, PETG, 0.2 mm, tree supports on the plate)
@@ -20,9 +20,9 @@ A printed head support for children aged 2–5 with low head control. It mounts 
 |---|---|---|---|---|---|
 | Pad F3 | `headrest_pad_F3.stl` | **upside down** | 4 / 20 % gyroid | 5.4 h | 172 g |
 | Mast H0 / H25 / H50 / H75 / H100 | `headrest_mast_H000…H100.stl` | **on its side** | 6 / 40 % gyroid | 4.3 / 5.1 / 5.9 / 6.6 / 7.3 h | 120 / 147 / 171 / 192 / 207 g |
-| Button pod, yaw 12/20/28, right + left | `headrest_button_pod_yaw*_{right,left}.stl` | **lying on its pad-side underside** | 4 / 40 % | 1.5–1.7 h | 30–33 g |
+| Button pod, yaw 12/20/28, right + left | `headrest_button_pod_yaw*_{right,left}.stl` (**v1.2, exported from the Python reference**; re-export from Onshape before the first print) | **lying on its pad-side underside** | 4 / 40 % | ~1.5–1.7 h (v1.1 slice) | 30–36 cm³ |
 | Pocket blank, right + left | `headrest_pocket_blank_*.stl` | wedge down | 4 / 40 % | 10 min | 3 g |
-| Fit-test bar (**print first**) | `headrest_fit_test.stl` (v1.0, still valid) | flat | 3 / 20 % | 1.4 h | 44 g |
+| Fit-test bar (**print first**) | `headrest_fit_test.stl` (v1.2: brackets the new tolerance block) | flat | 3 / 20 % | 1.4 h | 44 g |
 | Chair `top_back` with receiver | `chair_top_back_with_headrest_receiver.stl` | chair coordinates: print upright (top edge up) | 4+ walls round the socket | – | – |
 | Foam template part | `padding/foam_template_part_2mm.stl` | flat | 2 / 15 % | 1.3 h | 44 g |
 | Rod cutting gauge, base (workshop tool) | `stl/tools/rod_cutting_gauge_base.stl` | flat, as exported, no supports | 3 / 15 % | 2.2 h | 70 g |
@@ -43,30 +43,34 @@ One headrest (pad + H50 mast + 1 pod + 1 blank) is about **378 g of PETG and 13 
 
 These are for a solid section. With 6 walls and 40 % infill expect roughly 70–80 % of this, which is why H100 must pass the load test before use.
 
-## Fits and tolerances (top of `featurescript/gbg_headrest_v10.fs`; first guesses for P1S/PETG)
-| Fit | Value | Check with |
-|---|---|---|
-| Ø8 carbon rod in the mast | Ø8.3 teardrop bore, 87 + H long, open at the plug end (ream with an 8 mm drill if tight) | fit-test bar Ø8.2/8.3/8.4 |
-| Plug in the chair socket | 0.2 mm per side | first print |
-| K2 tenon in the pad channel, column in the pad | 0.25 mm per side, 3° taper (wedges tight) | first print |
-| Triangle pocket / pod wedge | +0.15 / −0.05 = 0.2 mm per side, 8 mm deep, 2 click dimples | fit-test bar pocket + wedge |
-| M3 nut traps | 5.8 mm across flats, 3 mm deep, corner up (nut 5.5 × 2.4) | fit-test bar 5.6/5.8/6.0 |
-| M5 nut slots | 8.3 mm across flats (nut 8.0) | fit-test bar 8.1/8.3/8.5 |
-| PVC bore in the pod | Ø20.3 teardrop | fit-test rings 20.2/20.3/20.5 |
-| Clearance holes | M3 Ø3.4, M5 Ø5.4, all teardrops when horizontal in print | – |
-| Countersinks (DIN 7991) | M3 Ø6.5, M5 Ø10.6 | – |
-| Pod underside to pad surface | 0.3 mm gap | – |
+## Fits and tolerances (the TOLERANCE BLOCK at the top of `featurescript/gbg_headrest_v10.fs` = `generator/headrest_FITS.py`)
+P1S/PETG policy (v1.2): FDM holes print 0.1–0.3 mm undersize (horizontal ones worse, teardrops too), so **clearance holes +0.4–0.5 on the diameter, nut traps AF +0.3 and nut thickness +0.4 deep, sliding fits ≥ 0.2 per side, rod and PVC bores slip fits** (something else locks them).
 
-## Hardware (3 screw types, all DIN 7991 countersunk like the pommel; every screw ends in a hex nut)
+| Fit | Value | Policy | Check with |
+|---|---|---|---|
+| Ø8 carbon rod in the mast | **Ø8.5** teardrop bore (was 8.3; rods are often 8.0–8.1), 87 + H long, open at the plug end | slip | fit-test bar Ø8.3/8.5/8.7 |
+| PVC bore in the pod | **Ø20.8** flat-roofed teardrop (was 20.3 = a press fit on 20.0 +0.2/−0 pipe), 3 screws lock it | slip | fit-test rings 20.6/20.8/21.0 |
+| Plug in the chair socket | 0.2 mm per side (`SOCK_CL`), 1 mm × 45° lead-in at the mouth | meets ≥ 0.2 (exactly) | first print |
+| K2 tenon in the pad channel, column in the pad | 0.25 mm per side (`CH_CL`), 3° taper (wedges tight) | meets | first print |
+| Triangle pocket / pod wedge | +0.15 / −0.05 = 0.2 mm per side (`TRI_CL`), 8 mm deep, 2 click dimples, 0.5 mm lead-in chamfer on the wedge | meets ≥ 0.2 (exactly) | fit-test bar pocket + wedge |
+| M3 nut traps | 5.8 across flats, **2.8 deep** (nut 5.5 × 2.4; was 3.0 pad / 2.7 tenon slot), corner up | AF +0.3, depth +0.4 | fit-test bar 5.6/5.8/6.0 × 2.8 |
+| M5 nut slots | 8.3 across flats, **4.4 thick** (nut 8.0 × 4.0; was 4.3) | AF +0.3, depth +0.4 | fit-test bar 8.1/8.3/8.5 × 4.4 |
+| Clearance holes | **M3 Ø3.5, M5 Ø5.5** (were 3.4 / 5.4), PVC-lock screws Ø4.0 (ST3.5); teardrops when horizontal in print | +0.5 | – |
+| Countersinks (DIN 7991) | M3 Ø6.5, M5 Ø10.6; chin screws also get a flat Ø6.6 spot-face | – | – |
+| Pod underside to pad surface | 0.3 mm gap on the footprint, 1.3 mm outside it | – | – |
+
+## Hardware (v1.2: M screws DIN 7991 countersunk into hex nuts; the PVC lock is 3 small self-tappers)
 | Qty (1 pod + 1 blank) | Item | Where |
 |---|---|---|
 | 2 | Ø8 mm pultruded carbon rod, **85 + H mm** (85 / 110 / 135 / 160 / 185, see below) | mast spine. Bought, not printed. |
 | 2 + 2 nuts | **M5×30** DIN 7991 + M5 nut (DIN 934) | from behind through the receiver (flush) into nuts slid into the plug |
-| 4 + 4 nuts | **M3×30** DIN 7991 + M3 nut | 2 under the chin into the tenon nuts; 2 through the pod collar and the PVC (PVC clamp) |
-| 3 + 3 nuts | **M3×16** DIN 7991 + M3 nut | 2 pod → pad, 1 blank → pad; nuts trapped on the pad's head side |
+| 2 + 2 nuts | **M3×25** DIN 7991 + M3 nut | under the chin into the tenon nuts (v1.1: M3×30, whose tip broke out of the tenon back) |
+| 2 + 2 nuts | **M3×20** DIN 7991 + M3 nut | pod → pad (v1.1 M3×16 caught only ~0.25 mm of the nut); nuts trapped on the pad's head side |
+| 1 + 1 nut | **M3×12** DIN 7991 + M3 nut | blank → pad (v1.1 M3×16 stuck 3.7 mm out into the foam) |
+| 3 | **ST3.5 × 6.5 pan-head self-tapping screw** (DIN 7981 C / ISO 7049, or a 3.5 × 6–8 pan-head wood screw) | PVC lock, through the pod's Ø4 holes into the PVC wall (drill the PVC Ø2.5 first). Tip ends ~2 mm inside the pipe (pipe wall 1.5 assumed): route the switch cable along the pad side of the pipe. **Not longer than 8 mm.** |
 | – | 10 mm EVA foam + 8 pairs of Ø25 hook-and-loop dots | see [`padding/`](padding/) and [`docs/headrest`](../../../docs/headrest/) |
 
-With a pod on both sides: 6× M3×30, 4× M3×16.
+Per headrest with one pod: 2× M3×25, 2× M3×20, 1× M3×12, 5 M3 nuts, 3× ST3.5×6.5. With a pod on both sides: 4× M3×20, no M3×12, 6× ST3.5×6.5. (v1.1 needed 4× M3×30 + 3× M3×16 and 7 M3 nuts for one pod: the PVC clamp's 2 bolts and 2 nuts are gone.) The rod cutting gauge (workshop tool) still uses 2× M3×30 + 2 nuts.
 
 ### Rod lengths (carbon, full length, cut by hand)
 Each rod runs the full bore: **85 + H mm**, so the series is **85 / 110 / 135 / 160 / 185** (one step of 25 mm per mast step). The bore is 87 + H, so a cut within ±1 mm is fine. Full length is not stronger at the weak point (the socket exit) than the shortest working rod, but it is a little stiffer (H75: 0.71 vs 0.78 mm flex) and leaves no rod tip inside the stem. Without rods the strength roughly halves.
@@ -86,9 +90,9 @@ Other rod materials and borrowed standard parts are being reviewed in [`docs/hea
 | Path | What |
 |---|---|
 | `featurescript/gbg_headrest_v10.fs` | Onshape FeatureScript, fully native B-rep (v1.1). Feature **GbG Headrest v1.1** (height, pod side, pod angle, rods, print layout, review gallery) and feature **GbG Headrest Receiver (chair)**. The pad and the mast stem are built from the same formulas as the Python model (B-spline surfaces); only the pod hull is section data. |
-| `stl/` | Final parts exported from **Onshape's geometry**, in print orientation (decimated to ≤ 0.02 mm deviation). |
+| `stl/` | Parts in print orientation. Exported from **Onshape's geometry** (decimated to ≤ 0.02 mm deviation), **except the v1.2 pods and the fit-test bar**, which come from the Python reference (`headrest_FINAL_export.py pods` / `fit`) until the v1.2 FeatureScript is loaded on an Onshape branch and they are re-exported. |
 | `padding/` | 1:1 foam template (A4 PDF), the 2 mm template part to trace and mark, and `test_kit/coupon_F3_attach_test.stl`. |
-| `review/` | v1.1 shape-review evidence: pod renders from Onshape, support-by-surface-class study. |
+| `review/` | Shape-review evidence: v1.1 pod renders from Onshape, support-by-surface-class study; v1.2 `pod_v12_lock_holes.png` and `pod_v12_odd_lines_before_after.png`. |
 | `stl/tools/` | Workshop tools: the rod cutting gauge (base + clamp lid). |
 | `generator/` | The Python reference model (manifold3d), plus `rod_cutting_gauge.py`: `headrest_FINAL.py` (all parts + checks), `headrest_POD11.py` (pod + `write_fsdata()` for the FeatureScript), `headrest_MB_strength.py`, `headrest_SURF.py` / `headrest_ORIENT.py` (orientation study), `headrest_REVIEW.py` (Onshape vs reference), `headrest_STL_FROM_ONSHAPE.py`. Needs `numpy manifold3d trimesh scipy`. |
 | [`docs/headrest/`](../../../docs/headrest/) | Design-review pages and the padding shopping list. |
@@ -110,6 +114,7 @@ Other rod materials and borrowed standard parts are being reviewed in [`docs/hea
 - Print orientation chosen by where support touches: none on fit surfaces, as little as possible on visible ones.
 
 ## Before this can drop "pre-first-print"
+- [ ] Load the v1.2 FeatureScript on an Onshape branch, check it regenerates (pod lift, receiver mouth chamfer, blank/wedge rounds are new B-rep ops), and re-export the 6 pods (and blanks, masts, pad, chair `top_back`) from Onshape.
 - [ ] Print the fit-test bar, then set `ROD_HOLE_D`, `NUT_M3_AF`, `NUT_M5_AF`, `TRI_CL`, `PVC_BORE` from the results.
 - [ ] Print the chair `top_back` from branch `headrest-v1`, plus an H50 mast, then check the plug in the socket, the bolts and the rods.
 - [ ] Print the pad and check the tenon slide-in, the taper wedge and the lock screws.

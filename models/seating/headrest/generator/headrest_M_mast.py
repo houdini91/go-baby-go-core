@@ -14,7 +14,7 @@ KP = "F3"
 TOP = 391.3                     # backrest top edge (local)
 FRONT = 123.5                   # backrest front face (local)
 SOCK_Z0, SCL = 345.0, 0.2       # receiver socket floor, fit
-NUT_M5_AF = 8.3                 # FINAL 2026-11-15: printed M5 nut slot across flats (nut 8.0; was 8.0 = no clearance)
+NUT_M5_AF = F.FIT.NUT_M5_AF      # printed M5 nut slot across flats (tolerance block: headrest_FITS.py)
 import os
 RVAR = os.environ.get("MAST_R", "R2")
 _RV = dict(   # receiver / connection variants (Mikey 2026-11-15: less chunky, less depth down the back)
@@ -75,7 +75,7 @@ def rods(n, H, z0=SOCK_Z0 + 1):
     return M.batch_boolean([M.cylinder(zt - z0, 4.0, 4.0, 32).translate([x, y, z0]) for x, y in spine_local(n)], 0)
 def rod_holes(n, H, z0=SOCK_Z0 - 0.5):
     zt = frame(n, H)[0] + K.ROD_TOP + 0.5
-    return M.batch_boolean([M.cylinder(zt - z0, 4.15, 4.15, 32).translate([x, y, z0]) for x, y in spine_local(n)], 0)
+    return M.batch_boolean([M.cylinder(zt - z0, F.FIT.ROD_HOLE_D / 2, F.FIT.ROD_HOLE_D / 2, 32).translate([x, y, z0]) for x, y in spine_local(n)], 0)
 
 # ---------------- chair side: RECEIVER (printed into top_back), restyled to flow down the back like a spine ----------------
 FOOT = RV["foot"]   # common foot footprint (hw, front, back, p) = top of the receiver: nothing overhangs
@@ -94,14 +94,14 @@ def socket(cl=SCL):
 def bolt_cuts(head=True):
     out = []
     for z in BOLTS:
-        out.append(M.cylinder(60, 2.7, 2.7, 24).rotate([-90, 0, 0]).translate([0, PLUG[2] + 2, z]))
+        out.append(M.cylinder(60, F.FIT.M5_CLEAR / 2, F.FIT.M5_CLEAR / 2, 24).rotate([-90, 0, 0]).translate([0, PLUG[2] + 2, z]))
         if head: out.append(M.cylinder(20, 5.0, 5.0, 32).rotate([-90, 0, 0]).translate([0, FOOT[2] - 3.0, z]))   # counterbore: head flush with the back
     return M.batch_boolean(out, 0)
 def nut_slots():
     """M5 nut slides in from the side of the plug (hex across flats 8)"""
     out = []
     for z in BOLTS:
-        nut = CS.circle(NUT_M5_AF / math.sqrt(3), 6).extrude(4.3).translate([0, 0, -2.15]).rotate([90, 0, 0]).rotate([0, 0, 0])
+        nut = CS.circle(NUT_M5_AF / math.sqrt(3), 6).extrude(F.FIT.NUT_M5_TRAP).translate([0, 0, -F.FIT.NUT_M5_TRAP / 2]).rotate([90, 0, 0]).rotate([0, 0, 0])
         out.append(M.batch_hull([nut.translate([0, RV['nut_y'], z]), nut.translate([-40, RV['nut_y'], z])]))
     return M.batch_boolean(out, 0)
 def bolts():
