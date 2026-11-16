@@ -16,6 +16,17 @@ All quoted Nov 29 – Dec 6. Listings and prices change; check the variant befor
 
 **Not needed any more (vs the v1.0 padding kit):** the punch set. v1.1 has no screwdriver holes in the foam.
 
+**Carbon cutting kit (skip what you already have).** Carbon dust irritates the lungs, skin and eyes. Cut wet or over a damp cloth, then wipe up or vacuum. **Never use a blower** (it spreads the dust). Seal each cut end with a drop of thin CA: caps would make the rod thicker than its Ø8.3 bore.
+
+| What | Listing | Variant | Seller (rating) |
+|---|---|---|---|
+| Diamond cut-off discs for a rotary tool (Dremel), mandrel included | https://www.aliexpress.com/item/32263047495.html | **30mm 12pcs** (12 mm cutting depth, more than the 8 mm rod) | xcan Official Store (4.9★, 354 reviews, 98 %) |
+| FFP3 dust masks | https://www.aliexpress.com/item/1005011564945077.html | 10PCS | Shop1105324081 (4.8★, 73 reviews, 95.9 %) |
+| Safety goggles, anti-fog | https://www.aliexpress.com/item/1005009256334951.html | – | A High End Supermarket Store (4.6★, 83 reviews) |
+| Thin CA glue (seals the cut ends) | https://www.aliexpress.com/item/1005010340781499.html | 50g 1 bottle | IWFIX ADHESIVE Store (4.8★, 186 reviews, 98 %) |
+
+Also used, usually already at hand: masking tape (wrap the cut line), nitrile gloves, 240–400 grit sandpaper (deburr the ends), a damp cloth or spray bottle, and a vise or clamp.
+
 **Only if you don't already have them:**
 - Ø3.2 mm drill bit (to drill the PVC rod through the pod's clamp holes) and an 8 mm drill bit (to ream the rod bores if tight). Any HSS set.
 - Heat gun (only to heat-form the foam roll), knife with 18 mm blades.
