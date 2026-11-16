@@ -42,10 +42,10 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 6. Load tests (README), then the other heights only as children need them.
 
 ## 6. Assembly
-1. Cut 2 carbon rods to **85 + H mm** and deburr the ends.
+1. Cut 2 carbon rods to the **standard length for the mast** (H0 80, H25 100, H50 125, H75 150, H100 160 mm; README "Rod lengths") and deburr the ends. Wrap tape round the cut, wear a mask, cut outside.
 2. Slide the 2 M5 nuts into the plug slots (from −x); a drop of CA keeps them in.
 3. Slide the 2 M3 nuts into the slots on the tenon side edges.
-4. Push the rods into the mast from the plug end until they stop.
+4. Push the rods into the mast from the plug end. They may be shorter than the bore: once the plug is in the socket they rest on the socket floor (bottom-anchored), which is correct.
 5. Push the plug into the `top_back` socket. Fit 2× **M5×30** countersunk from behind (flush). Snug only: they lock, the socket carries the load.
 6. Slide the pad down onto the tenon until the taper wedges. Fit 2× **M3×30** countersunk from under the chin.
 7. Press 3 M3 nuts into the traps on the pad's head side, at each pocket you use (2 per pod, 1 per blank).

@@ -8,11 +8,11 @@ All quoted Nov 29 – Dec 6. Listings and prices change; check the variant befor
 |---|---|---|---|---|---|
 | 1 | DIN 7991 countersunk screws, 304 stainless | https://www.aliexpress.com/item/1005011845662097.html | **M3 50pcs × 30mm**, **M3 50pcs × 16mm**, **M5 20pcs × 30mm** (3 lines in the cart) | 1 each | ScrewMax Supply Store (4.9★, 470 reviews, 98.9 %, 5K+ sold) |
 | 2 | DIN 934 hex nuts, 304 stainless | https://www.aliexpress.com/item/1005011858105441.html | **M3 50pcs**, **M5 30pcs** | 1 each | ScrewMax Supply Store (same seller as #1: 4.9★, 236 reviews) |
-| 3 | Solid carbon fibre rod (pultruded) | https://www.aliexpress.com/item/1005006541980356.html | **8x500mm 1pcs** | **2** | Super2 Store (4.9★, 419 reviews, 96.8 %, 3K+ sold) |
+| 3 | Solid carbon fibre rod (pultruded) | https://www.aliexpress.com/item/1005006541980356.html | **8x500mm 1pcs** | **1** | Super2 Store (4.9★, 419 reviews, 96.8 %, 3K+ sold) |
 | 4 | EVA foam sheet, black | https://www.aliexpress.com/item/1005005603490236.html | **10mm x 35cm x 50cm** (≈ 6 pads from the template) | 1 | Super2 Store (same seller as #3: 4.8★) |
 | 5 | Self-adhesive hook-and-loop dots | https://www.aliexpress.com/item/32881873870.html | **Black 25mm 40Pairs** (8 per pad) | 1 | Nuomi Handcraft Store (4.7★, 97.8 %, 7.3K followers) |
 
-**How much each covers.** One 500 mm rod gives both rods up to H100 (2 × 185 mm); the second is a spare for other heights. The screw packs (50 / 50 / 20) and nut packs (50 / 30) cover several headrests.
+**How much each covers.** One 500 mm rod gives the pair for any one height (standard lengths 80/100/125/150/160 mm, see the headrest README); buy a second only for more headrests. The screw packs (50 / 50 / 20) and nut packs (50 / 30) cover several headrests.
 
 **Not needed any more (vs the v1.0 padding kit):** the punch set. v1.1 has no screwdriver holes in the foam.
 

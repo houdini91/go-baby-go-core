@@ -44,7 +44,7 @@ These are for a solid section. With 6 walls and 40 % infill expect roughly 70–
 ## Fits and tolerances (top of `featurescript/gbg_headrest_v10.fs`; first guesses for P1S/PETG)
 | Fit | Value | Check with |
 |---|---|---|
-| Ø8 carbon rod in the mast | Ø8.3 teardrop bore (ream with an 8 mm drill if tight) | fit-test bar Ø8.2/8.3/8.4 |
+| Ø8 rod in the mast | Ø8.3 teardrop bore, open at the plug end (ream with an 8 mm drill if tight) | fit-test bar Ø8.2/8.3/8.4 |
 | Plug in the chair socket | 0.2 mm per side | first print |
 | K2 tenon in the pad channel, column in the pad | 0.25 mm per side, 3° taper (wedges tight) | first print |
 | Triangle pocket / pod wedge | +0.15 / −0.05 = 0.2 mm per side, 8 mm deep, 2 click dimples | fit-test bar pocket + wedge |
@@ -58,13 +58,26 @@ These are for a solid section. With 6 walls and 40 % infill expect roughly 70–
 ## Hardware (3 screw types, all DIN 7991 countersunk like the pommel; every screw ends in a hex nut)
 | Qty (1 pod + 1 blank) | Item | Where |
 |---|---|---|
-| 2 | Ø8 mm pultruded carbon rod, length **85 + H mm** (H0 85, H25 110, H50 135, H75 160, H100 185) | mast spine. Bought, not printed. |
+| 2 | Ø8 mm rod, **standard length per mast** (table below) | mast spine. Bought, not printed. |
 | 2 + 2 nuts | **M5×30** DIN 7991 + M5 nut (DIN 934) | from behind through the receiver (flush) into nuts slid into the plug |
 | 4 + 4 nuts | **M3×30** DIN 7991 + M3 nut | 2 under the chin into the tenon nuts; 2 through the pod collar and the PVC (PVC clamp) |
 | 3 + 3 nuts | **M3×16** DIN 7991 + M3 nut | 2 pod → pad, 1 blank → pad; nuts trapped on the pad's head side |
 | – | 10 mm EVA foam + 8 pairs of Ø25 hook-and-loop dots | see [`padding/`](padding/) and [`docs/headrest`](../../../docs/headrest/) |
 
 With a pod on both sides: 6× M3×30, 4× M3×16.
+
+### Rod lengths (normalized to standard Ø8 sizes)
+The rod bores are open at the plug end, so a rod drops onto the floor of the chair's socket and sits **bottom-anchored**: the part that matters (the socket exit) is always reinforced, and any gap is at the low-stress top. So a rod may be shorter than its bore. Lengths below are common standard Ø8 sizes (dowel pins, linear shafts, ejector pins, M8 screws), each the longest that fits, and each above the minimum the strength model needs.
+
+| Mast | Bore | **Rod** | Minimum (model) | Off-the-shelf no-cut alternatives (not tested) |
+|---|---|---|---|---|
+| H0 | 86 | **80 mm** | 60 | hardened dowel pin 8×80 |
+| H25 | 111 | **100 mm** | 80 | ejector pin / linear shaft 8×100 |
+| H50 | 136 | **125 mm** | 100 | ejector pin 8×125 |
+| H75 | 161 | **150 mm** | 100 | linear shaft 8×150 |
+| H100 | 186 | **160 mm** | 150 (must pass the stem window) | ejector pin 8×160 |
+
+Carbon (the default): cut to these lengths. One 8×500 rod gives a pair for any one height. A strip of tape round the rod end stops it rattling. Steel alternatives are heavier (about 0.4 g/mm) and **not yet checked**: linear shafts are only skin-hardened (weaker than carbon), dowel/ejector pins must be hardened, and M8 12.9 socket screws (head in a pocket) need a model change first.
 
 ## Files
 | Path | What |
