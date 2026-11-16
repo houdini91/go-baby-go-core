@@ -5,7 +5,8 @@ import(path : "onshape/std/common.fs", version : "3112.0");
 // Chair coordinates (GbG_chair_forth: seat-pan bottom z 0, top z 20, front face y -96, -Y = front).
 // - Saddle: low plate in a SHALLOW seat recess (RECESS_D 1.5 mm, ramped + blended, so the seat stays comfortable without the
 //   pommel), 3 M3 countersunk screws into the chair's nut pockets. Hook bears on the seat front face. The saddle top stays
-//   under 10 mm above the seat over the groin zone (keep-low rule).
+//   about 10 mm or less above the seat over the groin zone (keep-low rule): recess chair max ~9.7, plain chair ~10 at the lip.
+//   Screws: M3 x 25, head top at z 25, tip flush with the pan bottom (full 2.4 mm nut pocket, nothing sticks out below).
 // - Long sizes: 46 mm wide neck, top 10 mm above the seat (level with the hook lip), under the thighs; knee pad at the knees.
 //   Rods run in teardrop channels with crush ribs, from the chair's rod holes into the pad.
 // - Edges: leg-contact edges rounded 10 mm (ladder down where it can't fit), concave transitions filleted, 45 deg chamfers on the
@@ -43,8 +44,11 @@ const RECESS_RF = [3, 2, 1];     // floor blend radii (inside corner); small so 
 const FACE_CUT = 3;        // hook seat cut into the pan front face
 // ---- screws: M3 x 25 countersunk (DIN 7991 / ISO 10642, head 6.0) ----
 const BOLT_D = 3.5;        // M3 clearance (+0.5)
+const HEAD_D = 6.0;        // screw head diameter
 const CSK_D = 6.4;         // 90 deg countersink / head counterbore (head 6.0 + 0.4)
-const BOLT_HEAD_Z = 25.5;  // head top z, so an M3 x 25 ends 0.5 mm above the pan bottom, inside the nut
+const BOLT_HEAD_Z = 25.0;  // z where the head top seats (countersink = HEAD_D wide there; its CSK_D top is 0.2 higher):
+                           //   an M3 x 25 then ends flush with the pan bottom (z 0) and fills the chair's whole 2.4 mm nut pocket,
+                           //   without sticking out under the seat (tilt mechanism). Same on both chairs and every size.
 const NECK_HW = 23;        // long sizes: neck half width (46 mm) - fits in the wedge under/between the thighs
 const NECK_TOP = 30;       // long sizes: neck top z (10 mm above the seat, same as the hook lip) - no dip
 const SUP_GAP = 0.25;       // integral support: air gap under the saddle (about one 0.2 mm layer)
@@ -144,7 +148,9 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
 {
     const F = recess ? 20 - RECESS_D : 20;   // saddle floor (shallow recess, or the plain seat)
     const Y0 = recess ? PAN_FRONT + FACE_CUT : PAN_FRONT;   // chair front face the hook bears on
-    const top3 = recess ? SAD_TOP : [F + 7.5, F + 8.5, F + 11];   // saddle top over the 3 screws (plain chair: as v0.7.2)
+    // saddle top over the 3 screws. Plain chair: the same saddle THICKNESS as the recess version (floor 1.5 higher, so the
+    // top is 1.5 higher) and the same lip z 30, so the groin zone stays about 10 mm above the seat on both chairs.
+    const top3 = recess ? SAD_TOP : [SAD_TOP[0] + RECESS_D, SAD_TOP[1] + RECESS_D, SAD_TOP[2] + RECESS_D];
     const HF = Y0 - HOOK_T;                  // hook outer face
     const zT = 20 + sp.H;                    // pad top
     var a = -SEAT_EDGE + sp.s0;              // pad start (distance forward of the chair origin)
@@ -155,7 +161,7 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
         throw regenError("Reach too short for a long pommel: use a short (S) size", ["step"]);
 
     // ---- sideSk profile (y, z), extruded across x ----
-    var topPts = [pt(SAD_REAR, top3[0]), pt(-55, top3[1]), pt(-75, top3[2]), pt(Y0 + 2, recess ? LIP_TOP - 1 : max(LIP_TOP - 1, F + 13)), pt(HF, recess ? LIP_TOP : max(LIP_TOP, F + 14))];
+    var topPts = [pt(SAD_REAR, top3[0]), pt(-55, top3[1]), pt(-75, top3[2]), pt(Y0 + 2, recess ? LIP_TOP - 1 : LIP_TOP), pt(HF, LIP_TOP)];
     if (sp.long)
         topPts = concatenateArrays([topPts, [pt(HF - 10, NECK_TOP), pt(-(a - 20), NECK_TOP), pt(-(a - 2), NECK_TOP + 6), pt(-(a + 12), zT - 12), pt(-(a + 28), zT), pt(-(b - 14), zT - 1), pt(-b, zT - 22)]]);
     else
@@ -258,18 +264,21 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
         if (size(hits) > 0)
             zt = hits[0].intersection[2];
         // head top at BOLT_HEAD_Z on both chairs (all three screws M3 x 25), with a counterbore above it where the saddle is higher
-        const hs = min(mmv(BOLT_HEAD_Z), zt);
+        if (zt < mmv(BOLT_HEAD_Z))     // a lower head would push the M3 x 25 tip out under the seat
+            throw regenError("Saddle top under a screw (z " ~ round(zt / millimeter * 10) / 10 ~ ") is below the head seat BOLT_HEAD_Z " ~ BOLT_HEAD_Z);
+        const hs = min(mmv(BOLT_HEAD_Z), zt);              // head top seat
+        const cTop = hs + mmv((CSK_D - HEAD_D) / 2);       // countersink top (CSK_D wide)
         boltTops = append(boltTops, round(hs / millimeter * 10) / 10);
         tools = append(tools, cyl(context, id + ("bh" ~ j), p3(0, y, F - 1), vector(0 * meter, mmv(y), zt + mmv(2)), mmv(BOLT_D / 2)));
-        fCone(context, id + ("cs" ~ j), { "bottomCenter" : vector(0 * meter, mmv(y), hs - mmv((CSK_D - BOLT_D) / 2)), "topCenter" : vector(0 * meter, mmv(y), hs + mmv(0.01)),
+        fCone(context, id + ("cs" ~ j), { "bottomCenter" : vector(0 * meter, mmv(y), cTop - mmv((CSK_D - BOLT_D) / 2)), "topCenter" : vector(0 * meter, mmv(y), cTop + mmv(0.01)),
                     "bottomRadius" : mmv(BOLT_D / 2), "topRadius" : mmv(CSK_D / 2) });
         tools = append(tools, qCreatedBy(id + ("cs" ~ j), EntityType.BODY));
-        if (zt - hs > mmv(0.05))
+        if (zt - cTop > mmv(0.05))
         {
             // counterbore down to the head, with a 0.6 mm 45 deg mouth chamfer (a plain countersink is its own chamfer)
-            tools = append(tools, cyl(context, id + ("cb" ~ j), vector(0 * meter, mmv(y), hs), vector(0 * meter, mmv(y), zt + mmv(2)), mmv(CSK_D / 2)));
-            fCone(context, id + ("mt" ~ j), { "bottomCenter" : vector(0 * meter, mmv(y), max(hs, zt - mmv(0.6))), "topCenter" : vector(0 * meter, mmv(y), zt + mmv(1.5)),
-                        "bottomRadius" : mmv(CSK_D / 2), "topRadius" : mmv(CSK_D / 2) + (zt + mmv(1.5) - max(hs, zt - mmv(0.6))) });
+            tools = append(tools, cyl(context, id + ("cb" ~ j), vector(0 * meter, mmv(y), cTop), vector(0 * meter, mmv(y), zt + mmv(2)), mmv(CSK_D / 2)));
+            fCone(context, id + ("mt" ~ j), { "bottomCenter" : vector(0 * meter, mmv(y), max(cTop, zt - mmv(0.6))), "topCenter" : vector(0 * meter, mmv(y), zt + mmv(1.5)),
+                        "bottomRadius" : mmv(CSK_D / 2), "topRadius" : mmv(CSK_D / 2) + (zt + mmv(1.5) - max(cTop, zt - mmv(0.6))) });
             tools = append(tools, qCreatedBy(id + ("mt" ~ j), EntityType.BODY));
         }
         // 0.5 mm mouth chamfer where the screw leaves the saddle floor
@@ -371,7 +380,7 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
             " size(mm)=" ~ round(sz[0]) ~ "x" ~ round(sz[1]) ~ "x" ~ round(sz[2]) ~ " sadTopAboveSeat(y-45,-64,-75,-89)=" ~ sadTop ~
             " vol_cm3=" ~ round(evVolume(context, { "entities" : out }) / centimeter ^ 3 * 10) / 10 ~
             " area_cm2=" ~ round(evArea(context, { "entities" : qOwnedByBody(out, EntityType.FACE) }) / centimeter ^ 2) ~
-            " bodies=" ~ size(evaluateQuery(context, out)) ~ " boltHeadTop_z=" ~ boltTops ~
+            " bodies=" ~ size(evaluateQuery(context, out)) ~ " boltHeadTop_z=" ~ boltTops ~ " screwTip_z(M3x25)=" ~ (BOLT_HEAD_Z - 25) ~
             (sp.long ? " rods=" ~ round(b - 15 + SAD_REAR) ~ "mm" : ""));
     return out;
 }

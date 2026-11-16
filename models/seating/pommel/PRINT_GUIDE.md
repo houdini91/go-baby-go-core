@@ -53,8 +53,10 @@ All of them fit the P1S plate (256 × 256 mm).
 
 ## 5. Hardware
 - 3 × **M3×25** countersunk screws (DIN 7991 / ISO 10642) into the chair's existing nut pockets, the same on both chairs.
-  - Every head seats 25.5 mm above the bottom of the seat pan. Where the saddle is taller, the head sits in a Ø6.4 counterbore with a chamfered mouth.
-  - The tip ends 0.5 mm inside the pan bottom, in the nut, so nothing sticks out under the seat where the tilt mechanism is.
+  - Every head top seats 25.0 mm above the bottom of the seat pan (z 25), on both chairs and every size. Where the saddle is taller, the head sits in a Ø6.4 counterbore with a chamfered mouth: 0.6 / 1.5 / 2.6 mm deep at the rear / middle / front screw on the recess chair, 2.1 / 3.0 / 4.1 mm on the plain chair.
+  - The tip ends flush with the pan bottom (z 0). It runs through the whole 2.4 mm nut pocket, so the nut is fully engaged, and nothing sticks out under the seat, where the tilt mechanism is. The screw length tolerance is ±0.4 mm: check from below after fitting.
+  - Plastic between the saddle floor and the head top: 6.5 mm (recess chair) or 5.0 mm (plain chair).
+  - The chair's nut pockets are 5.7 AF (policy 5.8). The nuts may need pressing in; see "Known items" in the README.
 - Long sizes only: 2 × Ø6 mm solid carbon rod, cut to 155 mm (K23) or 200 mm (K45), ±1.5 mm.
   - Cut with a Dremel cut-off disc, tape on the cut line. Wear an FFP2/FFP3 mask and glasses; work wet or outdoors, away from electronics.
   - Bevel both ends.
@@ -86,11 +88,13 @@ Worst case is K45, at the base of the neck. Load cases come from the expert-pane
 - K23 is stronger than K45, because its pad sits closer to the chair.
 
 **Saddle (v0.7.3, shallow recess), hand estimate:**
+- Groin zone, height above the seat at 45 / 64 / 75 / 89 mm: recess chair 5.8 / 7.0 / 7.8 / 8.9 mm (max about 9.7 at the lip); plain chair 7.2 / 8.5 / 9.3 / 10.0 mm (about 10 at the lip).
 - The saddle floor moved up from z 14 to z 18.5, and the top only rose 0–4 mm to keep the groin zone low. So the saddle is thinner:
   - 7.3 / 9.3 / 10.4 mm at the rear screw / front screw / hook, down from 8 / 11 / 14.5 mm;
   - bending stress there under a 150 N pull-up on the pad is roughly 1.4–1.9× higher.
 - The neck and pad figures above are unchanged.
 - Optional: a 100% infill modifier over the saddle (behind the hook, up to z 30) gives back more than that margin.
+- Plain chair (no recess): the saddle now has the same thickness as the recess version, within 0.2 mm. Before, it was 11 mm over the front screw and 13–14 mm high at the lip. So it has the same strength as the recess version, and the first-prototype S23A load test also checks the recess saddle. It is about 1.4× more stressed than the v0.7.2 plain saddle, with the same infill-modifier option.
 - The 6 mm recess wall used to take sideways and twisting knee loads by shape. The shallow ramp barely does, so these go through the hook and the 3 screws (plus the rods on K sizes), as on the older chair without a recess. Check this in the 200 N side-load test on an S size.
 
 ## 8. Assembly (long sizes)
@@ -102,7 +106,7 @@ Worst case is K45, at the base of the neck. Load cases come from the expert-pane
 ## 9. Checks after printing
 - Run a finger over every edge. Leg-contact edges should be rounded 10 mm. Run a hand over the bare chair seat too: you shouldn't feel the recess edge.
 - The rods enter the channels and the chair holes cleanly.
-- The screw heads sit flush or slightly below the surface.
+- The screw heads sit at the bottom of their counterbores. From below, the screw tips are flush with the pan underside and nothing sticks out.
 - Rock the pommel by hand: no movement at the hook or the saddle.
 - Load test before use: 300 N down, 200 N sideways, 150 N up. No cracks, under 3 mm movement.
 - Have a PT/OT fit it on the child before regular use.

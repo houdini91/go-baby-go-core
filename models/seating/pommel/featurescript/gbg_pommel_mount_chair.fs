@@ -8,7 +8,8 @@ import(path : "onshape/std/common.fs", version : "3112.0");
 // - FACE_CUT = 3 mm off the pan front face over the hook width (x +-40.5), with 45 deg flared ends, so the hook sits close
 // - the 3 M3 holes re-drilled to BOLT_D 3.5 (clearance) with a 0.5 mm mouth chamfer at the recess floor
 // - optional 2x CHAIR_BORE_D carbon-rod holes at x +-12, z 7, from the front face back to y -33 (60 deep), with a lead-in chamfer
-// The chair's nut pockets are unchanged. Keep every constant below identical to the copy in gbg_pommel_v07.fs.
+// The chair's nut pockets are unchanged (Part Studio 1, 2.4 mm deep, open at the pan bottom; KNOWN ITEM: they are 5.7 AF,
+// tighter than the 5.8 AF print-fit policy for M3 nuts, see README). Keep every constant below identical to the copy in gbg_pommel_v07.fs.
 // Source: research/onshape/gobabygo/addons/pommel/gbg_pommel_v07.fs
 
 const SAD_REAR = -36;      // saddle rear edge (chair y)
