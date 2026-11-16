@@ -42,7 +42,7 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 6. Load tests (README), then the other heights only as children need them.
 
 ## 6. Assembly
-1. Cut 2 carbon rods to **85 + H mm** (H0 85, H25 110, H50 135, H75 160, H100 185; cut plans in the README) and deburr the ends. Wrap tape round the cut, wear a mask, cut outside or over a damp cloth.
+1. Cut 2 carbon rods to **85 + H mm** (H0 85, H25 110, H50 135, H75 160, H100 185; cut plans in the README) and deburr the ends. Wrap tape round the cut line, wear an FFP3 mask, goggles and gloves, and cut with a diamond disc (or a fine hacksaw) outside or over a damp cloth. No blower: wipe or vacuum the dust. Seal each end with a drop of thin CA glue.
 2. Slide the 2 M5 nuts into the plug slots (from −x); a drop of CA keeps them in.
 3. Slide the 2 M3 nuts into the slots on the tenon side edges.
 4. Push the rods into the mast from the plug end until they stop.
