@@ -2,13 +2,20 @@
 
 > **Status: PRE-FIRST-PRINT.** Nothing here has been printed or tested on a child yet. Fits and strength figures are CAD/hand estimates; the two sliced weights below are real slicer output.
 
-CAD: Onshape "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7.2 pre-first-print**. Chair: GbG_chair_forth **Main, version V11** (includes the 6 mm saddle recess and the 2 rod holes).
+CAD: Onshape "GbG Pommel add-on (for GbG_chair_forth)", version **v0.7.2 pre-first-print**. Chair: GbG_chair_forth **Main, version V11** has the old 6 mm recess. The v0.7.3 FeatureScript (1.5 mm blended recess, new fits) isn't in Onshape yet; load it on a chair branch first.
+
+**Fits (P1S, PETG; FDM holes print 0.1–0.3 mm small):**
+- Sliding fits get at least 0.2 mm per side.
+- M3 clearance holes are Ø3.5. Countersinks are Ø6.4 at 90° (head Ø6.0).
+- Chair rod holes are Ø6.5 (Ø6.0 rod).
+- Pommel rod channels are Ø6.5 with 3 crush ribs 0.30 mm high (rib crest Ø5.9).
+- The saddle recess has 0.5 mm clearance per side.
 
 ## 1. Files
 | File (in `stl/`) | What | Sliced (PETG, settings below) |
 |---|---|---|
-| `gbg_pommel_v07_rod_fit_test.stl` | 96 × 15 × 14 mm bar. Left 3 holes: chair rod-hole sizes 6.3 / 6.4 / 6.5. Right 3: pommel channel with crush ribs pressing .15 / .25 / .35 mm. | **12.9 g, 28 min**, no supports |
-| `gbg_pommel_v07_S23A_todays_chair.stl` | Short pommel S23A, made for a chair **without** the recess (an older chair print). The first prototype. | **113.7 g, 3 h 40 min**, with slicer supports (106 g / 3 h without) |
+| `gbg_pommel_v07_rod_fit_test.stl` | 96 × 15 × 14 mm bar. Left 3 holes: chair rod-hole sizes 6.4 / 6.5 / 6.6. Right 3: Ø6.5 pommel channel with crush ribs 0.2 / 0.3 / 0.4 mm high (crest Ø6.1 / 5.9 / 5.7). **The committed STL is still v0.7.2 (6.3 / 6.4 / 6.5, ribs .15 / .25 / .35); re-export it from v0.7.3.** | **12.9 g, 28 min** (v0.7.2), no supports |
+| `gbg_pommel_v07_S23A_todays_chair.stl` | Short pommel S23A, made for a chair **without** the recess (an older chair print). The first prototype. Still v0.7.2 (Ø3.4 holes, heads flush); re-export from v0.7.3. | **113.7 g, 3 h 40 min**, with slicer supports (106 g / 3 h without) |
 
 Other sizes and the recess versions: export them from the Onshape Part Studio (feature "GbG Pommel v0.7 2", Print set) after the fit test has confirmed the hole sizes.
 
@@ -45,9 +52,9 @@ These come from CAD volume and surface area, at 4 walls and 15% gyroid, plus abo
 All of them fit the P1S plate (256 × 256 mm).
 
 ## 5. Hardware
-- 3 × M3 countersunk screws (DIN 7991 / ISO 10642) into the chair's existing nut pockets.
-  - The head tops sit 22 / 23 / 25 mm above the bottom of the seat pan (rear / middle / front hole). On the older chair without the recess, add 6 mm.
-  - Pick lengths so no tip sticks out under the seat, where the tilt mechanism is.
+- 3 × **M3×25** countersunk screws (DIN 7991 / ISO 10642) into the chair's existing nut pockets, the same on both chairs.
+  - Every head seats 25.5 mm above the bottom of the seat pan. Where the saddle is taller, the head sits in a Ø6.4 counterbore with a chamfered mouth.
+  - The tip ends 0.5 mm inside the pan bottom, in the nut, so nothing sticks out under the seat where the tilt mechanism is.
 - Long sizes only: 2 × Ø6 mm solid carbon rod, cut to 155 mm (K23) or 200 mm (K45), ±1.5 mm.
   - Cut with a Dremel cut-off disc, tape on the cut line. Wear an FFP2/FFP3 mask and glasses; work wet or outdoors, away from electronics.
   - Bevel both ends.
@@ -59,7 +66,7 @@ All of them fit the P1S plate (256 × 256 mm).
    - Pick the channel that needs a firm push and then holds the rod when shaken.
    - Report the two numbers; `CHAIR_BORE_D` and `RIB_I` in the FeatureScript get set from them.
 2. **S23A for today's chair** (`gbg_pommel_v07_S23A_todays_chair.stl`). Bolt it through the 3 existing holes, with the hook over the seat front. Check the fit, the hook, the screws and the edges.
-3. **Full system:** print the chair seat from Main V11 (recess and rod holes) and a long size (K23A or K45A), recess version. Press on the pad by hand. If K45 feels too springy, switch it to 8 mm rods.
+3. **Full system:** print the chair seat with the v0.7.3 mount (shallow recess and rod holes) and a long size (K23A or K45A), recess version. Press on the pad by hand. If K45 feels too springy, switch it to 8 mm rods.
 
 ## 7. Strength (hand estimates, untested)
 On the long sizes the neck is 46 mm wide and its top stays 10 mm above the seat, level with the hook lip, with no dip. It sits in the wedge-shaped space under and between the thighs; near their undersides the thighs curve apart, leaving roughly 54 mm for the smallest child. It flows straight from the hook into the knee pad.
@@ -78,6 +85,14 @@ Worst case is K45, at the base of the neck. Load cases come from the expert-pane
 - There's about 8 mm of plastic beside each rod channel.
 - K23 is stronger than K45, because its pad sits closer to the chair.
 
+**Saddle (v0.7.3, shallow recess), hand estimate:**
+- The saddle floor moved up from z 14 to z 18.5, and the top only rose 0–4 mm to keep the groin zone low. So the saddle is thinner:
+  - 7.3 / 9.3 / 10.4 mm at the rear screw / front screw / hook, down from 8 / 11 / 14.5 mm;
+  - bending stress there under a 150 N pull-up on the pad is roughly 1.4–1.9× higher.
+- The neck and pad figures above are unchanged.
+- Optional: a 100% infill modifier over the saddle (behind the hook, up to z 30) gives back more than that margin.
+- The 6 mm recess wall used to take sideways and twisting knee loads by shape. The shallow ramp barely does, so these go through the hook and the 3 screws (plus the rods on K sizes), as on the older chair without a recess. Check this in the 200 N side-load test on an S size.
+
 ## 8. Assembly (long sizes)
 1. Push both rods into the pommel channels until they stop. About 57 mm stays sticking out behind the hook.
 2. Slide the pommel backwards into the chair: the rods go into the chair holes and the saddle slides along the recess until the hook touches the seat front.
@@ -85,7 +100,7 @@ Worst case is K45, at the base of the neck. Load cases come from the expert-pane
 4. To remove: undo the 3 screws and slide the pommel forward.
 
 ## 9. Checks after printing
-- Run a finger over every edge. Leg-contact edges should be rounded 10 mm.
+- Run a finger over every edge. Leg-contact edges should be rounded 10 mm. Run a hand over the bare chair seat too: you shouldn't feel the recess edge.
 - The rods enter the channels and the chair holes cleanly.
 - The screw heads sit flush or slightly below the surface.
 - Rock the pommel by hand: no movement at the hook or the saddle.
