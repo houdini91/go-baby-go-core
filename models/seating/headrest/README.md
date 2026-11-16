@@ -77,11 +77,11 @@ With a pod on both sides: 6× M3×30, 4× M3×16.
 | [`docs/headrest/`](../../../docs/headrest/) | Design-review pages and the padding shopping list. |
 
 ## CAD (Onshape)
-- Chair doc **GbG_chair_forth**, branch **`headrest-v1`**, version **"headrest-v1: v1.1 pre-first-print …"** (not merged to Main):
+- Chair doc **GbG_chair_forth**, **Main, version V12 "Main + headrest v1.1 (pre-first-print)"** (branch `headrest-v1` merged 2026-11-16):
   - Feature Studio **GbG Headrest v1.0** (the tab name) = `featurescript/gbg_headrest_v10.fs`.
-  - **Part Studio 1**: last feature **GbG Headrest Receiver (chair) 1**.
+  - **Part Studio 1**: last feature **GbG Headrest Receiver (chair) 1** (the socket in `top_back`).
   - **Headrest v1.0** Part Studio: the headrest on the chair (H50, right pod, 20°) and the print layout.
-  - **Headrest review gallery**: every height, pod angle and side, for review.
+  - **Headrest review gallery**: every height, pod angle and side.
   - **Assembly 1**: the chair with the headrest.
 
 ## v1.1 review (what was checked, all on Onshape's own geometry)
@@ -99,5 +99,4 @@ With a pod on both sides: 6× M3×30, 4× M3×16.
 - [ ] Load tests per mast height: 300 N knock and 250 N side at the pad centre, 150 N push. No cracks, under 3 mm movement. H100 is the critical one.
 - [ ] Padding test kit (coupon): dots vs strips vs adhesive EVA, heat-forming, comfort.
 - [ ] PT/OT fitting on a real child: height, pod side and angle, foam thickness, and the strap only if prescribed.
-- [ ] Then merge the Onshape branch `headrest-v1` into Main.
 - Later: S/L pad sizes (same mounting), and reach adjustment (pad further forward) with the rods.
