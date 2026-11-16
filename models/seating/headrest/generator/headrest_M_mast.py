@@ -31,6 +31,10 @@ def frame(n, H):
     zc, cy = G.frame(n, H); return zc, cy           # pad-frame origin in local coords (zc = 451 + H, cy = 28.8 - n)
 def L(m, n, H): zc, cy = frame(n, H); return m.translate([0, cy, zc])
 def chin_z(n, H): return frame(n, H)[0] + BOT       # pad bottom line, local
+# v1.2: the M1 stem top sits STEM_DROP under the chin line = 0.1 mm under the pad's flat bottom (outline z -52.5).  At 0.3 it
+# poked 0.2 mm into the pad: cutting the pad out of the mast left 0.2 mm feather ridges along the column-socket / channel
+# clearances and the chin screw spot-faces.  The head (column, bosses) now starts HEAD_DROP under the chin, 0.3 into the stem.
+STEM_DROP, HEAD_DROP = 0.6, 0.9
 
 # ---------------- convex section + loft ----------------
 def oval_back(x, cy):
@@ -62,7 +66,7 @@ _C = {}
 def head_locked():
     """F3 mast above the pad's bottom line (pad frame): tenon, column stub, spine bosses, nut slots"""
     if "head" not in _C:
-        _C["head"] = F.mast() ^ M.cube([400, 400, 200]).translate([-200, -200, BOT - 0.3])
+        _C["head"] = F.mast() ^ M.cube([400, 400, 200]).translate([-200, -200, BOT - HEAD_DROP])
     return _C["head"]
 def pad(n, H): return L(F.pad(KP), n, H)
 def foam(n, H): return L(F.foam(KP), n, H)
@@ -113,10 +117,23 @@ def top_back_local():
     return _C["tb"]
 def receiver_chair(spine_bores=True):
     """top_back with the restyled receiver (local frame)"""
-    fill = rrbox(PLUG[0] - 7, PLUG[1] + 7, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2.0) ^ M.cube([300, 300, 100]).translate([-150, 0, SOCK_Z0 - 6])
+    fill = rrbox(PLUG[0] - 3, PLUG[1] + 3, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2.0) ^ M.cube([300, 300, 100]).translate([-150, 0, SOCK_Z0 - 6])   # v1.2b: +-31 (was +-35: ran into the side mount holes)
     r = top_back_local() + fill + (receiver_shell() - M.cube([300, 300, 100]).translate([-150, 0, TOP]))   # fill = the old front recess / centre hole round the socket
-    r = r - socket() - bolt_cuts()
+    r = r - socket() - bolt_cuts() - tb_mount_seats()
     return r
+TB_MOUNT_HOLE_D, TB_MOUNT_CB_D, TB_MOUNT_CB_Y = 5.2, 8.9, 130.8   # measured on chair_mesh/chair_top_back.stl (= the .fs)
+TB_SIDE_MOUNTS, TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R = [(-37.5, 373.4), (37.5, 373.4)], 143.0, 5.5   # (= the .fs)
+def tb_mount_seats():
+    """v1.2b: top_back's side M5 mounts (x +-37.5, z 373.4) stay full holes: explicit re-cuts after the union of the Ø5.2
+       teardrop through-hole (tip up) and the Ø8.9 front counterbore to y 130.8, plus an Ø11 washer/nut seat 0.9 mm into the
+       original back face, cleared backwards through the receiver housing (= the .fs; no copy of top_back)"""
+    import headrest_POD11 as P11
+    out = []
+    for x, z in TB_SIDE_MOUNTS:
+        out += [M.cylinder(FOOT[2] + 20 - TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R, TB_MOUNT_SEAT_R, 64).rotate([-90, 0, 0]).translate([x, TB_MOUNT_SEAT_Y, z]),
+                P11.td_hole([x, FRONT - 1, z], [x, TB_MOUNT_SEAT_Y + 0.5, z], TB_MOUNT_HOLE_D / 2, [0, 0, 1]),
+                M.cylinder(TB_MOUNT_CB_Y - (FRONT - 1), TB_MOUNT_CB_D / 2, TB_MOUNT_CB_D / 2, 64).rotate([-90, 0, 0]).translate([x, FRONT - 1, z])]
+    return M.batch_boolean(out, 0)
 
 # ---------------- the plug (inside the receiver), shared ----------------
 def plug(z1=TOP + 0.5):
@@ -126,7 +143,7 @@ def plug(z1=TOP + 0.5):
 def _chin_sec(cy, hw, y0, p=3.0):
     return section(hw, y0, oval_back(0, cy), p=p, back=lambda x: oval_back(x, cy) - 0.4)
 def m1_body(n, H, foot_hw=FOOT[0], chin_hw=44.0, waist=0.9):
-    zc, cy = frame(n, H); zch = chin_z(n, H) - 0.3
+    zc, cy = frame(n, H); zch = chin_z(n, H) - STEM_DROP
     z_foot = TOP + 0.3
     gap = zch - z_foot
     ff = min(30.0, 0.42 * gap); cf = min(26.0, 0.45 * gap)       # foot flare / chin flare heights

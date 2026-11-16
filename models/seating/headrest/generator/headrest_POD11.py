@@ -2,7 +2,7 @@
 #  - footprint grown to carry 2 screw seats (pocket r21, exit r14, screw seats r8),
 #  - 2 M3 countersunk from OUTSIDE on flat spot-faces, into hex nuts trapped in the pad's head side (pod -> pad, unchanged),
 #  - v1.2: the M3x30 through-bolt PVC clamp (2 bolts, nut traps, lands) is GONE: 3 radial Ø4 holes (top / outward side /
-#    60 deg below the side) for ST3.5 x 6.5 pan-head self-tappers that bite the PVC wall; Ø8 spot-faced seats, flared rims,
+#    50 deg below the side (v1.2b; was 60)) for ST3.5 x 6.5 pan-head self-tappers that bite the PVC wall; Ø8 spot-faced seats, flared rims,
 #  - v1.2: no sharp hull edges: collar Ø28 with both ends rounded r2, band top edge rounded r2 and run 1 mm below the pad
 #    surface (so the trim cuts a smooth wall: no loft ripple / sawtooth at the underside edge),
 #  - v1.2: PVC bore Ø20.8 slip fit (tolerance block), teardrop truncated (the old Ø20.3 teardrop tip broke through the collar
@@ -24,13 +24,17 @@ BORE_CAP = 0.6                  # teardrop truncated 0.6 mm over the bore radius
 BORE_CH = 0.8                   # 45 deg chamfer at the bore mouth (ends at the mouth plane: in the open trough in front of the
                                 #   mouth a longer cone would break through the 1.8 mm floor)
 # PVC lock: 3 radial wood/self-tapping screws, K_WS mm back from the collar mouth (half the bore depth), at angles in the
-# plane normal to the bore: +90 = top, 0 = outward side (away from the pad), -60 = below the side (the collar is still a
+# plane normal to the bore: +90 = top, 0 = outward side (away from the pad), -50 = below the side (v1.2b; was -60) (the collar is still a
 # plain Ø28 cylinder there; straight down (-90) runs into the band, 18-19 mm of wall)
 K_WS = 13.0
-WS_ANG = (90.0, 1.0, -60.0)       # side hole 1 deg up from the outward normal: at exactly 0 a mesh-boolean coincidence pinched the yaw-28 STL
+WS_ANG = (90.0, 1.0, -50.0)       # side hole 1 deg up from the outward normal: at exactly 0 a mesh-boolean coincidence pinched the yaw-28 STL;
+                                  # v1.2b: the low hole at -50 (was -60: its seat flare left a < 1.2 mm ridge against pod screw 2's nut pocket mouth)
 WS_SEAT = 13.3                  # flat seat (pan head) radius from the bore axis: Ø8 floor fully flat on the Ø28 collar
 WS_CB = 4.0                     # seat radius (Ø8: Ø7 pan head + driver)
 WS_CH = 0.5                     # 45 deg chamfer at the hole mouth in the seat floor
+WS_FL = 2.75                    # 45 deg rim flare from WS_SEAT + 0.25 up to WS_SEAT + 3.0: round the Ø8 seat the hull stands
+                                #   0.7-2.3 mm over the seat floor within r5.5 (the -60 deg hole at yaw 20/28 up to 2.0-2.3: the first 1.85 mm
+                                #   flare left a 0.01-0.02 mm overhanging lip there)
 def U(a): return -math.radians(a) * R
 def rOut(z, ad): return F.r_face(np.array([z]), np.array([abs(ad)]))[0] + 5 + F.D("F3", np.array([z]), np.array([abs(ad)]))[0]
 def footprint():
@@ -80,7 +84,10 @@ def td_hole(p0, p1, r, up, cap=None, n=48):
     u = np.asarray(up, float) - ax * (np.asarray(up, float) @ ax)
     if np.linalg.norm(u) < 0.3: return W.cyl_along(p0, ax, L, r, n)
     c45 = r * math.sqrt(0.5)
-    cs = CS.circle(r, n) + CS.hull(CS([[[c45, c45], [r * math.sqrt(2), 0], [c45, -c45], [0, 0]]]))
+    ang = np.linspace(0, 2 * math.pi, n, endpoint=False)
+    # v1.2b fix: the old `CS.circle + CS.hull(CS([...]))` silently dropped the tip (clockwise polygon = empty), so every
+    # Python teardrop (pod bore, lock / seat holes) came out ROUND; the .fs was right.  Convex hull of circle + tip instead:
+    cs = CS.hull_points([[r * math.cos(a), r * math.sin(a)] for a in ang] + [[r * math.sqrt(2), 0.0]])
     if cap is not None and cap < r * math.sqrt(2): cs = cs ^ CS.square([cap + r, 4 * r]).translate([-r - 0.01, -2 * r])
     return prism_along(cs, p0, ax, u, L)
 def cone_along(p0, ax, L, r0, r1, n=48):
@@ -98,7 +105,7 @@ def ws_cuts(yaw):
         out.append(td_hole(A + v * 5.0, A + v * (WS_SEAT + 1.0), FIT.WOOD_SCREW_HOLE / 2, POD_UP))
         out.append(cone_along(A + v * (WS_SEAT - WS_CH - 0.05), v, WS_CH + 0.1, FIT.WOOD_SCREW_HOLE / 2 - 0.05, FIT.WOOD_SCREW_HOLE / 2 + WS_CH + 0.05, 41))   # odd segment counts: no coincident vertices
         out.append(W.cyl_along(A + v * WS_SEAT, v, 0.3, WS_CB, 67))
-        out.append(cone_along(A + v * (WS_SEAT + 0.25), v, 1.6, WS_CB - 0.05, WS_CB + 1.55, 71))        # 45 deg flared rim (surface is 0.7-1.1 over the seat)
+        out.append(cone_along(A + v * (WS_SEAT + 0.25), v, WS_FL, WS_CB - 0.05, WS_CB - 0.05 + WS_FL, 71))   # 45 deg flared rim, up to WS_SEAT + 3.0
     return out
 def bore_cuts(yaw):
     E, d = W.axis("W1", float(yaw), 1); r = FIT.PVC_BORE / 2
@@ -116,14 +123,23 @@ def surf_y(th, z, outer=True):
         if rc > rs: hi = y
         else: lo = y
     return y
+SEAT_MIN_PLASTIC = 3.5          # plastic between the pod underside (pad + 0.3) and the pocket mouth, along the screw axis
+# v1.2b SCREWS FLIPPED: M3x20 from the pad's head side (head top POD_HEAD_D under the head-side face R), hex nut on a pocket
+# floor at POD_NUT_Y in the pod, pocket open to the outside through the round mouth at seat_y() (= the .fs)
+POD_HEAD_D, POD_NUT_Y = [1.0, 0.2], [103.9, 103.1]
 def seat_y():
-    """v1.2 seat floors (local y): >= 4 mm of plastic under the flat seat (pad surface measured ALONG the screw axis: v1.1 used
-       the oval radius rOut and left only 2.1-3.2 mm), and the M3x20 tip 0.2 mm short of the pad's head-side face where that
-       allows (full nut: the nut sits 0.4-2.8 mm into its trap).  -> the .fs POD_SEAT_Y"""
+    """local y where the nut pocket's round Ø7.2 mouth starts (kept from the v1.2 seat: the hull, rim flare and lip checks are
+       unchanged).  v1.2 history: the seat floor for a screw from OUTSIDE, set so that its M3x20 tip ended 0.2 mm short of the pad's head-side face, i.e. 0.2 mm PAST the nut
+       (the nut sits 0.4-2.8 mm into its trap), so the screw passes through the whole nut and nothing reaches the foam.
+       Plastic under each seat (pad surface measured ALONG the screw axis) must stay >= SEAT_MIN_PLASTIC: 3.5-4.0 mm.
+       (The first v1.2 rule kept >= 4.0 mm and left screw 1 with its tip 0.29 mm short of the nut: 2.11 of 2.4 engaged.)
+       -> the .fs POD_SEAT_Y"""
     out = []
     for x, z in SCREWS:
         th = 46 + math.degrees(x / R)
-        out.append(round(max(surf_y(th, z) + 0.3 + 4.0, surf_y(th, z, False) + 0.2 + POD_SCREW_L), 2))
+        y = round(surf_y(th, z, False) + 0.2 + POD_SCREW_L, 2)
+        assert y - (surf_y(th, z) + 0.3) >= SEAT_MIN_PLASTIC - 1e-6, (x, z, y)
+        out.append(y)
     return out
 SEAT_CB, SEAT_FL = 3.6, 1.5     # pod -> pad M3 seats: counterbore r3.6 over the countersink, 45 deg flare 1.5 at the rim
 _SR = {}
@@ -149,8 +165,11 @@ def seat_cuts(yaw):
     for (x, z), hr, yf in zip(SCREWS, seat_rim(yaw), seat_y()):
         th = 46 + math.degrees(x / R)
         def ya(L, r0, r1, y0, n=48): return place(M.cylinder(L, r0, r1, n).rotate([-90, 0, 0]).translate([0, y0, z]), th)
-        out += [ya(40, FIT.M3_CLEAR / 2, FIT.M3_CLEAR / 2, R - 2, 24),
-                ya(1.80, 1.5, CSK_M3_R + 0.05, yf - 1.75),                    # DIN 7991 countersink (= the .fs fCone "sk")
+        hexp = CS.circle(FIT.NUT_M3_AF / math.sqrt(3), 6)                     # one corner along +x of the local frame
+        yn = POD_NUT_Y[SCREWS.index((x, z))]
+        # corner toward print-up (+x world for the right pod): local x of place() at th is ~ the print-up direction projected
+        nut = place(hexp.extrude(yf + 0.1 - yn).rotate([-90, 0, 0]).translate([0, yn, z]), th)
+        out += [ya(40, FIT.M3_CLEAR / 2, FIT.M3_CLEAR / 2, R - 2, 24), nut,
                 ya(hr + 0.05, SEAT_CB, SEAT_CB, yf),
                 ya(SEAT_FL, SEAT_CB - 0.02, SEAT_CB + SEAT_FL, yf + hr),
                 ya(30, SEAT_CB + SEAT_FL - 0.03, SEAT_CB + SEAT_FL - 0.03, yf + hr + SEAT_FL - 0.05)]
@@ -170,7 +189,9 @@ def lift_cuts():
     return _LC[0]
 def pod(yaw, side=1):
     h, E, d = hull(yaw)
-    m = h - W.skin(CS.square([300, 160]).translate([-150, -80]), -40, 0.3, refine=2.0)
+    # trim skin over the pod's side of the pad only, refined to 0.7 mm: at 2 mm its chords sagged ~0.4 mm in the concave
+    # strap-slot thickening fade (z 13-20) and the pod met the pad there (2.49 mm3 "overlap" = mesh error, not the fit)
+    m = h - W.skin(CS.square([150, 130]).translate([U(91), -65]), -40, 0.3, refine=0.7)
     m = m - lift_cuts()
     m = m + W._wedge()
     cuts = bore_cuts(yaw) + ws_cuts(yaw) + seat_cuts(yaw)
@@ -180,15 +201,19 @@ def pod(yaw, side=1):
     m = ps[0]
     return m if side > 0 else m.mirror([1, 0, 0])
 TURN_W = 0.5
+MIN_SEC_GAP, MIN_PT_GAP = 1.5, 0.2   # v1.2b loft-safety limits for the Onshape section data
 def sections(yaw, step=2.5, npts=64):
     """planar sections of the exact hull perpendicular to d, arc-length resampled from the point furthest along +n"""
     h, E, d = hull(yaw); Rm = X.rot_to_z(d)
     v = np.asarray(h.to_mesh().vert_properties)[:, :3]
     hz = M.hull_points(((v - E) @ Rm.T).tolist()); bb = hz.bounding_box()
     a = math.radians(60); ne = np.array([math.sin(a), math.cos(a) / ELL, 0]); ne = (Rm @ ne)[:2]; ne /= np.linalg.norm(ne)
-    zs = np.append(np.arange(bb[2] + 1.0, bb[5] - 0.6, step), bb[5] - 0.6)
-    extra = np.array([-LC - 0.6, -LC + 0.6, -LC + 1.2, -LC + 1.8, -1.8, -1.2, -0.6, 0.6])       # v1.2: collar end round-overs
-    zs = np.sort(np.concatenate([[z for z in zs if np.min(np.abs(extra - z)) > 0.45], extra[(extra > bb[2] + 1.0) & (extra < bb[5] - 0.6)]]))
+    # v1.2b: plain 2.5 mm steps, sections never closer than MIN_SEC_GAP.  The v1.2 extra sections 0.3-0.6 mm apart at the
+    # collar round-overs (+ duplicate points, below) made Onshape's loft create INVALID geometry (0 parts); v1.1 lofted fine.
+    zs = list(np.arange(bb[2] + 1.0, bb[5] - 0.6, step))
+    if bb[5] - 0.6 - zs[-1] >= MIN_SEC_GAP: zs.append(bb[5] - 0.6)
+    else: zs[-1] = bb[5] - 0.6
+    zs = np.array(zs); assert np.diff(zs).min() >= MIN_SEC_GAP - 1e-9
     out = []
     for z in zs:
         p = np.asarray(hz.slice(z).to_polygons()[0])
@@ -199,9 +224,13 @@ def sections(yaw, step=2.5, npts=64):
         # resampling left the spline 0.6-0.7 mm off the hull there, which showed as ripples / lines along the loft)
         e = np.diff(q, axis=0); ang = np.unwrap(np.arctan2(e[:, 1], e[:, 0])); turn = np.abs(np.diff(np.r_[ang, ang[0] + 2 * math.pi]))
         Th = np.r_[0, np.cumsum(np.r_[0.5 * (turn[-1] + turn[0]), 0.5 * (turn[:-1] + turn[1:])][:len(e)])]
-        Th = Th / Th[-1]; t = (1 - TURN_W) * L / L[-1] + TURN_W * Th
+        Th = Th / Th[-1]
         s = np.linspace(0, 1, npts, endpoint=False)
-        r = np.column_stack([np.interp(s, t, q[:, 0]), np.interp(s, t, q[:, 1])])
+        for w in (TURN_W, TURN_W / 2, 0.0):     # v1.2b: no (near-)duplicate points: every gap >= MIN_PT_GAP
+            t = (1 - w) * L / L[-1] + w * Th
+            r = np.column_stack([np.interp(s, t, q[:, 0]), np.interp(s, t, q[:, 1])])
+            if np.linalg.norm(np.diff(np.vstack([r, r[:1]]), axis=0), axis=1).min() >= MIN_PT_GAP: break
+        assert np.linalg.norm(np.diff(np.vstack([r, r[:1]]), axis=0), axis=1).min() >= MIN_PT_GAP, z
         out.append(np.column_stack([r, np.full(npts, z)]) @ Rm + E)
     return out
 def write_fsdata(path=None):
@@ -216,7 +245,7 @@ def write_fsdata(path=None):
     txt = ("const POD_SECTIONS = {\n" + ",\n".join(lines) + "\n};\nconst POD_AXIS = {\n" + ",\n".join(axes) + "\n};\n"
            "// pod -> pad seats (generated, headrest_POD11.py): rim flare start over each seat floor (= lowest flank height there - 0.3)\n"
            "const POD_SEAT_RIM = { " + ", ".join(rims) + " };\n"
-           "// seat floor, local y along the screw axis (>= 4 mm plastic under the seat; M3x20 tip at the nut)\n"
+           "// seat floor, local y along the screw axis (M3x20 tip 0.2 past the nut, 0.2 short of the head-side face; >= 3.5 mm plastic under the seat)\n"
            "const POD_SEAT_Y = [%s];\n" % ", ".join("%.2f" % v for v in seat_y()))
     path = path or os.path.join(os.path.dirname(os.path.abspath(__file__)), "pod_sections.fsdata")
     open(path, "w").write(txt); return txt

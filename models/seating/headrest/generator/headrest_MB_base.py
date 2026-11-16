@@ -53,7 +53,7 @@ def tongue_bolts(cut=False):
 
 # ---------------- relief window ----------------
 def relief(n, H):
-    zch = MM.chin_z(n, H) - 0.3; gap = zch - (TOP + 0.3)
+    zch = MM.chin_z(n, H) - MM.STEM_DROP; gap = zch - (TOP + 0.3)
     ff = min(30.0, 0.42 * gap); cf = min(26.0, 0.45 * gap)
     z0, z1 = TOP + 0.3 + ff + 6.0, zch - cf - 2.0
     if z1 - z0 < 26.0: return None

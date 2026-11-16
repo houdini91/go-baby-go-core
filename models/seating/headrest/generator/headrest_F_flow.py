@@ -5,7 +5,7 @@
 #   F1  "Soft spine"  : current outline, corners smoothed; thick only along the spine + a soft island round the button pocket.
 #   F2  "Flow"        : new continuous outline (chin under the joint, one S-curve up to a softer temple wing) + the same spine/island.
 #   F3  "Full back"   : F2 outline; thick across the whole back at button height (car-headrest look), long fade to the top.
-# Lock = K2 + nuts: 2x M3x30 from UNDER the chin, angled 35 deg up into captive nuts slid into the tenon's (hidden) side edges.
+# Lock = K2 + nuts: 2x M3x25 (v1.2; v1.1 M3x30) from UNDER the chin, angled 35 deg up into captive nuts slid into the tenon's (hidden) side edges.
 import math, numpy as np
 from manifold3d import Manifold as M, CrossSection as CS, JoinType
 import headrest_P2_pad as P
