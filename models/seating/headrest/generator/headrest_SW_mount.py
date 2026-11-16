@@ -90,7 +90,7 @@ def blank(side=1, var="W1"):
     b = tri - skin(CS.square([300, 160]).translate([-150, -80]), 0.0, 30, refine=3.0)
     # v1.1: 1 countersunk M3 from outside at the blank screw (x 0, z 4), nut trapped in the pad
     yTop = R + T + F.D(K, np.array([4.0]), np.array([P.BTN_ANG]))[0] + (F.r_face(np.array([4.0]), np.array([P.BTN_ANG]))[0] - R)
-    b = b - place(ycyl(3.4, 40, 0, R - 2, 4.0) + M.cylinder(1.8, 1.5, 3.15, 24).rotate([-90, 0, 0]).translate([0, yTop - 1.75, 4.0]), P.BTN_ANG)
+    b = b - place(ycyl(F.FIT.M3_CLEAR, 40, 0, R - 2, 4.0) + M.cylinder(1.8, 1.5, 3.15, 24).rotate([-90, 0, 0]).translate([0, yTop - 1.75, 4.0]), P.BTN_ANG)
     if var == "W2": b = b - pad("W2")
     return b if side > 0 else b.mirror([1, 0, 0])
 def pvc(var, yaw, side=1, L=None):
