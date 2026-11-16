@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Headrest mast rods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: workshop engineering note: calm, exact, a decision on top, options below for review.
+   IDEA: a drawing sheet: parts drawn to scale like a technical drawing, one yellow mark for the weak point.
+   PICTURE: the five masts to scale with their carbon rods standing in the chair's socket.
+   COLOUR and TYPE: white sheet, black ink and carbon, concrete grey for the chair, safety yellow for the one critical spot; Hanken Grotesk.
+   LAYOUT: finding and the to-scale drawing first, then why, then the cut plan, then alternatives on hold. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#1a1a19);--ink:light-dark(#141414,#ecece8);--mut:light-dark(#5b5b57,#a9a9a3);
+--con:light-dark(#d8d8d4,#3b3b38);--conE:light-dark(#b9b9b4,#55554f);--petg:light-dark(#f3f3f0,#2a2a28);--rod:light-dark(#121212,#d6d6d0);--hi:#ffe600;--line:light-dark(#e3e3df,#33332f)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Hanken Grotesk",system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(28px,4vw,60px) max(5vw,16px)}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:clamp(32px,4.6vw,50px);line-height:1.05;font-weight:700;margin:0 0 14px;text-wrap:balance;max-width:20ch}
+h2{font-size:clamp(24px,2.6vw,30px);line-height:1.15;margin:0 0 10px;text-wrap:balance}
+h3{font-size:18px;margin:0 0 4px}
+p{max-width:68ch;margin:0 0 12px}
+.lead{font-size:17px;max-width:72ch}
+.mut{color:var(--mut)}
+.status{display:inline-flex;gap:10px;align-items:center;border:1.5px solid var(--ink);padding:6px 12px;font-weight:500;margin-bottom:18px}
+.status b{background:var(--hi);color:#141414;padding:0 6px}
+figure{margin:22px 0 0}
+figcaption{color:var(--mut);font-size:14px;margin-top:8px;max-width:72ch}
+svg{display:block;width:100%;height:auto}
+svg text{font:500 12px "Hanken Grotesk",system-ui,sans-serif;fill:var(--ink)}
+svg .big{font-size:15px;font-weight:700}
+svg .m{fill:var(--mut)}
+.con{fill:var(--con);stroke:var(--conE)}
+.petg{fill:var(--petg);stroke:var(--ink);stroke-width:1.2}
+.hid{fill:none;stroke:var(--ink);stroke-dasharray:4 3;stroke-width:1}
+.rod{stroke:var(--rod);stroke-width:8}
+.rodf{fill:var(--rod)}
+.hi{fill:var(--hi)}
+.ink{stroke:var(--ink);fill:none;stroke-width:1.2}
+.dash{stroke:var(--ink);fill:none;stroke-dasharray:5 4;stroke-width:1.2}
+.alt{background:light-dark(#f6f6f4,#222220)}
+table{border-collapse:collapse;width:100%;margin-top:14px;font-size:15px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:700}
+td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cut{display:flex;height:40px;border:1.5px solid var(--ink);margin:6px 0 2px}
+.cut span{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#f2f2ee;background:#1b1b1b;border-right:2px solid var(--bg);white-space:nowrap;overflow:hidden}
+.cut span.w{background:repeating-linear-gradient(45deg,var(--con) 0 6px,var(--bg) 6px 10px);color:var(--ink);border-right:0}
+.plan{margin:18px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,500px),1fr));gap:28px;margin-top:20px}
+.card{border-top:2px solid var(--ink);padding-top:12px}
+.card svg{margin:6px 0 10px;max-width:520px}
+.facts{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;font-size:15px;margin:8px 0}
+.facts dt{color:var(--mut)}.facts dd{margin:0}
+.bars{margin-top:14px}
+.bar{display:grid;grid-template-columns:minmax(0,210px) minmax(0,1fr) 92px;gap:12px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line);font-size:15px}
+.bar i{display:block;height:14px;background:var(--ink)}
+.bar.c i{background:var(--hi);outline:1.5px solid var(--ink)}
+.bar b{text-align:right;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+.no{columns:2 280px;column-gap:28px;padding-left:18px}
+.no li{margin-bottom:6px;break-inside:avoid}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--line)}.stack td{display:flex;justify-content:space-between;gap:12px;border:0;padding:3px 0}.stack td::before{content:attr(data-l);color:var(--mut)}.bar{grid-template-columns:1fr 70px}.bar i{grid-column:1/-1;grid-row:2}}
+</style>
+</head>
+<body>
+
+<section class="band"><div class="wrap">
+  <div class="status">Current design: <b>carbon, full length, cut by hand</b> · alternatives below are on hold until you approve one</div>
+  <h1>Headrest rods: two Ø8 carbon rods, cut to 85 + H mm</h1>
+  <p class="lead">Every mast has two solid carbon rods running its full length. They stand in the chair's socket and reach up to just under the pad. The rods roughly <b>double</b> the mast's strength. The five lengths form one even series, <b>85, 110, 135, 160 and 185 mm</b>, and one 500 mm rod gives two full pairs.</p>
+  <figure>
+    <svg viewBox="-96 0 896 352" role="img" aria-label="The five masts drawn to scale, front view, each with two carbon rods from the bottom of the plug to just under the pad: 85, 110, 135, 160 and 185 mm.">
+            <!-- masts: cx, H ; plug bottom y=300, 1 px = 1 mm -->
+      <g>
+        <rect class="petg" x="62" y="194" width="56" height="106"/><rect class="petg" x="30" y="172" width="120" height="44" rx="20"/>
+        <rect class="petg" x="217" y="169" width="56" height="131"/><rect class="petg" x="185" y="147" width="120" height="44" rx="20"/>
+        <rect class="petg" x="372" y="144" width="56" height="156"/><rect class="petg" x="340" y="122" width="120" height="44" rx="20"/>
+        <rect class="petg" x="527" y="119" width="56" height="181"/><rect class="petg" x="495" y="97" width="120" height="44" rx="20"/>
+        <rect class="petg" x="682" y="94" width="56" height="206"/><rect class="petg" x="650" y="72" width="120" height="44" rx="20"/>
+      </g>
+      <rect class="con" x="-96" y="254" width="896" height="64" opacity=".9"/>
+      <g class="hid"><rect x="62" y="254" width="56" height="46"/><rect x="217" y="254" width="56" height="46"/><rect x="372" y="254" width="56" height="46"/><rect x="527" y="254" width="56" height="46"/><rect x="682" y="254" width="56" height="46"/></g>
+      <g class="hi"><rect x="56" y="251" width="68" height="6"/><rect x="211" y="251" width="68" height="6"/><rect x="366" y="251" width="68" height="6"/><rect x="521" y="251" width="68" height="6"/><rect x="676" y="251" width="68" height="6"/></g>
+      <g class="rod">
+        <line x1="74" y1="299" x2="74" y2="214"/><line x1="106" y1="299" x2="106" y2="214"/>
+        <line x1="229" y1="299" x2="229" y2="189"/><line x1="261" y1="299" x2="261" y2="189"/>
+        <line x1="384" y1="299" x2="384" y2="164"/><line x1="416" y1="299" x2="416" y2="164"/>
+        <line x1="539" y1="299" x2="539" y2="139"/><line x1="571" y1="299" x2="571" y2="139"/>
+        <line x1="694" y1="299" x2="694" y2="114"/><line x1="726" y1="299" x2="726" y2="114"/>
+      </g>
+      <g text-anchor="middle">
+        <text class="big" x="90" y="199">H0</text><text class="big" x="245" y="174">H25</text><text class="big" x="400" y="149">H50</text><text class="big" x="555" y="124">H75</text><text class="big" x="710" y="99">H100</text>
+        <text x="90" y="338">rods 85 mm</text><text x="245" y="338">rods 110 mm</text><text x="400" y="338">rods 135 mm</text><text x="555" y="338">rods 160 mm</text><text x="710" y="338">rods 185 mm</text>
+      </g>
+      <text class="m" x="-90" y="249">socket exit</text>
+      <text class="m" x="-90" y="280">chair</text><text class="m" x="-90" y="296">backrest</text>
+    </svg>
+    <figcaption>Front view, to scale (1 mm = 1 unit). Black = carbon rods, light = printed mast and pad, grey = the chair, dashed = the plug hidden inside the chair's 45 mm socket. Yellow = the socket exit, where a mast would break.</figcaption>
+  </figure>
+</div></section>
+
+<section class="band alt"><div class="wrap">
+  <h2>Why the rods matter, and why full length</h2>
+  <p>A push on the pad bends the mast like a lever. The bending is biggest at the socket exit (yellow) and shrinks to almost nothing under the pad. So the rods' main job is to carry the socket exit.</p>
+  <figure>
+    <svg viewBox="0 0 700 270" role="img" aria-label="H75 mast lying on its side with the bending diagram below it: the bending is largest at the socket exit and falls to zero at the pad. The shortest working rod is 100 mm; the full rod is 160 mm.">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+      <!-- 2 px per mm; z=0 at x=60; exit z=46 -> x=152; rod full to z=161 -> x=382; pad centre z=181 -> x=422 -->
+      <rect class="petg" x="60" y="50" width="380" height="40"/>
+      <rect class="petg" x="402" y="22" width="44" height="96" rx="20"/>
+      <rect class="con" x="40" y="34" width="112" height="72" opacity=".9"/>
+      <rect class="hid" x="60" y="50" width="92" height="40"/>
+      <rect class="hi" x="149" y="30" width="6" height="80"/>
+      <line class="rod" x1="62" y1="62" x2="382" y2="62"/>
+      <line class="rod" x1="62" y1="78" x2="260" y2="78"/>
+      <line class="dash" x1="260" y1="78" x2="382" y2="78"/>
+      <g style="color:var(--ink)"><line x1="470" y1="70" x2="450" y2="70" stroke="currentColor" stroke-width="2" marker-end="url(#ar)"/></g>
+      <text x="476" y="74">push on the pad</text>
+      <text x="170" y="24" class="m">upper rod: full length, 160 mm</text>
+      <text x="168" y="140" class="m">lower rod drawn at the shortest that works: 100 mm</text>
+      <polygon points="152,160 422,160 152,250" fill="none" stroke="currentColor" style="color:var(--ink)" stroke-width="1.5"/>
+      <polygon points="152,160 422,160 152,250" fill="var(--con)" opacity=".7"/>
+      <text x="160" y="266">bending: biggest at the socket exit</text>
+      <text x="430" y="166">almost none under the pad</text>
+    </svg>
+    <figcaption>H75 mast on its side, 2 units per mm. The grey triangle shows the bending along the mast. A rod only has to reach well past the yellow line to carry it.</figcaption>
+  </figure>
+  <table class="stack">
+    <thead><tr><th>Mast</th><th class="n">Safety factor, full rods</th><th class="n">Shortest rods that work</th><th class="n">No rods</th><th class="n">Flex under 150 N, full / shortest</th></tr></thead>
+    <tbody>
+      <tr><td data-l="Mast">H25</td><td class="n" data-l="Full rods">7.4</td><td class="n" data-l="Shortest">7.4 (80 mm)</td><td class="n" data-l="No rods">3.4</td><td class="n" data-l="Flex">0.14 / 0.14 mm</td></tr>
+      <tr><td data-l="Mast">H50</td><td class="n" data-l="Full rods">5.7</td><td class="n" data-l="Shortest">5.7 (100 mm)</td><td class="n" data-l="No rods">2.7</td><td class="n" data-l="Flex">0.35 / 0.35 mm</td></tr>
+      <tr><td data-l="Mast">H75</td><td class="n" data-l="Full rods">4.6</td><td class="n" data-l="Shortest">4.6 (100 mm)</td><td class="n" data-l="No rods">2.2</td><td class="n" data-l="Flex">0.71 / 0.78 mm</td></tr>
+      <tr><td data-l="Mast">H100</td><td class="n" data-l="Full rods">3.9</td><td class="n" data-l="Shortest">3.9 (150 mm)</td><td class="n" data-l="No rods">1.7</td><td class="n" data-l="Flex">1.51 / 1.51 mm</td></tr>
+    </tbody>
+  </table>
+  <p class="mut" style="margin-top:12px">Hand beam model on the real printed sections, 300 N knock at the pad; not yet load-tested. Safety factor = how many times the load the plastic could take before it breaks.</p>
+  <p><b>Answer:</b> full length is not stronger at the weak point, but it is <b>never worse</b>. It is a little stiffer (H75), and it leaves no rod tip inside the stem, where a sudden stiffness change would make a small stress point. So the rods stay <b>full length</b>.</p>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>Normalizing the carbon cuts</h2>
+  <p>Each rod is <b>85 + H mm</b>: one rule, steps of 25 mm. The hole is 2 mm longer than the rod, so a cut within ±1 mm is fine. The heights pair up so one 500 mm rod is used with almost no waste:</p>
+  <div class="plan"><h3>Plan A: H0 pair + H75 pair</h3>
+    <div class="cut"><span style="width:17%">85</span><span style="width:17%">85</span><span style="width:32%">160</span><span style="width:32%">160</span><span class="w" style="width:2%"></span></div><div class="mut">490 mm used, 10 left for the saw cuts</div></div>
+  <div class="plan"><h3>Plan B: H25 pair + H50 pair</h3>
+    <div class="cut"><span style="width:22%">110</span><span style="width:22%">110</span><span style="width:27%">135</span><span style="width:27%">135</span><span class="w" style="width:2%"></span></div><div class="mut">490 mm used, 10 left</div></div>
+  <div class="plan"><h3>Plan C: H100 pair</h3>
+    <div class="cut"><span style="width:37%">185</span><span style="width:37%">185</span><span class="w" style="width:26%">130 spare</span></div><div class="mut">The 130 mm spare makes one H0 or H25 rod later</div></div>
+  <div class="plan"><h3>First prototype (H50)</h3>
+    <div class="cut"><span style="width:27%">135</span><span style="width:27%">135</span><span class="w" style="width:46%">230 → H25 pair later</span></div><div class="mut">Buy one 8×500 rod</div></div>
+
+  <h2 style="margin-top:34px">Proposal: a printed cutting gauge</h2>
+  <p>To make every cut the same without measuring: a small printed block with a groove for the rod, an end stop, and a saw slot at each length. Push the rod against the stop, saw through the slot for the height you need. The slot keeps the cut square, and tape round the rod at the slot stops splintering. <b>Not built yet</b>; it's a 1-hour print if you want it.</p>
+  <figure>
+    <svg viewBox="0 0 720 150" role="img" aria-label="Cutting gauge: a block with a groove, an end stop on the left and saw slots at 85, 110, 135, 160 and 185 mm, with a carbon rod lying in the groove.">
+      <!-- 2 px per mm, stop face at x=40 -->
+      <rect class="petg" x="22" y="48" width="18" height="70"/>
+      <rect class="petg" x="40" y="70" width="400" height="48"/>
+      <line class="rod" x1="40" y1="78" x2="520" y2="78"/>
+      <g class="con" stroke-width="0"><rect x="208" y="66" width="4" height="52"/><rect x="258" y="66" width="4" height="52"/><rect x="308" y="66" width="4" height="52"/><rect x="358" y="66" width="4" height="52"/><rect x="408" y="66" width="4" height="52"/></g>
+      <g class="ink"><line x1="210" y1="66" x2="210" y2="118"/><line x1="260" y1="66" x2="260" y2="118"/><line x1="310" y1="66" x2="310" y2="118"/><line x1="360" y1="66" x2="360" y2="118"/><line x1="410" y1="66" x2="410" y2="118"/></g>
+      <g text-anchor="middle"><text x="210" y="56">H0 85</text><text x="260" y="40">H25 110</text><text x="310" y="56">H50 135</text><text x="360" y="40">H75 160</text><text x="410" y="56">H100 185</text></g>
+      <text class="m" x="22" y="140">end stop</text><text class="m" x="200" y="140">saw slots</text><text class="m" x="470" y="100">carbon rod in the groove</text>
+    </svg>
+    <figcaption>Top view of the proposed gauge, 2 units per mm.</figcaption>
+  </figure>
+</div></section>
+
+<section class="band alt"><div class="wrap">
+  <h2>On hold: steel parts that need no cutting</h2>
+  <p>Some standard machine parts are Ø8 steel rods sold in fixed lengths. They would mean no cutting and no dust, but they are heavier, and each needs a check (and some a model change) before use. <b>Nothing here is adopted.</b> It's for you to understand the options.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>1. Hardened dowel pin</h3>
+      <svg viewBox="0 0 300 70" role="img" aria-label="Dowel pin: a plain solid steel cylinder with chamfered ends, 8 by 80 mm.">
+        <polygon class="petg" points="24,26 28,22 140,22 144,26 144,38 140,42 28,42 24,38"/>
+        <text x="152" y="36">8 × 80 mm, solid</text><text class="m" x="24" y="62">1.5 units per mm</text>
+      </svg>
+      <p>A plain, solid, precision-ground steel pin. Machines use it to line up two parts exactly. It's hardened all the way through.</p>
+      <dl class="facts"><dt>Lengths</dt><dd>Ø8 only up to 80 mm, so it fits H0 only</dd><dt>Strength</dt><dd>very hard, but brittle (snaps, doesn't bend)</dd></dl>
+    </div>
+    <div class="card">
+      <h3>2. Mould ejector pin</h3>
+      <svg viewBox="0 0 300 70" role="img" aria-label="Ejector pin: a long thin steel pin with a flat round head at one end, 8 mm by 125 mm, head 13 mm.">
+        <rect class="petg" x="20" y="18" width="8" height="28"/><rect class="petg" x="28" y="26" width="188" height="12"/>
+        <text x="224" y="36">8 × 125</text><text class="m" x="20" y="62">head Ø13 × 5 mm</text>
+      </svg>
+      <p>The pin that pushes a finished plastic part out of an injection mould: a long ground rod with a thin round head. Made of tool steel with a hardened skin, and sold in fixed lengths.</p>
+      <dl class="facts"><dt>Lengths</dt><dd>100 / 125 / 160 mm (none at 80)</dd><dt>Strength</dt><dd>close to carbon (~1400 MPa), and it bends before it breaks</dd><dt>Change</dt><dd>a printed pocket for the head at the bottom of the plug</dd></dl>
+    </div>
+    <div class="card">
+      <h3>3. Linear shaft (3D-printer rod)</h3>
+      <svg viewBox="0 0 300 80" role="img" aria-label="Linear shaft: a smooth chrome steel rod 8 by 100 mm, with a cross-section showing a thin hardened outer skin and a softer core.">
+        <rect class="petg" x="20" y="28" width="150" height="12"/>
+        <circle cx="236" cy="34" r="26" class="hi" stroke="currentColor" style="color:var(--ink)"/><circle cx="236" cy="34" r="19" class="petg"/>
+        <text x="20" y="62">8 × 100 mm</text><text class="m" x="196" y="76">hard skin, soft core</text>
+      </svg>
+      <p>The smooth shiny rods a 3D printer's carriage slides on. Only a thin outer skin (yellow) is hardened; the core is ordinary steel.</p>
+      <dl class="facts"><dt>Lengths</dt><dd>100 / 150 / 200 mm, about $3–4 each</dd><dt>Strength</dt><dd>weakest of these: roughly 35–60 % of carbon</dd></dl>
+    </div>
+    <div class="card">
+      <h3>4. M8 socket head screw, class 12.9</h3>
+      <svg viewBox="0 0 300 70" role="img" aria-label="M8 socket head screw: a round head 13 mm wide and 8 mm long, a smooth shank, and a threaded end.">
+        <rect class="petg" x="20" y="18" width="12" height="28" rx="2"/><line class="ink" x1="26" y1="24" x2="26" y2="40"/>
+        <rect class="petg" x="32" y="26" width="138" height="12"/>
+        <polyline class="ink" points="170,26 174,38 178,26 182,38 186,26 190,38 194,26 198,38 202,26 206,38 210,26 212,32"/>
+        <rect class="ink" x="170" y="26" width="42" height="12"/>
+        <text x="220" y="36">M8 × 120</text><text class="m" x="20" y="62">head · smooth shank · thread (top end)</text>
+      </svg>
+      <p>An ordinary bolt with a round head and a hex key socket, in the strongest common grade (12.9, marked on the head). The smooth shank carries the bending. The thread is thinner, so it goes at the top end, where the load is low.</p>
+      <dl class="facts"><dt>Lengths</dt><dd>every 10 mm; sold in any Israeli fastener shop, ₪2–5</dd><dt>Strength</dt><dd>yield ~1100 MPa, bends before it breaks</dd><dt>Change</dt><dd>head pocket in the plug; thread section still to check. Not zinc-plated, not stainless.</dd></dl>
+    </div>
+  </div>
+
+  <h2 style="margin-top:38px">Strength compared</h2>
+  <p>If the plastic cracks, the two rods hold the load alone. What matters then is how much stress each material takes before it breaks or stays bent. The right column is the safety factor of the tallest mast (H100) with the rods alone.</p>
+  <div class="bars">
+    <div class="bar c"><span>Carbon rod (current)</span><i style="width:100%"></i><b>1500 · 3.1</b></div>
+    <div class="bar"><span>Ejector pin</span><i style="width:93%"></i><b>~1400 · 2.9</b></div>
+    <div class="bar"><span>M8 12.9 screw, shank</span><i style="width:73%"></i><b>1100 · 2.3</b></div>
+    <div class="bar"><span>Fiberglass rod</span><i style="width:53%"></i><b>~800 · 1.7</b></div>
+    <div class="bar"><span>Linear shaft</span><i style="width:40%"></i><b>~500–900 · 1–2</b></div>
+    <div class="bar"><span>Aluminium 6061</span><i style="width:18%"></i><b>275 · 0.6</b></div>
+    <div class="bar"><span>PVC</span><i style="width:3.3%"></i><b>50 · 0.1</b></div>
+    <div class="bar"><span>PETG (the mast itself)</span><i style="width:2.7%"></i><b>40 · –</b></div>
+  </div>
+  <p class="mut" style="margin-top:10px">MPa · safety factor at H100. Steel numbers are from the part standards, not tested. Steel also weighs about 5 times more: about 105 g for an H50 pair against 22 g of carbon.</p>
+
+  <h2 style="margin-top:34px">Ruled out</h2>
+  <ul class="no">
+    <li><b>PVC rod:</b> about as strong as the PETG around it, so it adds nothing. Carbon is ~30× stronger.</li>
+    <li><b>Threaded rod or ordinary bolts:</b> the thread makes the rod thinner, and the common grades are too weak.</li>
+    <li><b>Aluminium:</b> bends and stays bent at a quarter of the needed load.</li>
+    <li><b>Tent poles, arrow shafts, kite spars:</b> long thin tubes, so you still cut them, and they're weaker.</li>
+    <li><b>Hex keys, screwdriver extensions:</b> one length only, or too thin.</li>
+    <li><b>Rods from old printers:</b> free, but every one still needs a grinder to cut.</li>
+  </ul>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>What happens now</h2>
+  <p><b>Build with carbon:</b> one 8×500 rod, cut to 85 + H using the plans above. The headrest README and print guide say the same.</p>
+  <p class="mut">Your choices: the cutting gauge (yes or no), and later, whether any steel part should be tested. If one is, I would update the model for it and check its weak points before it replaces carbon.</p>
+</div></section>
+</body>
+</html>

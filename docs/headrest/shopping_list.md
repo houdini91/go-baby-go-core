@@ -12,7 +12,7 @@ All quoted Nov 29 – Dec 6. Listings and prices change; check the variant befor
 | 4 | EVA foam sheet, black | https://www.aliexpress.com/item/1005005603490236.html | **10mm x 35cm x 50cm** (≈ 6 pads from the template) | 1 | Super2 Store (same seller as #3: 4.8★) |
 | 5 | Self-adhesive hook-and-loop dots | https://www.aliexpress.com/item/32881873870.html | **Black 25mm 40Pairs** (8 per pad) | 1 | Nuomi Handcraft Store (4.7★, 97.8 %, 7.3K followers) |
 
-**How much each covers.** One 500 mm rod gives the pair for any one height (standard lengths 80/100/125/150/160 mm, see the headrest README); buy a second only for more headrests. The screw packs (50 / 50 / 20) and nut packs (50 / 30) cover several headrests.
+**How much each covers.** One 500 mm rod gives the pair for any one height (85 + H mm each), or two pairs (H0 + H75, or H25 + H50); buy a second only for more headrests. The screw packs (50 / 50 / 20) and nut packs (50 / 30) cover several headrests.
 
 **Not needed any more (vs the v1.0 padding kit):** the punch set. v1.1 has no screwdriver holes in the foam.
 
