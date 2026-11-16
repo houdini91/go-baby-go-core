@@ -84,7 +84,10 @@ def td_hole(p0, p1, r, up, cap=None, n=48):
     u = np.asarray(up, float) - ax * (np.asarray(up, float) @ ax)
     if np.linalg.norm(u) < 0.3: return W.cyl_along(p0, ax, L, r, n)
     c45 = r * math.sqrt(0.5)
-    cs = CS.circle(r, n) + CS.hull(CS([[[c45, c45], [r * math.sqrt(2), 0], [c45, -c45], [0, 0]]]))
+    ang = np.linspace(0, 2 * math.pi, n, endpoint=False)
+    # v1.2b fix: the old `CS.circle + CS.hull(CS([...]))` silently dropped the tip (clockwise polygon = empty), so every
+    # Python teardrop (pod bore, lock / seat holes) came out ROUND; the .fs was right.  Convex hull of circle + tip instead:
+    cs = CS.hull_points([[r * math.cos(a), r * math.sin(a)] for a in ang] + [[r * math.sqrt(2), 0.0]])
     if cap is not None and cap < r * math.sqrt(2): cs = cs ^ CS.square([cap + r, 4 * r]).translate([-r - 0.01, -2 * r])
     return prism_along(cs, p0, ax, u, L)
 def cone_along(p0, ax, L, r0, r1, n=48):

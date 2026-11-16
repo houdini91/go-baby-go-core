@@ -226,7 +226,8 @@ function skipped(context is Context, what is string)
     setVariable(context, "gbgSkipped", prev ~ what);
     println("SKIPPED: " ~ what);
 }
-function reportSkipped(context is Context, id is Id)
+// also written to the DESCRIPTION property of `target` (readable through the REST API: GET .../parts)
+function reportSkipped(context is Context, id is Id, target is Query)
 {
     var msg = "";
     try silent
@@ -234,7 +235,11 @@ function reportSkipped(context is Context, id is Id)
         msg = getVariable(context, "gbgSkipped");
     }
     if (msg != "")
+    {
         reportFeatureWarning(context, id, "Finish skipped (edge left sharp, check it): " ~ msg);
+        if (size(evaluateQuery(context, target)) > 0)
+            setProperty(context, { "entities" : target, "propertyType" : PropertyType.DESCRIPTION, "value" : "skipped: " ~ msg });
+    }
 }
 // fillet (or 45 deg chamfer) a set of edges: all together, else edge by edge; every edge that fails is reported by skipped()
 function finishEdges(context is Context, id is Id, edges is Query, r is number, chamfer is boolean, what is string)
@@ -1028,6 +1033,7 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
         definition.selfTest is boolean;
     }
     {
+        setVariable(context, "gbgSkipped", "");      // context variables outlive a feature: start every feature with an empty list
         if (definition.selfTest)
         {
             // REVIEW GALLERY: every printed variant in WORLD placement, shifted +400 mm in x per part (index in the name):
@@ -1069,7 +1075,7 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
             opTransform(context, id + "gpt", { "bodies" : padQ, "transform" : atH(50) });
             nameParts(context, padQ, "rev0_pad_F3");
             report(context, "rev0 pad", padQ);
-            reportSkipped(context, id);
+            reportSkipped(context, id, padQ);
             return;
         }
         const H = heightOf(definition.height);
@@ -1110,14 +1116,16 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
                 i += 1;
             }
         }
-        reportSkipped(context, id);
+        reportSkipped(context, id, parts["pad"]);
     }, { height : HeadrestHeight.H50, button : HeadrestButton.RIGHT, yaw : HeadrestYaw.Y20, strapSlots : true, showRods : true, printSet : false, selfTest : false });
 
 // =============================================== CHAIR: RECEIVER IN top_back ===============================================
 // top_back's own mounting holes near the receiver (measured on chair_mesh/chair_top_back.stl, LOCAL frame): the side M5
-// pair at z 373.6 (Ø5.6 through, Ø9 counterbore from the front 6.3 deep, back face y 143.9).  The centre one (x 0, z 373.6)
-// lies inside the socket and is lost.  The others (z 278 / 296 / 315) are below the receiver and untouched.
-const TB_SIDE_MOUNTS = [[-37.5, 373.6], [37.5, 373.6]];  const TB_MOUNT_SEAT_Y = 143.0;  const TB_MOUNT_SEAT_R = 5.5;
+// pair at x +-37.5, z 373.4: Ø5.2 teardrop through (z 370.8-377.05), Ø8.9 counterbore from the front face (y 124) to y 130.8,
+// back face y 143.9.  The centre one (x 0) lies inside the socket and is lost.  The others (z 278 / 296 / 315) are below the
+// receiver and untouched.
+const TB_SIDE_MOUNTS = [[-37.5, 373.4], [37.5, 373.4]];  const TB_MOUNT_SEAT_Y = 143.0;  const TB_MOUNT_SEAT_R = 5.5;
+const TB_MOUNT_HOLE_D = 5.2;  const TB_MOUNT_CB_D = 8.9;  const TB_MOUNT_CB_Y = 130.8;
 const TB_FILL_X = 3;
 export function receiverTools(context is Context, id is Id) returns map
 {
@@ -1140,8 +1148,15 @@ export function receiverTools(context is Context, id is Id) returns map
     // v1.2b: keep top_back's two side M5 mounts (x +-37.5, z 373.6, bolted from the front through a counterbore) usable: the
     // housing flank (half-width 38) covered their back exits.  A Ø11 seat for the washer / nut, 0.9 mm into the original back
     // face (flat), cleared backwards through the housing; >= 3.8 mm wall to the socket.
+    // + explicit re-cuts of the original holes (the housing overlaps them): Ø5.2 teardrop (tip up: top_back prints upright)
+    // through, Ø8.9 counterbore from the front face to y 130.8, as measured on chair_mesh/chair_top_back.stl
     for (var m = 0; m < size(TB_SIDE_MOUNTS); m += 1)
-        fCylinder(context, C + ("tbm" ~ m), { "bottomCenter" : v3(TB_SIDE_MOUNTS[m][0], TB_MOUNT_SEAT_Y, TB_SIDE_MOUNTS[m][1]), "topCenter" : v3(TB_SIDE_MOUNTS[m][0], FOOT[2] + 20, TB_SIDE_MOUNTS[m][1]), "radius" : TB_MOUNT_SEAT_R * millimeter });
+    {
+        const mx = TB_SIDE_MOUNTS[m][0];  const mz = TB_SIDE_MOUNTS[m][1];
+        fCylinder(context, C + ("tbm" ~ m), { "bottomCenter" : v3(mx, TB_MOUNT_SEAT_Y, mz), "topCenter" : v3(mx, FOOT[2] + 20, mz), "radius" : TB_MOUNT_SEAT_R * millimeter });
+        tdHole(context, C + ("tbh" ~ m), vector(mx, FRONT - 1, mz), vector(mx, TB_MOUNT_SEAT_Y + 0.5, mz), TB_MOUNT_HOLE_D / 2, vector(0, 0, 1));
+        fCylinder(context, C + ("tbc" ~ m), { "bottomCenter" : v3(mx, FRONT - 1, mz), "topCenter" : v3(mx, TB_MOUNT_CB_Y, mz), "radius" : TB_MOUNT_CB_D / 2 * millimeter });
+    }
     // socket mouth: 1 mm x 45 deg chamfer (no sharp rim; lead-in for the plug) = a box 1 mm bigger all round from TOP - 1 up,
     // vertical edges rounded to the socket's r6 + 1, bottom loop chamfered 1 mm back to the socket outline
     var mouthOk = false;
@@ -1176,6 +1191,7 @@ export const gbgHeadrestReceiver = defineFeature(function(context is Context, id
         definition.standIn is boolean;
     }
     {
+        setVariable(context, "gbgSkipped", "");
         const before = size(evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID))) + (definition.standIn ? 1 : 0);   // every solid must survive
         var tb = definition.topBack;
         if (definition.standIn)
@@ -1195,25 +1211,47 @@ export const gbgHeadrestReceiver = defineFeature(function(context is Context, id
             }
         }
         if (size(evaluateQuery(context, tb)) != 1) throw regenError("No top_back part found: select it");
-        // v1.2b: the receiver housing overlaps top_back's side M5 mounts (hole + front counterbore): keep their exact original
-        // voids ("cores" = a cylinder round each mount minus a copy of top_back) and cut them out again after the union
-        for (var m = 0; m < size(TB_SIDE_MOUNTS); m += 1)
-            fCylinder(context, id + ("core" ~ m), { "bottomCenter" : reclineXf() * v3(TB_SIDE_MOUNTS[m][0], 123, TB_SIDE_MOUNTS[m][1]), "topCenter" : reclineXf() * v3(TB_SIDE_MOUNTS[m][0], TB_MOUNT_SEAT_Y + 0.1, TB_SIDE_MOUNTS[m][1]), "radius" : 5.2 * millimeter });
-        opPattern(context, id + "tbcopy", { "entities" : tb, "transforms" : [identityTransform()], "instanceNames" : ["c"] });
-        opBoolean(context, id + "cores", { "tools" : qCreatedBy(id + "tbcopy", EntityType.BODY), "targets" : qCreatedBy(id + "core", EntityType.BODY), "operationType" : BooleanOperationType.SUBTRACTION });
-        const cores = qBodyType(qCreatedBy(id + "core", EntityType.BODY), BodyType.SOLID);
-        const t = receiverTools(context, id + "rx");
-        opBoolean(context, id + "add", { "tools" : qUnion([tb, t.add]), "operationType" : BooleanOperationType.UNION });
-        const inside = reclineXf() * v3(0, 140, 330);                  // in the lens, below the socket: always material
-        const mq = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), inside));
-        if (size(mq) != 1) throw regenError("Receiver: expected 1 merged top_back body, found " ~ size(mq));
-        const merged = mq[0];
-        opBoolean(context, id + "cut", { "tools" : qUnion([t.cut, cores]), "targets" : merged, "operationType" : BooleanOperationType.SUBTRACTION });
-        setProperty(context, { "entities" : merged, "propertyType" : PropertyType.NAME, "value" : "top_back" });
-        report(context, "top_back with receiver", merged);
-        const after = size(evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID)));
-        if (after != before) reportFeatureWarning(context, id, "Receiver changed the number of solid bodies: " ~ before ~ " -> " ~ after);
-        reportSkipped(context, id);
+        var rxStage = "start";
+        try
+        {
+            rxStage = "receiver tools";
+            const t = receiverTools(context, id + "rx");
+            rxStage = "union with top_back";
+            opBoolean(context, id + "add", { "tools" : qUnion([tb, t.add]), "operationType" : BooleanOperationType.UNION });
+            const inside = reclineXf() * v3(0, 140, 330);                  // in the lens, below the socket: always material
+            const mq = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), inside));
+            if (size(mq) != 1) throw regenError("Receiver: expected 1 merged top_back body, found " ~ size(mq));
+            const merged = mq[0];
+            rxStage = "socket / hole cuts";
+            opBoolean(context, id + "cut", { "tools" : t.cut, "targets" : merged, "operationType" : BooleanOperationType.SUBTRACTION });
+            setProperty(context, { "entities" : merged, "propertyType" : PropertyType.NAME, "value" : "top_back" });
+            report(context, "top_back with receiver", merged);
+            const after = size(evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID)));
+            if (after != before) skipped(context, "solid body count changed " ~ before ~ " -> " ~ after);
+            reportSkipped(context, id, merged);
+        }
+        catch (e)
+        {
+            // never fail silently and never leave top_back without a socket if it can be helped: report the error on the part
+            // (DESCRIPTION, readable through GET .../parts) and fall back to a plain socket cut in top_back
+            const msg = "receiver error at " ~ rxStage ~ ": " ~ toString(e);
+            const tbPoint = reclineXf() * v3(-50, 134, 330);                 // inside top_back, outside every receiver body
+            const leftovers = qSubtraction(qCreatedBy(id + "rx", EntityType.BODY), qContainsPoint(qEverything(EntityType.BODY), tbPoint));   // only bodies this feature created, never top_back
+            if (size(evaluateQuery(context, leftovers)) > 0)
+                opDeleteBodies(context, id + "clean", { "entities" : leftovers });
+            const tbNow = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), tbPoint));
+            var fbNote = "fallback failed";
+            try silent
+            {
+                rrbox(context, id + "fsock", PLUG[0] - SOCK_CL, PLUG[1] + SOCK_CL, PLUG[2] - SOCK_CL, PLUG[3] + SOCK_CL, SOCK_Z0, TOP + 40, 6);
+                opTransform(context, id + "fsockW", { "bodies" : solids(context, id + "fsock"), "transform" : reclineXf() });
+                opBoolean(context, id + "fcut", { "tools" : solids(context, id + "fsock"), "targets" : qUnion(tbNow), "operationType" : BooleanOperationType.SUBTRACTION });
+                fbNote = "fallback: plain socket cut, no housing";
+            }
+            if (size(tbNow) == 1)
+                setProperty(context, { "entities" : tbNow[0], "propertyType" : PropertyType.DESCRIPTION, "value" : msg ~ " | " ~ fbNote });
+            reportFeatureWarning(context, id, msg ~ " | " ~ fbNote);
+        }
     }, { topBack : qNothing(), standIn : false });
 
 // ---------------- DATA: W1 pod hull sections + PVC axis (PAD frame, right side; generator/headrest_POD11.py) ----------------

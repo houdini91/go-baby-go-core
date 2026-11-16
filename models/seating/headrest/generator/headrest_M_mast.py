@@ -119,14 +119,21 @@ def receiver_chair(spine_bores=True):
     """top_back with the restyled receiver (local frame)"""
     fill = rrbox(PLUG[0] - 3, PLUG[1] + 3, FRONT + 0.1, 144.5, SOCK_Z0 - 6, TOP - 0.05, 2.0) ^ M.cube([300, 300, 100]).translate([-150, 0, SOCK_Z0 - 6])   # v1.2b: +-31 (was +-35: ran into the side mount holes)
     r = top_back_local() + fill + (receiver_shell() - M.cube([300, 300, 100]).translate([-150, 0, TOP]))   # fill = the old front recess / centre hole round the socket
-    cores = M.batch_boolean([M.cylinder(TB_MOUNT_SEAT_Y + 0.1 - 123, 5.2, 5.2, 64).rotate([-90, 0, 0]).translate([x, 123, z]) for x, z in TB_SIDE_MOUNTS], 0) - top_back_local()
-    r = r - socket() - bolt_cuts() - tb_mount_seats() - cores        # cores = the side mounts' original voids, restored
+    r = r - socket() - bolt_cuts() - tb_mount_seats()
     return r
-TB_SIDE_MOUNTS, TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R = [(-37.5, 373.6), (37.5, 373.6)], 143.0, 5.5   # (= the .fs)
+TB_MOUNT_HOLE_D, TB_MOUNT_CB_D, TB_MOUNT_CB_Y = 5.2, 8.9, 130.8   # measured on chair_mesh/chair_top_back.stl (= the .fs)
+TB_SIDE_MOUNTS, TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R = [(-37.5, 373.4), (37.5, 373.4)], 143.0, 5.5   # (= the .fs)
 def tb_mount_seats():
-    """v1.2b: top_back's side M5 mounts (x +-37.5, z 373.6) stay usable: Ø11 washer/nut seat 0.9 mm into the original back
-       face, cleared backwards through the receiver housing"""
-    return M.batch_boolean([M.cylinder(FOOT[2] + 20 - TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R, TB_MOUNT_SEAT_R, 64).rotate([-90, 0, 0]).translate([x, TB_MOUNT_SEAT_Y, z]) for x, z in TB_SIDE_MOUNTS], 0)
+    """v1.2b: top_back's side M5 mounts (x +-37.5, z 373.4) stay full holes: explicit re-cuts after the union of the Ø5.2
+       teardrop through-hole (tip up) and the Ø8.9 front counterbore to y 130.8, plus an Ø11 washer/nut seat 0.9 mm into the
+       original back face, cleared backwards through the receiver housing (= the .fs; no copy of top_back)"""
+    import headrest_POD11 as P11
+    out = []
+    for x, z in TB_SIDE_MOUNTS:
+        out += [M.cylinder(FOOT[2] + 20 - TB_MOUNT_SEAT_Y, TB_MOUNT_SEAT_R, TB_MOUNT_SEAT_R, 64).rotate([-90, 0, 0]).translate([x, TB_MOUNT_SEAT_Y, z]),
+                P11.td_hole([x, FRONT - 1, z], [x, TB_MOUNT_SEAT_Y + 0.5, z], TB_MOUNT_HOLE_D / 2, [0, 0, 1]),
+                M.cylinder(TB_MOUNT_CB_Y - (FRONT - 1), TB_MOUNT_CB_D / 2, TB_MOUNT_CB_D / 2, 64).rotate([-90, 0, 0]).translate([x, FRONT - 1, z])]
+    return M.batch_boolean(out, 0)
 
 # ---------------- the plug (inside the receiver), shared ----------------
 def plug(z1=TOP + 0.5):
