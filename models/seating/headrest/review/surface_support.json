@@ -1,0 +1,302 @@
+[
+ {
+  "part": "pad",
+  "orient": "upright",
+  "A_support_mm2": 2277,
+  "A_unsupported_mm2": 76,
+  "B_support_mm2": 279,
+  "B_unsupported_mm2": 391,
+  "M_support_mm2": 1628,
+  "M_unsupported_mm2": 533
+ },
+ {
+  "part": "pad",
+  "orient": "upside_down",
+  "A_support_mm2": 818,
+  "A_unsupported_mm2": 349,
+  "B_support_mm2": 706,
+  "B_unsupported_mm2": 149,
+  "M_support_mm2": 0,
+  "M_unsupported_mm2": 368
+ },
+ {
+  "part": "pad",
+  "orient": "on_back",
+  "A_support_mm2": 9407,
+  "A_unsupported_mm2": 343,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 20,
+  "M_support_mm2": 4685,
+  "M_unsupported_mm2": 178
+ },
+ {
+  "part": "pad",
+  "orient": "on_front",
+  "A_support_mm2": 909,
+  "A_unsupported_mm2": 337,
+  "B_support_mm2": 12535,
+  "B_unsupported_mm2": 126,
+  "M_support_mm2": 122,
+  "M_unsupported_mm2": 781
+ },
+ {
+  "part": "pad",
+  "orient": "side(+x down)",
+  "A_support_mm2": 4408,
+  "A_unsupported_mm2": 98,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 3673,
+  "M_support_mm2": 386,
+  "M_unsupported_mm2": 866
+ },
+ {
+  "part": "pad",
+  "orient": "side(-x down)",
+  "A_support_mm2": 4365,
+  "A_unsupported_mm2": 95,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 3685,
+  "M_support_mm2": 379,
+  "M_unsupported_mm2": 876
+ },
+ {
+  "part": "pad",
+  "orient": "upside_down tilt+20",
+  "A_support_mm2": 817,
+  "A_unsupported_mm2": 410,
+  "B_support_mm2": 3899,
+  "B_unsupported_mm2": 134,
+  "M_support_mm2": 0,
+  "M_unsupported_mm2": 359
+ },
+ {
+  "part": "pad",
+  "orient": "upside_down tilt-20",
+  "A_support_mm2": 1612,
+  "A_unsupported_mm2": 78,
+  "B_support_mm2": 119,
+  "B_unsupported_mm2": 318,
+  "M_support_mm2": 133,
+  "M_unsupported_mm2": 201
+ },
+ {
+  "part": "pad",
+  "orient": "upright tilt+20",
+  "A_support_mm2": 2694,
+  "A_unsupported_mm2": 220,
+  "B_support_mm2": 328,
+  "B_unsupported_mm2": 321,
+  "M_support_mm2": 675,
+  "M_unsupported_mm2": 1589
+ },
+ {
+  "part": "pad",
+  "orient": "upright tilt-20",
+  "A_support_mm2": 3138,
+  "A_unsupported_mm2": 134,
+  "B_support_mm2": 81,
+  "B_unsupported_mm2": 357,
+  "M_support_mm2": 1959,
+  "M_unsupported_mm2": 399
+ },
+ {
+  "part": "mast_H50",
+  "orient": "upright",
+  "A_support_mm2": 8,
+  "A_unsupported_mm2": 107,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 1217,
+  "M_unsupported_mm2": 2104
+ },
+ {
+  "part": "mast_H50",
+  "orient": "upside_down",
+  "A_support_mm2": 98,
+  "A_unsupported_mm2": 52,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 635,
+  "M_unsupported_mm2": 1353
+ },
+ {
+  "part": "mast_H50",
+  "orient": "on_back",
+  "A_support_mm2": 3441,
+  "A_unsupported_mm2": 886,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 7937,
+  "M_unsupported_mm2": 1682
+ },
+ {
+  "part": "mast_H50",
+  "orient": "on_front",
+  "A_support_mm2": 3387,
+  "A_unsupported_mm2": 813,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 7582,
+  "M_unsupported_mm2": 1458
+ },
+ {
+  "part": "mast_H50",
+  "orient": "side(+x down)",
+  "A_support_mm2": 675,
+  "A_unsupported_mm2": 855,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 1559,
+  "M_unsupported_mm2": 1352
+ },
+ {
+  "part": "mast_H50",
+  "orient": "side(-x down)",
+  "A_support_mm2": 675,
+  "A_unsupported_mm2": 857,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 1570,
+  "M_unsupported_mm2": 1351
+ },
+ {
+  "part": "mast_H100",
+  "orient": "upright",
+  "A_support_mm2": 0,
+  "A_unsupported_mm2": 376,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 1217,
+  "M_unsupported_mm2": 2104
+ },
+ {
+  "part": "mast_H100",
+  "orient": "upside_down",
+  "A_support_mm2": 12,
+  "A_unsupported_mm2": 312,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 635,
+  "M_unsupported_mm2": 1353
+ },
+ {
+  "part": "mast_H100",
+  "orient": "on_back",
+  "A_support_mm2": 5318,
+  "A_unsupported_mm2": 2366,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 7964,
+  "M_unsupported_mm2": 854
+ },
+ {
+  "part": "mast_H100",
+  "orient": "on_front",
+  "A_support_mm2": 5085,
+  "A_unsupported_mm2": 1781,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 7604,
+  "M_unsupported_mm2": 1140
+ },
+ {
+  "part": "mast_H100",
+  "orient": "side(+x down)",
+  "A_support_mm2": 1383,
+  "A_unsupported_mm2": 3268,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 1562,
+  "M_unsupported_mm2": 538
+ },
+ {
+  "part": "mast_H100",
+  "orient": "side(-x down)",
+  "A_support_mm2": 1383,
+  "A_unsupported_mm2": 3270,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 1572,
+  "M_unsupported_mm2": 537
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "bore_up (d up)",
+  "A_support_mm2": 1202,
+  "A_unsupported_mm2": 157,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 183,
+  "M_support_mm2": 0,
+  "M_unsupported_mm2": 0
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "bore_down",
+  "A_support_mm2": 423,
+  "A_unsupported_mm2": 171,
+  "B_support_mm2": 186,
+  "B_unsupported_mm2": 0,
+  "M_support_mm2": 329,
+  "M_unsupported_mm2": 0
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "upright",
+  "A_support_mm2": 1024,
+  "A_unsupported_mm2": 87,
+  "B_support_mm2": 222,
+  "B_unsupported_mm2": 97,
+  "M_support_mm2": 5,
+  "M_unsupported_mm2": 454
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "upside_down",
+  "A_support_mm2": 1361,
+  "A_unsupported_mm2": 72,
+  "B_support_mm2": 69,
+  "B_unsupported_mm2": 88,
+  "M_support_mm2": 3,
+  "M_unsupported_mm2": 462
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "on_back",
+  "A_support_mm2": 1273,
+  "A_unsupported_mm2": 114,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 163,
+  "M_support_mm2": 0,
+  "M_unsupported_mm2": 0
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "on_front",
+  "A_support_mm2": 86,
+  "A_unsupported_mm2": 98,
+  "B_support_mm2": 483,
+  "B_unsupported_mm2": 4,
+  "M_support_mm2": 0,
+  "M_unsupported_mm2": 323
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "side(+x down)",
+  "A_support_mm2": 711,
+  "A_unsupported_mm2": 96,
+  "B_support_mm2": 0,
+  "B_unsupported_mm2": 206,
+  "M_support_mm2": 270,
+  "M_unsupported_mm2": 268
+ },
+ {
+  "part": "pod_yaw20",
+  "orient": "side(-x down)",
+  "A_support_mm2": 92,
+  "A_unsupported_mm2": 85,
+  "B_support_mm2": 1799,
+  "B_unsupported_mm2": 322,
+  "M_support_mm2": 0,
+  "M_unsupported_mm2": 406
+ }
+]
