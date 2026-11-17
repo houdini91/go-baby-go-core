@@ -54,9 +54,9 @@ All of them fit the P1S plate (256 × 256 mm).
 ## 5. Hardware
 - 3 × **M3×25** countersunk screws (DIN 7991 / ISO 10642) into the chair's existing nut pockets, the same on both chairs.
   - Every head top seats 25.0 mm above the bottom of the seat pan (z 25), on both chairs and every size. Where the saddle is taller, the head sits in a Ø6.4 counterbore with a chamfered mouth: 0.6 / 1.5 / 2.6 mm deep at the rear / middle / front screw on the recess chair, 2.1 / 3.0 / 4.1 mm on the plain chair.
-  - The tip ends flush with the pan bottom (z 0). It runs through the whole 2.4 mm nut pocket, so the nut is fully engaged, and nothing sticks out under the seat, where the tilt mechanism is. The screw length tolerance is ±0.4 mm: check from below after fitting.
+  - The tip ends flush with the pan bottom (z 0), so nothing sticks out under the seat, where the tilt mechanism is. On the recess chair (mount feature, hole audit 2026-11-17) the nut pocket is 2.8 deep: the nut pulls up against the pocket roof and the tip runs 0.4 mm past it. On the plain chair the pocket is 2.4 deep and the tip ends level with the nut's lower face. The screw length tolerance is ±0.4 mm: check from below after fitting.
   - Plastic between the saddle floor and the head top: 6.5 mm (recess chair) or 5.0 mm (plain chair).
-  - The chair's nut pockets are 5.7 AF (policy 5.8). The nuts may need pressing in; see "Known items" in the README.
+  - Nut pockets: the chair's own pockets are **5.5 AF × 2.4** (the bare nut, measured on the chair B-rep; earlier notes said 5.7). The v0.7.3 mount feature now re-cuts them to **5.8 AF × 2.8** (policy AF +0.3, depth +0.4). On a plain chair (no mount) the nuts need pressing in or a soldering iron on low; see "Known items" in the README.
 - Long sizes only: 2 × Ø6 mm solid carbon rod, cut to 155 mm (K23) or 200 mm (K45), ±1.5 mm.
   - Cut with a Dremel cut-off disc, tape on the cut line. Wear an FFP2/FFP3 mask and glasses; work wet or outdoors, away from electronics.
   - Bevel both ends.
@@ -67,7 +67,7 @@ All of them fit the P1S plate (256 × 256 mm).
    - Pick the chair hole the rod slides into by hand without wobble.
    - Pick the channel that needs a firm push and then holds the rod when shaken.
    - Report the two numbers; `CHAIR_BORE_D` and `RIB_I` in the FeatureScript get set from them.
-2. **S23A for today's chair** (`gbg_pommel_v07_S23A_todays_chair.stl`). Bolt it through the 3 existing holes, with the hook over the seat front. Check the fit, the hook, the screws and the edges.
+2. **S23A for today's chair** (`gbg_pommel_v07_S23A_todays_chair.stl`; **stale**: it still has the v0.7.2 hook 6 mm off the seat face, re-export it from Onshape first). Bolt it through the 3 existing holes, with the hook over the seat front. Check the fit, the hook, the screws and the edges.
 3. **Full system:** print the chair seat with the v0.7.3 mount (shallow recess and rod holes) and a long size (K23A or K45A), recess version. Press on the pad by hand. If K45 feels too springy, switch it to 8 mm rods.
 
 ## 7. Strength (hand estimates, untested)
@@ -98,8 +98,8 @@ Worst case is K45, at the base of the neck. Load cases come from the expert-pane
 - The 6 mm recess wall used to take sideways and twisting knee loads by shape. The shallow ramp barely does, so these go through the hook and the 3 screws (plus the rods on K sizes), as on the older chair without a recess. Check this in the 200 N side-load test on an S size.
 
 ## 8. Assembly (long sizes)
-1. Push both rods into the pommel channels until they stop. About 57 mm stays sticking out behind the hook.
-2. Slide the pommel backwards into the chair: the rods go into the chair holes and the saddle slides along the recess until the hook touches the seat front.
+1. Push both rods into the pommel channels until they stop. About 54 mm stays sticking out behind the hook's inner face (57 before the hook moved onto the real seat face).
+2. Slide the pommel backwards into the chair: the rods go into the chair holes and the saddle slides along the recess until the hook touches the seat front (designed 0.2 mm gap; the hook's inner face sits on the seat's front face at y −90).
 3. Fit the 3 countersunk M3 screws from the top. Tighten them snugly, not hard; PETG creeps.
 4. To remove: undo the 3 screws and slide the pommel forward.
 

@@ -34,14 +34,14 @@ const ROD_X = 12;
 const ROD_Z = 7;
 const BOLTS_Y = [-45, -60, -75];
 const SEAT_EDGE = -96;
-const PAN_FRONT = -96;     // seat-pan front face (chair y)
+const RECESS_YF = -93;     // recess outline: its straight sides start here and run out past the front (was PAN_FRONT + FACE_CUT
+                           //   with PAN_FRONT -96; kept so the recess shape is unchanged)
 // ---- seat recess (shared with gbg_pommel_mount_chair.fs: keep identical) ----
 const RECESS_D = 1.5;      // recess depth below the seat top (z 20): the saddle floor sits at z 18.5
 const RECESS_C = 0.5;      // clearance per side around the saddle footprint at the floor
 const RECESS_RAMP = 6;     // horizontal run of the recess wall (1.5 over 6 = 14 deg)
 const RECESS_R = [20, 14, 10, 6, 4, 2];   // rim blend radii (convex edge a child can feel), tried in order
 const RECESS_RF = [3, 2, 1];     // floor blend radii (inside corner); small so the blend (0.37 mm wide at r3) stays inside the 0.5 clearance
-const FACE_CUT = 3;        // hook seat cut into the pan front face
 // ---- screws: M3 x 25 countersunk (DIN 7991 / ISO 10642, head 6.0) ----
 const BOLT_D = 3.5;        // M3 clearance (+0.5)
 const HEAD_D = 6.0;        // screw head diameter
@@ -61,6 +61,13 @@ const RIB_I = 0.30;        // crush-rib height from the channel wall: rib crest 
                            //   interference on a 6.0 rod, ~0.1-0.2 once printed small), 3 ribs per channel, in 2 short zones
 const RIB_ZONE = 20;       // length of each rib zone (rear, behind the hook / front, at the channel end)
 const BORE_END = -33;      // chair rod hole ends 3 mm past the rod end: rod-length slack
+const CHAIR_FACE_Y = -90;  // the seat pan's front face (chair B-rep, Main V16: plane y -90 from z 0 to 16, then an r4 round to
+                           //   the top at y -86). Until the 2026-11-17 audit the code assumed -96, so the hook stood 3-6 mm off it.
+const HOOK_CL = 0.2;       // hook inner face to the seat front face: slip fit (P1S policy >= 0.2)
+const HOOK_CH_Z = 17.75;   // hook inner corner: a 45 deg chamfer from z 17.75 on the inner face up to the saddle floor. It clears
+                           //   the seat's r4 front edge (centre y -86, z 16) by >= 0.2 on both chairs (needs z >= 17.7)
+const NUT_M3_AF = 5.8;     // chair M3 nut pockets re-cut: nut 5.5 AF + 0.3 (same policy as the headrest)
+const NUT_M3_TRAP = 2.8;   //   and 2.4 thick + 0.4 deep (the chair's own pockets are 5.5 x 2.4)
 
 function mmv(v) returns ValueWithUnits
 {
@@ -147,7 +154,8 @@ export const gbgPommelV07 = defineFeature(function(context is Context, id is Id,
 function buildPommel(context is Context, id is Id, sp is map, step is number, recess is boolean, showRods is boolean, withSupport is boolean) returns Query
 {
     const F = recess ? 20 - RECESS_D : 20;   // saddle floor (shallow recess, or the plain seat)
-    const Y0 = recess ? PAN_FRONT + FACE_CUT : PAN_FRONT;   // chair front face the hook bears on
+    const Y0 = CHAIR_FACE_Y - HOOK_CL;       // hook inner face: HOOK_CL in front of the seat front face, on both chairs
+    const lipY = recess ? -91 : -94;         // saddle top profile: lip point unchanged from v0.7.3
     // saddle top over the 3 screws. Plain chair: the same saddle THICKNESS as the recess version (floor 1.5 higher, so the
     // top is 1.5 higher) and the same lip z 30, so the groin zone stays about 10 mm above the seat on both chairs.
     const top3 = recess ? SAD_TOP : [SAD_TOP[0] + RECESS_D, SAD_TOP[1] + RECESS_D, SAD_TOP[2] + RECESS_D];
@@ -161,7 +169,7 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
         throw regenError("Reach too short for a long pommel: use a short (S) size", ["step"]);
 
     // ---- sideSk profile (y, z), extruded across x ----
-    var topPts = [pt(SAD_REAR, top3[0]), pt(-55, top3[1]), pt(-75, top3[2]), pt(Y0 + 2, recess ? LIP_TOP - 1 : LIP_TOP), pt(HF, LIP_TOP)];
+    var topPts = [pt(SAD_REAR, top3[0]), pt(-55, top3[1]), pt(-75, top3[2]), pt(lipY, recess ? LIP_TOP - 1 : LIP_TOP), pt(HF, LIP_TOP)];
     if (sp.long)
         topPts = concatenateArrays([topPts, [pt(HF - 10, NECK_TOP), pt(-(a - 20), NECK_TOP), pt(-(a - 2), NECK_TOP + 6), pt(-(a + 12), zT - 12), pt(-(a + 28), zT), pt(-(b - 14), zT - 1), pt(-b, zT - 22)]]);
     else
@@ -171,10 +179,9 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
     skLineSegment(sideSk, "f1", { "start" : pt(-b, zT - 22), "end" : pt(-b, 8) });
     skLineSegment(sideSk, "f2", { "start" : pt(-b, 8), "end" : pt(-(b - 8), 0) });
     skLineSegment(sideSk, "bot", { "start" : pt(-(b - 8), 0), "end" : pt(Y0, 0) });
-    // hook inner corner: a 45 deg chamfer that clears the chair's rounded front lip (same line on both chairs: z 11 at the
-    // original front face y -96, rising 1:1 to the saddle floor)
-    const hookZ = 11 + (Y0 - PAN_FRONT);
-    const hookY = PAN_FRONT + (F - 11);
+    // hook inner corner: a 45 deg chamfer from (Y0, HOOK_CH_Z) up to the saddle floor, clear of the seat's r4 front edge
+    const hookZ = HOOK_CH_Z;
+    const hookY = Y0 + (F - HOOK_CH_Z);
     skLineSegment(sideSk, "hi", { "start" : pt(Y0, 0), "end" : pt(Y0, hookZ) });
     skLineSegment(sideSk, "ch", { "start" : pt(Y0, hookZ), "end" : pt(hookY, F) });
     skLineSegment(sideSk, "fl", { "start" : pt(hookY, F), "end" : pt(SAD_REAR, F) });
@@ -184,7 +191,7 @@ function buildPommel(context is Context, id is Id, sp is map, step is number, re
                 "endBound" : BoundingType.BLIND, "endDepth" : mmv(80), "startBound" : BoundingType.BLIND, "startDepth" : mmv(80) });
 
     // ---- plan profile (x half width vs y), extruded along z ----
-    var half = [pt(SAD_HW_REAR, SAD_REAR), pt((SAD_HW_REAR + HOOK_HW) / 2, (SAD_REAR + Y0) / 2), pt(HOOK_HW, Y0), pt(HOOK_HW - 3, HF - 2)];
+    var half = [pt(SAD_HW_REAR, SAD_REAR), pt((SAD_HW_REAR + HOOK_HW) / 2, (SAD_REAR + RECESS_YF) / 2), pt(HOOK_HW, Y0), pt(HOOK_HW - 3, HF - 2)];
     if (sp.long)
         half = concatenateArrays([half, [pt(NECK_HW, HF - 16), pt(NECK_HW, -(a - 14)), pt(max(sp.wR / 2, NECK_HW + 2), -(a + 6)), pt(sp.wF / 2, -(b - 12))]]);
     else
@@ -464,7 +471,7 @@ export const gbgPommelMount = defineFeature(function(context is Context, id is I
 function recessSketch(context is Context, id is Id, z is number, o is number)
 {
     const k = 1.09;
-    const yF = PAN_FRONT + FACE_CUT;
+    const yF = RECESS_YF;
     const right = [pt(HOOK_HW + o, yF), pt((SAD_HW_REAR + HOOK_HW) / 2 + k * o, (SAD_REAR + yF) / 2), pt(SAD_HW_REAR + 1 + k * o, SAD_REAR + o), pt(0, SAD_REAR + o + 0.5)];
     var pts = right;
     for (var i = size(right) - 2; i >= 0; i -= 1)
@@ -497,13 +504,7 @@ export function cutMount(context is Context, id is Id, base is Query, rodHoles i
     const floor = qEdgeConvexityTypeFilter(qSubtraction(qCoincidesWithPlane(qOwnedByBody(rec, EntityType.EDGE), plane(p3(0, 0, zF), vector(0, 0, 1))), front), EdgeConvexityType.CONVEX);
     const rF = roundAdaptive(context, id + "flrR", floor, RECESS_RF, false);
     var tools = [rec];
-    // hook seat: FACE_CUT off the front face over the hook width, ends flared at 45 deg (no square notch corner)
-    const yF = PAN_FRONT + FACE_CUT;
-    const fs = newSketchOnPlane(context, id + "fsk", { "sketchPlane" : plane(p3(0, 0, -1), vector(0, 0, 1), vector(1, 0, 0)) });
-    skPolyline(fs, "p", { "points" : [pt(HOOK_HW + RECESS_C, yF), pt(HOOK_HW + RECESS_C + yF + 112, -112), pt(-(HOOK_HW + RECESS_C + yF + 112), -112), pt(-(HOOK_HW + RECESS_C), yF), pt(HOOK_HW + RECESS_C, yF)] });
-    skSolve(fs);
-    opExtrude(context, id + "face", { "entities" : qSketchRegion(id + "fsk"), "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : mmv(41) });
-    tools = append(tools, qCreatedBy(id + "face", EntityType.BODY));
+    var sketches = [];
     // M3 clearance holes (re-drilled to BOLT_D) with a 0.5 mm mouth chamfer at the recess floor
     for (var j = 0; j < size(BOLTS_Y); j += 1)
     {
@@ -511,17 +512,30 @@ export function cutMount(context is Context, id is Id, base is Query, rodHoles i
         fCone(context, id + ("bc" ~ j), { "bottomCenter" : p3(0, BOLTS_Y[j], zF - 0.5), "topCenter" : p3(0, BOLTS_Y[j], zF + 0.01),
                     "bottomRadius" : mmv(BOLT_D / 2), "topRadius" : mmv(BOLT_D / 2 + 0.51) });
         tools = append(tools, qCreatedBy(id + ("bc" ~ j), EntityType.BODY));
+        // M3 nut pocket re-cut to the print-fit policy (the chair's own Nut Pocket is 5.5 AF x 2.4 deep = the bare nut, a press
+        // fit at best on a P1S): NUT_M3_AF across flats, NUT_M3_TRAP deep, open at the pan bottom, flats facing +-y like the
+        // original. The nut pulls up against the pocket roof, so an M3 x 25 (tip at z 0) now runs 0.4 mm past it, still inside.
+        const hx = newSketchOnPlane(context, id + ("nsk" ~ j), { "sketchPlane" : plane(p3(0, 0, -1), vector(0, 0, 1), vector(1, 0, 0)) });
+        var hp = [];
+        for (var k = 0; k <= 6; k += 1)
+            hp = append(hp, pt(NUT_M3_AF / sqrt(3) * cos(60 * k * degree), BOLTS_Y[j] + NUT_M3_AF / sqrt(3) * sin(60 * k * degree)));
+        skPolyline(hx, "h", { "points" : hp });
+        skSolve(hx);
+        opExtrude(context, id + ("nut" ~ j), { "entities" : qSketchRegion(id + ("nsk" ~ j)), "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : mmv(1 + NUT_M3_TRAP) });
+        tools = append(tools, qCreatedBy(id + ("nut" ~ j), EntityType.BODY));
+        sketches = append(sketches, qCreatedBy(id + ("nsk" ~ j), EntityType.BODY));
     }
     if (rodHoles)
         for (var s in [-1, 1])
         {
-            tools = append(tools, teardropY(context, id + ("bore" ~ (s + 1)), s * ROD_X, ROD_Z, yF - 2, BORE_END, CHAIR_BORE_D / 2));
-            fCone(context, id + ("bli" ~ (s + 1)), { "bottomCenter" : p3(s * ROD_X, yF - 0.5, ROD_Z), "topCenter" : p3(s * ROD_X, yF + 1, ROD_Z),
+            tools = append(tools, teardropY(context, id + ("bore" ~ (s + 1)), s * ROD_X, ROD_Z, CHAIR_FACE_Y - 2, BORE_END, CHAIR_BORE_D / 2));
+            // lead-in at the seat front face (until the 2026-11-17 audit it sat 3 mm in front of the face, in air: sharp mouth)
+            fCone(context, id + ("bli" ~ (s + 1)), { "bottomCenter" : p3(s * ROD_X, CHAIR_FACE_Y - 0.5, ROD_Z), "topCenter" : p3(s * ROD_X, CHAIR_FACE_Y + 1, ROD_Z),
                         "bottomRadius" : mmv(CHAIR_BORE_D / 2 + 1.5), "topRadius" : mmv(CHAIR_BORE_D / 2) });
             tools = append(tools, qCreatedBy(id + ("bli" ~ (s + 1)), EntityType.BODY));
         }
     opBoolean(context, id + "cut", { "tools" : qUnion(tools), "targets" : base, "operationType" : BooleanOperationType.SUBTRACTION });
-    opDeleteBodies(context, id + "del", { "entities" : qUnion([qCreatedBy(id + "sk0", EntityType.BODY), qCreatedBy(id + "sk1", EntityType.BODY), qCreatedBy(id + "fsk", EntityType.BODY)]) });
+    opDeleteBodies(context, id + "del", { "entities" : qUnion(concatenateArrays([[qCreatedBy(id + "sk0", EntityType.BODY), qCreatedBy(id + "sk1", EntityType.BODY)], sketches])) });
     return { "rim" : rR, "floor" : rF };
 }
 
