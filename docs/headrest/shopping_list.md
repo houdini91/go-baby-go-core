@@ -13,7 +13,7 @@ All quoted Nov 29 – Dec 6. Listings and prices change; check the variant befor
 | 5 | Self-adhesive hook-and-loop dots | https://www.aliexpress.com/item/32881873870.html | **Black 25mm 40Pairs** (8 per pad) | 1 | Nuomi Handcraft Store (4.7★, 97.8 %, 7.3K followers) |
 | 6 | **Pan-head self-tapping screws ST3.5 × 6.5**, 304 stainless (DIN 7981 C / ISO 7049, cross or Torx; a 3.5 × 6–8 mm pan-head wood screw also works). PVC lock, 3 per pod. **Not longer than 8 mm.** | not picked yet: search "DIN 7981 ST3.5 6.5 304" | **ST3.5 × 6.5**, smallest pack | 1 | – |
 
-**How much each covers.** One 500 mm rod gives the pair for any one height (85 + H mm each), or two pairs (H0 + H75, or H25 + H50); buy a second only for more headrests. The screw and nut packs cover several headrests.
+**How much each covers.** One 500 mm rod gives the pair for any one height (95 + H mm each, v1.3), or two pairs (H0 + H50, or H0 + H25); buy a second only for more headrests. The screw and nut packs cover several headrests.
 
 **Per headrest (v1.2).** With one pod and one blank: 2× M5×30 + 2 M5 nuts, 2× M3×25, 2× M3×20, 1× M3×12, **5 M3 nuts**, 3× ST3.5×6.5. With a pod on both sides: 4× M3×20 and no M3×12, **6 M3 nuts**, 6× ST3.5×6.5. The rod cutting gauge (a workshop tool, printed once) takes 2× M3×30 + 2 M3 nuts. Nothing else in the headrest uses M3×30 or M3×16 any more (v1.1 used M3×30 for the chin locks and the PVC clamp, M3×16 for the pod and blank).
 

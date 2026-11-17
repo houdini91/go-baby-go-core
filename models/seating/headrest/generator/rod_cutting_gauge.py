@@ -1,7 +1,8 @@
 """Rod cutting gauge with clamp lid, for the headrest's Ø8 carbon rods (workshop tool, PETG).
 
-Base: V-groove for the rod, an end stop, and a saw slot at each rod length 85 + H
-(H0 85, H25 110, H50 135, H75 160, H100 185). The slot's near edge (stop side) is at the
+Base: V-groove for the rod, an end stop, and a saw slot at each rod length 95 + H
+(H0 95, H25 120, H50 145, H75 170, H100 195).  v1.3 (2026-11-17): +10 mm, the rods now run ROD_EXT = 10 mm past the
+mast plug into seats in the chair's socket floor (gbg_headrest_v10.fs ROD_EXT). The slot's near edge (stop side) is at the
 rod length, so the piece between the stop and the slot is exactly that long.
 Lid: pressed onto the rod by 2x M3x30 countersunk screws (DIN 7991) into M3 nuts trapped
 under the base. Flanges have Ø4.5 holes to screw the gauge to a board.
@@ -14,17 +15,18 @@ import numpy as np
 from manifold3d import Manifold as M, CrossSection as CS, FillRule
 
 ROD_D = 8.0
-LENGTHS = [("H0", 85), ("H25", 110), ("H50", 135), ("H75", 160), ("H100", 185)]
+ROD_EXT = 10.0       # = ROD_EXT in featurescript/gbg_headrest_v10.fs (rod past the plug into the chair)
+LENGTHS = [(n, 85 + h + ROD_EXT) for n, h in (("H0", 0), ("H25", 25), ("H50", 50), ("H75", 75), ("H100", 100))]
 W = 32.0             # body width (y)
 H = 22.0             # body height (z): M3x30 tip stays inside the base even with no rod in
 PROUD = 2.0          # rod top above the base top; the lid presses here
 STOP_T = 8.0         # end stop thickness (x < 0)
 STOP_UP = 6.0        # stop rises above the rod top
-X_END = 200.0        # base ends past the last slot
+X_END = LENGTHS[-1][1] + 15.0   # base ends 15 mm past the last slot (210)
 SLOT_W = 1.8         # saw kerf guide (hacksaw ~1.0, diamond disc ~0.6-1.5)
 SLOT_CLEAR = 2.0     # slot floor this far below the rod bottom
 FL_W, FL_T = 12.0, 5.0         # side flanges
-FL_HOLES_X = [20.0, 98.0, 172.0]   # between slots; Ø4.5 wood-screw holes
+FL_HOLES_X = [20.0, 108.0, 183.0]  # clear of the slots (95/120/145/170/195 + 1.8); Ø4.5 wood-screw holes
 LID_X0, LID_X1 = 12.0, 62.0    # lid sits between the stop and the first slot
 LID_T = 8.0
 SCREW_X, SCREW_Y = 37.0, 12.0
@@ -129,7 +131,7 @@ def base():
         xc = L - 9.0                     # reads along the gauge, just before its slot
         yc = (HALF_TOP + W / 2) / 2
         b = engrave(b, name, xc, yc, H, size=3.6)
-        b = engrave(b, str(L), xc, -yc, H, size=3.6)
+        b = engrave(b, "%d" % L, xc, -yc, H, size=3.6)
     return b
 
 
@@ -143,7 +145,7 @@ def lid():
     return l
 
 
-def rod(L=185.0):
+def rod(L=LENGTHS[-1][1]):
     return M.cylinder(L, R, R, 48).rotate([0, 90, 0]).translate([0, 0, ZC])
 
 
@@ -155,6 +157,10 @@ if __name__ == "__main__":
     for n, p in (("base", B), ("lid", Lid)):
         assert p.status().name == "NoError" and not p.is_empty(), n
         print(n, "volume %.1f cm3, genus %d" % (p.volume() / 1000, p.genus()))
+    for x in FL_HOLES_X:
+        assert all(not (L - 2.25 - 2 < x < L + SLOT_W + 2.25 + 2) for _, L in LENGTHS), ("flange hole hits a slot", x)
+    assert LID_X1 < LENGTHS[0][1] - 12, "lid over the first slot label"
+    print("slots at", [L for _, L in LENGTHS], "X_END", X_END)
     print("rod in groove, overlap with base %.4f mm3 (want ~0)" % (B ^ Rd).volume())
     print("rod vs lid overlap %.4f mm3 (lid touches the rod top)" % (Lid ^ Rd).volume())
     print("rod top z %.2f, base top z %.2f, lid bottom z %.2f" % (ZC + R, H, H + PROUD))

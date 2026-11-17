@@ -14,7 +14,8 @@ import(path : "onshape/std/common.fs", version : "3112.0");
 //   LOCAL (0, CY, 451 + H): head-side oval radius R, depth ELL, z = 0 at the pad centre.
 // Parts:  pad F3 (slit-free, 8 Velcro-dot pockets, strap slots, 8 mm triangle button pocket, K2 tapered channel),
 //   mast M1 (B1 plug, R2, relief window when the stem is long enough), W1 button pod (yaw 12/20/28) or blank plug,
-//   reference carbon rods.  The chair change (receiver in top_back) is the separate feature "GbG Headrest Receiver".
+//   reference carbon rods.  v1.3 (2026-11-17, owner decision 2A): the rods run ROD_EXT = 10 mm past the plug into two
+//   blind Ø8.6 seats in the receiver's socket floor (stiffer mast root); rod length 95 + H.  The chair change (receiver in top_back) is the separate feature "GbG Headrest Receiver".
 // ===================================================================================================================
 
 export enum HeadrestHeight
@@ -76,6 +77,10 @@ const TRI_CL = 0.15;        // button pocket (+0.15) vs pod wedge (-0.05): 0.2 p
 // ---------------- chair / mast (LOCAL frame) ----------------
 const TH = 4.645078425891606;  const PIV = [0, 123.5, 390];
 const TOP = 391.3;  const FRONT = 123.5;  const SOCK_Z0 = 345;
+// v1.3: rods continue ROD_EXT below the socket floor into blind seats in top_back (Ø ROD_SEAT_D, bottom ROD_SEAT_SPARE under
+// the rod end so a +1 mm cut still seats).  Seat bottom z 334: >= 3.5 mm wall to the receiver's back face (it tapers in below
+// z 339; at z 332 only 1.5 mm is left, breakout at z ~330).  The plug aligns the rods: 0.3 mm per side + 1 mm lead-in chamfer.
+const ROD_EXT = 10;  const ROD_SEAT_D = 8.6;  const ROD_SEAT_SPARE = 1;
 const PLUG = [-28, 28, 128, 154];  const FOOT = [38, 125, 160, 4];  const FADE = 322;
 const NUT5_Y = 136;  const BOLTS_Z = [360, 379];
 const CY = 28.78;
@@ -1095,7 +1100,7 @@ export function buildHeadrest(context is Context, id is Id, H is number, button 
     if (rods)
     {
         for (var x in [-SPINE_X, SPINE_X])
-            fCylinder(context, id + (x < 0 ? "rodL" : "rodR"), { "bottomCenter" : v3(x, CY + SPINE_Y, SOCK_Z0 + 1), "topCenter" : v3(x, CY + SPINE_Y, zc + ROD_TOP), "radius" : ROD_D / 2 * millimeter });
+            fCylinder(context, id + (x < 0 ? "rodL" : "rodR"), { "bottomCenter" : v3(x, CY + SPINE_Y, SOCK_Z0 + 1 - ROD_EXT), "topCenter" : v3(x, CY + SPINE_Y, zc + ROD_TOP), "radius" : ROD_D / 2 * millimeter });
         parts["rods"] = qUnion([solids(context, id + "rodL"), solids(context, id + "rodR")]);
     }
     var all = [];
@@ -1248,6 +1253,14 @@ export function receiverTools(context is Context, id is Id) returns map
         fCylinder(context, C + ("tbm" ~ m), { "bottomCenter" : v3(mx, TB_MOUNT_SEAT_Y, mz), "topCenter" : v3(mx, FOOT[2] + 20, mz), "radius" : TB_MOUNT_SEAT_R * millimeter });
         tdHole(context, C + ("tbh" ~ m), vector(mx, FRONT - 1, mz), vector(mx, TB_MOUNT_SEAT_Y + 0.5, mz), TB_MOUNT_HOLE_D / 2, vector(0, 0, 1));
         fCylinder(context, C + ("tbc" ~ m), { "bottomCenter" : v3(mx, FRONT - 1, mz), "topCenter" : v3(mx, TB_MOUNT_CB_Y, mz), "radius" : TB_MOUNT_CB_D / 2 * millimeter });
+    }
+    // v1.3: blind seats for the rod ends in the socket floor (vertical: top_back prints upright, so round, no teardrop),
+    // 1 mm x 45 deg lead-in at the floor
+    for (var x in [-SPINE_X, SPINE_X])
+    {
+        const sb = SOCK_Z0 + 1 - ROD_EXT - ROD_SEAT_SPARE;
+        fCylinder(context, C + (x < 0 ? "rsL" : "rsR"), { "bottomCenter" : v3(x, CY + SPINE_Y, sb), "topCenter" : v3(x, CY + SPINE_Y, SOCK_Z0 + 0.5), "radius" : ROD_SEAT_D / 2 * millimeter });
+        fCone(context, C + (x < 0 ? "rcL" : "rcR"), { "bottomCenter" : v3(x, CY + SPINE_Y, SOCK_Z0 - 1), "topCenter" : v3(x, CY + SPINE_Y, SOCK_Z0 + 0.05), "bottomRadius" : ROD_SEAT_D / 2 * millimeter, "topRadius" : (ROD_SEAT_D / 2 + 1.05) * millimeter });
     }
     // socket mouth: 1 mm x 45 deg chamfer (no sharp rim; lead-in for the plug) = a box 1 mm bigger all round from TOP - 1 up,
     // vertical edges rounded to the socket's r6 + 1, bottom loop chamfered 1 mm back to the socket outline

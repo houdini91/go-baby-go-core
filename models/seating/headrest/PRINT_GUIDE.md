@@ -44,10 +44,10 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 7. Load tests (README), then the other heights only as children need them.
 
 ## 6. Assembly
-1. Cut 2 carbon rods to **85 + H mm** (H0 85, H25 110, H50 135, H75 160, H100 185) in the **rod cutting gauge**: push the rod against the stop, tighten the lid (2× M3×30 + nuts), wrap tape round the rod at the slot for your height, and cut through the slot with a diamond disc or a fine hacksaw. Wear an FFP3 mask, goggles and gloves; cut outside or over a damp cloth; no blower (wipe or vacuum). Seal both ends with a drop of thin CA, sand lightly.
+1. Cut 2 carbon rods to **95 + H mm** (H0 95, H25 120, H50 145, H75 170, H100 195; v1.3: 10 mm of each rod goes on into the chair's socket floor) in the **rod cutting gauge**: push the rod against the stop, tighten the lid (2× M3×30 + nuts), wrap tape round the rod at the slot for your height, and cut through the slot with a diamond disc or a fine hacksaw. Wear an FFP3 mask, goggles and gloves; cut outside or over a damp cloth; no blower (wipe or vacuum). Seal both ends with a drop of thin CA, then round the edges with sandpaper (the bottom ends stand out of the plug).
 2. Slide the 2 M5 nuts into the plug slots (from −x); a drop of CA keeps them in.
 3. Slide the 2 M3 nuts into the slots on the tenon side edges.
-4. Push the rods into the mast from the plug end until they stop.
+4. Push the rods into the mast from the plug end until they stop; 9–10 mm stays out of the plug. When the mast goes into the chair, the rod ends find their two seats in the socket floor first (1 mm lead-in), then the plug slides in.
 5. Push the plug into the `top_back` socket. Fit 2× **M5×30** countersunk from behind (flush). Snug only: they lock, the socket carries the load.
 6. Slide the pad down onto the tenon until the taper wedges. Fit 2× **M3×25** countersunk from under the chin; the heads sit 1 mm down in flat spot-faces.
 7. (v1.2b: there are no nut traps in the pad any more; the M3 nuts go into pockets in the pod and the blank, see 8 and 9.)
