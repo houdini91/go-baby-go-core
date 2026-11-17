@@ -61,6 +61,10 @@ const RIB_I = 0.30;        // crush-rib height from the channel wall: rib crest 
                            //   interference on a 6.0 rod, ~0.1-0.2 once printed small), 3 ribs per channel, in 2 short zones
 const RIB_ZONE = 20;       // length of each rib zone (rear, behind the hook / front, at the channel end)
 const BORE_END = -33;      // chair rod hole ends 3 mm past the rod end: rod-length slack
+const CHAIR_FACE_Y = -90;  // the seat pan's REAL front face (chair B-rep, Main V16: plane y -90, r4 top edge). PAN_FRONT (-96)
+                           //   is 6 mm in front of it; used here only for the rod-hole lead-ins (hole audit 2026-11-17)
+const NUT_M3_AF = 5.8;     // chair M3 nut pockets re-cut: nut 5.5 AF + 0.3 (same policy as the headrest)
+const NUT_M3_TRAP = 2.8;   //   and 2.4 thick + 0.4 deep (the chair's own pockets are 5.5 x 2.4)
 
 function mmv(v) returns ValueWithUnits
 {
@@ -497,6 +501,7 @@ export function cutMount(context is Context, id is Id, base is Query, rodHoles i
     const floor = qEdgeConvexityTypeFilter(qSubtraction(qCoincidesWithPlane(qOwnedByBody(rec, EntityType.EDGE), plane(p3(0, 0, zF), vector(0, 0, 1))), front), EdgeConvexityType.CONVEX);
     const rF = roundAdaptive(context, id + "flrR", floor, RECESS_RF, false);
     var tools = [rec];
+    var sketches = [];
     // hook seat: FACE_CUT off the front face over the hook width, ends flared at 45 deg (no square notch corner)
     const yF = PAN_FRONT + FACE_CUT;
     const fs = newSketchOnPlane(context, id + "fsk", { "sketchPlane" : plane(p3(0, 0, -1), vector(0, 0, 1), vector(1, 0, 0)) });
@@ -511,17 +516,31 @@ export function cutMount(context is Context, id is Id, base is Query, rodHoles i
         fCone(context, id + ("bc" ~ j), { "bottomCenter" : p3(0, BOLTS_Y[j], zF - 0.5), "topCenter" : p3(0, BOLTS_Y[j], zF + 0.01),
                     "bottomRadius" : mmv(BOLT_D / 2), "topRadius" : mmv(BOLT_D / 2 + 0.51) });
         tools = append(tools, qCreatedBy(id + ("bc" ~ j), EntityType.BODY));
+        // M3 nut pocket re-cut to the print-fit policy (the chair's own Nut Pocket is 5.5 AF x 2.4 deep = the bare nut, a press
+        // fit at best on a P1S): NUT_M3_AF across flats, NUT_M3_TRAP deep, open at the pan bottom, flats facing +-y like the
+        // original. The nut pulls up against the pocket roof, so an M3 x 25 (tip at z 0) now runs 0.4 mm past it, still inside.
+        const hx = newSketchOnPlane(context, id + ("nsk" ~ j), { "sketchPlane" : plane(p3(0, 0, -1), vector(0, 0, 1), vector(1, 0, 0)) });
+        var hp = [];
+        for (var k = 0; k <= 6; k += 1)
+            hp = append(hp, pt(NUT_M3_AF / sqrt(3) * cos(60 * k * degree), BOLTS_Y[j] + NUT_M3_AF / sqrt(3) * sin(60 * k * degree)));
+        skPolyline(hx, "h", { "points" : hp });
+        skSolve(hx);
+        opExtrude(context, id + ("nut" ~ j), { "entities" : qSketchRegion(id + ("nsk" ~ j)), "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : mmv(1 + NUT_M3_TRAP) });
+        tools = append(tools, qCreatedBy(id + ("nut" ~ j), EntityType.BODY));
+        sketches = append(sketches, qCreatedBy(id + ("nsk" ~ j), EntityType.BODY));
     }
     if (rodHoles)
         for (var s in [-1, 1])
         {
-            tools = append(tools, teardropY(context, id + ("bore" ~ (s + 1)), s * ROD_X, ROD_Z, yF - 2, BORE_END, CHAIR_BORE_D / 2));
-            fCone(context, id + ("bli" ~ (s + 1)), { "bottomCenter" : p3(s * ROD_X, yF - 0.5, ROD_Z), "topCenter" : p3(s * ROD_X, yF + 1, ROD_Z),
+            tools = append(tools, teardropY(context, id + ("bore" ~ (s + 1)), s * ROD_X, ROD_Z, min(yF, CHAIR_FACE_Y) - 2, BORE_END, CHAIR_BORE_D / 2));
+            // lead-in at the chair's REAL front face (CHAIR_FACE_Y); at yF it was 3 mm in front of the face, in air, so the
+            // rod hole mouth was a sharp edge
+            fCone(context, id + ("bli" ~ (s + 1)), { "bottomCenter" : p3(s * ROD_X, CHAIR_FACE_Y - 0.5, ROD_Z), "topCenter" : p3(s * ROD_X, CHAIR_FACE_Y + 1, ROD_Z),
                         "bottomRadius" : mmv(CHAIR_BORE_D / 2 + 1.5), "topRadius" : mmv(CHAIR_BORE_D / 2) });
             tools = append(tools, qCreatedBy(id + ("bli" ~ (s + 1)), EntityType.BODY));
         }
     opBoolean(context, id + "cut", { "tools" : qUnion(tools), "targets" : base, "operationType" : BooleanOperationType.SUBTRACTION });
-    opDeleteBodies(context, id + "del", { "entities" : qUnion([qCreatedBy(id + "sk0", EntityType.BODY), qCreatedBy(id + "sk1", EntityType.BODY), qCreatedBy(id + "fsk", EntityType.BODY)]) });
+    opDeleteBodies(context, id + "del", { "entities" : qUnion(concatenateArrays([[qCreatedBy(id + "sk0", EntityType.BODY), qCreatedBy(id + "sk1", EntityType.BODY), qCreatedBy(id + "fsk", EntityType.BODY)], sketches])) });
     return { "rim" : rR, "floor" : rF };
 }
 

@@ -38,8 +38,8 @@ The long sizes have a reach adjustment of ±15 or ±30 mm.
 | File | What |
 |---|---|
 | `featurescript/gbg_pommel_v07.fs` | Onshape FeatureScript: the pommel feature (all sizes, "Print set" layout, rod fit-test bar, built-in snap-off supports). Also contains the chair mount feature. |
-| `featurescript/gbg_pommel_mount_chair.fs` | The chair change only: the shallow blended saddle recess, the hook seat on the front face, M3 holes opened to Ø3.5 and 2 teardrop rod holes. Used on the chair branch. Its constants must match the copy in `gbg_pommel_v07.fs`. |
-| `review/` | Before/after pictures of the seat recess (Python re-model, not Onshape) and the script that draws them. |
+| `featurescript/gbg_pommel_mount_chair.fs` | The chair change only: the shallow blended saddle recess, the hook seat on the front face, M3 holes opened to Ø3.5, M3 nut pockets re-cut to 5.8 AF × 2.8 and 2 teardrop rod holes with lead-ins. Used on the chair branch. Its constants must match the copy in `gbg_pommel_v07.fs`. |
+| `review/` | Before/after pictures of the seat recess (Python re-model, not Onshape) and the script that draws them. `review/hole_audit/`: hole audit 2026-11-17 (nut pockets, rod-hole mouths, the hook finding). |
 | `PRINT_GUIDE.md` | Material (PETG), P1S slicer settings, real and estimated weights, hardware, first-prototype order, strength, assembly. |
 | `stl/gbg_pommel_v07_rod_fit_test.stl` | Rod fit-test bar. Print this first (12.9 g, 28 min). |
 | `stl/gbg_pommel_v07_S23A_todays_chair.stl` | First prototype: short S23A for a chair without the recess (114 g, 3 h 40 min, with slicer supports). **Stale (v0.7.2):** re-export from v0.7.3 for the Ø3.5 holes, the M3×25 head seats and the lower plain-chair saddle. |
@@ -54,12 +54,16 @@ The long sizes have a reach adjustment of ±15 or ±30 mm.
 Only the first-prototype STLs are committed. Export the other sizes from the print set after the fit test confirms the hole sizes.
 
 ## Known items
-- **Chair nut pockets are 5.7 AF.** The chair's own `Nut Pocket` features (chair Part Studio 1, not in these files) are 5.7 mm across flats (figure from the v0.7.3 review; not re-measured here) and 2.4 mm deep, open at the pan bottom. The print-fit policy for M3 nuts (5.5 AF) is 5.8, as in the headrest. A P1S prints holes 0.1–0.3 mm small, so the nuts may need pressing in (pull them in with the screw, or with a soldering iron on low). Not changed here: it belongs to the chair. Change it on the chair branch if the first print is too tight.
+- **Chair nut pockets (fixed in the mount, hole audit 2026-11-17).** The chair's own `Nut Pocket` features (chair Part Studio 1) are **5.5 AF × 2.4 deep**, exactly the nut, measured on the chair B-rep (the "5.7 AF" in v0.7.3 was wrong). `cutMount` now re-cuts all three to **5.8 AF × 2.8** (policy AF +0.3, depth +0.4), open at the pan bottom, flats facing ±y like the originals. On a plain chair (no mount feature) the pockets stay 5.5 × 2.4: press the nuts in or seat them with a soldering iron on low.
+- **Hook vs the real seat front (FOUND, NOT FIXED: owner decision).** The chair's seat-pan front face is the plane **y −90** with an r4 top edge (chair B-rep and mesh), not y −96 as `PAN_FRONT` assumes. So (a) the `FACE_CUT` hook seat lands in air and cuts nothing; (b) the hook's inner face stands **3 mm** (recess chair) / **6 mm** (plain chair) in front of the seat face, so a push down on the pad is taken by the screws, not by the hook bearing on the chair; (c) the hook's 45° inner chamfer overlaps the seat's r4 front lip by up to **0.58 mm** (recess) / **0.65 mm** (plain), so the saddle front can't sit fully down. Fixing it moves the hook (shape change, outside this audit). Proposal: `PAN_FRONT = −90`, no face cut, hook chamfer starting at z ≥ 17.7 (clears the r4 lip), and keep `SEAT_EDGE` −96 so the pads don't move. See `review/hole_audit/finding_hook_vs_real_front_face.png`.
+- **Chair rod-hole mouths (fixed).** The lead-in chamfer was placed at y −93 (`PAN_FRONT + FACE_CUT`), 3 mm in front of the real face, so the printed mouths were sharp. It is now at the real face (`CHAIR_FACE_Y` −90).
 - **Screw tip tolerance.** The tip ends flush with the pan bottom (z 0) on paper. ISO 10642 allows ±0.4 mm on a 25 mm length, and the printed countersink may seat the head slightly lower or higher. Check from below after fitting: if a tip sticks out, use a shorter screw or file it flush.
 - **Plastic under the heads.** Recess chair: 6.5 mm from the saddle floor to the head top (5.0 mm under the cone). Plain chair: 5.0 mm (3.5 mm under the cone). An M3×25 through a 20 mm pan fixes this: the head can't go higher without losing nut engagement. That plastic is clamped against the seat, so it only takes compression.
 
 ## Before this can drop "pre-first-print"
 - [ ] Load v0.7.3 into Onshape (pommel doc + a chair branch) and check that every size regenerates without clashing with the real chair.
+- [ ] Load the hole-audit mount (`pommel-hole-audit`) on an Onshape chair branch: fresh UI load, seat part present, mount feature not red, pockets 5.8 × 2.8.
+- [ ] Owner decision: move the hook onto the real seat face (y −90), see Known items.
 - [ ] Print the rod fit-test bar, then set `CHAIR_BORE_D` / `RIB_I` from the results.
 - [ ] Print S23A on today's chair ("Chair has recess" off) and check the fit, the hook and the screws.
 - [ ] Print the chair seat with the v0.7.3 mount and a long size, then check rod fit and pad flex.

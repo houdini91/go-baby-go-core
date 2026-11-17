@@ -54,9 +54,9 @@ All of them fit the P1S plate (256 × 256 mm).
 ## 5. Hardware
 - 3 × **M3×25** countersunk screws (DIN 7991 / ISO 10642) into the chair's existing nut pockets, the same on both chairs.
   - Every head top seats 25.0 mm above the bottom of the seat pan (z 25), on both chairs and every size. Where the saddle is taller, the head sits in a Ø6.4 counterbore with a chamfered mouth: 0.6 / 1.5 / 2.6 mm deep at the rear / middle / front screw on the recess chair, 2.1 / 3.0 / 4.1 mm on the plain chair.
-  - The tip ends flush with the pan bottom (z 0). It runs through the whole 2.4 mm nut pocket, so the nut is fully engaged, and nothing sticks out under the seat, where the tilt mechanism is. The screw length tolerance is ±0.4 mm: check from below after fitting.
+  - The tip ends flush with the pan bottom (z 0), so nothing sticks out under the seat, where the tilt mechanism is. On the recess chair (mount feature, hole audit 2026-11-17) the nut pocket is 2.8 deep: the nut pulls up against the pocket roof and the tip runs 0.4 mm past it. On the plain chair the pocket is 2.4 deep and the tip ends level with the nut's lower face. The screw length tolerance is ±0.4 mm: check from below after fitting.
   - Plastic between the saddle floor and the head top: 6.5 mm (recess chair) or 5.0 mm (plain chair).
-  - The chair's nut pockets are 5.7 AF (policy 5.8). The nuts may need pressing in; see "Known items" in the README.
+  - Nut pockets: the chair's own pockets are **5.5 AF × 2.4** (the bare nut, measured on the chair B-rep; earlier notes said 5.7). The v0.7.3 mount feature now re-cuts them to **5.8 AF × 2.8** (policy AF +0.3, depth +0.4). On a plain chair (no mount) the nuts need pressing in or a soldering iron on low; see "Known items" in the README.
 - Long sizes only: 2 × Ø6 mm solid carbon rod, cut to 155 mm (K23) or 200 mm (K45), ±1.5 mm.
   - Cut with a Dremel cut-off disc, tape on the cut line. Wear an FFP2/FFP3 mask and glasses; work wet or outdoors, away from electronics.
   - Bevel both ends.
