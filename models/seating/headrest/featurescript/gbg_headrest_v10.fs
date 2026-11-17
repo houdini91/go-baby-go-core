@@ -215,13 +215,14 @@ function cleanup(context is Context, id is Id, of is Id)
 }
 function solids(context is Context, of is Id) returns Query { return qBodyType(qCreatedBy(of, EntityType.BODY), BodyType.SOLID); }
 // A finish (fillet, chamfer, lift step) that fails is skipped so the part still builds, but NOT silently: skipped() notes it
-// and reportSkipped() shows the list as a feature warning (yellow) at the end of the feature.
+// and reportSkipped() shows the list as a feature INFO (blue note; the feature stays green) at the end of the feature.
 function skipped(context is Context, what is string)
 {
     var prev = "";
     try silent
     {
-        prev = getVariable(context, "gbgSkipped") ~ "; ";
+        prev = getVariable(context, "gbgSkipped");
+        if (prev != "") prev = prev ~ "; ";
     }
     setVariable(context, "gbgSkipped", prev ~ what);
     println("SKIPPED: " ~ what);
@@ -229,6 +230,13 @@ function skipped(context is Context, what is string)
 // also written to the DESCRIPTION property of `target` (readable through the REST API: GET .../parts)
 function reportSkipped(context is Context, id is Id, target is Query)
 {
+    // a real error throws and never gets here: an ERROR status still on the feature now can only come from a caught finish
+    // failure, and it would roll the whole feature back (std defineFeature aborts a feature that ends with an error)
+    if (getFeatureError(context, id) != undefined)
+    {
+        clearFeatureStatus(context, id, { "withDisplayData" : true });
+        skipped(context, "a caught finish error status was cleared");
+    }
     var msg = "";
     try silent
     {
@@ -236,7 +244,7 @@ function reportSkipped(context is Context, id is Id, target is Query)
     }
     if (msg != "")
     {
-        reportFeatureWarning(context, id, "Finish skipped (edge left sharp, check it): " ~ msg);
+        reportFeatureInfo(context, id, "Cosmetic finish skipped (part complete; check the edge): " ~ msg);
         if (size(evaluateQuery(context, target)) > 0)
             setProperty(context, { "entities" : target, "propertyType" : PropertyType.DESCRIPTION, "value" : "skipped: " ~ msg });
     }
@@ -261,16 +269,41 @@ function finishEdges(context is Context, id is Id, edges is Query, r is number, 
 }
 function blendOnce(context is Context, id is Id, edges is Query, r is number, chamfer is boolean) returns boolean
 {
-    var ok = false;
+    return attempt(context, id, function(sid)
+        {
+            if (chamfer)
+                opChamfer(context, sid + "op", { "entities" : edges, "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : r * millimeter });
+            else
+                opFillet(context, sid + "op", { "entities" : edges, "radius" : r * millimeter });
+        });
+}
+// v1.2c: every optional finish runs through attempt(): fn(id) runs as its own SUB-FEATURE.  If anything in it throws, the
+// sub-feature is aborted = every change it made is rolled back (a failed or half-done finish can never delete, split or merge
+// a body) and its status is cleared.  Why: in final2 the 4 pod lift steps and 3 tenon chamfer edges failed inside plain
+// `try silent` blocks; REST then still said WARNING / 10 parts, but the browser regen showed both headrest features RED
+// ("2 feature(s) failed to regenerate"), the pod gone and the print layout empty (2026-11-17).  The caught op failures
+// left error statuses behind; with attempt() a failure leaves nothing behind but the note from skipped().
+function attempt(context is Context, id is Id, fn is function) returns boolean
+{
+    var attemptOk = false;
+    startFeature(context, id);
     try silent
     {
-        if (chamfer)
-            opChamfer(context, id, { "entities" : edges, "chamferType" : ChamferType.EQUAL_OFFSETS, "width" : r * millimeter });
-        else
-            opFillet(context, id, { "entities" : edges, "radius" : r * millimeter });
-        ok = true;
+        fn(id);
+        attemptOk = getFeatureError(context, id) == undefined;
     }
-    return ok;
+    catch (e)
+    {
+        println("attempt " ~ toString(id) ~ " failed: " ~ toString(e));
+    }
+    if (attemptOk)
+    {
+        endFeature(context, id);
+        return true;
+    }
+    abortFeature(context, id);
+    clearFeatureStatus(context, id, { "withDisplayData" : true });
+    return false;
 }
 
 // place(): a part built at angle 0 (radial = +y, reference radius R) -> normal to the oval at circle angle theta
@@ -776,7 +809,23 @@ function tenonBackChamfer(context is Context, id is Id, mast is Query, hd is Id,
         if (size(evaluateQuery(context, other)) == 1 && size(evaluateQuery(context, qIntersection([other, ledge]))) == 0)
             edges = append(edges, e);
     }
-    finishEdges(context, id, qUnion(edges), 0.5, true, "tenon back-face outline chamfer 0.5");
+    // all 7 at 0.5, else edge by edge: chamfer 0.5, chamfer 0.3, round r0.3, else left sharp (3 edges meet short neighbour faces)
+    if (blendOnce(context, id + "all", qUnion(edges), 0.5, true))
+        return;
+    var nSmall = 0;  var nNone = 0;
+    for (var e = 0; e < size(edges); e += 1)
+    {
+        if (blendOnce(context, id + ("e" ~ e), edges[e], 0.5, true))
+            continue;
+        if (blendOnce(context, id + ("f" ~ e), edges[e], 0.3, true) || blendOnce(context, id + ("r" ~ e), edges[e], 0.3, false))
+            nSmall += 1;
+        else
+            nNone += 1;
+    }
+    if (nNone > 0)
+        skipped(context, "tenon back-face outline chamfer: " ~ nNone ~ " of " ~ size(edges) ~ " edges left sharp" ~ (nSmall > 0 ? ", " ~ nSmall ~ " at 0.3" : ""));
+    else if (nSmall > 0)
+        println("tenon back-face outline chamfer: " ~ nSmall ~ " of " ~ size(edges) ~ " edges at 0.3 (0.5 does not fit)");
 }
 
 // =============================================== BUTTON POD / BLANK (PAD frame) ===============================================
@@ -817,7 +866,7 @@ const K_WS = 13;                 // PVC lock screws: mm back from the collar mou
 const WS_ANG = [90, 1, -50];     // deg round the bore: +90 top, ~0 outward side (away from the pad; 1 deg = the Python mesh export), -50 below the side (v1.2b; at -60 its seat flare left a thin ridge against pod screw 2)
 const WS_SEAT = 13.3;  const WS_CB = 4.0;  const WS_CH = 0.5;   // flat Ø8 seat radius from the bore axis, seat radius, hole-mouth chamfer
 const WS_FL = 2.75;  // 45 deg rim flare from WS_SEAT + 0.25 up to WS_SEAT + 3.0 (the hull stands 0.7-2.3 mm over the seats within r5.5, most on the -60 deg seat at yaw 20/28: a 1.85 flare left a lip)
-const LIFT_STEPS = 4;  const LIFT_STEP = 0.26;
+const LIFT_STEPS = 4;  const LIFT_STEP = 0.26;  const LIFT_G0 = 0.15;
 // pod footprint on the pad (u, z) = hull of the pocket / exit / 2 screw-seat circles (Python headrest_POD11.footprint), grown by g
 function podFootprint(s is number, g is number) returns array
 {
@@ -834,29 +883,52 @@ function podFootprint(s is number, g is number) returns array
 // Feature Studio (no feature specs, no notices -> 0 parts in every Part Studio using it), 2026-11-16.
 function podLift(context is Context, id is Id, scopeId is Id, s is number)
 {
-    const ua = -(s * BTN_ANG + 45) * PI / 180 * R;  const ub = -(s * BTN_ANG - 45) * PI / 180 * R;
-    const slabUZ = [[min(ua, ub), -55], [max(ua, ub), -55], [max(ua, ub), 60], [min(ua, ub), 60]];
+    // v1.2c: slab outline = a dense ellipse round the pod (was a 4-point rectangle = a 4-control-point periodic spline wall), kept
+    // inside the pad's z range (46 x 42 mm half-axes round the pod, surfaces on a 4 mm grid: the review gallery lifts 6 pods
+    // x 4 steps and timed out with the 3 mm grid); every step's keep wall sits LIFT_G0 inside / clear of the footprint band's own wall (step 1 was
+    // -0.02 = near-coincident faces); each step is one attempt(): it either lifts the pod and leaves exactly one pod body of
+    // nearly the same volume, or it is rolled back as a whole.
+    const uc = -s * (BTN_ANG + 5) * PI / 180 * R;
+    var slabUZ = [];
+    for (var k = 0; k < 64; k += 1)
+        slabUZ = append(slabUZ, [uc + 46 * cos((360 * k / 64) * degree), 2 + 42 * sin((360 * k / 64) * degree)]);
     for (var j = 1; j <= LIFT_STEPS; j += 1)
     {
-        const w = 0.3 + LIFT_STEP * j;  const g = j == 1 ? -0.02 : LIFT_STEP * (j - 1);
-        const jid = id + ("j" ~ j);
-        var ok = false;
-        try silent
-        {
-            bentSolid(context, jid + "slab", slabUZ, function(z, ad) { return rOut(z, ad) - 3; }, function(z, ad) { return rOut(z, ad) + w; }, 3, 3);
-            bentSolid(context, jid + "keep", podFootprint(s, g), function(z, ad) { return rOut(z, ad) - 4; }, function(z, ad) { return rOut(z, ad) + 2; }, 3, 3);
-            opBoolean(context, jid + "cut", { "tools" : solids(context, jid + "keep"), "targets" : solids(context, jid + "slab"), "operationType" : BooleanOperationType.SUBTRACTION });
-            opBoolean(context, jid + "sub", { "tools" : solids(context, jid + "slab"), "targets" : qSubtraction(solids(context, scopeId), solids(context, id)), "operationType" : BooleanOperationType.SUBTRACTION });
-            ok = true;
-        }
-        if (!ok)
-            skipped(context, "pod underside lift step " ~ j ~ " of " ~ LIFT_STEPS ~ " (feather edge may remain)");
-        const leftovers = qUnion([qCreatedBy(jid + "slab", EntityType.BODY), qCreatedBy(jid + "keep", EntityType.BODY)]);   // leftovers only if a step failed
-        if (size(evaluateQuery(context, leftovers)) > 0)
-            opDeleteBodies(context, jid + "del", { "entities" : leftovers });
+        const w = 0.3 + LIFT_STEP * j;  const g = LIFT_STEP * (j - 1) - LIFT_G0;   // keep walls at -0.15 / 0.11 / 0.37 / 0.63
+        const liftStage = new box("slab");
+        const stepDone = attempt(context, id + ("j" ~ j), function(jid)
+            {
+                const podQ = qSubtraction(solids(context, scopeId), solids(context, id));
+                if (size(evaluateQuery(context, podQ)) != 1) throw regenError("pod is not one body before the step");
+                const v0 = evVolume(context, { "entities" : podQ });
+                bentSolid(context, jid + "slab", slabUZ, function(z, ad) { return rOut(z, ad) - 3; }, function(z, ad) { return rOut(z, ad) + w; }, 4, 4);
+                if (size(evaluateQuery(context, solids(context, jid + "slab"))) != 1) throw regenError("slab not one solid");
+                liftStage[] = "keep";
+                bentSolid(context, jid + "keep", podFootprint(s, g), function(z, ad) { return rOut(z, ad) - 4; }, function(z, ad) { return rOut(z, ad) + 2; }, 3, 3);
+                if (size(evaluateQuery(context, solids(context, jid + "keep"))) != 1) throw regenError("keep not one solid");
+                liftStage[] = "slab - keep";
+                opBoolean(context, jid + "cut", { "tools" : solids(context, jid + "keep"), "targets" : solids(context, jid + "slab"), "operationType" : BooleanOperationType.SUBTRACTION });
+                liftStage[] = "pod - slab";
+                opBoolean(context, jid + "sub", { "tools" : solids(context, jid + "slab"), "targets" : podQ, "operationType" : BooleanOperationType.SUBTRACTION });
+                liftStage[] = "check";
+                const podAfter = qSubtraction(solids(context, scopeId), solids(context, id));
+                if (size(evaluateQuery(context, podAfter)) != 1) throw regenError("pod split into " ~ size(evaluateQuery(context, podAfter)) ~ " bodies");
+                const v1 = evVolume(context, { "entities" : podAfter });
+                if (v1 < v0 * 0.97 || v1 > v0 * 1.0001) throw regenError("pod volume " ~ roundToPrecision(v0 / millimeter ^ 3, 0) ~ " -> " ~ roundToPrecision(v1 / millimeter ^ 3, 0));
+                const liftLeft = qSubtraction(qCreatedBy(jid, EntityType.BODY), podAfter);   // never the pod itself
+                if (size(evaluateQuery(context, liftLeft)) > 0)
+                    opDeleteBodies(context, jid + "del", { "entities" : liftLeft });
+            });
+        if (!stepDone)
+            skipped(context, "pod underside lift step " ~ j ~ " of " ~ LIFT_STEPS ~ " (failed at " ~ liftStage[] ~ "; feather edge may remain)");
     }
 }
 export function buildPod(context is Context, id is Id, yaw is HeadrestYaw, s is number) returns Query
+{
+    return buildPod(context, id, yaw, s, true);
+}
+// withLift = false: no underside lift (the review gallery: 6 pods x 4 lift steps made it time out in the browser, 2026-11-17)
+export function buildPod(context is Context, id is Id, yaw is HeadrestYaw, s is number, withLift is boolean) returns Query
 {
     const key = yawKey(yaw);
     const E = vector(s * POD_AXIS[key][0][0], POD_AXIS[key][0][1], POD_AXIS[key][0][2]);
@@ -870,7 +942,8 @@ export function buildPod(context is Context, id is Id, yaw is HeadrestYaw, s is 
     }
     loftSections(context, id + "hull", secs);
     trimBySurface(context, id + "trim", id, s, 0.3, true);          // underside = the pad surface + 0.3
-    podLift(context, id + "lift", id, s);                            // outside the footprint: lifted to 1.3 in 45 deg steps
+    if (withLift)
+        podLift(context, id + "lift", id, s);                        // outside the footprint: lifted to 1.3 in 45 deg steps
     triPrism(context, id + "wg", -0.05, POCKET_Y0 + 0.2, R + T + 7.6 + 3.3);
     finishEdges(context, id + "wgc", qAdjacent(qCapEntity(id + "wg" + "ex", CapType.START, EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), 0.5, true, "pod wedge lead-in chamfer 0.5");   // lead-in
     moveSolids(context, id + "wgm", id + "wg", placeXf(s * BTN_ANG));
@@ -912,6 +985,24 @@ export function buildPod(context is Context, id is Id, yaw is HeadrestYaw, s is 
         hexPrism(context, C + ("nt" ~ k), xp(xf, vector(0, yn + hl / 2, z)) * millimeter, ax, cu, NUT_M3_AF, hl, 0);
     }
     opBoolean(context, id + "sub", { "tools" : solids(context, C), "targets" : pod, "operationType" : BooleanOperationType.SUBTRACTION });
+    // the pod is ONE part, always: the core ops above throw if they fail (no silent loss); a cut that left a loose sliver
+    // (< 1 % of the pod) drops the sliver, anything else is an error
+    const podBodies = evaluateQuery(context, solids(context, id));
+    if (size(podBodies) == 0) throw regenError("pod: no body built");
+    if (size(podBodies) > 1)
+    {
+        var vMax = 0 * millimeter ^ 3;
+        for (var bd in podBodies) vMax = max(vMax, evVolume(context, { "entities" : bd }));
+        var nSliver = 0;
+        for (var bd in podBodies)
+            if (evVolume(context, { "entities" : bd }) < vMax * 0.01)
+            {
+                opDeleteBodies(context, id + ("sliver" ~ nSliver), { "entities" : bd });
+                nSliver += 1;
+            }
+        if (size(evaluateQuery(context, solids(context, id))) != 1) throw regenError("pod: " ~ size(podBodies) ~ " bodies");
+        skipped(context, "pod: " ~ nSliver ~ " loose sliver(s) removed");
+    }
     return solids(context, id);
 }
 // pocket BLANK v1.2: the triangle plug + a 1.5 mm cover FLANGE lying 0.15 over the pad's back: it hides the pocket rim and the
@@ -1057,7 +1148,7 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
                 for (var y in [HeadrestYaw.Y12, HeadrestYaw.Y20, HeadrestYaw.Y28])
                 {
                     const pid = id + ("gq" ~ yawKey(y) ~ (s > 0 ? "R" : "L"));
-                    buildPod(context, pid, y, s);
+                    buildPod(context, pid, y, s, false);
                     opTransform(context, pid + "t", { "bodies" : solids(context, pid), "transform" : shift(i) * atH(50) });
                     nameParts(context, solids(context, pid), "rev" ~ i ~ "_pod_yaw" ~ yawKey(y) ~ (s > 0 ? "_right" : "_left"));
                     report(context, "rev" ~ i ~ " pod yaw " ~ yawKey(y) ~ (s > 0 ? " right" : " left"), solids(context, pid));
@@ -1075,6 +1166,7 @@ export const gbgHeadrestV10 = defineFeature(function(context is Context, id is I
             opTransform(context, id + "gpt", { "bodies" : padQ, "transform" : atH(50) });
             nameParts(context, padQ, "rev0_pad_F3");
             report(context, "rev0 pad", padQ);
+            skipped(context, "gallery pods are shown without the 1 mm underside lift (review speed; the real parts have it)");
             reportSkipped(context, id, padQ);
             return;
         }
