@@ -654,9 +654,59 @@ export const gbgSidePadReview = defineFeature(function(context is Context, id is
         annotation { "Name" : "Real chair" } definition.real is boolean;
     }
     {
+        if (REVIEW_BATCH >= 0) { reviewBatch(context, id, definition); return; }
         try { reviewBody(context, id, definition); }
         catch (e) { var st = ""; try silent { st = getVariable(context, "gbgStage"); } var rp = ""; try silent { rp = getVariable(context, "gbgRep"); } setVariable(context, "gbgReport", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); writeReport(context, id + "err", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); }
     }, { "step" : 2, "kit" : SidePadKit.LOW, "depth" : SidePadDepth.N12, "seat" : SidePadSeat.MID, "tilt" : SidePadTilt.P15, "real" : false });
+
+// Batch mode: when REVIEW_BATCH >= 0, the feature ignores its own parameters and runs slice REVIEW_BATCH of
+// BATCH_CFGS (BATCH_N per slice). Each setting runs inside startFeature/abortFeature, so the chair is rolled back between
+// settings; only the report string (a FeatureScript local) survives. One regeneration = BATCH_N settings, run by the
+// Part Studio itself (no REST calls per setting).
+const REVIEW_BATCH = -1;
+const BATCH_N = 7;
+const BATCH_CFGS = [
+    [0, "HIGH", "N12", "DOWN", "P8"], [0, "LOW", "N0", "UP", "T0"], [0, "LOW", "N0", "DOWN", "P15"],
+    [0, "HIGH", "N0", "MID", "T0"], [0, "HIGH", "N0", "MID", "P15"], [0, "HIGH", "N0", "MID", "M15"],
+    [0, "HIGH", "N36", "MID", "T0"], [0, "HIGH", "N36", "MID", "P15"], [0, "HIGH", "N36", "MID", "M15"],
+    [7, "HIGH", "N0", "MID", "T0"], [7, "HIGH", "N0", "MID", "P15"], [7, "HIGH", "N0", "MID", "M15"],
+    [7, "HIGH", "N36", "MID", "T0"], [7, "HIGH", "N36", "MID", "P15"], [7, "HIGH", "N36", "MID", "M15"],
+    [2, "HIGH", "N12", "MID", "T0"], [2, "HIGH", "N12", "MID", "P15"], [2, "HIGH", "N12", "MID", "M15"],
+    [4, "HIGH", "N12", "MID", "T0"], [4, "HIGH", "N12", "MID", "P15"], [4, "HIGH", "N12", "MID", "M15"],
+    [7, "LOW", "N36", "MID", "T0"], [7, "LOW", "N36", "MID", "P15"], [7, "LOW", "N36", "MID", "M15"],
+    [0, "HIGH", "N36", "DOWN", "P15"], [0, "HIGH", "N36", "UP", "M15"], [7, "HIGH", "N0", "UP", "P15"]];
+function enumOf(vals is array, name is string)
+{
+    for (var v in vals) if (toString(v) == name) return v;
+    throw regenError("bad enum " ~ name);
+}
+function reviewBatch(context is Context, id is Id, definition is map)
+{
+    var all = "";
+    for (var i = REVIEW_BATCH * BATCH_N; i < min(size(BATCH_CFGS), (REVIEW_BATCH + 1) * BATCH_N); i += 1)
+    {
+        const c = BATCH_CFGS[i];
+        const d = { "step" : c[0], "real" : true,
+            "kit" : enumOf([SidePadKit.LOW, SidePadKit.HIGH], c[1]),
+            "depth" : enumOf([SidePadDepth.N0, SidePadDepth.N12, SidePadDepth.N24, SidePadDepth.N36], c[2]),
+            "seat" : enumOf([SidePadSeat.DOWN, SidePadSeat.MID, SidePadSeat.UP], c[3]),
+            "tilt" : enumOf([SidePadTilt.M15, SidePadTilt.M8, SidePadTilt.T0, SidePadTilt.P8, SidePadTilt.P15], c[4]) };
+        const sid = id + ("b" ~ i);
+        var rep = "";
+        startFeature(context, sid, d);
+        try { reviewBody(context, sid, d); rep = getVariable(context, "gbgReport"); }
+        catch (e) { var st = ""; try silent { st = getVariable(context, "gbgStage"); } rep = "ERR after [" ~ st ~ "] " ~ toString(e); }
+        abortFeature(context, sid);
+        rep = replace(rep, "T\\[[^\\]]*\\]G\\[[^\\]]*\\]", "");
+        rep = replace(rep, "## carrier [0-9].*?## carrier max", "## max");
+        rep = replace(rep, "## slot-to-neighbour walls\\(mm\\)", "## walls");
+        rep = replace(rep, " head [0-9.]+", "");
+        rep = replace(rep, "## skipped: *$", "");
+        rep = replace(rep, " +", " ");
+        all = all ~ "@@" ~ i ~ " " ~ rep ~ " ";
+    }
+    writeReport(context, id, all);
+}
 function reviewBody(context is Context, id is Id, definition is map)
     {
         setVariable(context, "gbgSkipped", "");

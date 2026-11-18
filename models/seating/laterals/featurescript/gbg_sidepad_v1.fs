@@ -725,10 +725,35 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
     {
         annotation { "Name" : "Wings (empty = found automatically)", "Filter" : EntityType.BODY && BodyType.SOLID, "MaxNumberOfPicks" : 2 }
         definition.wings is Query;
+        annotation { "Name" : "Remove the modelled wing print supports (support_left/right_wing)", "Default" : true }
+        definition.dropSupports is boolean;
         annotation { "Name" : "Test only: use stand-in blocks for the wings" }
         definition.standIn is boolean;
     }
     {
+        // support_left/right_wing are 1.5 mm plates touching the wing along one 10 mm line: print supports for printing
+        // the wing face-down, not load paths. They sit where the HIGH kit's pad goes at height steps 0-2 (the review
+        // matrix's only clashes), so the reprinted wing drops them and the slicer generates supports instead.
+        if (definition.dropSupports)
+        {
+            var sup = [];
+            for (var b in evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID)))
+            {
+                var n = "";
+                try silent { n = getProperty(context, { "entity" : b, "propertyType" : PropertyType.NAME }); }
+                var isPlate = false;
+                try silent
+                {
+                    const bb = evBox3d(context, { "topology" : b });
+                    const lo = bb.minCorner / millimeter;  const hi = bb.maxCorner / millimeter;
+                    const v = evVolume(context, { "entities" : b }) / (centimeter ^ 3);
+                    isPlate = v < 6 && min(abs(lo[0]), abs(hi[0])) > 95 && max(abs(lo[0]), abs(hi[0])) < 145 &&
+                              lo[1] > 40 && hi[1] < 110 && lo[2] > 255 && hi[2] < 315;
+                }
+                if (n == "support_left_wing" || n == "support_right_wing" || isPlate) sup = append(sup, b);
+            }
+            if (size(sup) > 0) opDeleteBodies(context, id + "dropSup", { "entities" : qUnion(sup) });
+        }
         for (var s in [1, -1])
         {
             const sid = id + (s > 0 ? "L" : "R");
@@ -761,4 +786,4 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
             opBoolean(context, sid + "cut", { "tools" : t.cut, "targets" : keep[0], "operationType" : BooleanOperationType.SUBTRACTION });
             opBoolean(context, sid + "rib", { "tools" : qUnion([keep[0], t.ribs]), "operationType" : BooleanOperationType.UNION });
         }
-    }, { "standIn" : false });
+    }, { "standIn" : false, "dropSupports" : true });
