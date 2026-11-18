@@ -50,16 +50,17 @@ const B_BORE_R = 4.7;  const B_BORE_D0 = 3.0;                                   
 const B_SH_R = 4.5;  const B_SH_L = 5.0;  const B_HEAD_R = 3.0;  const B_SPR_R = 3.3;  const B_SPR_D = 4.0;
 const WASH_T = 2.0;  const M3_DT = 9.0;                                                     // retainer washer 2 thick, 2x M3x10 csk + nuts at t = bolt +-9 (1.4 wall to the bore)
 // ---------------- pad ----------------
-const PAD_Y0 = -31.0;  const PAD_Y1 = 51.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;
+const PAD_Y0 = -31.0;  const PAD_Y1 = 46.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;   // back edge 1.8 clear of the wing bracket (y 47.8) in the HIGH kit
 const A_REF = 85.0;  const B_REF = 88.0;  const YC_REF = 30.0;  const WRAP = 0.7;  const SE_P = 4.0;
 const FOOT_Y = [4.0, 40.0];  const FOOT_HZ = 20.0;  const NOSE = 1.5;  const SEAT_D = 1.5;  const FINE = 6.25;
 const PSYS = [9.0, 19.0];          // pad screws: y 9 / 19 at the pad centre height, clear of the neck so a hex key reaches them from outside
-const HS = 7.0;                     // screw-head land on the foot: x = xs + HS
-const BOSS_T = 7.0;                 // boss under the seat on the child side (under the EVA): nut pocket + room for the screw tip
+const HS = 7.0;
+const TILT_Z = 5.5;                // extra slot length (each way) for a tilted screw crossing the foot                     // screw-head land on the foot: x = xs + HS
+const BOSS_T = 8.5;                    // boss under the seat on the child side (under the EVA): nut pocket + room for the screw tip
 const NUT_FLOOR = 1.2;              // plastic between the seat floor and the nut
 const NOSE_RIB = 1.3;               // foot ribs 2.6 tall in 3.1 grooves: 0.25 per side
 const SHIM0 = 3.5;                  // tilt shim thickness at its thin end (2 under the foot recess)
-const WEDGE_R = 6.0;  const WEDGE_T0 = 1.5;                                                 // wedge washers under the screw heads with a tilt shim
+const WEDGE_R = 5.5;  const WEDGE_T0 = 1.5;                                                 // wedge washers under the screw heads with a tilt shim
 const BEAD = [1.0, 7.5];  const GROOVE = [2.5, 6.5];  const BEAD_H = 3.5;  const GROOVE_D = 3.0;  // cover bead + groove (insets from the pad edge)
 // ---------------- fits (P1S / PETG) ----------------
 // TOLERANCE BLOCK = the headrest's P1S / PETG policy (2026-11-16): clearance holes +0.4..0.5 on the diameter, nut traps
@@ -338,7 +339,9 @@ function noseBody(context is Context, id is Id, xs is number, zc is number)
 function seatCut(context is Context, id is Id, xs is number, zc is number)
 {
     const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    loftSections(context, id + "seat", [ovalX(xs + 0.1, yc, zc, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 2.8, FOOT_HZ - 2.8 + FINE), ovalX(xs - SEAT_D - 0.1, yc, zc, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 3.4, FOOT_HZ - 3.4 + FINE)]);
+    // the nose shape (+0.2 all round) at each of the 3 seat positions: an oval stretched taller would pinch the nose's corners
+    for (var k = -1; k <= 1; k += 1)
+        loftSections(context, id + ("seat" ~ (k + 1)), [ovalX(xs + 0.1, yc, zc + k * FINE, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 2.8, FOOT_HZ - 2.8), ovalX(xs - SEAT_D - 0.1, yc, zc + k * FINE, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 3.4, FOOT_HZ - 3.4)]);
     for (var k = -5; k <= 5; k += 1)
     {
         const z = zc + 3.125 + 6.25 * k;
@@ -372,7 +375,7 @@ export function buildDepth(context is Context, id is Id, xs is number, zp is num
     // nose into the seat + 2 ribs into the seat grooves
     noseBody(context, id + "nb", xs, zp);
     // screw-head land behind the 2 pad screws (flat face at x = xs + HS, rounded corners)
-    const yl0 = FOOT_Y[0] + 0.3;  const yl1 = PSYS[1] + M5_HEAD_R + 2.0;  const hl = 2 * (FINE + 2.5 + M5_HEAD_R + 1.5);
+    const yl0 = FOOT_Y[0] + 0.3;  const yl1 = PSYS[1] + M5_HEAD_R + 2.0;  const hl = 2 * (FINE + TILT_Z + M5_HEAD_R + 1.0);
     loftSections(context, id + "land", [rsec(vector(xs + 0.4, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0), rsec(vector(xs + HS, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0)]);
     opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "depth piece");
@@ -383,7 +386,7 @@ export function buildDepth(context is Context, id is Id, xs is number, zp is num
     const zh = low ? zp + NK_HZ : zp - NK_HZ;  const sh = low ? 1 : -1;
     fCone(context, C + "jsk", { "bottomCenter" : v3(JS, 34, zh - sh * (CSK_M5_R - 2.75)), "topCenter" : v3(JS, 34, zh + sh * 0.05), "bottomRadius" : 2.75 * millimeter, "topRadius" : CSK_M5_R * millimeter });
     // pad screws from OUTSIDE: vertical slots through the land (fine height +-6.25, +-2.5 more for the tilt), head / key clearance above the land
-    const zs = FINE + 2.5;
+    const zs = FINE + TILT_Z;
     for (var i = 0; i < size(PSYS); i += 1)
     {
         const y = PSYS[i];
@@ -551,7 +554,7 @@ export function buildShim(context is Context, id is Id, xs is number, za is numb
     const C = id + "cut";
     seatCut(context, C + "sc", xs, za);
     for (var i = 0; i < size(PSYS); i += 1)
-        cylAx(context, C + ("h" ~ i), vector(xs - 30, PSYS[i], zp), vector(xs + 10, PSYS[i], zp), M5_CLEAR / 2);
+        cylAx(context, C + ("h" ~ i), vector(xs - 40, PSYS[i], zp), vector(xs + 40, PSYS[i], zp), M5_CLEAR / 2);   // long: at 15° + seat offset the axis leaves the shim far from its pad-frame centre
     opTransform(context, C + "hx", { "bodies" : qUnion(mapArray(range(0, size(PSYS) - 1), function(i) { return solids(context, C + ("h" ~ i)); })), "transform" : xf });
     opBoolean(context, id + "cutop", { "tools" : solids(context, C), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     return body;
@@ -596,7 +599,8 @@ export function padScrew(xs is number, za is number, zp is number, ang is number
 {
     const ax = screwAxis(xs, za, zp, ang, y);
     const nutEnd = M5_NUT_T - 0.4;  const face = SHELL_T + BOSS_T - SEAT_D - NUT_FLOOR - 0.3;   // tip depth window below the nut floor
-    for (var L in [12, 16, 20, 25, 30, 35, 40])
+    // one length per shim, the same for every seat position: none M5x16, 8° M5x25, 15° M5x30
+    for (var L in [abs(ang) < 1 ? 16 : (abs(ang) < 10 ? 25 : 30)])
     {
         const tip = L - ax.head;
         if (tip >= nutEnd && tip <= face) return { "L" : L, "tipPastNutFloor" : tip, "window" : [nutEnd, face], "head" : ax.head };

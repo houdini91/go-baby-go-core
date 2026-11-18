@@ -27,16 +27,17 @@ const KEY_LO = -6.0; const KEY_HI = 2.0; const FL = 3.5; const ENDL = 2.5;
 const B_BORE_R = 4.7; const B_BORE_D0 = 3.0;
 const B_SH_R = 4.5; const B_SH_L = 5.0; const B_HEAD_R = 3.0; const B_SPR_R = 3.3; const B_SPR_D = 4.0;
 const WASH_T = 2.0; const M3_DT = 9.0;
-const PAD_Y0 = -31.0; const PAD_Y1 = 51.0; const PAD_H = 80.0; const SHELL_T = 4.5;
+const PAD_Y0 = -31.0; const PAD_Y1 = 46.0; const PAD_H = 80.0; const SHELL_T = 4.5;
 const A_REF = 85.0; const B_REF = 88.0; const YC_REF = 30.0; const WRAP = 0.7; const SE_P = 4.0;
 const FOOT_Y = [4.0, 40.0]; const FOOT_HZ = 20.0; const NOSE = 1.5; const SEAT_D = 1.5; const FINE = 6.25;
 const PSYS = [9.0, 19.0];
 const HS = 7.0;
-const BOSS_T = 7.0;
+const TILT_Z = 5.5;
+const BOSS_T = 8.5;
 const NUT_FLOOR = 1.2;
 const NOSE_RIB = 1.3;
 const SHIM0 = 3.5;
-const WEDGE_R = 6.0; const WEDGE_T0 = 1.5;
+const WEDGE_R = 5.5; const WEDGE_T0 = 1.5;
 const BEAD = [1.0, 7.5]; const GROOVE = [2.5, 6.5]; const BEAD_H = 3.5; const GROOVE_D = 3.0;
 const CL = 0.2; const M5_CLEAR = 5.5; const M5_NUT_AF = 8.3; const M5_NUT_T = 4.4; const CSK_M5_R = 5.3;
 const M3_CLEAR = 3.5; const M3_NUT_AF = 5.8; const M3_NUT_T = 2.8; const CSK_M3_R = 3.25;
@@ -282,7 +283,8 @@ fCuboid(context, id + ("rib" ~ (r > 0 ? "u" : "d")), { "corner1" : v3(xs - NOSE 
 function seatCut(context is Context, id is Id, xs is number, zc is number)
 {
 const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-loftSections(context, id + "seat", [ovalX(xs + 0.1, yc, zc, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 2.8, FOOT_HZ - 2.8 + FINE), ovalX(xs - SEAT_D - 0.1, yc, zc, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 3.4, FOOT_HZ - 3.4 + FINE)]);
+for (var k = -1; k <= 1; k += 1)
+loftSections(context, id + ("seat" ~ (k + 1)), [ovalX(xs + 0.1, yc, zc + k * FINE, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 2.8, FOOT_HZ - 2.8), ovalX(xs - SEAT_D - 0.1, yc, zc + k * FINE, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 3.4, FOOT_HZ - 3.4)]);
 for (var k = -5; k <= 5; k += 1)
 {
 const z = zc + 3.125 + 6.25 * k;
@@ -311,7 +313,7 @@ rings = append(rings, ovalX(xs + u, ycu, zp, ry, rz));
 }
 loftSections(context, id + "fl", rings);
 noseBody(context, id + "nb", xs, zp);
-const yl0 = FOOT_Y[0] + 0.3; const yl1 = PSYS[1] + M5_HEAD_R + 2.0; const hl = 2 * (FINE + 2.5 + M5_HEAD_R + 1.5);
+const yl0 = FOOT_Y[0] + 0.3; const yl1 = PSYS[1] + M5_HEAD_R + 2.0; const hl = 2 * (FINE + TILT_Z + M5_HEAD_R + 1.0);
 loftSections(context, id + "land", [rsec(vector(xs + 0.4, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0), rsec(vector(xs + HS, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0)]);
 opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
 const body = oneBody(context, id, "depth piece");
@@ -320,7 +322,7 @@ splitRegion(context, C + "jr", zp, low, CL);
 tdHole(context, C + "js", vector(JS, 34, zp - NK_HZ - 2), vector(JS, 34, zp + NK_HZ + 2), M5_CLEAR / 2, vector(0, 1, 0));
 const zh = low ? zp + NK_HZ : zp - NK_HZ; const sh = low ? 1 : -1;
 fCone(context, C + "jsk", { "bottomCenter" : v3(JS, 34, zh - sh * (CSK_M5_R - 2.75)), "topCenter" : v3(JS, 34, zh + sh * 0.05), "bottomRadius" : 2.75 * millimeter, "topRadius" : CSK_M5_R * millimeter });
-const zs = FINE + 2.5;
+const zs = FINE + TILT_Z;
 for (var i = 0; i < size(PSYS); i += 1)
 {
 const y = PSYS[i];
@@ -467,7 +469,7 @@ const body = oneBody(context, id, "shim");
 const C = id + "cut";
 seatCut(context, C + "sc", xs, za);
 for (var i = 0; i < size(PSYS); i += 1)
-cylAx(context, C + ("h" ~ i), vector(xs - 30, PSYS[i], zp), vector(xs + 10, PSYS[i], zp), M5_CLEAR / 2);
+cylAx(context, C + ("h" ~ i), vector(xs - 40, PSYS[i], zp), vector(xs + 40, PSYS[i], zp), M5_CLEAR / 2);
 opTransform(context, C + "hx", { "bodies" : qUnion(mapArray(range(0, size(PSYS) - 1), function(i) { return solids(context, C + ("h" ~ i)); })), "transform" : xf });
 opBoolean(context, id + "cutop", { "tools" : solids(context, C), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
 return body;
@@ -509,7 +511,7 @@ export function padScrew(xs is number, za is number, zp is number, ang is number
 {
 const ax = screwAxis(xs, za, zp, ang, y);
 const nutEnd = M5_NUT_T - 0.4; const face = SHELL_T + BOSS_T - SEAT_D - NUT_FLOOR - 0.3;
-for (var L in [12, 16, 20, 25, 30, 35, 40])
+for (var L in [abs(ang) < 1 ? 16 : (abs(ang) < 10 ? 25 : 30)])
 {
 const tip = L - ax.head;
 if (tip >= nutEnd && tip <= face) return { "L" : L, "tipPastNutFloor" : tip, "window" : [nutEnd, face], "head" : ax.head };
@@ -650,7 +652,7 @@ function reviewBody(context is Context, id is Id, definition is map)
         setVariable(context, "gbgStage", "2");
         const q = buildSide(context, id + "L", def);
         setVariable(context, "gbgStage", "3");
-        var names = [];  var bodies = [];  var rep = "";
+        var names = [];  var bodies = [];  var rep = "CFG " ~ definition.step ~ " " ~ definition.kit ~ " " ~ definition.depth ~ " " ~ definition.seat ~ " " ~ definition.tilt ~ " ## ";
         setVariable(context, "gbgStage", "4");
         const qq = evaluateQuery(context, q);
         setVariable(context, "gbgStage", "evaluated " ~ size(qq));
@@ -724,6 +726,13 @@ function reviewBody(context is Context, id is Id, definition is map)
             if (ps.L > 0)
             {
                 cylAx(context, id + ("probe" ~ i), ax.nut + ax.dir * (ax.head - 0.05), ax.nut - ax.dir * ps.tipPastNutFloor, 2.3);
+                var ad = "";
+                for (var k = 0; k < size(bodies); k += 1)
+                {
+                    const dl = evDistance(context, { "side0" : bodies[k], "side1" : line(ax.nut * millimeter, ax.dir) }).distance / millimeter;
+                    if (dl < 2.7) ad = ad ~ names[k] ~ ":" ~ roundToPrecision(dl, 2) ~ " ";
+                }
+                rep = rep ~ " ## axis" ~ i ~ " near(<2.7): " ~ ad; setVariable(context, "gbgRep", rep);
                 pn = append(pn, "screw" ~ i);  pb = append(pb, qCreatedBy(id + ("probe" ~ i), EntityType.BODY));
             }
         }

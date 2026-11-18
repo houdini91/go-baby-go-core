@@ -18,7 +18,7 @@ The headrest went through rounds v1.0 → v1.2c. Each round left a rule, and thi
 | Shape carries the load, screws only lock | Comb ribs = height; slot walls = lean twist; dovetail = joint; foot nose + ribs in the seat grooves = pad. **The bolt is the only part resisting slide-out, and a child pushing the pad outward loads it at 61 % of the push.** Its land in the wall is now a full 3 mm cylinder (bearing about 14 MPa at a 300 N knock) | changed |
 | Body counts, not just feature status (the 7d39d8c lesson) | Harness reports every part and its volume | pass |
 | Things a carer touches must be easy and safe | **The old Ø6 dome sat 6.4 mm down a Ø12 trench, out of a finger's reach.** Now the wing tip outer wall is 6 mm thick, with a 16 mm wide, 3 mm deep finger channel (45° sides). The dome top sits flush with the wing surface. Press about 3.5 mm and slide; a 0.8 × 45° chamfer on the inside edge of each hole cams the dome down | fixed |
-| Teardrops / corner-up nuts per print orientation | Not done yet. Print orientation needs the support study (as headrest_ORIENT) first | **open** |
+| Teardrops / corner-up nuts per print orientation | First orientation study done (`~/research/.../laterals/v1_review/orient.py`, 52 directions, ≥ 80 mm² flat on the bed). Teardrops to be set once you confirm the orientations | **open** |
 | Fit-test coupon first | C6 snap-button coupon not made yet | **open** |
 
 ## Defects found in the v1.0 FeatureScript and fixed
@@ -39,6 +39,17 @@ The headrest went through rounds v1.0 → v1.2c. Each round left a rule, and thi
    - the whole socket moves 2 mm outward (D_SHIFT);
    - the tip block is cut around neighbouring chair parts.
 7. Washer touched its pocket floor (0.05 lift); the depth-piece neck overlapped the dovetail by 0.02.
+8. **Seat recess pinched the nose's corners at seat UP/DOWN** (it was one taller oval). It is now the nose shape (+0.2) at each of the 3 positions.
+9. **Pad's back edge (y 51) hit the wing bracket** (y ≥ 47.8) in the HIGH kit with tilt. Pad is now y −31..46 (77 front-to-back).
+10. **15° tilt + seat offset:**
+    - the tilted screw left the foot's slot (allowance now +5.5 each way);
+    - the wedge plate reached the neck (radius 6 → 5.5);
+    - the shim's screw hole stopped 0.6 short of its face.
+11. **One screw length per shim, safe at every seat position.** The nut boss is deeper (8.5) so the tip window is 4–10 mm past the nut floor:
+    - no shim → M5×16 (tip 6.3);
+    - 8° → M5×25 (tip 5.7–7.5);
+    - 15° → **M5×30** (tip 6.4–9.8; 0.5 mm from the child face at seat DOWN, the tightest case).
+12. A typo commented out PAD_H/SHELL_T. The studio "compiled" with no ERROR notice, but the feature failed. **Lesson: upload notices are not enough; the feature has to build in a Part Studio.**
 
 ## Open before "ready to print"
 - Print orientation study → teardrops on the horizontal holes in that orientation.
@@ -46,3 +57,15 @@ The headrest went through rounds v1.0 → v1.2c. Each round left a rule, and thi
 - Spring: OD ≤ 6, free length 11–16, **solid length ≤ 4.5 mm** (6.4 mm bolt travel).
 - Load test: 300 N outward on the pad at the top step (bolt shear), 150 N down.
 - PT/OT fit on a child: pad top ≥ 25 mm below the armpit.
+
+## Print orientation (first pass: support area from the Onshape meshes; to be confirmed by real slices like the headrest)
+| Part | Candidate | Support | Note |
+|---|---|---|---|
+| Washer | flat, countersinks up | ~55 mm² (the two csk cones) | 2 mm plate |
+| Wedge plate | land side down | 0 | |
+| Bolt | standing on the shoulder end, dome up | ~34 mm² (spring-pocket roof, Ø6.6 bridge) | dome prints round |
+| Depth piece | joint end (x J1) down, foot up | ~900 mm² | nose, ribs and land print clean on top; the dovetail profile prints as vertical walls |
+| Carrier | tongue tip down (up = −t) | ~1100 mm² | tongue faces print as walls (good sliding surface). The swept neck needs tree support. **Check:** layers run across the tongue's bending direction under an outward push; compare with z-down (~1500 mm²) on a slice |
+| Tilt shim | foot side down | ~1050 mm² | the seat recess roof needs support (or a 45° chamfered recess) |
+| Pad shell | child side down, tree supports | no flat face | supports only on the hidden child side (as the headrest pad) |
+| Clip ring | flat side down, tree supports | no flat face | thin curved strip |

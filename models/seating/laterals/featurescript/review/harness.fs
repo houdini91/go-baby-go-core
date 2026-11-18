@@ -61,7 +61,7 @@ function reviewBody(context is Context, id is Id, definition is map)
         setVariable(context, "gbgStage", "2");
         const q = buildSide(context, id + "L", def);
         setVariable(context, "gbgStage", "3");
-        var names = [];  var bodies = [];  var rep = "";
+        var names = [];  var bodies = [];  var rep = "CFG " ~ definition.step ~ " " ~ definition.kit ~ " " ~ definition.depth ~ " " ~ definition.seat ~ " " ~ definition.tilt ~ " ## ";
         setVariable(context, "gbgStage", "4");
         const qq = evaluateQuery(context, q);
         setVariable(context, "gbgStage", "evaluated " ~ size(qq));
@@ -135,6 +135,13 @@ function reviewBody(context is Context, id is Id, definition is map)
             if (ps.L > 0)
             {
                 cylAx(context, id + ("probe" ~ i), ax.nut + ax.dir * (ax.head - 0.05), ax.nut - ax.dir * ps.tipPastNutFloor, 2.3);
+                var ad = "";
+                for (var k = 0; k < size(bodies); k += 1)
+                {
+                    const dl = evDistance(context, { "side0" : bodies[k], "side1" : line(ax.nut * millimeter, ax.dir) }).distance / millimeter;
+                    if (dl < 2.7) ad = ad ~ names[k] ~ ":" ~ roundToPrecision(dl, 2) ~ " ";
+                }
+                rep = rep ~ " ## axis" ~ i ~ " near(<2.7): " ~ ad; setVariable(context, "gbgRep", rep);
                 pn = append(pn, "screw" ~ i);  pb = append(pb, qCreatedBy(id + ("probe" ~ i), EntityType.BODY));
             }
         }

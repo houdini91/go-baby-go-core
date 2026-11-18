@@ -21,16 +21,18 @@ Design record (research, options, renders, decisions): `~/research/onshape/gobab
 - **Depth:**
   - depth piece N0, N12, N24 or N36, moving the pad 12 mm per step;
   - foam 17 / 30 / 43 mm.
-- **Tilt:** an 8° or 15° shim between the foot and the pad seat. Flip it for the other direction.
-- **Lock:** a Ø6 snap-button bolt in the tongue. One spring from home stock (OD ≤ 6, 10–16 mm long) pushes it through the wing hole for that height. Press the button flush and slide the arm out. Slide it back in: the ramp pushes the bolt down until it clicks into the hole.
+- **Tilt:** an 8° or 15° shim between the foot and the pad seat, plus a wedge plate under the screw heads. Flip both for the other direction.
+- **Lock:** a Ø6 snap-button bolt in the tongue. One spring from home stock (OD ≤ 6, 11–16 mm long, solid length ≤ 4.5) pushes it through the wing hole for that height. The domed top sits flush with the wing surface in a 16 mm finger channel. To release, press about 3.5 mm and slide the arm out. Slide it back in: the 30° ramp presses the bolt and it clicks into the hole.
 - **Loads:** the comb ribs carry up/down; the slot walls carry the lean twist; the dovetail carries the joint between carrier and depth piece; the foot sits in the shell's seat with ribs in grooves. Screws only hold parts together.
 - **Fasteners:** real screws and nuts only (DIN 7991 countersunk + DIN 934). No printed threads.
 
 | Joint | Fastener |
 |---|---|
 | Carrier ↔ depth piece (dovetail retainer) | M5x30 + nut. The nut sits 6 mm up inside the part, so the screw tip ends inside it. |
-| Foot ↔ pad shell | 2x M5x25 from **outside**, through slots in the foot, into nuts held in the shell under the EVA. Use M5x30 with the 15° shim. |
+| Foot ↔ pad shell | 2x M5 socket/button head from **outside**, through slots in the foot's screw land, into nuts held in the shell's boss under the EVA. **No shim M5x16, 8° shim M5x25, 15° shim M5x30.** The same length works at every seat position. With a shim, the printed wedge plate goes under both heads. |
 | Bolt retainer washer | 2x M3x10 countersunk + nuts |
+
+See [REVIEW.md](REVIEW.md) for the design review against the headrest standard.
 
 ## Status
 - Sketch model reviewed: pages v0.5 to v1.0 (2026-11-18).
