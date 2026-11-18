@@ -2,75 +2,71 @@ FeatureScript 3112;
 import(path : "onshape/std/common.fs", version : "3112.0");
 
 // ===================================================================================================================
-// GoBabyGo SIDE PADS (lateral trunk supports) v1.0 for GbG_chair_forth.  Native FeatureScript port of the reviewed
-// Python sketch model (research: options_v05, tools/v7..v10_geom.py; design freeze 2026-11-18).
+// GoBabyGo SIDE PADS (lateral trunk supports) v1.1 for GbG_chair_forth.
 //
-// Kit (per side): CARRIER (tongue in the wing slot + swept neck + dovetail half), DEPTH PIECE N0/N12/N24/N36 (dovetail
-// half + straight neck + flared oval foot), PAD SHELL (curved strip, grooved foot seat, captive M5 nut pockets, cover
-// bead + groove), CLIP RING (traps the neoprene cover in the groove: no sewing), TILT SHIMS 8 / 15 deg (flip = minus),
-// SNAP-BUTTON BOLT + retainer washer (one spring from home stock, OD <= 6), cutting templates.
-// Chair change (separate feature "GbG Side Pad Wing"): a vertical slot in each wing tip, comb ribs every 12.5 mm at the
-// back of the slot, a column of Ø6.4 bolt holes (one per height step) in a 12 mm recess on the outer face, entry ramp.
-//
-// Loads: comb ribs carry up/down, slot walls carry the lean twist, the dovetail and the foot-in-seat carry the arm joints.
-// Screws (from home stock, DIN 7991 + DIN 934 nuts, no printed threads) only hold parts together.
-// Frame: chair WORLD, mm, z up, -y = front; the LEFT side is built at +x, the right side is its mirror.
-// Wing-tip frame (d, t) at ZREF: Q(d, t) = P0 + d * AXh + t * TH + (ZREF - Z0) * SHEAR  (d across the tip, t into the wing).
+// v1.1 (2026-11-19, owner's brief): the assembled arm reads as ONE flowing piece.
+//   * ARM: tongue in the wing slot -> taper inside the slot -> one smooth 16 x 24 arm: a circular plan arc (R ~22) combined
+//     with a two-arc vertical S, ending level and heading inboard. No knee, no neck taper, no polyline faces.
+//   * RELEASE: a flush pill button whose cap IS the patch of arm surface where the latch rod's line leaves the arm; it
+//     drives the v1.1 printed shuttle catch (coupons C1-C5) with the owner's own spring.
+//   * HEIGHT: 3 fixed tongue positions (one rib each in the wing) x LOW / HIGH flip = 6 pad heights. (Comb later.)
+//   * JOINT: a hidden tenon on the arm end slides into the depth piece's sleeve (same 16 x 24 skin: only a hairline shows),
+//     one flush countersunk M5 from the back into a nut inside the tenon.
+//   * PAD MOUNT: the depth piece flares into a foot that follows the pad back; one rib in one groove; one M5 from the child
+//     side (under the foam, reached through the cover) into a nut at the bottom of the depth piece's hollow.
+// Loads: rib + slot walls (height, lean), the arm, the tenon in its sleeve, the foot rib. Screws and the catch only hold.
+// Frame: chair WORLD, mm, z up, -y = front; LEFT side at +x, the right side is its mirror.
+// Wing-tip frame: Q(d, t, z) = P0 + d * AXH + t * TH + shear (d across the tip, +d = outer wall; t into the wing).
 // ===================================================================================================================
 
 export enum SidePadSide { annotation { "Name" : "Left (+x)" } LEFT, annotation { "Name" : "Right (-x)" } RIGHT, annotation { "Name" : "Both" } BOTH }
 export enum SidePadKit { annotation { "Name" : "LOW (pad below the tongue)" } LOW, annotation { "Name" : "HIGH (carrier flipped: pad above)" } HIGH }
-export enum SidePadDepth { annotation { "Name" : "N0  (pad face x 118)" } N0, annotation { "Name" : "N12 (x 106)" } N12, annotation { "Name" : "N24 (x 94)" } N24, annotation { "Name" : "N36 (x 82)" } N36 }
-export enum SidePadSeat { annotation { "Name" : "-6.25" } DOWN, annotation { "Name" : "0" } MID, annotation { "Name" : "+6.25" } UP }
+export enum SidePadPos { annotation { "Name" : "1 (lowest)" } P1, annotation { "Name" : "2" } P2, annotation { "Name" : "3 (highest)" } P3 }
+export enum SidePadDepth { annotation { "Name" : "D0 (pad back x 104)" } D0, annotation { "Name" : "D1 (x 92)" } D1, annotation { "Name" : "D2 (x 80)" } D2, annotation { "Name" : "D3 (x 68)" } D3 }
 export enum SidePadTilt { annotation { "Name" : "none" } T0, annotation { "Name" : "8 deg top in" } P8, annotation { "Name" : "8 deg top out" } M8, annotation { "Name" : "15 deg top in" } P15, annotation { "Name" : "15 deg top out" } M15 }
 
 // ---------------- chair / wing-tip frame ----------------
 const P0 = [131.3, 80.7];  const AXH = [0.79577626, 0.60559074];  const TH = [-0.6083053, 0.79370313];
-const D_SHIFT = 2.0;   // whole socket 2 mm outward: keeps ~2 mm of wing wall between the slot and the wing bracket (was 0.08)
+const D_SHIFT = 2.0;
 const Z0 = 227.8;  const SHEAR = [0.8 / 32.9, 2.7 / 32.9];  const ZREF = 244.25;
 // ---------------- wing tip (chair change) ----------------
-const TIP_D = [-7.0, 23.6];  const TIP_T = [-16.0, 38.0];  const TIP_Z = [198.0, 347.0];     // bottom 0.2 above the arm rest top (z 197.8 under the wing tip)
+const TIP_D = [-7.0, 25.0];  const TIP_T = [-16.0, 38.0];  const TIP_Z = [198.0, 347.0];     // bottom 0.2 above the arm rest top
 const SL_D = [1.2, 17.6];  const SL_T = [-30.0, 28.0];  const SL_Z = [201.0, 343.0];      // vertical slot, open at the front
-const RIB_T = [22.0, 28.5];  const RIB_H = 5.6;  const RIB_Z0 = 208.25;  const PITCH = 12.5;
-const BOLT_T = 8.0;                         // bolt axis position along the slot (t)
-const HOLE_R = 3.2;  const WALL = 3.0;  const HOLE_CH = 0.8;      // Ø6.4 holes through a 3 mm wall; 0.8 x 45° chamfer on the slot-side edge (release cam)
-const CH_W = 16.0;                          // finger channel over the hole column: 16 wide floor, 45° flanks, 3 deep (dome top flush with the wing surface)
-const RAMP = 6.5;                           // 30° entry ramp on the outer wall at the slot mouth: presses the bolt in as the arm slides home
+const RAIL_P = 4.0;  const RAIL_H = 6.0;  const RAIL_T = [-14.0, 28.0];   // one rail per position on the slot's inner wall (the tongue's groove rides on it: height + pitch)
+// ---------------- heights ----------------
+const C_POS = [227.0, 259.5, 292.0];                      // tongue centre z at positions 1 / 2 / 3
+const D_OFF = 47.5;                                        // pad centre below (LOW) / above (HIGH) the tongue
 // ---------------- carrier ----------------
-const K0 = 20.0;  const K1 = 30.0;                                // arm Bezier handles: straight out of the slot / straight into the knee
-const KNEE_X1 = 162.0;  const ARM_R = 5.0;  const KNEE_BLEND = 2.5;  const ARM_END = [12.5, 15.0];                         // knee block outer face (chair arm rests at x 165), arm corner radius
-const TG_R = 1.5;  const TG_D = [1.4, 17.4];  const TG_T = [-14.0, 27.5];  const TG_H = 25.0;                 // tongue 16 x 41.5 x 50
-const NOTCH = [-18.75, -6.25, 6.25, 18.75];
-const ROD_DZ = [-12.0, 12.0];  const ROD_L = 45.0;  const ROD_R = 2.15;                         // 2x carbon rod Ø4 x 45 (bonded, Ø4.3 bores)
-const D_OFF = 50.0;                         // pad centre 50 below the tongue (LOW) / above (HIGH, flipped)
-const T_POS0 = 227.0;                       // tongue centre positions T_POS0 + 12.5 k, k = 0..7
-const NK_Y = [25.0, 43.0];  const NK_HZ = 18.0;  const NK_R = 6.0;                         // neck section 18 x 36, centre y 34
-const J0 = 128.0;  const J1 = 146.0;  const JS = 137.0;                                     // dovetail joint zone, retainer screw
-const KEY_LO = -6.0;  const KEY_HI = 2.0;  const FL = 3.5;  const ENDL = 2.5;
-// ---------------- snap-button bolt ----------------
-const B_BORE_R = 4.7;  const B_BORE_D0 = 3.0;                                               // Ø9.4 bore in the tongue from d 3 to the outer face
-const B_SH_R = 4.5;  const B_SH_L = 5.0;  const B_HEAD_R = 3.0;  const B_SPR_R = 3.3;  const B_SPR_D = 4.0;
-const WASH_T = 2.0;  const M3_DT = 9.0;                                                     // retainer washer 2 thick, 2x M3x10 csk + nuts at t = bolt +-9 (1.4 wall to the bore)
+const TG_R = 1.5;  const TG_D = [1.4, 17.4];  const TG_T = [-2.0, 27.5];  const TG_H = 25.0;    // full-height tongue 16 x 29.5 x 50
+const TAPER_T = -14.0;                                     // taper 50 -> 24 tall from t -2 to t -14: it ends INSIDE the slot (mouth t -16)
+const ARM_W = 18.0;  const ARM_H = 28.0;  const ARM_R = 9.0;                                    // the arm section (pill: 18 wide, 28 tall)
+const TAPER_W = 16.0;                                     // the taper end inside the slot: 16 x 28
+const YEND = 35.0;                                         // arm end / joint centre y
+const YAX = YEND + (ARM_W - TAPER_W) / 2;                 // the arm widens toward the inside of the bend only (outer face stays put): joint axis y
+const RG_CL = 0.15;                                       // rail groove clearance per side (no rocking)
+const CF = [[5.5, -7.0], [9.0, -10.5]];  const CF_T = [-26.0, 28.5];  const CF_R = 2.15;  // 2x carbon Ø4 x 54 (d, z LOW): tongue -> across the wing mouth -> arm root, slid in from the rear face
+// latch (printed shuttle, as coupons C1-C5): rod along t, shuttle across d, spring behind the rod
+const LZ = 0.0;  const ROD_DC = 11.6;  const ROD_S = 6.4;  const ROD_TEND = 10.5;               // rod axis on the tongue centre line; channel 6.4 (a 6 mm spring passes)
+const SPR_T = [10.5, 19.5];  const SPR_R = 3.25;                                            // solid seat: 2.1 mm before the rib notch
+const SH_T = [0.0, 8.0];  const SH_Z = [3.2, 9.2];  const SH_D0 = 11.8;  const ENG = 4.0;       // shuttle (LOW: on top of the rod)
+const PEG_T = 4.0;  const PEG_D = 14.0;  const PEG_R = 1.5;  const RT = 3.0;  const SR = 4.5;   // rod travel 3 (thumb), shuttle retraction 4.5 (56 deg slot)
+const PILL_W = 8.0;  const PILL_H = 13.0;  const CAP_T = 3.0;                                   // flush pill cap (d x z), 4 thick
+// ---------------- joint (hidden tenon in a sleeve) ----------------
+const TEN_W = 11.0;  const TEN_H = 20.0;  const TEN_L = 13.0;  const TEN_R = 2.5;  const JS_DX = 6.5;  const JGAP = 0.3;
+// ---------------- depth piece + pad mount ----------------
+const FLARE_L = 12.0;  const FOOT_Y = [13.0, 43.0];  const FOOT_HZ = 20.0;  const FOOT_R = 14.5;
+const FLOOR_T = 6.0;                                       // foot wall between the pad back and the hollow's floor
+const PSY = YEND + (ARM_W - TAPER_W) / 2;  const BOSS_R = 5.6;  const BOSS_H = 3.0;                    // pad-screw boss on the shell BACK (hidden under the foot): M5 nut from the foot side
+const KEY_L = 22.0;  const KEY_H = 1.3;  const KEY_D = 1.6;                                    // foot rib / shell groove
 // ---------------- pad ----------------
-const PAD_Y0 = -31.0;  const PAD_Y1 = 51.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;   // back edge: >= 51 so the cover bead clears the neck (y <= 43.1)
+const PAD_Y0 = -31.0;  const PAD_Y1 = 51.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;
 const A_REF = 85.0;  const B_REF = 88.0;  const YC_REF = 30.0;  const WRAP = 0.7;  const SE_P = 4.0;
-const FOOT_Y = [4.0, 40.0];  const FOOT_HZ = 20.0;  const NOSE = 1.5;  const SEAT_D = 1.5;  const FINE = 6.25;
-const PSYS = [9.0, 19.0];          // pad screws: y 9 / 19 at the pad centre height, clear of the neck so a hex key reaches them from outside
-const HS = 7.0;
-const TILT_Z = 5.5;                // extra slot length (each way) for a tilted screw crossing the foot                     // screw-head land on the foot: x = xs + HS
-const BOSS_T = 8.5;                    // boss under the seat on the child side (under the EVA): nut pocket + room for the screw tip
-const NUT_FLOOR = 1.2;              // plastic between the seat floor and the nut
-const NOSE_RIB = 1.3;               // foot ribs 2.6 tall in 3.1 grooves: 0.25 per side
-const SHIM0 = 3.5;                  // tilt shim thickness at its thin end (2 under the foot recess)
-const WEDGE_R = 5.5;  const WEDGE_T0 = 1.5;                                                 // wedge washers under the screw heads with a tilt shim
-const BEAD = [1.0, 7.5];  const GROOVE = [2.5, 6.5];  const BEAD_H = 3.5;  const GROOVE_D = 3.0;  // cover bead + groove (insets from the pad edge)
-// ---------------- fits (P1S / PETG) ----------------
-// TOLERANCE BLOCK = the headrest's P1S / PETG policy (2026-11-16): clearance holes +0.4..0.5 on the diameter, nut traps
-// AF +0.3 and nut thickness +0.4, sliding fits >= 0.2 per side.  Confirm with the fit-test coupons, then edit here.
-const CL = 0.2;  const M5_CLEAR = 5.5;  const M5_NUT_AF = 8.3;  const M5_NUT_T = 4.4;  const CSK_M5_R = 5.3;
-const M3_CLEAR = 3.5;  const M3_NUT_AF = 5.8;  const M3_NUT_T = 2.8;  const CSK_M3_R = 3.25;
-const M5_HEAD_R = 4.7;   // DIN 912 / ISO 7380 head (Ø8.5 / Ø9.5) seat for the pad screws in the foot slots
+const SHIM0 = 3.0;
+const BEAD = [1.0, 7.5];  const GROOVE = [2.5, 6.5];  const BEAD_H = 3.5;  const GROOVE_D = 3.0;
+// ---------------- fits (P1S / PETG, as the headrest) ----------------
+const CL = 0.2;  const M5_CLEAR = 5.5;  const M5_NUT_AF = 8.3;  const M5_NUT_P = 5.1;  const CSK_M5_R = 5.3;   // nut pocket 5.1 deep: DIN 934 (4.0) and ISO 4032 (4.7)
 
+// ---------------- small helpers ----------------
 // ---------------- small helpers (as the headrest studio) ----------------
 function v3(x, y, z) returns Vector { return vector(x, y, z) * millimeter; }
 function vv(p) returns Vector { return vector(p[0], p[1], p[2]) * millimeter; }
@@ -189,7 +185,28 @@ function rrProfile(context is Context, id is Id, c is Vector, nIn is Vector, w i
     var xd = hint == undefined ? cross(vector(0, 0, 1), n) : hint - n * dot(hint, n);      // width direction, in the section plane
     if (norm(xd) < 1e-6) xd = vector(1, 0, 0);
     const sk = newSketchOnPlane(context, id, { "sketchPlane" : plane(c * millimeter, n, normalize(xd)) });
-    const a = w / 2;  const b = h / 2;  const rr = min(r, min(a, b) - 0.05);  const k = rr * sqrt(0.5);
+    const a = w / 2;  const b = h / 2;
+    if (r >= min(a, b) - 0.06)
+    {
+        // stadium (pill): two half circles on the short sides joined by straight lines -- no corner lines on the part
+        if (w <= h)
+        {
+            skArc(sk, "at", { "start" : vector(a, b - a) * millimeter, "mid" : vector(0, b) * millimeter, "end" : vector(-a, b - a) * millimeter });
+            skLineSegment(sk, "l", { "start" : vector(-a, b - a) * millimeter, "end" : vector(-a, -b + a) * millimeter });
+            skArc(sk, "ab", { "start" : vector(-a, -b + a) * millimeter, "mid" : vector(0, -b) * millimeter, "end" : vector(a, -b + a) * millimeter });
+            skLineSegment(sk, "r", { "start" : vector(a, -b + a) * millimeter, "end" : vector(a, b - a) * millimeter });
+        }
+        else
+        {
+            skArc(sk, "ar", { "start" : vector(a - b, -b) * millimeter, "mid" : vector(a, 0) * millimeter, "end" : vector(a - b, b) * millimeter });
+            skLineSegment(sk, "t", { "start" : vector(a - b, b) * millimeter, "end" : vector(-a + b, b) * millimeter });
+            skArc(sk, "al", { "start" : vector(-a + b, b) * millimeter, "mid" : vector(-a, 0) * millimeter, "end" : vector(-a + b, -b) * millimeter });
+            skLineSegment(sk, "b", { "start" : vector(-a + b, -b) * millimeter, "end" : vector(a - b, -b) * millimeter });
+        }
+        skSolve(sk);
+        return qSketchRegion(id);
+    }
+    const rr = min(r, min(a, b) - 0.05);  const k = rr * sqrt(0.5);
     skLineSegment(sk, "t", { "start" : vector(-a + rr, b) * millimeter, "end" : vector(a - rr, b) * millimeter });
     skArc(sk, "tr", { "start" : vector(a - rr, b) * millimeter, "mid" : vector(a - rr + k, b - rr + k) * millimeter, "end" : vector(a, b - rr) * millimeter });
     skLineSegment(sk, "r", { "start" : vector(a, b - rr) * millimeter, "end" : vector(a, -b + rr) * millimeter });
@@ -228,17 +245,9 @@ function footSec(x is number, yc is number, zc is number, w is number, h is numb
 {
     return sec(vector(x, yc, zc), vector(1, 0, 0), w, h, r);
 }
-const FOOT_R = 13.0;                 // foot corner radius (the v1.0 superellipse foot, as a rounded rectangle)
 function bez(p0 is Vector, p1 is Vector, p2 is Vector, p3 is Vector, s is number) returns Vector
 {
     return p0 * (1 - s) ^ 3 + p1 * 3 * (1 - s) ^ 2 * s + p2 * 3 * (1 - s) * s ^ 2 + p3 * s ^ 3;
-}
-// straight neck bar along x (rounded 18 x 36 section)
-function barX(context is Context, id is Id, x0 is number, x1 is number, zc is number)
-{
-    const yc = (NK_Y[0] + NK_Y[1]) / 2;
-    rrLoft(context, id, [sec(vector(x0, yc, zc), vector(1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R),
-                         sec(vector(x1, yc, zc), vector(1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R)], false, false);
 }
 // vertical prism of a world x-y polygon (points as mm vectors, z ignored), z0..z1
 function xyPrism(context is Context, id is Id, pts is array, z0 is number, z1 is number)
@@ -253,162 +262,231 @@ function xyPrism(context is Context, id is Id, pts is array, z0 is number, z1 is
     opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : (z1 - z0) * millimeter });
     opDeleteBodies(context, id + "dsk", { "entities" : qCreatedBy(id + "sk", EntityType.BODY) });
 }
-// keyed dovetail split region (x-z polygon extruded through y): the part BELOW the split line (carrier when LOW)
-function splitRegion(context is Context, id is Id, zc is number, below is boolean, cl is number)
+
+
+// =============================================== ARM PATH ===============================================
+// plan: circular arc (radius R, clockwise) from the arm start heading -t to heading -x at y = YEND;
+// height: two equal circular arcs (radius Rv) taking the arm from the tongue height c to the pad height zp, level at both ends.
+export function armPath(c is number, zp is number) returns map
 {
-    // cl = 0 for the carrier half; the depth piece is cut with cl = CL so the dovetail slides with 0.2 per side
-    const x0 = cl > 0 ? J0 - 0.3 : J0 - 0.01;  const x1 = J1 + 0.01;  const s = below ? 1 : -1;
-    const S = [[x0, zc + s * (KEY_LO + cl)], [J0 + ENDL + FL - cl, zc + s * (KEY_LO + cl)], [J0 + ENDL - cl, zc + s * (KEY_HI + cl)],
-               [J1 - ENDL + cl, zc + s * (KEY_HI + cl)], [J1 - ENDL - FL + cl, zc + s * (KEY_LO + cl)], [x1, zc + s * (KEY_LO + cl)]];
-    const far = zc - s * 60;
-    var poly = concatenateArrays([S, [[x1, far], [x0, far]]]);
-    const sk = newSketchOnPlane(context, id + "sk", { "sketchPlane" : plane(v3(0, 0, 0), vector(0, -1, 0), vector(1, 0, 0)) });
-    for (var i = 0; i < size(poly); i += 1)
+    const st = Q((TG_D[0] + TG_D[1]) / 2, TAPER_T, c);
+    const h0 = -dirT();
+    const th0 = atan2(h0[1], h0[0]) / radian;
+    const R = (YEND - st[1]) / (sin((th0 - PI / 2) * radian) - 1);
+    const C = [st[0] + R * cos((th0 - PI / 2) * radian), st[1] + R * sin((th0 - PI / 2) * radian)];
+    const L = R * (th0 + PI);
+    const dz = zp - c;
+    const thv = 2 * atan(abs(dz) / L) / radian;
+    const Rv = L / (2 * sin(thv * radian));
+    return { "st" : st, "th0" : th0, "R" : R, "C" : C, "L" : L, "dz" : dz, "Rv" : Rv, "c" : c };
+}
+export function armAt(p is map, u is number) returns map
+{
+    const th = p.th0 - u / p.R;
+    const x = p.C[0] + p.R * cos((th + PI / 2) * radian);
+    const y = p.C[1] + p.R * sin((th + PI / 2) * radian);
+    var zz = 0;  var sl = 0;
+    if (u <= p.L / 2)
     {
-        const a = poly[i];  const b = poly[(i + 1) % size(poly)];
+        const ph = asin(min(u / p.Rv, 1)) / radian;
+        zz = p.Rv * (1 - cos(ph * radian));  sl = tan(ph * radian);
+    }
+    else
+    {
+        const ph = asin(min((p.L - u) / p.Rv, 1)) / radian;
+        zz = abs(p.dz) - p.Rv * (1 - cos(ph * radian));  sl = tan(ph * radian);
+    }
+    const s = p.dz < 0 ? -1 : 1;
+    return { "p" : vector(x, y, p.c + s * zz), "t" : normalize(vector(cos(th * radian), sin(th * radian), s * sl)) };
+}
+
+// =============================================== CARRIER + LATCH ===============================================
+// returns { carrier, button, shuttle, xe } ; zs = +1 LOW, -1 HIGH (the HIGH carrier is the flip of the other side's LOW)
+export function buildCarrier(context is Context, id is Id, c is number, zp is number) returns map
+{
+    const zs = zp < c ? 1 : -1;
+    const dc = (TG_D[0] + TG_D[1]) / 2;
+    // tongue (full height): edges rounded, except round its front face where the taper continues flush
+    tipBox(context, id + "tg", TG_D[0], TG_D[1], TG_T[0], TG_T[1], c - TG_H, c + TG_H);
+    const tgFront = qContainsPoint(qCreatedBy(id + "tg" + "b", EntityType.FACE), Q(dc, TG_T[0], c) * millimeter);
+    finishEdges(context, id + "tgf", qSubtraction(qCreatedBy(id + "tg" + "b", EntityType.EDGE), qAdjacent(tgFront, AdjacencyType.EDGE, EntityType.EDGE)), TG_R, "tongue edge round");
+    // taper inside the slot: 16 x 50 -> 16 x 24, smooth into the tongue and into the arm
+    rrLoft(context, id + "tp", [sec(Q(dc, TG_T[0], c), -dirT(), TG_D[1] - TG_D[0], 2 * TG_H, TG_R), sec(Q(dc, TAPER_T, c), -dirT(), TAPER_W, ARM_H, TAPER_W / 2)], true, true);
+    // the arm: one loft through 7 sections square to the path
+    const p = armPath(c, zp);
+    var secs = [];
+    for (var i = 0; i <= 6; i += 1)
+    {
+        const a = armAt(p, p.L * i / 6);
+        const w = i == 0 ? TAPER_W : ARM_W;                    // widens to the arm section once out of the slot,
+        const inw = normalize(vector(p.C[0] - a.p[0], p.C[1] - a.p[1], 0));   // toward the inside of the bend only
+        secs = append(secs, sec(a.p + inw * (w - TAPER_W) / 2, a.t, w, ARM_H, w / 2));
+    }
+    rrLoft(context, id + "arm", secs, true, true);
+    const e = armAt(p, p.L);
+    const xe = e.p[0];
+    // hidden tenon on the arm end (into the depth piece's sleeve)
+    rrLoft(context, id + "ten", [sec(vector(xe + 0.5, YAX, zp), vector(-1, 0, 0), TEN_W, TEN_H, TEN_R), sec(vector(xe - TEN_L, YAX, zp), vector(-1, 0, 0), TEN_W, TEN_H, TEN_R)], false, false);
+    opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
+    const body = oneBody(context, id, "carrier");
+
+    // ---- latch geometry from the arm as built (copies, before any cut); set algebra with subtractions only ----
+    const zr = c + zs * LZ;                                     // rod axis z
+    const ax = dirT();                                          // +t = into the wing (the pressing direction)
+    opPattern(context, id + "cpy", { "entities" : body, "transforms" : [identityTransform(), identityTransform(), identityTransform()], "instanceNames" : ["a", "b", "r"] });
+    const copies = evaluateQuery(context, qCreatedBy(id + "cpy", EntityType.BODY));
+    const ps = Q(ROD_DC, TAPER_T + 6, zr);
+    // the rod line's first exit from the arm: the pill prisms stop just past it (no second pass through the arm)
+    const hits = evRaycast(context, { "entities" : copies[0], "ray" : line(ps * millimeter, -ax) });
+    if (size(hits) == 0) throw regenError("pill button: the rod line never leaves the arm");
+    const PL = hits[0].distance / millimeter + 7;
+    // inside(X) = X2 - (X1 - arm): the part of prism X inside the arm
+    pillPrism(context, id + "pp1", ps, -ax, PL, PILL_W, PILL_H);
+    pillPrism(context, id + "pp2", ps, -ax, PL, PILL_W, PILL_H);
+    opBoolean(context, id + "o1", { "tools" : copies[0], "targets" : solids(context, id + "pp1"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, id + "o2", { "tools" : solids(context, id + "pp1"), "targets" : solids(context, id + "pp2"), "operationType" : BooleanOperationType.SUBTRACTION });
+    // cap = inside(pill) minus itself shifted CAP_T deeper: the 4 mm skin of arm surface inside the pill outline
+    opPattern(context, id + "cs", { "entities" : solids(context, id + "pp2"), "transforms" : [transform(ax * CAP_T * millimeter)], "instanceNames" : ["s"] });
+    opBoolean(context, id + "cap", { "tools" : qCreatedBy(id + "cs", EntityType.BODY), "targets" : solids(context, id + "pp2"), "operationType" : BooleanOperationType.SUBTRACTION });
+    // pocket = inside(pill + clearance) minus itself shifted CAP_T + RT + 1 deeper
+    pillPrism(context, id + "pq1", ps, -ax, PL, PILL_W + 2 * CL + 0.1, PILL_H + 2 * CL + 0.1);
+    pillPrism(context, id + "pq2", ps, -ax, PL, PILL_W + 2 * CL + 0.1, PILL_H + 2 * CL + 0.1);
+    opBoolean(context, id + "q1", { "tools" : copies[1], "targets" : solids(context, id + "pq1"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, id + "q2", { "tools" : solids(context, id + "pq1"), "targets" : solids(context, id + "pq2"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opPattern(context, id + "qs", { "entities" : solids(context, id + "pq2"), "transforms" : [transform(ax * (CAP_T + RT + 1) * millimeter)], "instanceNames" : ["s"] });
+    opBoolean(context, id + "pk", { "tools" : qCreatedBy(id + "qs", EntityType.BODY), "targets" : solids(context, id + "pq2"), "operationType" : BooleanOperationType.SUBTRACTION });
+    // push-rod (5.6 square) along the axis, from inside the cap to the spring seat, clipped to the arm
+    tipBox(context, id + "rdA", ROD_DC - ROD_S / 2 + CL, ROD_DC + ROD_S / 2 - CL, TAPER_T + 6 - PL, ROD_TEND - 0.4, zr - ROD_S / 2 + CL, zr + ROD_S / 2 - CL);
+    tipBox(context, id + "rdB", ROD_DC - ROD_S / 2 + CL, ROD_DC + ROD_S / 2 - CL, TAPER_T + 6 - PL, ROD_TEND - 0.4, zr - ROD_S / 2 + CL, zr + ROD_S / 2 - CL);
+    opBoolean(context, id + "r1", { "tools" : copies[2], "targets" : solids(context, id + "rdB"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, id + "r2", { "tools" : solids(context, id + "rdB"), "targets" : solids(context, id + "rdA"), "operationType" : BooleanOperationType.SUBTRACTION });
+    // 45 deg slot for the shuttle peg (blind: the rod's far 2.6 mm stays whole)
+    const sz0 = zs > 0 ? zr - ROD_S / 2 + CL + 2.6 : zr - ROD_S / 2 - 1;
+    const sz1 = zs > 0 ? zr + ROD_S / 2 + 1 : zr + ROD_S / 2 - CL - 2.6;
+    // slot for the peg in the rod: pressing moves the rod +RT along t and must pull the shuttle SR inward (-d)
+    const su = normalize(vector(-SR, -RT, 0));                  // (d, t) direction of the slot in the rod's frame
+    slot45(context, id + "ps", Q(PEG_D - 0.6 * su[0], PEG_T - 0.6 * su[1], zr), Q(PEG_D - SR + 0.6 * su[0], PEG_T - RT + 0.6 * su[1], zr), PEG_R + 0.25, sz0, sz1);
+    opBoolean(context, id + "psc", { "tools" : solids(context, id + "ps"), "targets" : solids(context, id + "rdA"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, id + "btn", { "tools" : qUnion([solids(context, id + "pp2"), solids(context, id + "rdA")]), "operationType" : BooleanOperationType.UNION });
+    const bq = evaluateQuery(context, qUnion([solids(context, id + "pp2"), solids(context, id + "rdA")]));
+    if (size(bq) != 1)
+    {
+        var info = "";
+        for (var b in bq)
+        {
+            const bb = evBox3d(context, { "topology" : b });
+            info = info ~ " [vol " ~ roundToPrecision(evVolume(context, { "entities" : b }) / millimeter ^ 3, 0) ~ " box " ~ toString(roundToPrecision(bb.minCorner[0] / millimeter, 1)) ~ "," ~ roundToPrecision(bb.minCorner[1] / millimeter, 1) ~ "," ~ roundToPrecision(bb.minCorner[2] / millimeter, 1) ~ ".." ~ roundToPrecision(bb.maxCorner[0] / millimeter, 1) ~ "," ~ roundToPrecision(bb.maxCorner[1] / millimeter, 1) ~ "," ~ roundToPrecision(bb.maxCorner[2] / millimeter, 1) ~ "]";
+        }
+        throw regenError("pill button: expected 1 solid, found " ~ size(bq) ~ info ~ " PL " ~ roundToPrecision(PL, 1));
+    }
+    const button = bq[0];
+    // shuttle
+    const shz = zs > 0 ? [c + SH_Z[0] + CL, c + SH_Z[1] - 0.1] : [c - SH_Z[1] + 0.1, c - SH_Z[0] - CL];
+    tipBox(context, id + "sh", SH_D0, TG_D[1] + CL + ENG, SH_T[0], SH_T[1], shz[0], shz[1]);
+    const tip = TG_D[1] + CL + ENG;
+    xyPrism(context, id + "shc", [Q(tip - 2.5 - 1, SH_T[1] + 1, 0), Q(tip + 1, SH_T[1] + 1, 0), Q(tip + 1, SH_T[1] - 2.5 - 1, 0)], shz[0] - 1, shz[1] + 1);
+    opBoolean(context, id + "shcc", { "tools" : solids(context, id + "shc"), "targets" : qCreatedBy(id + "sh" + "b", EntityType.BODY), "operationType" : BooleanOperationType.SUBTRACTION });
+    const pz0 = zs > 0 ? shz[0] + 0.01 : shz[1] - 0.01;  const pz1 = zs > 0 ? zr + ROD_S / 2 - CL - 2.8 : zr - ROD_S / 2 + CL + 2.8;
+    cylAx(context, id + "peg", Q(PEG_D, PEG_T, pz0), Q(PEG_D, PEG_T, pz1), PEG_R);
+    opBoolean(context, id + "shu", { "tools" : qUnion([qCreatedBy(id + "sh" + "b", EntityType.BODY), solids(context, id + "peg")]), "operationType" : BooleanOperationType.UNION });
+    const sq = evaluateQuery(context, qUnion([qBodyType(qCreatedBy(id + "sh" + "b", EntityType.BODY), BodyType.SOLID), solids(context, id + "peg")]));
+    if (size(sq) != 1) throw regenError("shuttle: expected 1 solid, found " ~ size(sq));
+    const shuttle = sq[0];
+
+    // ---- cuts in the carrier ----
+    const K = id + "cut";
+    // groove along the tongue's inner face for the wing rail (flared at the tongue's rear end, where the rail enters)
+    const gh = RAIL_H / 2 + RG_CL;
+    tzPrism(context, K + "rg", [[TAPER_T - 1, c - gh], [TG_T[1] - 2.0, c - gh], [TG_T[1] + 0.01, c - gh - 1.5], [TG_T[1] + 1, c - gh - 1.5],
+                                [TG_T[1] + 1, c + gh + 1.5], [TG_T[1] + 0.01, c + gh + 1.5], [TG_T[1] - 2.0, c + gh], [TAPER_T - 1, c + gh]], TG_D[0] - 1, SL_D[0] + RAIL_P + RG_CL);
+    for (var i = 0; i < size(CF); i += 1) tdHole(context, K + ("cf" ~ i), Q(CF[i][0], CF_T[1], c + zs * CF[i][1]), Q(CF[i][0], CF_T[0], c + zs * CF[i][1]), CF_R, -dirD());
+    tipBox(context, K + "rc", ROD_DC - ROD_S / 2, ROD_DC + ROD_S / 2, TAPER_T + 6 - PL, ROD_TEND, zr - ROD_S / 2, zr + ROD_S / 2);
+    cylAx(context, K + "spr", Q(ROD_DC, SPR_T[0] - 0.5, zr), Q(ROD_DC, SPR_T[1], zr), SPR_R);
+    // window for the shuttle's peg (it travels across d, from PEG_D locked to PEG_D - SR pressed) between the channels
+    const wz = zs > 0 ? [zr - 0.5, c + SH_Z[0] + 0.01] : [c - SH_Z[0] - 0.01, zr + 0.5];
+    tipBox(context, K + "pw", PEG_D - SR - PEG_R - 0.4, TG_D[1] + 1, PEG_T - PEG_R - 0.4, PEG_T + PEG_R + 0.4, wz[0], wz[1]);
+    const chz = zs > 0 ? [c + SH_Z[0] - 0.01, c + SH_Z[1] + CL] : [c - SH_Z[1] - CL, c - SH_Z[0] + 0.01];
+    tipBox(context, K + "shc", SH_D0 - SR - 1.0, TG_D[1] + 1, SH_T[0] - CL, SH_T[1] + CL, chz[0], chz[1]);
+    opBoolean(context, id + "cutop", { "tools" : qUnion([solids(context, K), solids(context, id + "pq2")]), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
+    return { "carrier" : body, "button" : button, "shuttle" : shuttle, "xe" : xe };
+}
+// prism in the wing-tip frame: polygon in (t, z), extruded along d from d0 to d1
+function tzPrism(context is Context, id is Id, pts is array, d0 is number, d1 is number)
+{
+    const o = Q(d0, 0, 0);
+    const sk = newSketchOnPlane(context, id + "sk", { "sketchPlane" : plane(vector(o[0], o[1], 0) * millimeter, dirD(), dirT()) });
+    for (var i = 0; i < size(pts); i += 1)
+    {
+        const a = pts[i];  const b = pts[(i + 1) % size(pts)];
         skLineSegment(sk, "l" ~ i, { "start" : vector(a[0], a[1]) * millimeter, "end" : vector(b[0], b[1]) * millimeter });
     }
     skSolve(sk);
-    opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : vector(0, 1, 0), "endBound" : BoundingType.BLIND, "endDepth" : 100 * millimeter });
+    opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : dirD(), "endBound" : BoundingType.BLIND, "endDepth" : (d1 - d0) * millimeter });
     opDeleteBodies(context, id + "dsk", { "entities" : qCreatedBy(id + "sk", EntityType.BODY) });
 }
-
-// =============================================== CARRIER ===============================================
-// built for the LEFT side; c = tongue centre z, zp = pad / neck centre z (c - 50 LOW, c + 50 HIGH)
-export function buildCarrier(context is Context, id is Id, c is number, zp is number) returns Query
+// pill (stadium) prism: start point s, direction n, length L, w across (horizontal), h tall
+function pillPrism(context is Context, id is Id, s is Vector, n is Vector, L is number, w is number, h is number)
 {
-    const low = zp < c;
-    // tongue in the slot: edges rounded 1.5, except round the nose face, where the arm continues flush (same section)
-    tipBox(context, id + "tg", TG_D[0], TG_D[1], TG_T[0], TG_T[1], c - TG_H, c + TG_H);
-    const tgNose = qContainsPoint(qCreatedBy(id + "tg" + "b", EntityType.FACE), Q((TG_D[0] + TG_D[1]) / 2, TG_T[0], c) * millimeter);
-    finishEdges(context, id + "tgf", qSubtraction(qCreatedBy(id + "tg" + "b", EntityType.EDGE), qAdjacent(tgNose, AdjacencyType.EDGE, EntityType.EDGE)), TG_R, "tongue edge round");
-    // ARM (knee route, owner's choice 2026-11-18): out of the slot along -t, then curving down (LOW) / up (HIGH) in a near-
-    // vertical plane onto the top of the KNEE block, which is the outer end of the joint bar (x J1+0.3 .. KNEE_X1). ONE loft through
-    // 5 sections square to the 3D path; the bend is in the arm's tall direction with a large radius, so it never folds.
-    // (v1.0's hook turned ~128 deg in plan inside the chair width: a ~5 mm bend for an 18 mm arm, which folded into lumps.)
-    const sz = low ? 1 : -1;                                   // the arm lands on the top (LOW) / bottom (HIGH) of the knee
-    const nose = Q((TG_D[0] + TG_D[1]) / 2, TG_T[0], c);
-    const dout = -dirT();
-    const yn = (NK_Y[0] + NK_Y[1]) / 2;
-    const xe = (J1 + 0.3 + KNEE_X1) / 2;
-    const endp = vector(xe, yn, zp + sz * (NK_HZ - 3.0));      // sunk 3 into the knee (its top is rounded r 6)
-    const p1 = nose + dout * K0;  const p2 = endp + vector(0, 0, sz * K1);
-    const ch = vector(endp[0] - nose[0], endp[1] - nose[1], 0);
-    const side = normalize(cross(vector(0, 0, 1), normalize(ch)));       // width direction hint (horizontal, across the arm)
-    var secs = [];
-    for (var s in [0, 0.25, 0.5, 0.75, 1])
-    {
-        const tg = bez(nose, p1, p2, endp, min(s + 0.01, 1)) - bez(nose, p1, p2, endp, max(s - 0.01, 0));
-        const u = min(max((s - 0.1) / 0.9, 0), 1);  const e = u * u * (3 - 2 * u);   // tapers from the tongue section (never wider than the slot)
-        var q = sec(bez(nose, p1, p2, endp, s), tg, lerp(TG_D[1] - TG_D[0], ARM_END[0], e), lerp(2 * TG_H, ARM_END[1], e), lerp(TG_R, ARM_R, e));
-        q.x = side;
-        secs = append(secs, q);
-    }
-    rrLoft(context, id + "sw", secs, true, true);
-    // knee block: the joint bar's outer end, full height, x J1 + 0.3 .. KNEE_X1 (outside the depth piece's dovetail half)
-    barX(context, id + "kn", J1 - 0.01, KNEE_X1, zp);
-    finishEdges(context, id + "knf", qCapEntity(id + "kn" + "loft", CapType.END, EntityType.EDGE), ARM_R, "knee end round");
-    // joint half (dovetail), joined to the knee
-    barX(context, id + "jb", J0, J1 + 0.31, zp);
-    splitRegion(context, id + "jr", zp, low, 0);
-    opBoolean(context, id + "jint", { "tools" : qUnion([solids(context, id + "jb"), solids(context, id + "jr")]), "operationType" : BooleanOperationType.INTERSECTION });
-    // the knee joint: arm + knee first, blend their intersection, then everything else
-    opBoolean(context, id + "ak", { "tools" : qUnion([solids(context, id + "sw"), solids(context, id + "kn")]), "operationType" : BooleanOperationType.UNION });
-    finishEdges(context, id + "kf", qCreatedBy(id + "ak", EntityType.EDGE), KNEE_BLEND, "arm-knee blend");
-    opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
-    const body = oneBody(context, id, "carrier");
-    // cuts: comb notches, bolt bore + washer pocket + 2 M3, retainer M5 + nut (6 mm up), all through tool bodies
-    const C = id + "cut";
-    for (var i = 0; i < size(NOTCH); i += 1)
-        tipBox(context, C + ("n" ~ i), TG_D[0] - 1, TG_D[1] + 1, RIB_T[0] - 0.4, TG_T[1] + 1, c + NOTCH[i] - 3.1, c + NOTCH[i] + 3.1);
-    cylAx(context, C + "bore", Q(B_BORE_D0, BOLT_T, c), Q(TG_D[1] + 1, BOLT_T, c), B_BORE_R);
-    // 2x Ø4 x 45 carbon rods bonded along the tongue into the neck (as v1.0), 12 above / below the bolt: clear of the bolt
-    // bore, the M3 nut channels and the comb notches
-    for (var dz in ROD_DZ) cylAx(context, C + ("cf" ~ (dz > 0 ? "u" : "d")), Q((TG_D[0] + TG_D[1]) / 2, TG_T[1] - 2.0, c + dz), Q((TG_D[0] + TG_D[1]) / 2, TG_T[1] - 2.0 - ROD_L - 1.5, c + dz), ROD_R);
-    tipBox(context, C + "wp", TG_D[1] - WASH_T, TG_D[1] + 1, BOLT_T - M3_DT - 4.2, BOLT_T + M3_DT + 4.2, c - 6, c + 6);
-    for (var s in [-1, 1])
-    {
-        // 2x M3x10 csk through the washer into nuts; each nut drops in from the inner face through a hex channel
-        cylAx(context, C + ("m3" ~ s), Q(TG_D[1] - 9, BOLT_T + s * M3_DT, c), Q(TG_D[1] + 1, BOLT_T + s * M3_DT, c), M3_CLEAR / 2);
-        hexPrism(context, C + ("m3n" ~ s), Q((TG_D[0] - 1 + TG_D[1] - 7) / 2, BOLT_T + s * M3_DT, c), dirD(), M3_NUT_AF, (TG_D[1] - 7) - (TG_D[0] - 1));
-    }
-    tdHole(context, C + "js", vector(JS, 34, zp - NK_HZ - 2), vector(JS, 34, zp + NK_HZ + 2), M5_CLEAR / 2, vector(0, 1, 0));
-    hexPrism(context, C + "jn", vector(JS, 34, low ? zp - NK_HZ + 6 + M5_NUT_T / 2 : zp + NK_HZ - 6 - M5_NUT_T / 2), vector(0, 0, 1), M5_NUT_AF, M5_NUT_T);
-    // nut access channel from the bottom face up to the nut (insert the nut from below)
-    cylAx(context, C + "jna", vector(JS, 34, low ? zp - NK_HZ - 1 : zp + NK_HZ + 1), vector(JS, 34, low ? zp - NK_HZ + 6 : zp + NK_HZ - 6), M5_NUT_AF / sqrt(3) + 0.05);
-    opBoolean(context, id + "cutop", { "tools" : solids(context, C), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
-    return body;
+    const q = rrProfile(context, id + "sk", s, n, w, h, w / 2 - 0.05, undefined);
+    opExtrude(context, id + "ex", { "entities" : q, "direction" : normalize(n), "endBound" : BoundingType.BLIND, "endDepth" : L * millimeter });
+    opDeleteBodies(context, id + "dsk", { "entities" : qCreatedBy(id + "sk", EntityType.BODY) });
 }
-
-// =============================================== FOOT NOSE / SEAT (shared by depth piece, shim, shell) ===============================================
-// nose: 1.5 mm oval boss + 2 ribs that drop into the seat grooves (built at pad-frame x = xs, centre height zc)
-function noseBody(context is Context, id is Id, xs is number, zc is number)
+// vertical stadium slot from a to b (world points), radius r, z0..z1
+function slot45(context is Context, id is Id, a is Vector, b is Vector, r is number, z0 is number, z1 is number)
 {
-    const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    const fw = FOOT_Y[1] - FOOT_Y[0];
-    rrLoft(context, id + "ns", [footSec(xs + 0.6, yc, zc, fw - 6.0, 2 * FOOT_HZ - 6.0, FOOT_R - 3.0), footSec(xs - NOSE, yc, zc, fw - 7.2, 2 * FOOT_HZ - 7.2, FOOT_R - 3.6)], false, false);
-    for (var r in [-9.375, 9.375])
-        fCuboid(context, id + ("rib" ~ (r > 0 ? "u" : "d")), { "corner1" : v3(xs - NOSE - 1.0, FOOT_Y[0] + 8, zc + r - NOSE_RIB), "corner2" : v3(xs - NOSE + 0.2, FOOT_Y[1] - 8, zc + r + NOSE_RIB) });
-}
-// seat: recess 12.5 taller than the nose (fine height -6.25 / 0 / +6.25), grooves every 6.25 in its floor
-function seatCut(context is Context, id is Id, xs is number, zc is number)
-{
-    const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    // the nose shape (+0.2 all round) at each of the 3 seat positions: an oval stretched taller would pinch the nose's corners
-    for (var k = -1; k <= 1; k += 1)
-        rrLoft(context, id + ("seat" ~ (k + 1)), [footSec(xs + 0.1, yc, zc + k * FINE, FOOT_Y[1] - FOOT_Y[0] - 5.6, 2 * FOOT_HZ - 5.6, FOOT_R - 2.8),
-                                                  footSec(xs - SEAT_D - 0.1, yc, zc + k * FINE, FOOT_Y[1] - FOOT_Y[0] - 6.8, 2 * FOOT_HZ - 6.8, FOOT_R - 3.4)], false, false);
-    for (var k = -5; k <= 5; k += 1)
-    {
-        const z = zc + 3.125 + 6.25 * k;
-        if (abs(z - zc) > FOOT_HZ + 3) continue;
-        fCuboid(context, id + ("g" ~ (k + 5)), { "corner1" : v3(xs - SEAT_D - 1.2, FOOT_Y[0] + 7.5, z - 1.55), "corner2" : v3(xs - SEAT_D + 0.05, FOOT_Y[1] - 7.5, z + 1.55) });
-    }
+    cylAx(context, id + "a", vector(a[0], a[1], z0), vector(a[0], a[1], z1), r);
+    cylAx(context, id + "b", vector(b[0], b[1], z0), vector(b[0], b[1], z1), r);
+    const dd = normalize(vector(b[0] - a[0], b[1] - a[1], 0));  const nn = vector(-dd[1], dd[0], 0) * r;
+    xyPrism(context, id + "m", [a + nn, b + nn, b - nn, a - nn], z0, z1);
 }
 
 // =============================================== DEPTH PIECE ===============================================
 export function depthX(d is SidePadDepth) returns number
 {
-    return d == SidePadDepth.N0 ? 118 : (d == SidePadDepth.N12 ? 106 : (d == SidePadDepth.N24 ? 94 : 82));
+    return d == SidePadDepth.D0 ? 104 : (d == SidePadDepth.D1 ? 92 : (d == SidePadDepth.D2 ? 80 : 68));
 }
-export function buildDepth(context is Context, id is Id, xs is number, zp is number, low is boolean) returns Query
+const FOOT_YC = (FOOT_Y[0] + FOOT_Y[1]) / 2;
+export function buildDepth(context is Context, id is Id, xs is number, zp is number, xe is number) returns Query
 {
-    barX(context, id + "jb", J0, J1 - 0.3, zp);
-    const L = 10.0;
-    if (xs + L < J0) barX(context, id + "nk", xs + L, J0 + 0.02, zp);
-    // trumpet flare: ONE loft, neck section -> waist -> foot (concave lip), tangent to the neck bar
-    const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;  const yn = (NK_Y[0] + NK_Y[1]) / 2;  const fw = FOOT_Y[1] - FOOT_Y[0];
-    const xn = min(xs + L, J0 + 0.02);
-    rrLoft(context, id + "fl", [sec(vector(xn, yn, zp), vector(-1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R),
-                                sec(vector(xs + 0.45 * (xn - xs), lerp(yn, yc, 0.75), zp), vector(-1, 0, 0), lerp(NK_Y[1] - NK_Y[0], fw + 4, 0.55), lerp(2 * NK_HZ, 2 * FOOT_HZ + 4, 0.45), lerp(NK_R, FOOT_R, 0.6)),
-                                sec(vector(xs + 0.6, yc, zp), vector(-1, 0, 0), fw + 4, 2 * FOOT_HZ + 4, FOOT_R + 2)], true, false);
-    // nose into the seat + 2 ribs into the seat grooves
-    noseBody(context, id + "nb", xs, zp);
-    // screw-head land behind the 2 pad screws (flat face at x = xs + HS, rounded corners)
-    const yl0 = FOOT_Y[0] + 0.3;  const yl1 = PSYS[1] + M5_HEAD_R + 2.0;  const hl = 2 * (FINE + TILT_Z + M5_HEAD_R + 1.0);
-    rrLoft(context, id + "land", [sec(vector(xs + 0.4, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0), sec(vector(xs + HS, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0)], false, false);
+    const fw = FOOT_Y[1] - FOOT_Y[0];
+    const x0 = xe - JGAP;                                       // sleeve face (hairline gap to the arm end)
+    // straight run, same skin as the arm
+    rrLoft(context, id + "nk", [sec(vector(x0, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R), sec(vector(xs + FLARE_L, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R)], false, false);
+    // flare into the foot (tangent to the run), the foot runs 1 mm past the pad back and is then trimmed to it
+    rrLoft(context, id + "fl", [sec(vector(xs + FLARE_L, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R),
+                                sec(vector(xs + 0.4 * FLARE_L, lerp(YAX, FOOT_YC, 0.75), zp), vector(-1, 0, 0), lerp(ARM_W, fw, 0.45), lerp(ARM_H, 2 * FOOT_HZ, 0.55), lerp(ARM_W, fw, 0.45) / 2),
+                                sec(vector(xs - 1.0, FOOT_YC, zp), vector(-1, 0, 0), fw, 2 * FOOT_HZ, FOOT_R)], true, false);
     opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "depth piece");
-    const C = id + "cut";
-    splitRegion(context, C + "jr", zp, low, CL);                 // dovetail half, cut after the neck is joined (0.2 per side to the carrier)
-    // retainer M5x30 (head flush, countersunk on the free face)
-    tdHole(context, C + "js", vector(JS, 34, zp - NK_HZ - 2), vector(JS, 34, zp + NK_HZ + 2), M5_CLEAR / 2, vector(0, 1, 0));
-    const zh = low ? zp + NK_HZ : zp - NK_HZ;  const sh = low ? 1 : -1;
-    fCone(context, C + "jsk", { "bottomCenter" : v3(JS, 34, zh - sh * (CSK_M5_R - 2.75)), "topCenter" : v3(JS, 34, zh + sh * 0.05), "bottomRadius" : 2.75 * millimeter, "topRadius" : CSK_M5_R * millimeter });
-    // pad screws from OUTSIDE: vertical slots through the land (fine height +-6.25, +-2.5 more for the tilt), head / key clearance above the land
-    const zs = FINE + TILT_Z;
-    for (var i = 0; i < size(PSYS); i += 1)
-    {
-        const y = PSYS[i];
-        for (var j in [-1, 1]) cylAx(context, C + ("ps" ~ i ~ j), vector(xs - 3, y, zp + j * zs), vector(xs + HS + 0.01, y, zp + j * zs), M5_CLEAR / 2);
-        fCuboid(context, C + ("psb" ~ i), { "corner1" : v3(xs - 3, y - M5_CLEAR / 2, zp - zs), "corner2" : v3(xs + HS + 0.01, y + M5_CLEAR / 2, zp + zs) });
-        for (var j in [-1, 1]) cylAx(context, C + ("pc" ~ i ~ j), vector(xs + HS, y, zp + j * zs), vector(xs + 30, y, zp + j * zs), WEDGE_R + 0.2);
-        fCuboid(context, C + ("pcb" ~ i), { "corner1" : v3(xs + HS, y - WEDGE_R - 0.2, zp - zs), "corner2" : v3(xs + 30, y + WEDGE_R + 0.2, zp + zs) });
-    }
-    opBoolean(context, id + "cutop", { "tools" : solids(context, C), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
+    const K = id + "cut";
+    // the foot follows the pad back exactly (no gap): trim by the pad shell's outer surface
+    planStrip(context, K + "pb", xs, -60, SHELL_T, zp - 40, zp + 40);
+    // sleeve + hollow down to the foot wall; the nut for the pad screw slides sideways from the hollow into its pocket
+    rrLoft(context, K + "sl", [sec(vector(x0 + 1, YAX, zp), vector(-1, 0, 0), TEN_W + 2 * CL, TEN_H + 2 * CL, TEN_R + CL), sec(vector(xs + FLOOR_T, YAX, zp), vector(-1, 0, 0), TEN_W + 2 * CL, TEN_H + 2 * CL, TEN_R + CL)], false, false);
+    // pad screw: M5x10 socket head sits on the hollow's floor (hex key down the hollow), clearance down into the boss recess
+    cylAx(context, K + "ps", vector(xs - 2, PSY, zp), vector(xs + FLOOR_T + 1, PSY, zp), M5_CLEAR / 2);
+    cylAx(context, K + "hc", vector(xs + FLOOR_T - 0.01, PSY, zp), vector(xs + FLOOR_T + 6, PSY, zp), 4.6);           // socket head seat
+    cylAx(context, K + "br", vector(xs - 2, PSY, zp), vector(xs + BOSS_H + 0.2, PSY, zp), BOSS_R + CL);
+    // groove for the shell's rib
+    fCuboid(context, K + "kg", { "corner1" : v3(xs - 2, FOOT_YC - KEY_L / 2 - CL, zp - KEY_H - CL), "corner2" : v3(xs + KEY_D + 0.2, FOOT_YC + KEY_L / 2 + CL, zp + KEY_H + CL) });
+    // joint screw: flush countersunk from the back face (+y) through the sleeve wall into the tenon's nut
+    const xj = xe - JS_DX;
+    cylAx(context, K + "js", vector(xj, YAX + ARM_W / 2 + 1, zp), vector(xj, YAX - TEN_W / 2 - CL, zp), M5_CLEAR / 2);
+    fCone(context, K + "jsk", { "bottomCenter" : v3(xj, YAX + ARM_W / 2 - (CSK_M5_R - 2.75), zp), "topCenter" : v3(xj, YAX + ARM_W / 2 + 0.05, zp), "bottomRadius" : 2.75 * millimeter, "topRadius" : CSK_M5_R * millimeter });
+    opBoolean(context, id + "cutop", { "tools" : solids(context, K), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     return body;
 }
+// joint nut + screw hole in the tenon (cut from the carrier)
+export function tenonCuts(context is Context, id is Id, carrier is Query, xe is number, zp is number, zs is number)
+{
+    const xj = xe - JS_DX;
+    hexPrism(context, id + "n", vector(xj, YAX - 0.6, zp), vector(0, 1, 0), M5_NUT_AF, M5_NUT_P);
+    fCuboid(context, id + "ns", { "corner1" : v3(xj - M5_NUT_AF / 2, YAX - 0.6 - M5_NUT_P / 2, zp), "corner2" : v3(xj + M5_NUT_AF / 2, YAX - 0.6 + M5_NUT_P / 2, zp + zs * (TEN_H / 2 + 1)) });
+    cylAx(context, id + "h", vector(xj, YAX + TEN_W, zp), vector(xj, YAX - TEN_W / 2 - 1, zp), M5_CLEAR / 2);
+    opBoolean(context, id + "op", { "tools" : solids(context, id), "targets" : carrier, "operationType" : BooleanOperationType.SUBTRACTION });
+}
 
+// =============================================== PAD ===============================================
 // =============================================== PAD SHELL ===============================================
 function shellXi(y is number, xs is number) returns number
 {
@@ -455,250 +533,188 @@ function planStrip(context is Context, id is Id, xs is number, a is number, b is
     opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : (z1 - z0) * millimeter });
     opDeleteBodies(context, id + "dsk", { "entities" : qCreatedBy(id + "sk", EntityType.BODY) });
 }
+export function buildClipRing(context is Context, id is Id, xs is number, zc is number) returns Query
+{
+    // a flat band that presses the cover into the bead's groove; its top sits flush with the bead top
+    planStrip(context, id + "ts", xs, SHELL_T + BEAD_H - GROOVE_D + 0.4, SHELL_T + BEAD_H, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
+    yzPrism(context, id + "to", padOutlineYZ(zc, (GROOVE[0] + GROOVE[1]) / 2 - 0.8), xs - 80, xs + 20);
+    yzPrism(context, id + "ti", padOutlineYZ(zc, (GROOVE[0] + GROOVE[1]) / 2 + 0.8), xs - 80, xs + 20);
+    opBoolean(context, id + "tr", { "tools" : solids(context, id + "ti"), "targets" : solids(context, id + "to"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, id + "tint", { "tools" : qUnion([solids(context, id + "ts"), solids(context, id + "to")]), "operationType" : BooleanOperationType.INTERSECTION });
+    return oneBody(context, id, "clip ring");
+}
+
+
+// pad shell v1.1: shell + cover bead/groove (unchanged), groove for the foot rib, one countersunk M5 hole from the child side.
 export function buildPadShell(context is Context, id is Id, xs is number, zc is number) returns Query
 {
-    // shell = plan strip (thickness SHELL_T) INTERSECT side outline prism
     planStrip(context, id + "st", xs, 0, SHELL_T, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
     yzPrism(context, id + "ol", padOutlineYZ(zc, 0), xs - 80, xs + 20);
     opBoolean(context, id + "int", { "tools" : qUnion([solids(context, id + "st"), solids(context, id + "ol")]), "operationType" : BooleanOperationType.INTERSECTION });
-    // cover bead on the back face (rim band), with the groove for the clip ring
     planStrip(context, id + "bs", xs, SHELL_T - 0.2, SHELL_T + BEAD_H, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
     yzPrism(context, id + "bo", padOutlineYZ(zc, BEAD[0]), xs - 80, xs + 20);
     yzPrism(context, id + "bi", padOutlineYZ(zc, BEAD[1]), xs - 80, xs + 20);
     opBoolean(context, id + "bring", { "tools" : solids(context, id + "bi"), "targets" : solids(context, id + "bo"), "operationType" : BooleanOperationType.SUBTRACTION });
     opBoolean(context, id + "bint", { "tools" : qUnion([solids(context, id + "bs"), solids(context, id + "bo")]), "operationType" : BooleanOperationType.INTERSECTION });
-    // inner thickening behind the foot seat (child side, under the EVA)
-    const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    const yb = (PSYS[0] + PSYS[1]) / 2;
-    rrLoft(context, id + "boss", [footSec(xs - SHELL_T + 0.5, yb, zc, 29.0, 24.0, 9.0), footSec(xs - SHELL_T - BOSS_T, yb, zc, 23.0, 17.0, 7.0)], false, false);
+    // on the back, hidden under the foot: the key rib and the pad-screw boss (M5 nut drops in from the foot side)
+    const xb = shellXi(PSY, xs) + SHELL_T;
+    fCuboid(context, id + "key", { "corner1" : v3(xs - 2, FOOT_YC - KEY_L / 2, zc - KEY_H), "corner2" : v3(xs + KEY_D, FOOT_YC + KEY_L / 2, zc + KEY_H) });
+    cylAx(context, id + "boss", vector(xb - 1, PSY, zc), vector(xs + BOSS_H, PSY, zc), BOSS_R);
     opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "pad shell");
-    const C = id + "cut";
-    // groove for the clip ring
-    planStrip(context, C + "gs", xs, SHELL_T + BEAD_H - GROOVE_D, SHELL_T + BEAD_H + 1, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
-    yzPrism(context, C + "go", padOutlineYZ(zc, GROOVE[0]), xs - 80, xs + 20);
-    yzPrism(context, C + "gi", padOutlineYZ(zc, GROOVE[1]), xs - 80, xs + 20);
-    opBoolean(context, C + "gring", { "tools" : solids(context, C + "gi"), "targets" : solids(context, C + "go"), "operationType" : BooleanOperationType.SUBTRACTION });
-    opBoolean(context, C + "gint", { "tools" : qUnion([solids(context, C + "gs"), solids(context, C + "go")]), "operationType" : BooleanOperationType.INTERSECTION });
-    // foot seat: recess 12.5 taller than the foot nose, grooves every 6.25 in its floor
-    seatCut(context, C + "sc", xs, zc);
-    // 2 holes + captive M5 nut pockets opening on the child side (under the EVA)
-    // nut sits on a floor 1.2 under the seat; the pocket runs out to the child face, so a long screw tip stays inside it
-    const xf0 = xs - SEAT_D - NUT_FLOOR;  const xc = xs - SHELL_T - BOSS_T - 0.1;
-    for (var i = 0; i < size(PSYS); i += 1)
-    {
-        cylAx(context, C + ("h" ~ i), vector(xs - 20, PSYS[i], zc), vector(xs + 2, PSYS[i], zc), M5_CLEAR / 2);
-        hexPrism(context, C + ("n" ~ i), vector((xf0 + xc) / 2, PSYS[i], zc), vector(1, 0, 0), M5_NUT_AF, xf0 - xc);
-    }
-    opBoolean(context, id + "cutop", { "tools" : solids(context, C), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
+    const K = id + "cut";
+    planStrip(context, K + "gs", xs, SHELL_T + BEAD_H - GROOVE_D, SHELL_T + BEAD_H + 1, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
+    yzPrism(context, K + "go", padOutlineYZ(zc, GROOVE[0]), xs - 80, xs + 20);
+    yzPrism(context, K + "gi", padOutlineYZ(zc, GROOVE[1]), xs - 80, xs + 20);
+    opBoolean(context, K + "gring", { "tools" : solids(context, K + "gi"), "targets" : solids(context, K + "go"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, K + "gint", { "tools" : qUnion([solids(context, K + "gs"), solids(context, K + "go")]), "operationType" : BooleanOperationType.INTERSECTION });
+    // pad screw: clearance through the boss; the M5 nut sits in a pocket opening on the CHILD face (put in before the foam),
+    // so the screw (M5x12 socket head from inside the depth piece) pulls it against 2.4 mm of boss; the tip ends in the pocket
+    cylAx(context, K + "ph", vector(xb - SHELL_T + 1, PSY, zc), vector(xs + BOSS_H + 1, PSY, zc), M5_CLEAR / 2);
+    hexPrism(context, K + "nut", vector(xb - SHELL_T + M5_NUT_P / 2 - 0.01, PSY, zc), vector(1, 0, 0), M5_NUT_AF, M5_NUT_P);
+    opBoolean(context, id + "cutop", { "tools" : solids(context, K), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     return body;
 }
-// clip ring: a flange band over the bead with a tongue that presses the cover into the groove
-export function buildClipRing(context is Context, id is Id, xs is number, zc is number) returns Query
-{
-    planStrip(context, id + "fs", xs, SHELL_T + BEAD_H + 0.4, SHELL_T + BEAD_H + 2.0, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
-    yzPrism(context, id + "fo", padOutlineYZ(zc, BEAD[0] - 0.5), xs - 80, xs + 20);
-    yzPrism(context, id + "fi", padOutlineYZ(zc, BEAD[1] + 0.5), xs - 80, xs + 20);
-    opBoolean(context, id + "fr", { "tools" : solids(context, id + "fi"), "targets" : solids(context, id + "fo"), "operationType" : BooleanOperationType.SUBTRACTION });
-    opBoolean(context, id + "fint", { "tools" : qUnion([solids(context, id + "fs"), solids(context, id + "fo")]), "operationType" : BooleanOperationType.INTERSECTION });
-    planStrip(context, id + "ts", xs, SHELL_T + BEAD_H - GROOVE_D + 0.4, SHELL_T + BEAD_H + 0.5, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
-    yzPrism(context, id + "to", padOutlineYZ(zc, (GROOVE[0] + GROOVE[1]) / 2 - 0.8), xs - 80, xs + 20);
-    yzPrism(context, id + "ti", padOutlineYZ(zc, (GROOVE[0] + GROOVE[1]) / 2 + 0.8), xs - 80, xs + 20);
-    opBoolean(context, id + "tr", { "tools" : solids(context, id + "ti"), "targets" : solids(context, id + "to"), "operationType" : BooleanOperationType.SUBTRACTION });
-    opBoolean(context, id + "tint", { "tools" : qUnion([solids(context, id + "ts"), solids(context, id + "to")]), "operationType" : BooleanOperationType.INTERSECTION });
-    opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
-    return oneBody(context, id, "clip ring");
-}
 
-// =============================================== BOLT ===============================================
-export function buildBolt(context is Context, id is Id, c is number) returns Query
+// reference cushion (NOT printed): 30 mm foam + neoprene cover on the child side, so the assembled look is shown honestly
+const FOAM = 30.0;
+export function buildCushion(context is Context, id is Id, xs is number, zc is number) returns Query
 {
-    // locked: Ø6 head runs through the 3 mm wall, its dome stands in the finger channel with the top flush with the wing surface
-    const dwall = SL_D[1] + WALL;                       // channel floor = outer face of the wall
-    const dsh1 = TG_D[1] - WASH_T - 0.1;  const dsh0 = dsh1 - B_SH_L;
-    cylAx(context, id + "sh", Q(dsh0, BOLT_T, c), Q(dsh1, BOLT_T, c), B_SH_R);
-    cylAx(context, id + "hd", Q(dsh1 - 0.01, BOLT_T, c), Q(dwall, BOLT_T, c), B_HEAD_R);
-    opSphere(context, id + "dome", { "center" : Q(dwall, BOLT_T, c) * millimeter, "radius" : B_HEAD_R * millimeter });
-    opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
-    const b = oneBody(context, id, "bolt");
-    cylAx(context, id + "sp", Q(dsh0 - 1, BOLT_T, c), Q(dsh0 + B_SPR_D, BOLT_T, c), B_SPR_R);
-    opBoolean(context, id + "spc", { "tools" : solids(context, id + "sp"), "targets" : b, "operationType" : BooleanOperationType.SUBTRACTION });
-    return b;
-}
-export function buildWasher(context is Context, id is Id, c is number) returns Query
-{
-    tipRBox(context, id + "w", TG_D[1] - WASH_T + 0.05, TG_D[1] - 0.05, BOLT_T - M3_DT - 4.0, BOLT_T + M3_DT + 4.0, c - 5.8, c + 5.8, 0.6);
-    const w = oneBody(context, id, "washer");
-    const C = id + "cut";
-    cylAx(context, C + "h", Q(TG_D[1] - 3, BOLT_T, c), Q(TG_D[1] + 1, BOLT_T, c), B_HEAD_R + 0.25);
-    for (var s in [-1, 1])
-    {
-        cylAx(context, C + ("m" ~ s), Q(TG_D[1] - 3, BOLT_T + s * M3_DT, c), Q(TG_D[1] + 1, BOLT_T + s * M3_DT, c), M3_CLEAR / 2);
-        // DIN 7991 M3 head (Ø6 x 1.7) countersunk 1.5 deep: 0.5 mm land left under it
-        fCone(context, C + ("k" ~ s), { "bottomCenter" : Q(TG_D[1] - 0.05 - (CSK_M3_R - M3_CLEAR / 2), BOLT_T + s * M3_DT, c) * millimeter, "topCenter" : Q(TG_D[1] + 0.01, BOLT_T + s * M3_DT, c) * millimeter, "bottomRadius" : M3_CLEAR / 2 * millimeter, "topRadius" : CSK_M3_R * millimeter });
-    }
-    opBoolean(context, id + "cutop", { "tools" : solids(context, C), "targets" : w, "operationType" : BooleanOperationType.SUBTRACTION });
-    return w;
-}
-
-// =============================================== SHIM ===============================================
-// pad-frame -> world transform for a tilt: pad moved SHIM0 inward, then turned about the shim's thin edge
-export function tiltXf(xs is number, za is number, ang is number) returns Transform
-{
-    if (ang == 0) return identityTransform();
-    const pivot = vector(xs - SHIM0, 0, ang > 0 ? za - FOOT_HZ : za + FOOT_HZ);
-    return rotationAround(line(pivot * millimeter, vector(0, 1, 0)), -ang * degree) * transform(v3(-SHIM0, 0, 0));
-}
-// shim: foot side = a seat (like the shell's), pad side = a nose (like the foot's); the 2 pad screws pass through it
-export function buildShim(context is Context, id is Id, xs is number, za is number, zp is number, ang is number) returns Query
-{
-    const xf = tiltXf(xs, za, ang);
-    const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    const t = 2 * FOOT_HZ * tan(abs(ang) * degree);
-    rrLoft(context, id + "w", [footSec(xs, yc, za, FOOT_Y[1] - FOOT_Y[0] + 1.0, 2 * FOOT_HZ + 1.0, FOOT_R + 0.5), footSec(xs - SHIM0 - t - 3, yc, za, FOOT_Y[1] - FOOT_Y[0] + 1.0, 2 * FOOT_HZ + 1.0, FOOT_R + 0.5)], false, false);
-    fCuboid(context, id + "hs", { "corner1" : v3(xs - 80, -80, zp - 120), "corner2" : v3(xs, 120, zp + 120) });
-    opTransform(context, id + "hsx", { "bodies" : qCreatedBy(id + "hs", EntityType.BODY), "transform" : xf });
-    opBoolean(context, id + "cutp", { "tools" : qCreatedBy(id + "hs", EntityType.BODY), "targets" : solids(context, id + "w"), "operationType" : BooleanOperationType.SUBTRACTION });
-    noseBody(context, id + "nb", xs, za + (zp - za));
-    opTransform(context, id + "nbx", { "bodies" : solids(context, id + "nb"), "transform" : xf });
-    opBoolean(context, id + "u", { "tools" : qUnion([solids(context, id + "w"), solids(context, id + "nb")]), "operationType" : BooleanOperationType.UNION });
-    const body = oneBody(context, id, "shim");
-    const C = id + "cut";
-    seatCut(context, C + "sc", xs, za);
-    for (var i = 0; i < size(PSYS); i += 1)
-        cylAx(context, C + ("h" ~ i), vector(xs - 40, PSYS[i], zp), vector(xs + 40, PSYS[i], zp), M5_CLEAR / 2);   // long: at 15° + seat offset the axis leaves the shim far from its pad-frame centre
-    opTransform(context, C + "hx", { "bodies" : qUnion(mapArray(range(0, size(PSYS) - 1), function(i) { return solids(context, C + ("h" ~ i)); })), "transform" : xf });
-    opBoolean(context, id + "cutop", { "tools" : solids(context, C), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
+    planStrip(context, id + "st", xs, -FOAM, 0.05, zc - PAD_H / 2 - 4, zc + PAD_H / 2 + 4);
+    yzPrism(context, id + "ol", padOutlineYZ(zc, -0.8), xs - 80, xs + 20);
+    opBoolean(context, id + "int", { "tools" : qUnion([solids(context, id + "st"), solids(context, id + "ol")]), "operationType" : BooleanOperationType.INTERSECTION });
+    const body = oneBody(context, id, "cushion");
+    const ch = qSubtraction(qOwnedByBody(body, EntityType.EDGE), qWithinRadius(qOwnedByBody(body, EntityType.EDGE), vector(xs, 10, zc) * millimeter, 1 * millimeter));
+    // round the child-side rim generously (soft look); skip quietly is NOT allowed: report through the finish list
+    var rim = [];
+    for (var e in evaluateQuery(context, qOwnedByBody(body, EntityType.EDGE)))
+        if (evBox3d(context, { "topology" : e }).maxCorner[0] < (shellXi(10, xs) - FOAM / 2) * millimeter) rim = append(rim, e);
+    finishEdges(context, id + "r", qUnion(rim), 10.0, "cushion rim round");
     return body;
-}
-// screw axis for pad screw i (world): through the shell nut, along the shell's x axis
-export function screwAxis(xs is number, za is number, zp is number, ang is number, y is number) returns map
-{
-    const xf = tiltXf(xs, za, ang);
-    const n = xf * (v3(xs - SEAT_D - NUT_FLOOR, y, zp));
-    const a = normalize(xf * (v3(xs + 1, y, zp)) - xf * (v3(xs, y, zp)));
-    const s = (xs + HS - n[0] / millimeter) / a[0];      // distance from the nut floor to the foot's land plane along the axis
-    const w = ang == 0 ? 0 : WEDGE_T0 + WEDGE_R * tan(abs(ang) * degree);
-    return { "nut" : n / millimeter, "dir" : a, "toLand" : s, "wedge" : w, "head" : s + w };
-}
-// wedge plate (one part for both screws): flat on the land (x = xs + HS), top square to the screws
-export function buildWedge(context is Context, id is Id, xs is number, za is number, zp is number, ang is number) returns Query
-{
-    const a0 = screwAxis(xs, za, zp, ang, PSYS[0]);
-    const p0 = a0.nut + a0.dir * (a0.toLand - 3.0);
-    const sp = PSYS[1] - PSYS[0];  const r = WEDGE_R;
-    const sk = newSketchOnPlane(context, id + "sk", { "sketchPlane" : plane(p0 * millimeter, a0.dir, vector(0, 1, 0)) });
-    skLineSegment(sk, "a", { "start" : vector(0, r) * millimeter, "end" : vector(sp, r) * millimeter });
-    skArc(sk, "b", { "start" : vector(sp, r) * millimeter, "mid" : vector(sp + r, 0) * millimeter, "end" : vector(sp, -r) * millimeter });
-    skLineSegment(sk, "c", { "start" : vector(sp, -r) * millimeter, "end" : vector(0, -r) * millimeter });
-    skArc(sk, "d", { "start" : vector(0, -r) * millimeter, "mid" : vector(-r, 0) * millimeter, "end" : vector(0, r) * millimeter });
-    skSolve(sk);
-    opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : a0.dir, "endBound" : BoundingType.BLIND, "endDepth" : (a0.head - a0.toLand + 3.0) * millimeter });
-    opDeleteBodies(context, id + "dsk", { "entities" : qCreatedBy(id + "sk", EntityType.BODY) });
-    fCuboid(context, id + "land", { "corner1" : v3(xs - 40, PSYS[0] - 30, zp - 40), "corner2" : v3(xs + HS, PSYS[1] + 30, zp + 40) });
-    opBoolean(context, id + "cl", { "tools" : qCreatedBy(id + "land", EntityType.BODY), "targets" : solids(context, id + "ex"), "operationType" : BooleanOperationType.SUBTRACTION });
-    const w = oneBody(context, id, "wedge plate");
-    for (var i = 0; i < size(PSYS); i += 1)
-    {
-        const ax = screwAxis(xs, za, zp, ang, PSYS[i]);
-        cylAx(context, id + ("h" ~ i), ax.nut + ax.dir * (ax.toLand - 6.0), ax.nut + ax.dir * (ax.head + 1.0), M5_CLEAR / 2);
-    }
-    opBoolean(context, id + "hc", { "tools" : qUnion([solids(context, id + "h0"), solids(context, id + "h1")]), "operationType" : BooleanOperationType.SUBTRACTION, "targets" : w });
-    return w;
-}
-// shortest stock screw whose tip ends past the nut and inside the pocket (never out of the child face)
-export function padScrew(xs is number, za is number, zp is number, ang is number, y is number) returns map
-{
-    const ax = screwAxis(xs, za, zp, ang, y);
-    const nutEnd = M5_NUT_T - 0.4;  const face = SHELL_T + BOSS_T - SEAT_D - NUT_FLOOR - 0.3;   // tip depth window below the nut floor
-    // one length per shim, the same for every seat position: none M5x16, 8° M5x25, 15° M5x30
-    for (var L in [abs(ang) < 1 ? 16 : (abs(ang) < 10 ? 25 : 30)])
-    {
-        const tip = L - ax.head;
-        if (tip >= nutEnd && tip <= face) return { "L" : L, "tipPastNutFloor" : tip, "window" : [nutEnd, face], "head" : ax.head };
-    }
-    return { "L" : 0, "tipPastNutFloor" : 0, "window" : [nutEnd, face], "head" : ax.head };
 }
 
 // =============================================== WING (chair change) ===============================================
+// one vertical slot, a rib per position at its back, a catch groove per position in the outer wall, lead-ins at the mouth
 export function wingTools(context is Context, id is Id) returns map
 {
     tipRBox(context, id + "add", TIP_D[0], TIP_D[1], TIP_T[0], TIP_T[1], TIP_Z[0], TIP_Z[1], 5.0);
-    const C = id + "cut";
-    tipBox(context, C + "slot", SL_D[0], SL_D[1], SL_T[0], SL_T[1], SL_Z[0], SL_Z[1]);
-    // entry ramp on the outer wall at the mouth (30 deg lead-in that depresses the bolt)
-    // 3 mm x 45° lead-in on the inner wall at the mouth (guides the tongue, clears the neck's bend)
-    xyPrism(context, C + "lead", [Q(SL_D[0] + 0.1, TIP_T[0] - 1, 0), Q(SL_D[0] - 3.0, TIP_T[0] - 1, 0), Q(SL_D[0] + 0.1, TIP_T[0] + 3.1, 0)], SL_Z[0], SL_Z[1]);
-    xyPrism(context, C + "ramp", [Q(SL_D[1] - 0.1, TIP_T[0] - 1, 0), Q(SL_D[1] + RAMP, TIP_T[0] - 1, 0), Q(SL_D[1] - 0.1, TIP_T[0] + RAMP / tan(30 * degree), 0)], SL_Z[0], SL_Z[1]);
-    // bolt holes (Ø6.4 through the 3 mm wall, 45° cam chamfer on the slot side) + finger channel on the outer face
-    for (var k = 0; k < 8; k += 1)
-    {
-        const z = T_POS0 + PITCH * k;
-        cylAx(context, C + ("h" ~ k), Q(SL_D[1] - 1, BOLT_T, z), Q(TIP_D[1] + 1, BOLT_T, z), HOLE_R);
-        fCone(context, C + ("hc" ~ k), { "bottomCenter" : Q(SL_D[1] - 0.05, BOLT_T, z) * millimeter, "topCenter" : Q(SL_D[1] + HOLE_CH, BOLT_T, z) * millimeter, "bottomRadius" : (HOLE_R + HOLE_CH + 0.05) * millimeter, "topRadius" : HOLE_R * millimeter });
-    }
-    const dw = SL_D[1] + WALL;  const dd = TIP_D[1] - dw + 0.5;
-    xyPrism(context, C + "chan", [Q(dw, BOLT_T - CH_W / 2, 0), Q(dw, BOLT_T + CH_W / 2, 0), Q(dw + dd, BOLT_T + CH_W / 2 + dd, 0), Q(dw + dd, BOLT_T - CH_W / 2 - dd, 0)], T_POS0 - CH_W / 2, T_POS0 + 7 * PITCH + CH_W / 2);
-    // comb ribs are kept: subtract the slot, then add the ribs back
+    const K = id + "cut";
+    tipBox(context, K + "slot", SL_D[0], SL_D[1], SL_T[0], SL_T[1], SL_Z[0], SL_Z[1]);
+    // inner wall lead-in 3 x 45 deg
+    xyPrism(context, K + "lead", [Q(SL_D[0] + 0.1, TIP_T[0] - 1, 0), Q(SL_D[0] - 3.0, TIP_T[0] - 1, 0), Q(SL_D[0] + 0.1, TIP_T[0] + 3.1, 0)], SL_Z[0], SL_Z[1]);
+    // outer wall lead-in (40 deg): pushes the shuttle in as the arm slides home
+    const lr = ENG + 0.8;
+    xyPrism(context, K + "olead", [Q(SL_D[1] - 0.1, TIP_T[0] - 1, 0), Q(SL_D[1] + lr, TIP_T[0] - 1, 0), Q(SL_D[1] - 0.1, TIP_T[0] + lr / tan(40 * degree), 0)], SL_Z[0], SL_Z[1]);
+    // catch grooves (each takes the shuttle of the LOW and of the flipped HIGH carrier); all cuts first (contiguous ids)
+    const gl = TG_D[1] + CL + ENG + SH_T[1] - 2.5 + 0.3;           // d + t of the groove's 45 deg wall (shuttle chamfer + 0.3)
+    const g0 = SL_D[1] - 0.5;  const g1 = SL_D[1] + ENG + 0.6;
+    for (var k = 0; k < size(C_POS); k += 1)
+        xyPrism(context, K + ("g" ~ k), [Q(g0, SH_T[0] - CL - 0.2, 0), Q(g1, SH_T[0] - CL - 0.2, 0), Q(g1, gl - g1, 0), Q(g0, gl - g0, 0)], C_POS[k] - SH_Z[1] - 0.4, C_POS[k] + SH_Z[1] + 0.4);
+    // rails on the slot's inner wall, one per height position; chamfered front so the tongue's groove finds it
     var ribs = [];
-    for (var k = 0; k < 12; k += 1)
+    for (var k = 0; k < size(C_POS); k += 1)
     {
-        const z = RIB_Z0 + PITCH * k;
-        if (z > SL_Z[1] - 3) break;
-        tipBox(context, id + ("rib" ~ k), SL_D[0] - 0.2, SL_D[1] + 0.2, RIB_T[0], RIB_T[1], z - RIB_H / 2, z + RIB_H / 2);
+        const c = C_POS[k];  const h = RAIL_H / 2;
+        tzPrism(context, id + ("rib" ~ k), [[RAIL_T[0], c - h + 1.5], [RAIL_T[0] + 2.0, c - h], [RAIL_T[1], c - h], [RAIL_T[1], c + h], [RAIL_T[0] + 2.0, c + h], [RAIL_T[0], c + h - 1.5]], SL_D[0] - 0.5, SL_D[0] + RAIL_P);
+        ribs = append(ribs, solids(context, id + ("rib" ~ k)));
     }
-    return { "add" : solids(context, id + "add"), "cut" : solids(context, C), "ribs" : qUnion(mapArray(range(0, 11), function(k) { return solids(context, id + ("rib" ~ k)); })) };
+    return { "add" : solids(context, id + "add"), "cut" : solids(context, K), "ribs" : qUnion(ribs) };
 }
 
-// =============================================== FEATURES ===============================================
-function seatOff(s is SidePadSeat) returns number { return s == SidePadSeat.DOWN ? -FINE : (s == SidePadSeat.UP ? FINE : 0); }
-function tiltDeg(t is SidePadTilt) returns number
-{
-    return t == SidePadTilt.P8 ? 8 : (t == SidePadTilt.M8 ? -8 : (t == SidePadTilt.P15 ? 15 : (t == SidePadTilt.M15 ? -15 : 0)));
-}
+// =============================================== KIT ===============================================
 export function buildSide(context is Context, id is Id, def is map) returns Query
 {
-    const c = T_POS0 + PITCH * def.step;
+    const k = def.pos == SidePadPos.P1 ? 0 : (def.pos == SidePadPos.P2 ? 1 : 2);
+    const c = C_POS[k];
     const low = def.kit == SidePadKit.LOW;
-    const za = low ? c - D_OFF : c + D_OFF;
-    const zp = za + seatOff(def.seat);
+    const zp = low ? c - D_OFF : c + D_OFF;
     const xs = depthX(def.depth);
-    var parts = [];
-    const car = buildCarrier(context, id + "car", c, za);
-    setProperty(context, { "entities" : car, "propertyType" : PropertyType.NAME, "value" : "sidepad carrier " ~ (low ? "A" : "A' (flipped)") });
-    parts = append(parts, car);
-    const dp = buildDepth(context, id + "dep", xs, za, low);
+    const car = buildCarrier(context, id + "car", c, zp);
+    tenonCuts(context, id + "tc", car.carrier, car.xe, zp, low ? 1 : -1);
+    setProperty(context, { "entities" : car.carrier, "propertyType" : PropertyType.NAME, "value" : "sidepad carrier " ~ (low ? "A" : "A' (flipped)") });
+    var parts = [car.carrier];
+    if (def.latch)
+    {
+        setProperty(context, { "entities" : car.button, "propertyType" : PropertyType.NAME, "value" : "sidepad pill button + rod" });
+        setProperty(context, { "entities" : car.shuttle, "propertyType" : PropertyType.NAME, "value" : "sidepad shuttle" });
+        parts = concatenateArrays([parts, [car.button, car.shuttle]]);
+    }
+    else opDeleteBodies(context, id + "nolatch", { "entities" : qUnion([car.button, car.shuttle]) });
+    const dp = buildDepth(context, id + "dep", xs, zp, car.xe);
     setProperty(context, { "entities" : dp, "propertyType" : PropertyType.NAME, "value" : "sidepad depth piece " ~ toString(def.depth) });
-    parts = append(parts, dp);
-    const ang = tiltDeg(def.tilt);
     const pad = buildPadShell(context, id + "pad", xs, zp);
     setProperty(context, { "entities" : pad, "propertyType" : PropertyType.NAME, "value" : "sidepad pad shell" });
     const ring = buildClipRing(context, id + "ring", xs, zp);
     setProperty(context, { "entities" : ring, "propertyType" : PropertyType.NAME, "value" : "sidepad clip ring" });
-    if (ang != 0)
+    if (def.cushion == true)
     {
-        const sh = buildShim(context, id + "shim", xs, za, zp, ang);
-        setProperty(context, { "entities" : sh, "propertyType" : PropertyType.NAME, "value" : "sidepad tilt shim " ~ abs(ang) });
-        parts = append(parts, sh);
-        opTransform(context, id + "tilt", { "bodies" : qUnion([pad, ring]), "transform" : tiltXf(xs, za, ang) });
-        const wd = buildWedge(context, id + "wedge", xs, za, zp, ang);
-        setProperty(context, { "entities" : wd, "propertyType" : PropertyType.NAME, "value" : "sidepad wedge plate " ~ abs(ang) });
-        parts = append(parts, wd);
+        const cu = buildCushion(context, id + "cush", xs, zp);
+        setProperty(context, { "entities" : cu, "propertyType" : PropertyType.NAME, "value" : "REFERENCE cushion (foam + cover, not printed)" });
+        setProperty(context, { "entities" : cu, "propertyType" : PropertyType.APPEARANCE, "value" : color(0.13, 0.17, 0.30) });
     }
-    parts = concatenateArrays([parts, [pad, ring]]);
-    if (def.bolt)
-    {
-        const b = buildBolt(context, id + "bolt", c);
-        setProperty(context, { "entities" : b, "propertyType" : PropertyType.NAME, "value" : "sidepad snap-button bolt" });
-        const w = buildWasher(context, id + "wash", c);
-        setProperty(context, { "entities" : w, "propertyType" : PropertyType.NAME, "value" : "sidepad bolt retainer washer" });
-        parts = concatenateArrays([parts, [b, w]]);
-    }
-    // flip for the HIGH kit: the carrier and depth piece were built for the side directly (zp above c), nothing to flip here
-    return qUnion(parts);
+    setVariable(context, "gbgRoles", { "carrier" : car.carrier, "button" : def.latch ? car.button : qNothing(), "shuttle" : def.latch ? car.shuttle : qNothing(), "depth" : dp, "pad" : pad, "ring" : ring });
+    return qUnion(concatenateArrays([parts, [dp, pad, ring]]));
 }
 
-annotation { "Feature Type Name" : "GbG Side Pad v1", "Feature Type Description" : "Side pad kit (carrier, depth piece, pad shell, clip ring, shim, snap-button bolt) for GbG_chair_forth; needs the wing change (GbG Side Pad Wing)" }
+
+// =============================================== CHECK (all settings, against the real chair) ===============================================
+// For every height position x kit x depth piece: build both... the LEFT side, then report
+//   - interference (volume) between any two kit parts and between any kit part and any chair part;
+//   - the kit's max x (chair arm rests at x 165).
+// Each setting is built inside startFeature / abortFeature, so nothing stays in the Part Studio.
+function bodyName(context is Context, b) returns string
+{
+    var nm = "?";
+    try silent { nm = replace(getProperty(context, { "entity" : b, "propertyType" : PropertyType.NAME }), "sidepad ", ""); }
+    return nm;
+}
+function checkAll(context is Context, id is Id, definition is map) returns string
+{
+    var out = "";  var nBad = 0;  var maxX = 0;
+    const kits = [SidePadKit.LOW, SidePadKit.HIGH];
+    const poss = [SidePadPos.P1, SidePadPos.P2, SidePadPos.P3];
+    const deps = [SidePadDepth.D0, SidePadDepth.D1, SidePadDepth.D2, SidePadDepth.D3];
+    var n = 0;
+    for (var kk in kits) for (var pp in poss) for (var dd in deps)
+    {
+        const sid = id + ("chk" ~ n);  n += 1;
+        const others = evaluateQuery(context, qBodyType(qEverything(EntityType.BODY), BodyType.SOLID));
+        var msg = "";
+        startFeature(context, sid, definition);
+        try
+        {
+            buildSide(context, sid + "L", { "kit" : kk, "pos" : pp, "depth" : dd, "latch" : true });
+            const roles = getVariable(context, "gbgRoles");
+            var kit = [];  var names = [];
+            for (var r in ["carrier", "button", "shuttle", "depth", "pad", "ring"]) { kit = append(kit, roles[r]); names = append(names, r); }
+            for (var b in kit) maxX = max(maxX, evBox3d(context, { "topology" : b }).maxCorner[0] / millimeter);
+            for (var i = 0; i < size(kit); i += 1)
+                for (var j = i + 1; j < size(kit); j += 1)
+                {
+                    var hit = false;
+                    for (var cc in evCollision(context, { "tools" : kit[i], "targets" : kit[j] })) if (cc["type"] == ClashType.INTERFERE) hit = true;
+                    if (hit) msg = msg ~ names[i] ~ " x " ~ names[j] ~ ", ";
+                }
+            for (var i = 0; i < size(kit); i += 1)
+                for (var o in others)
+                {
+                    var hit = false;
+                    for (var cc in evCollision(context, { "tools" : kit[i], "targets" : o })) if (cc["type"] == ClashType.INTERFERE) hit = true;
+                    if (hit)
+                    {
+                        const ob = evBox3d(context, { "topology" : o });
+                        msg = msg ~ names[i] ~ " x chair[" ~ roundToPrecision(ob.minCorner[0] / millimeter, 0) ~ ".." ~ roundToPrecision(ob.maxCorner[0] / millimeter, 0) ~ ", z " ~ roundToPrecision(ob.minCorner[2] / millimeter, 0) ~ ".." ~ roundToPrecision(ob.maxCorner[2] / millimeter, 0) ~ "], ";
+                    }
+                }
+        }
+        catch (e) { msg = "BUILD FAILED " ~ toString(e); }
+        abortFeature(context, sid);
+        if (msg != "") { nBad += 1; out = out ~ toString(kk) ~ "/" ~ toString(pp) ~ "/" ~ toString(dd) ~ ": " ~ msg ~ "; "; }
+    }
+    return n ~ " settings, " ~ nBad ~ " with clashes; kit max x " ~ roundToPrecision(maxX, 1) ~ (out == "" ? "" : " -- " ~ out);
+}
+
+annotation { "Feature Type Name" : "GbG Side Pad v1", "Feature Type Description" : "Side pad kit v1.1 (carrier with flush pill release, depth piece, pad shell, clip ring) for GbG_chair_forth; needs GbG Side Pad Wing" }
 export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
@@ -706,21 +722,21 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
         definition.side is SidePadSide;
         annotation { "Name" : "Kit" }
         definition.kit is SidePadKit;
-        annotation { "Name" : "Height step (0 = lowest, 12.5 mm each)" }
-        isInteger(definition.step, { (unitless) : [0, 2, 7] } as IntegerBoundSpec);
+        annotation { "Name" : "Height position" }
+        definition.pos is SidePadPos;
         annotation { "Name" : "Depth piece" }
         definition.depth is SidePadDepth;
-        annotation { "Name" : "Seat position" }
-        definition.seat is SidePadSeat;
-        annotation { "Name" : "Tilt shim" }
-        definition.tilt is SidePadTilt;
-        annotation { "Name" : "Snap-button bolt + washer" }
-        definition.bolt is boolean;
+        annotation { "Name" : "Release (pill button + shuttle)" }
+        definition.latch is boolean;
+        annotation { "Name" : "Show the cushion (reference, not printed)" }
+        definition.cushion is boolean;
+        annotation { "Name" : "Check all 24 settings against the chair (slow; builds nothing)" }
+        definition.check is boolean;
     }
     {
         setVariable(context, "gbgSkipped", "");
-        var q = [];
-        if (definition.side != SidePadSide.RIGHT) q = append(q, buildSide(context, id + "L", definition));
+        if (definition.check) { reportFeatureInfo(context, id, "CHECK: " ~ checkAll(context, id, definition)); return; }
+        if (definition.side != SidePadSide.RIGHT) buildSide(context, id + "L", definition);
         if (definition.side != SidePadSide.LEFT)
         {
             const r = buildSide(context, id + "R", definition);
@@ -729,9 +745,9 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
         var msg = "";
         try silent { msg = getVariable(context, "gbgSkipped"); }
         if (msg != "") reportFeatureWarning(context, id, "Finish skipped: " ~ msg);
-    }, { "side" : SidePadSide.LEFT, "kit" : SidePadKit.LOW, "step" : 2, "depth" : SidePadDepth.N0, "seat" : SidePadSeat.MID, "tilt" : SidePadTilt.T0, "bolt" : true });
+    }, { "side" : SidePadSide.LEFT, "kit" : SidePadKit.LOW, "pos" : SidePadPos.P2, "depth" : SidePadDepth.D0, "latch" : true, "cushion" : true, "check" : false });
 
-annotation { "Feature Type Name" : "GbG Side Pad Wing (chair)", "Feature Type Description" : "Adds the side-pad socket (vertical slot, comb ribs, bolt-hole track, entry ramp) to the chair's wings" }
+annotation { "Feature Type Name" : "GbG Side Pad Wing (chair)", "Feature Type Description" : "Adds the side-pad socket v1.1 (vertical slot, a rib and a catch groove per height position, lead-ins) to the chair's wings" }
 export const gbgSidePadWing = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
@@ -783,7 +799,9 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
                 if (size(hit) != 1) throw regenError("Side Pad Wing: could not find the " ~ (s > 0 ? "left" : "right") ~ " wing (found " ~ size(hit) ~ " bodies)");
                 wing = hit[0];
             }
-            const t = wingTools(context, sid + "t");
+            var t = {};
+            try { t = wingTools(context, sid + "t"); }
+            catch (e) { throw regenError("Side Pad Wing: tools failed: " ~ toString(e)); }
             if (s < 0) opTransform(context, sid + "tm", { "bodies" : qUnion([t.add, t.cut, t.ribs]), "transform" : mirrorAcross(plane(v3(0, 0, 0), vector(1, 0, 0))) });
             // the tip block never grows into a neighbouring chair part (the wing bracket sits against the wing's inner face)
             const others = qSubtraction(qSubtraction(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), wing), qUnion([qCreatedBy(sid + "t", EntityType.BODY), qCreatedBy(sid + "stand", EntityType.BODY)]));
@@ -795,7 +813,9 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
             opBoolean(context, sid + "add", { "tools" : qUnion([wing, t.add]), "operationType" : BooleanOperationType.UNION });
             const keep = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), v3(s * Q(-3, 30, 300)[0], Q(-3, 30, 300)[1], 300)));
             if (size(keep) != 1) throw regenError("Side Pad Wing: merged wing not found");
-            opBoolean(context, sid + "cut", { "tools" : t.cut, "targets" : keep[0], "operationType" : BooleanOperationType.SUBTRACTION });
-            opBoolean(context, sid + "rib", { "tools" : qUnion([keep[0], t.ribs]), "operationType" : BooleanOperationType.UNION });
+            try { opBoolean(context, sid + "cut", { "tools" : t.cut, "targets" : keep[0], "operationType" : BooleanOperationType.SUBTRACTION }); }
+            catch (e) { throw regenError("Side Pad Wing: cut failed: " ~ toString(e)); }
+            try { opBoolean(context, sid + "rib", { "tools" : qUnion([keep[0], t.ribs]), "operationType" : BooleanOperationType.UNION }); }
+            catch (e) { throw regenError("Side Pad Wing: ribs failed: " ~ toString(e)); }
         }
     }, { "standIn" : false, "dropSupports" : true });
