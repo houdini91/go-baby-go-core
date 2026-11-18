@@ -32,7 +32,7 @@ const Z0 = 227.8;  const SHEAR = [0.8 / 32.9, 2.7 / 32.9];  const ZREF = 244.25;
 // ---------------- wing tip (chair change) ----------------
 const TIP_D = [-7.0, 25.0];  const TIP_T = [-16.0, 38.0];  const TIP_Z = [198.0, 347.0];     // bottom 0.2 above the arm rest top
 const SL_D = [1.2, 17.6];  const SL_T = [-30.0, 28.0];  const SL_Z = [201.0, 318.0];      // vertical slot, open at the front
-const RAIL_P = 4.0;  const RAIL_H = 6.0;  const RAIL_T = [-12.0, 28.0];   // one rail per position on the slot's inner wall (the tongue's groove rides on it: height + pitch)
+const RAIL_P = 2.5;  const RAIL_H = 6.0;  const RAIL_T = [-12.0, 28.0];   // one rail per position on the slot's inner wall (the tongue's groove rides on it: height + pitch)
 // ---------------- heights ----------------
 const C_POS = [227.0, 259.5, 292.0];                      // tongue centre z at positions 1 / 2 / 3
 const D_OFF = 47.5;                                        // pad centre below (LOW) / above (HIGH) the tongue
@@ -44,17 +44,18 @@ const TAPER_W = 16.0;  const TAPER_H = 32.0;              // the taper end insid
 const YEND = 35.0;                                         // arm end / joint centre y
 const YAX = YEND + (ARM_W - TAPER_W) / 2;                 // the arm widens toward the inside of the bend only (outer face stays put): joint axis y
 const RG_CL = 0.15;                                       // rail groove clearance per side (no rocking)
-const CF = [[5.5, -7.0, 2.15, -34.0], [9.5, -11.0, 1.65, -31.0]];  const CF_T1 = 28.5;  // carbon rods (d, z LOW, bore r, t end): Ø4 x 62 and Ø3 x 59, slid in from the tongue's rear face, bonded; 18-20 mm past the mouth
+const CF = [[5.5, -7.0, 2.15, -29.5], [9.5, -11.0, 1.65, -31.0]];  const CF_T1 = 28.5;  // carbon rods (d, z LOW, bore r, t end): Ø4 x 62 and Ø3 x 59, slid in from the tongue's rear face, bonded; 18-20 mm past the mouth
 // latch (printed shuttle, as coupons C1-C5): rod along t, shuttle across d, spring behind the rod
-const LZ = 0.0;  const ROD_DC = 10.0;  const ROD_S = 6.4;  const ROD_TEND = 10.5;               // rod axis on the tongue centre line; channel 6.4 (a 6 mm spring passes)
+const LZ = 0.0;  const ROD_DC = 9.5;  const ROD_S = 6.4;  const ROD_TEND = 10.5;               // rod axis on the tongue centre line; channel 6.4 (a 6 mm spring passes)
 const SPR_T = [15.4, 19.5];  const SPR_R = 3.25;                                            // solid seat: 2.1 mm before the rib notch
-const SH_T = [0.0, 8.0];  const SH_Z = [3.6, 9.6];  const SH_D0 = 10.6;  const ENG = 4.0;       // shuttle (LOW: on top of the rod)
-const PEG_T = 4.0;  const PEG_D = 12.6;  const PEG_R = 1.5;  const RT = 3.5;  const SR = 4.5;   // rod travel 3.5 (thumb), shuttle retraction 4.5 (52 deg slot)
+const SH_T = [0.0, 8.0];  const SH_Z = [4.2, 9.6];  const SH_D0 = 10.1;  const ENG = 4.0;       // shuttle (LOW: on top of the rod)
+const PEG_T = 4.0;  const PEG_D = 12.1;  const PEG_R = 1.5;  const RT = 3.5;  const SR = 4.5;   // rod travel 3.5 (thumb), shuttle retraction 4.5 (52 deg slot)
 const RT_MAX = RT + 0.4;                                    // the cap floor is the press stop (not the peg)
 const PILL_W = 7.0;  const PILL_H = 9.0;  const CAP_T = 4.5;                                   // flush pill cap (d x z), 4 thick
 // ---------------- joint (hidden tenon in a sleeve) ----------------
-const TEN_W = 11.0;  const TEN_H = 20.0;  const TEN_L = 13.0;  const TEN_R = 2.5;  const JS_DX = 6.5;  const JGAP = 0.3;
+const TEN_W = 13.0;  const TEN_H = 20.0;  const TEN_L = 13.0;  const TEN_R = 2.5;  const JS_DX = 6.5;  const JGAP = 0.3;
 // ---------------- depth piece + pad mount ----------------
+const TPIN = [[3.5, 7.0], [-3.5, 7.0], [3.5, -7.0], [-3.5, -7.0]];  const TPIN_R = 1.65;  const TPIN_IN = 12.0;   // 4x carbon Ø3 pins across the tenon root (y, z off the joint axis), 12 mm into the arm
 const FLARE_L = 18.0;  const FOOT_Y = [19.0, 46.0];  const FOOT_HZ = 20.0;  const FOOT_R = 14.5;
 const FLOOR_T = 6.0;                                       // foot wall between the pad back and the hollow's floor
 const PSY = YEND + (ARM_W - TAPER_W) / 2;  const BOSS_R = 7.0;  const BOSS_H = 3.0;                    // pad-screw boss on the shell BACK (hidden under the foot): M5 nut from the foot side
@@ -487,6 +488,9 @@ export function buildDepth(context is Context, id is Id, xs is number, zp is num
 export function tenonCuts(context is Context, id is Id, carrier is Query, xe is number, zp is number, zs is number)
 {
     const xj = xe - JS_DX;
+    // carbon pins across the tenon root (they carry the joint bending; the tenon lies across the print layers)
+    for (var i = 0; i < size(TPIN); i += 1)
+        cylAx(context, id + ("tp" ~ i), vector(xe - TEN_L - 0.5, YAX + TPIN[i][0], zp + TPIN[i][1]), vector(xe + TPIN_IN, YAX + TPIN[i][0], zp + TPIN[i][1]), TPIN_R);
     // nut on the y axis (flats across x), its pocket opening toward the tenon's hidden -y face: the screw from +y pulls it
     // against 3.95 mm of tenon. Symmetric top-to-bottom, so the flipped HIGH carrier is the same part.
     hexPrism(context, id + "n", vector(xj, YAX - 1.0, zp), vector(0, 1, 0), M5_NUT_AF, M5_NUT_P);
@@ -791,6 +795,41 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
         try silent { msg = getVariable(context, "gbgSkipped"); }
         if (msg != "") reportFeatureWarning(context, id, "Finish skipped: " ~ msg);
     }, { "side" : SidePadSide.LEFT, "kit" : SidePadKit.LOW, "pos" : SidePadPos.P2, "depth" : SidePadDepth.D0, "latch" : true, "cushion" : true, "blanks" : true, "check" : false });
+
+
+// keep only the part of `target` inside a wing-frame box (subtraction keeps the target's identity)
+function keepOnly(context is Context, id is Id, target is Query, d0, d1, t0, t1, z0, z1)
+{
+    tipBox(context, id + "big", d0 - 200, d1 + 200, t0 - 200, t1 + 200, z0 - 200, z1 + 200);
+    tipBox(context, id + "keep", d0, d1, t0, t1, z0, z1);
+    opBoolean(context, id + "hole", { "tools" : qCreatedBy(id + "keep" + "b", EntityType.BODY), "targets" : qCreatedBy(id + "big" + "b", EntityType.BODY), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, id + "trim", { "tools" : qCreatedBy(id + "big" + "b", EntityType.BODY), "targets" : target, "operationType" : BooleanOperationType.SUBTRACTION });
+}
+annotation { "Feature Type Name" : "GbG Side Pad latch coupon", "Feature Type Description" : "C6 test coupon cut from the real v1.1 geometry: tongue stub with the latch, pill button + rod, shuttle, and a wing-tip block (slot, rail, catch groove, lead-ins) for position 2. Print and test before the real parts." }
+export const gbgSidePadCoupon = defineFeature(function(context is Context, id is Id, definition is map)
+    precondition { }
+    {
+        setVariable(context, "gbgSkipped", "");
+        const c = C_POS[1];
+        const car = buildCarrier(context, id + "car", c, c - D_OFF);
+        // tongue stub: the carrier cut to the tongue, the taper and the arm root up to just past the pill pocket
+        keepOnly(context, id + "stub", car.carrier, TG_D[0] - 15, TG_D[1] + 15, -48.0, TG_T[1] + 2, c - TG_H - 2, c + TG_H + 2);
+        setProperty(context, { "entities" : car.carrier, "propertyType" : PropertyType.NAME, "value" : "C6 tongue stub (latch)" });
+        setProperty(context, { "entities" : car.button, "propertyType" : PropertyType.NAME, "value" : "C6 pill button + rod" });
+        setProperty(context, { "entities" : car.shuttle, "propertyType" : PropertyType.NAME, "value" : "C6 shuttle" });
+        // wing-tip block for this position only (slot, rail, groove, lead-ins), standalone
+        const t = wingTools(context, id + "w");
+        const blk = evaluateQuery(context, t.add)[0];
+        opBoolean(context, id + "wu", { "tools" : qUnion([blk, t.ribs]), "operationType" : BooleanOperationType.UNION });
+        opBoolean(context, id + "wc", { "tools" : t.cut, "targets" : blk, "operationType" : BooleanOperationType.SUBTRACTION });
+        keepOnly(context, id + "wk", blk, TIP_D[0] - 2, TIP_D[1] + 2, TIP_T[0] - 2, TIP_T[1] + 2, c - TG_H - 6, c + TG_H + 6);
+        setProperty(context, { "entities" : blk, "propertyType" : PropertyType.NAME, "value" : "C6 wing-tip block (slot, rail, groove)" });
+        // move the coupon parts away from the chair, side by side, for printing
+        opTransform(context, id + "mv", { "bodies" : qUnion([car.carrier, car.button, car.shuttle, blk]), "transform" : transform(v3(0, -300, 0)) });
+        var msg = "";
+        try silent { msg = getVariable(context, "gbgSkipped"); }
+        if (msg != "") reportFeatureWarning(context, id, "Finish skipped: " ~ msg);
+    }, {});
 
 annotation { "Feature Type Name" : "GbG Side Pad Wing (chair)", "Feature Type Description" : "Adds the side-pad socket v1.1 (vertical slot, a rib and a catch groove per height position, lead-ins) to the chair's wings" }
 export const gbgSidePadWing = defineFeature(function(context is Context, id is Id, definition is map)

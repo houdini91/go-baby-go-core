@@ -27,7 +27,7 @@ The v1.0 arm could not be built as one smooth part: its hook needed a 5 mm bend 
   - Each position has a rail in the wing, and the tongue's groove rides on it (rail lever about 36 mm; the old rib-in-notch had 5.5).
   - The comb can come back later.
   - Flip = rotate the carrier 180° about the front–back axis and use it on the other side.
-- **Joint:** a hidden tenon (11 × 20 × 13) on the arm end slides into the depth piece's sleeve. The 18 × 28 skin is continuous, so only a hairline shows.
+- **Joint:** a hidden tenon (13 × 20 × 13, pinned by 4 × Ø3 carbon rods across its root) on the arm end slides into the depth piece's sleeve. The 18 × 28 skin is continuous, so only a hairline shows.
   - One M5×12 countersunk screw from the back face (toward the chair back) into a nut inside the tenon.
 - **Depth piece:** one loft from the hairline into an 18 mm trumpet that flares into a pill foot. The foot follows the pad back; a 20 × 3.5 key sits in a groove.
   - Pad screw: M5×10 **button head** inside the depth piece's hollow (long 3 mm key from the joint end). It goes into a nut in a boss (R 7) on the shell back, put in from the child side before the foam.
@@ -46,4 +46,6 @@ The v1.0 arm could not be built as one smooth part: its hook needed a 5 mm bend 
 
 See [REVIEW.md](REVIEW.md) for the review rounds (design, mechanical, strength) and the open items.
 
-Do not print production parts before the latch coupon and a carrier test print pass.
+**Test first:** the C6 latch coupon (feature "GbG Side Pad latch coupon" in "Side pads v1"), then one carrier with a 300 N / 150 N load test. Do not print production parts before both pass.
+
+Carbon to buy (one line, same listing as your 6/8 mm rods): Ø4 × 250 (one rod per side) and Ø3 × 250 (one per side, plus the 4 tenon pins of 25 mm).

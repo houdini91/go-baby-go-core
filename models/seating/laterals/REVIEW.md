@@ -30,7 +30,7 @@ Rules now in force:
 |---|---|---|
 | 1 | Design: pad back read as a stack of plates; collar plus two seams at the joint; plunger-like flare; taper crease outside the mouth; badge-like pill; open slot. Mechanical: the shuttle could only move 1 mm; peg clashed with and couldn't pass the wall; spring had no seat; carbon rods were sealed voids in the wrong place; pad screw/nut unusable; rib needed a lead-in. Strength: the rib-in-notch carried pitch at SF 0.2–0.6; pill pocket at the root SF 0.8; tenon 1.1. | Rails replace the rib (lever 5.5 → 36 mm). Arm 18 × 28, grown inward. Latch channels, window and slot reworked. Pad screw reversed (head in the depth piece hollow, nut in a shell boss). Taper inside the slot. Flush clip ring. Tenon 11 × 20. |
 | 2 | Design: pad edge still stepped; flare lopsided; two seams at the joint; pill distorted; countersink visible. Mechanical: the rod jammed at the spring bore (0.4 mm travel); the peg was the stop; hollow nearly broke through; carbon bores 0.65 mm apart; thin walls. Strength: root SF 1.4–2.0 along layers; tenon ~1 across layers. | Plain pad plate with the cover groove in its back face. Single-loft depth piece, 18 mm flare, foot within 3.5 mm of the axis. Square rod channel to t 15.4. Cap floor is the stop at 3.9. Groove floor +0.3. Rod channel inboard to d 10. Rails from t −12. Arm stays 16 wide past the mouth, then 18. Taper end 32 tall. Carbon Ø4/Ø3 extended past the mouth. Boss R 7. Key inside the flare. |
-| 3 | Verification of the round-2 fixes (see below). | — |
+| 3 | Mechanical: latch kinematics **verified** (full release; cap floor is the stop at 3.9, release needs ~3.4; insertion OK). Remaining: two 0.44 mm walls against the rail groove; Ø4 bore grazing the pill pocket; old coupon script out of date. Strength: root fine printed on the outer tongue face (SF ~1.8–2.6 at the mouth, ~1.4 in the pocket zone); tenon ~1.0–1.5 across layers. Printing upright is worse (root flank shear SF ~1.0). | Rail 2.5 proud, so walls are ≥ 1.2. Shuttle base raised. Latch 0.5 mm inboard (pocket-zone SF est. ≥ 1.7). Ø4 rod ends at t −29.5. **Tenon 13 wide + 4 × Ø3 carbon pins across its root**, 12 mm into each side, carrying the joint bending. New **C6 latch coupon feature** cut from the real geometry. |
 
 ## Checks run in Onshape (real chair, branch `sidepads-v1`)
 - The kit's "check all 24 settings" (LOW/HIGH × positions 1–3 × D0–D3, slot blanks included) reports **0 interference**, kit against kit and kit against chair, with **kit max x 163.0** (arm rests 165). It does not check motion or wall thickness; those were reviewed by reading the code (rounds 2–3).
@@ -38,13 +38,8 @@ Rules now in force:
 - Visual pass on every view (iso, front, back, top, bottom, both sides, on the chair) for breakouts, slits and stray seams: the last slit (foot key) was fixed.
 
 ## Open before "ready to print"
-1. **Carrier print orientation and strength across layers.** The strength review recommends confirming on the round-3 numbers below. The tenon is the section that depends on orientation.
-2. **Latch coupon first.** Reprint C1–C5 with the v1.1 numbers:
-   - RT 3.5 / SR 4.5;
-   - peg slot clearance 0.15;
-   - square rod channel past full travel;
-   - cap floor as the stop.
-   Test release force, snap-in over 100 cycles, and play.
+1. **Carrier print orientation:** print it **on its outer tongue face** (d down, rail groove up; tree support under the first ~45° of the arm). Strength is SF ≥ 1.7–2.6 along the layers at the root. The tenon lies across the layers and is carried by the 4 carbon pins. The pinned tenon's SF is not yet recomputed: **verify with the load test.**
+2. **Latch coupon first:** use the **C6 coupon** in the "Side pads v1" Part Studio (feature "GbG Side Pad latch coupon"). It is cut from the real geometry: tongue stub with the latch, pill button + rod, shuttle, and a wing-tip block. The old `latch_coupon.py` STLs (C1–C5) are outdated: do not print them. Test release force, snap-in over 100 cycles, and play.
 3. **Spring:** OD ≤ 6, free length 11–12, solid length ≤ 5.2, as stiff as fits.
 4. **Pad nut:** dab of glue in its child-face pocket (it is pushed out as the screw starts).
 5. **Clip ring:** print flat and bend it into the groove, or confirm a supported print.
