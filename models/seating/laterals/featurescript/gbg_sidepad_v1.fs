@@ -50,7 +50,7 @@ const B_BORE_R = 4.7;  const B_BORE_D0 = 3.0;                                   
 const B_SH_R = 4.5;  const B_SH_L = 5.0;  const B_HEAD_R = 3.0;  const B_SPR_R = 3.3;  const B_SPR_D = 4.0;
 const WASH_T = 2.0;  const M3_DT = 9.0;                                                     // retainer washer 2 thick, 2x M3x10 csk + nuts at t = bolt +-9 (1.4 wall to the bore)
 // ---------------- pad ----------------
-const PAD_Y0 = -31.0;  const PAD_Y1 = 46.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;   // back edge 1.8 clear of the wing bracket (y 47.8) in the HIGH kit
+const PAD_Y0 = -31.0;  const PAD_Y1 = 51.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;   // back edge: >= 51 so the cover bead clears the neck (y <= 43.1)
 const A_REF = 85.0;  const B_REF = 88.0;  const YC_REF = 30.0;  const WRAP = 0.7;  const SE_P = 4.0;
 const FOOT_Y = [4.0, 40.0];  const FOOT_HZ = 20.0;  const NOSE = 1.5;  const SEAT_D = 1.5;  const FINE = 6.25;
 const PSYS = [9.0, 19.0];          // pad screws: y 9 / 19 at the pad centre height, clear of the neck so a hex key reaches them from outside

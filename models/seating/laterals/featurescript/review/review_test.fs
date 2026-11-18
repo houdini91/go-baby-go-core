@@ -27,7 +27,7 @@ const KEY_LO = -6.0; const KEY_HI = 2.0; const FL = 3.5; const ENDL = 2.5;
 const B_BORE_R = 4.7; const B_BORE_D0 = 3.0;
 const B_SH_R = 4.5; const B_SH_L = 5.0; const B_HEAD_R = 3.0; const B_SPR_R = 3.3; const B_SPR_D = 4.0;
 const WASH_T = 2.0; const M3_DT = 9.0;
-const PAD_Y0 = -31.0; const PAD_Y1 = 46.0; const PAD_H = 80.0; const SHELL_T = 4.5;
+const PAD_Y0 = -31.0; const PAD_Y1 = 51.0; const PAD_H = 80.0; const SHELL_T = 4.5;
 const A_REF = 85.0; const B_REF = 88.0; const YC_REF = 30.0; const WRAP = 0.7; const SE_P = 4.0;
 const FOOT_Y = [4.0, 40.0]; const FOOT_HZ = 20.0; const NOSE = 1.5; const SEAT_D = 1.5; const FINE = 6.25;
 const PSYS = [9.0, 19.0];
@@ -589,6 +589,19 @@ return qUnion(parts);
 }
 
 
+function writeReport(context is Context, id is Id, rep is string)
+{
+    const ch = splitIntoCharacters(rep);
+    var k = 0;  var i = 0;
+    while (i < size(ch))
+    {
+        var piece = "";
+        for (var j = i; j < min(i + 200, size(ch)); j += 1) piece = piece ~ ch[j];
+        fCuboid(context, id + ("rp" ~ k), { "corner1" : v3(2000 + 2 * k, 2000, 0), "corner2" : v3(2001 + 2 * k, 2001, 1) });
+        setProperty(context, { "entities" : qCreatedBy(id + ("rp" ~ k), EntityType.BODY), "propertyType" : PropertyType.NAME, "value" : "RPT" ~ (k < 10 ? "0" : "") ~ k ~ " " ~ piece });
+        i += 200;  k += 1;
+    }
+}
 function interBox(context is Context, id is Id, a is Query, b is Query) returns string
 {
     opPattern(context, id + "ca", { "entities" : a, "transforms" : [identityTransform()], "instanceNames" : ["a"] });
@@ -642,7 +655,7 @@ export const gbgSidePadReview = defineFeature(function(context is Context, id is
     }
     {
         try { reviewBody(context, id, definition); }
-        catch (e) { var st = ""; try silent { st = getVariable(context, "gbgStage"); } var rp = ""; try silent { rp = getVariable(context, "gbgRep"); } setVariable(context, "gbgReport", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); }
+        catch (e) { var st = ""; try silent { st = getVariable(context, "gbgStage"); } var rp = ""; try silent { rp = getVariable(context, "gbgRep"); } setVariable(context, "gbgReport", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); writeReport(context, id + "err", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); }
     }, { "step" : 2, "kit" : SidePadKit.LOW, "depth" : SidePadDepth.N12, "seat" : SidePadSeat.MID, "tilt" : SidePadTilt.P15, "real" : false });
 function reviewBody(context is Context, id is Id, definition is map)
     {
@@ -758,5 +771,5 @@ function reviewBody(context is Context, id is Id, definition is map)
         rep = rep ~ " ## skipped: " ~ msg; setVariable(context, "gbgRep", rep);
         setVariable(context, "gbgStage", "26");
         setVariable(context, "gbgReport", rep);
-        setVariable(context, "gbgStage", "27");
+        writeReport(context, id, rep);
     }

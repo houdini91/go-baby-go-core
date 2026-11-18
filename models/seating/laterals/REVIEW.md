@@ -11,7 +11,7 @@ The headrest went through rounds v1.0 → v1.2c. Each round left a rule, and thi
 |---|---|---|
 | Tolerance block (P1S/PETG, 2026-11-16): holes +0.4–0.5, nut traps AF +0.3 / T +0.4, sliding fits ≥ 0.2 per side | Same block at the top of the FS. M3 clearance was 3.4, now 3.5. Dovetail had 0 clearance, now 0.2 per side + 0.3 end gaps. Nose ribs had 0.15 in the grooves, now 0.25 | fixed |
 | Every part one closed solid | `oneBody()` on every part | pass |
-| No clash between parts (checked on the real chair, not a stand-in) | Harness: all kit pairs + kit × chair | see matrix |
+| No clash between parts (checked on the real chair, not a stand-in) | Harness: all kit pairs + kit × chair | **LOW kit: 12 of 12 clean** (steps 0 and 2; depths N0/N12/N36; tilt none/±15°): no clash, carrier max x 161.9, screw tip inside its window, bolt free when pressed. **HIGH kit: not yet run** (Onshape API limit, see below) |
 | Screw tips never break out (v1.1 tenon M3×30 broke out) | Pad screws: tip must end past the nut and inside the nut pocket. The harness picks the stock length that does: T0 → M5×16; tilt 15° → M5×30 | pass |
 | ≥ 1.2 mm plastic under a nut, ≥ 1.2 mm round a hex | Shell nut floor 1.2 under the seat; hexes 1.7 apart. The tongue M3 nuts broke into the bolt bore and were moved (t ±9, 1.4 wall) | fixed |
 | Countersinks leave a land | Bolt washer was 1.6 thick with the csk going right through; now 2.0 with a 0.5 land | fixed |
@@ -40,7 +40,7 @@ The headrest went through rounds v1.0 → v1.2c. Each round left a rule, and thi
    - the tip block is cut around neighbouring chair parts.
 7. Washer touched its pocket floor (0.05 lift); the depth-piece neck overlapped the dovetail by 0.02.
 8. **Seat recess pinched the nose's corners at seat UP/DOWN** (it was one taller oval). It is now the nose shape (+0.2) at each of the 3 positions.
-9. **Pad's back edge (y 51) hit the wing bracket** (y ≥ 47.8) in the HIGH kit with tilt. Pad is now y −31..46 (77 front-to-back).
+9. **The pad's back edge (y 51) can reach the wing bracket (y ≥ 47.8) in the HIGH kit with a tilt shim** (seen at HIGH step 0, N12, 8°, seat DOWN). Trimming the pad to y 46 is not possible: its cover bead then hits the neck (y ≤ 43.1). **Open: owner decision** (see the matrix result).
 10. **15° tilt + seat offset:**
     - the tilted screw left the foot's slot (allowance now +5.5 each way);
     - the wedge plate reached the neck (radius 6 → 5.5);
@@ -52,6 +52,7 @@ The headrest went through rounds v1.0 → v1.2c. Each round left a rule, and thi
 12. A typo commented out PAD_H/SHELL_T. The studio "compiled" with no ERROR notice, but the feature failed. **Lesson: upload notices are not enough; the feature has to build in a Part Studio.**
 
 ## Open before "ready to print"
+- **Finish the settings matrix (HIGH kit, LOW at the top step, seat UP/DOWN extremes).** On 2026-11-18 at 20:40 Onshape stopped answering Part Studio API calls (429, retry-after ~18.5 h, so until about 15:20 on 19 Nov). The 27 remaining settings are listed in the session notes. Item 9 (pad vs bracket) waits on this.
 - Print orientation study → teardrops on the horizontal holes in that orientation.
 - C6 snap-button test coupon (wing wall + tongue stub + bolt + washer + your spring) before the real wings.
 - Spring: OD ≤ 6, free length 11–16, **solid length ≤ 4.5 mm** (6.4 mm bolt travel).

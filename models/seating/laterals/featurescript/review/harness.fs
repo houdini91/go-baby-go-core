@@ -1,3 +1,16 @@
+function writeReport(context is Context, id is Id, rep is string)
+{
+    const ch = splitIntoCharacters(rep);
+    var k = 0;  var i = 0;
+    while (i < size(ch))
+    {
+        var piece = "";
+        for (var j = i; j < min(i + 200, size(ch)); j += 1) piece = piece ~ ch[j];
+        fCuboid(context, id + ("rp" ~ k), { "corner1" : v3(2000 + 2 * k, 2000, 0), "corner2" : v3(2001 + 2 * k, 2001, 1) });
+        setProperty(context, { "entities" : qCreatedBy(id + ("rp" ~ k), EntityType.BODY), "propertyType" : PropertyType.NAME, "value" : "RPT" ~ (k < 10 ? "0" : "") ~ k ~ " " ~ piece });
+        i += 200;  k += 1;
+    }
+}
 function interBox(context is Context, id is Id, a is Query, b is Query) returns string
 {
     opPattern(context, id + "ca", { "entities" : a, "transforms" : [identityTransform()], "instanceNames" : ["a"] });
@@ -51,7 +64,7 @@ export const gbgSidePadReview = defineFeature(function(context is Context, id is
     }
     {
         try { reviewBody(context, id, definition); }
-        catch (e) { var st = ""; try silent { st = getVariable(context, "gbgStage"); } var rp = ""; try silent { rp = getVariable(context, "gbgRep"); } setVariable(context, "gbgReport", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); }
+        catch (e) { var st = ""; try silent { st = getVariable(context, "gbgStage"); } var rp = ""; try silent { rp = getVariable(context, "gbgRep"); } setVariable(context, "gbgReport", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); writeReport(context, id + "err", "ERR after [" ~ st ~ "] " ~ toString(e) ~ " || " ~ rp); }
     }, { "step" : 2, "kit" : SidePadKit.LOW, "depth" : SidePadDepth.N12, "seat" : SidePadSeat.MID, "tilt" : SidePadTilt.P15, "real" : false });
 function reviewBody(context is Context, id is Id, definition is map)
     {
@@ -167,5 +180,5 @@ function reviewBody(context is Context, id is Id, definition is map)
         rep = rep ~ " ## skipped: " ~ msg; setVariable(context, "gbgRep", rep);
         setVariable(context, "gbgStage", "26");
         setVariable(context, "gbgReport", rep);
-        setVariable(context, "gbgStage", "27");
+        writeReport(context, id, rep);
     }
