@@ -31,8 +31,8 @@ const D_SHIFT = 2.0;
 const Z0 = 227.8;  const SHEAR = [0.8 / 32.9, 2.7 / 32.9];  const ZREF = 244.25;
 // ---------------- wing tip (chair change) ----------------
 const TIP_D = [-7.0, 25.0];  const TIP_T = [-16.0, 38.0];  const TIP_Z = [198.0, 347.0];     // bottom 0.2 above the arm rest top
-const SL_D = [1.2, 17.6];  const SL_T = [-30.0, 28.0];  const SL_Z = [201.0, 343.0];      // vertical slot, open at the front
-const RAIL_P = 4.0;  const RAIL_H = 6.0;  const RAIL_T = [-14.0, 28.0];   // one rail per position on the slot's inner wall (the tongue's groove rides on it: height + pitch)
+const SL_D = [1.2, 17.6];  const SL_T = [-30.0, 28.0];  const SL_Z = [201.0, 318.0];      // vertical slot, open at the front
+const RAIL_P = 4.0;  const RAIL_H = 6.0;  const RAIL_T = [-12.0, 28.0];   // one rail per position on the slot's inner wall (the tongue's groove rides on it: height + pitch)
 // ---------------- heights ----------------
 const C_POS = [227.0, 259.5, 292.0];                      // tongue centre z at positions 1 / 2 / 3
 const D_OFF = 47.5;                                        // pad centre below (LOW) / above (HIGH) the tongue
@@ -40,29 +40,30 @@ const D_OFF = 47.5;                                        // pad centre below (
 const TG_R = 1.5;  const TG_D = [1.4, 17.4];  const TG_T = [-2.0, 27.5];  const TG_H = 25.0;    // full-height tongue 16 x 29.5 x 50
 const TAPER_T = -14.0;                                     // taper 50 -> 24 tall from t -2 to t -14: it ends INSIDE the slot (mouth t -16)
 const ARM_W = 18.0;  const ARM_H = 28.0;  const ARM_R = 9.0;                                    // the arm section (pill: 18 wide, 28 tall)
-const TAPER_W = 16.0;                                     // the taper end inside the slot: 16 x 28
+const TAPER_W = 16.0;  const TAPER_H = 32.0;              // the taper end inside the slot: 16 x 32 (then 18 wide by u 3, 28 tall by u ~10)
 const YEND = 35.0;                                         // arm end / joint centre y
 const YAX = YEND + (ARM_W - TAPER_W) / 2;                 // the arm widens toward the inside of the bend only (outer face stays put): joint axis y
 const RG_CL = 0.15;                                       // rail groove clearance per side (no rocking)
-const CF = [[5.5, -7.0], [9.0, -10.5]];  const CF_T = [-26.0, 28.5];  const CF_R = 2.15;  // 2x carbon Ø4 x 54 (d, z LOW): tongue -> across the wing mouth -> arm root, slid in from the rear face
+const CF = [[5.5, -7.0, 2.15, -34.0], [9.5, -11.0, 1.65, -31.0]];  const CF_T1 = 28.5;  // carbon rods (d, z LOW, bore r, t end): Ø4 x 62 and Ø3 x 59, slid in from the tongue's rear face, bonded; 18-20 mm past the mouth
 // latch (printed shuttle, as coupons C1-C5): rod along t, shuttle across d, spring behind the rod
-const LZ = 0.0;  const ROD_DC = 11.6;  const ROD_S = 6.4;  const ROD_TEND = 10.5;               // rod axis on the tongue centre line; channel 6.4 (a 6 mm spring passes)
-const SPR_T = [10.5, 19.5];  const SPR_R = 3.25;                                            // solid seat: 2.1 mm before the rib notch
-const SH_T = [0.0, 8.0];  const SH_Z = [3.2, 9.2];  const SH_D0 = 11.8;  const ENG = 4.0;       // shuttle (LOW: on top of the rod)
-const PEG_T = 4.0;  const PEG_D = 14.0;  const PEG_R = 1.5;  const RT = 3.0;  const SR = 4.5;   // rod travel 3 (thumb), shuttle retraction 4.5 (56 deg slot)
-const PILL_W = 8.0;  const PILL_H = 13.0;  const CAP_T = 3.0;                                   // flush pill cap (d x z), 4 thick
+const LZ = 0.0;  const ROD_DC = 10.0;  const ROD_S = 6.4;  const ROD_TEND = 10.5;               // rod axis on the tongue centre line; channel 6.4 (a 6 mm spring passes)
+const SPR_T = [15.4, 19.5];  const SPR_R = 3.25;                                            // solid seat: 2.1 mm before the rib notch
+const SH_T = [0.0, 8.0];  const SH_Z = [3.6, 9.6];  const SH_D0 = 10.6;  const ENG = 4.0;       // shuttle (LOW: on top of the rod)
+const PEG_T = 4.0;  const PEG_D = 12.6;  const PEG_R = 1.5;  const RT = 3.5;  const SR = 4.5;   // rod travel 3.5 (thumb), shuttle retraction 4.5 (52 deg slot)
+const RT_MAX = RT + 0.4;                                    // the cap floor is the press stop (not the peg)
+const PILL_W = 7.0;  const PILL_H = 9.0;  const CAP_T = 4.5;                                   // flush pill cap (d x z), 4 thick
 // ---------------- joint (hidden tenon in a sleeve) ----------------
 const TEN_W = 11.0;  const TEN_H = 20.0;  const TEN_L = 13.0;  const TEN_R = 2.5;  const JS_DX = 6.5;  const JGAP = 0.3;
 // ---------------- depth piece + pad mount ----------------
-const FLARE_L = 12.0;  const FOOT_Y = [13.0, 43.0];  const FOOT_HZ = 20.0;  const FOOT_R = 14.5;
+const FLARE_L = 18.0;  const FOOT_Y = [19.0, 46.0];  const FOOT_HZ = 20.0;  const FOOT_R = 14.5;
 const FLOOR_T = 6.0;                                       // foot wall between the pad back and the hollow's floor
-const PSY = YEND + (ARM_W - TAPER_W) / 2;  const BOSS_R = 5.6;  const BOSS_H = 3.0;                    // pad-screw boss on the shell BACK (hidden under the foot): M5 nut from the foot side
-const KEY_L = 22.0;  const KEY_H = 1.3;  const KEY_D = 1.6;                                    // foot rib / shell groove
+const PSY = YEND + (ARM_W - TAPER_W) / 2;  const BOSS_R = 7.0;  const BOSS_H = 3.0;                    // pad-screw boss on the shell BACK (hidden under the foot): M5 nut from the foot side
+const KEY_L = 20.0;  const KEY_H = 1.75;  const KEY_D = 1.6;                                    // foot rib / shell groove
 // ---------------- pad ----------------
-const PAD_Y0 = -31.0;  const PAD_Y1 = 51.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;
-const A_REF = 85.0;  const B_REF = 88.0;  const YC_REF = 30.0;  const WRAP = 0.7;  const SE_P = 4.0;
+const PAD_Y0 = -27.0;  const PAD_Y1 = 55.0;  const PAD_H = 80.0;  const SHELL_T = 4.5;
+const A_REF = 85.0;  const B_REF = 88.0;  const YC_REF = 34.0;  const WRAP = 0.7;  const SE_P = 4.0;
 const SHIM0 = 3.0;
-const BEAD = [1.0, 7.5];  const GROOVE = [2.5, 6.5];  const BEAD_H = 3.5;  const GROOVE_D = 3.0;
+const GROOVE = [3.2, 8.8];  const GROOVE_D = 2.5;                                           // cover groove in the BACK face (ring 1.6 + 2 x 2 mm neoprene)
 // ---------------- fits (P1S / PETG, as the headrest) ----------------
 const CL = 0.2;  const M5_CLEAR = 5.5;  const M5_NUT_AF = 8.3;  const M5_NUT_P = 5.1;  const CSK_M5_R = 5.3;   // nut pocket 5.1 deep: DIN 934 (4.0) and ISO 4032 (4.7)
 
@@ -311,16 +312,20 @@ export function buildCarrier(context is Context, id is Id, c is number, zp is nu
     const tgFront = qContainsPoint(qCreatedBy(id + "tg" + "b", EntityType.FACE), Q(dc, TG_T[0], c) * millimeter);
     finishEdges(context, id + "tgf", qSubtraction(qCreatedBy(id + "tg" + "b", EntityType.EDGE), qAdjacent(tgFront, AdjacencyType.EDGE, EntityType.EDGE)), TG_R, "tongue edge round");
     // taper inside the slot: 16 x 50 -> 16 x 24, smooth into the tongue and into the arm
-    rrLoft(context, id + "tp", [sec(Q(dc, TG_T[0], c), -dirT(), TG_D[1] - TG_D[0], 2 * TG_H, TG_R), sec(Q(dc, TAPER_T, c), -dirT(), TAPER_W, ARM_H, TAPER_W / 2)], true, true);
+    rrLoft(context, id + "tp", [sec(Q(dc, TG_T[0], c), -dirT(), TG_D[1] - TG_D[0], 2 * TG_H, TG_R), sec(Q(dc, TAPER_T, c), -dirT(), TAPER_W, TAPER_H, TAPER_W / 2)], true, true);
     // the arm: one loft through 7 sections square to the path
     const p = armPath(c, zp);
     var secs = [];
-    for (var i = 0; i <= 6; i += 1)
+    const uOut = (-TIP_T[0]) + TAPER_T + 0.6;                  // u where the arm is 0.6 mm clear of the slot mouth
+    var us = [0, uOut, uOut + 3.0];
+    for (var i = 1; i <= 6; i += 1) us = append(us, p.L * i / 6);
+    for (var u in us)
     {
-        const a = armAt(p, p.L * i / 6);
-        const w = i == 0 ? TAPER_W : ARM_W;                    // widens to the arm section once out of the slot,
-        const inw = normalize(vector(p.C[0] - a.p[0], p.C[1] - a.p[1], 0));   // toward the inside of the bend only
-        secs = append(secs, sec(a.p + inw * (w - TAPER_W) / 2, a.t, w, ARM_H, w / 2));
+        const a = armAt(p, u);
+        const w = u <= uOut ? TAPER_W : ARM_W;                 // 16 wide until clear of the slot, then grown toward the inside of the bend only
+        const h = u == 0 ? TAPER_H : (u <= uOut ? lerp(TAPER_H, ARM_H, 0.1) : (u < 8 ? lerp(TAPER_H, ARM_H, 0.4) : ARM_H));
+        const inw = normalize(vector(p.C[0] - a.p[0], p.C[1] - a.p[1], 0));
+        secs = append(secs, sec(a.p + inw * (w - TAPER_W) / 2, a.t, w, h, w / 2));
     }
     rrLoft(context, id + "arm", secs, true, true);
     const e = armAt(p, p.L);
@@ -348,12 +353,12 @@ export function buildCarrier(context is Context, id is Id, c is number, zp is nu
     // cap = inside(pill) minus itself shifted CAP_T deeper: the 4 mm skin of arm surface inside the pill outline
     opPattern(context, id + "cs", { "entities" : solids(context, id + "pp2"), "transforms" : [transform(ax * CAP_T * millimeter)], "instanceNames" : ["s"] });
     opBoolean(context, id + "cap", { "tools" : qCreatedBy(id + "cs", EntityType.BODY), "targets" : solids(context, id + "pp2"), "operationType" : BooleanOperationType.SUBTRACTION });
-    // pocket = inside(pill + clearance) minus itself shifted CAP_T + RT + 1 deeper
+    // pocket = inside(pill + clearance) minus itself shifted CAP_T + RT_MAX deeper (the cap floor is the press stop)
     pillPrism(context, id + "pq1", ps, -ax, PL, PILL_W + 2 * CL + 0.1, PILL_H + 2 * CL + 0.1);
     pillPrism(context, id + "pq2", ps, -ax, PL, PILL_W + 2 * CL + 0.1, PILL_H + 2 * CL + 0.1);
     opBoolean(context, id + "q1", { "tools" : copies[1], "targets" : solids(context, id + "pq1"), "operationType" : BooleanOperationType.SUBTRACTION });
     opBoolean(context, id + "q2", { "tools" : solids(context, id + "pq1"), "targets" : solids(context, id + "pq2"), "operationType" : BooleanOperationType.SUBTRACTION });
-    opPattern(context, id + "qs", { "entities" : solids(context, id + "pq2"), "transforms" : [transform(ax * (CAP_T + RT + 1) * millimeter)], "instanceNames" : ["s"] });
+    opPattern(context, id + "qs", { "entities" : solids(context, id + "pq2"), "transforms" : [transform(ax * (CAP_T + RT_MAX) * millimeter)], "instanceNames" : ["s"] });
     opBoolean(context, id + "pk", { "tools" : qCreatedBy(id + "qs", EntityType.BODY), "targets" : solids(context, id + "pq2"), "operationType" : BooleanOperationType.SUBTRACTION });
     // push-rod (5.6 square) along the axis, from inside the cap to the spring seat, clipped to the arm
     tipBox(context, id + "rdA", ROD_DC - ROD_S / 2 + CL, ROD_DC + ROD_S / 2 - CL, TAPER_T + 6 - PL, ROD_TEND - 0.4, zr - ROD_S / 2 + CL, zr + ROD_S / 2 - CL);
@@ -365,7 +370,8 @@ export function buildCarrier(context is Context, id is Id, c is number, zp is nu
     const sz1 = zs > 0 ? zr + ROD_S / 2 + 1 : zr + ROD_S / 2 - CL - 2.6;
     // slot for the peg in the rod: pressing moves the rod +RT along t and must pull the shuttle SR inward (-d)
     const su = normalize(vector(-SR, -RT, 0));                  // (d, t) direction of the slot in the rod's frame
-    slot45(context, id + "ps", Q(PEG_D - 0.6 * su[0], PEG_T - 0.6 * su[1], zr), Q(PEG_D - SR + 0.6 * su[0], PEG_T - RT + 0.6 * su[1], zr), PEG_R + 0.25, sz0, sz1);
+    const kM = RT_MAX / RT;
+    slot45(context, id + "ps", Q(PEG_D - 0.6 * su[0], PEG_T - 0.6 * su[1], zr), Q(PEG_D - SR * kM + 0.6 * su[0], PEG_T - RT_MAX + 0.6 * su[1], zr), PEG_R + 0.15, sz0, sz1);
     opBoolean(context, id + "psc", { "tools" : solids(context, id + "ps"), "targets" : solids(context, id + "rdA"), "operationType" : BooleanOperationType.SUBTRACTION });
     opBoolean(context, id + "btn", { "tools" : qUnion([solids(context, id + "pp2"), solids(context, id + "rdA")]), "operationType" : BooleanOperationType.UNION });
     const bq = evaluateQuery(context, qUnion([solids(context, id + "pp2"), solids(context, id + "rdA")]));
@@ -397,16 +403,16 @@ export function buildCarrier(context is Context, id is Id, c is number, zp is nu
     const K = id + "cut";
     // groove along the tongue's inner face for the wing rail (flared at the tongue's rear end, where the rail enters)
     const gh = RAIL_H / 2 + RG_CL;
-    tzPrism(context, K + "rg", [[TAPER_T - 1, c - gh], [TG_T[1] - 2.0, c - gh], [TG_T[1] + 0.01, c - gh - 1.5], [TG_T[1] + 1, c - gh - 1.5],
-                                [TG_T[1] + 1, c + gh + 1.5], [TG_T[1] + 0.01, c + gh + 1.5], [TG_T[1] - 2.0, c + gh], [TAPER_T - 1, c + gh]], TG_D[0] - 1, SL_D[0] + RAIL_P + RG_CL);
-    for (var i = 0; i < size(CF); i += 1) tdHole(context, K + ("cf" ~ i), Q(CF[i][0], CF_T[1], c + zs * CF[i][1]), Q(CF[i][0], CF_T[0], c + zs * CF[i][1]), CF_R, -dirD());
-    tipBox(context, K + "rc", ROD_DC - ROD_S / 2, ROD_DC + ROD_S / 2, TAPER_T + 6 - PL, ROD_TEND, zr - ROD_S / 2, zr + ROD_S / 2);
+    tzPrism(context, K + "rg", [[RAIL_T[0] - 1, c - gh], [TG_T[1] - 2.0, c - gh], [TG_T[1] + 0.01, c - gh - 0.8], [TG_T[1] + 1, c - gh - 0.8],
+                                [TG_T[1] + 1, c + gh + 0.8], [TG_T[1] + 0.01, c + gh + 0.8], [TG_T[1] - 2.0, c + gh], [RAIL_T[0] - 1, c + gh]], TG_D[0] - 1, SL_D[0] + RAIL_P + RG_CL);
+    for (var i = 0; i < size(CF); i += 1) tdHole(context, K + ("cf" ~ i), Q(CF[i][0], CF_T1, c + zs * CF[i][1]), Q(CF[i][0], CF[i][3], c + zs * CF[i][1]), CF[i][2], -dirD());
+    tipBox(context, K + "rc", ROD_DC - ROD_S / 2, ROD_DC + ROD_S / 2, TAPER_T + 6 - PL, ROD_TEND + RT_MAX + 1.0, zr - ROD_S / 2, zr + ROD_S / 2);
     cylAx(context, K + "spr", Q(ROD_DC, SPR_T[0] - 0.5, zr), Q(ROD_DC, SPR_T[1], zr), SPR_R);
     // window for the shuttle's peg (it travels across d, from PEG_D locked to PEG_D - SR pressed) between the channels
     const wz = zs > 0 ? [zr - 0.5, c + SH_Z[0] + 0.01] : [c - SH_Z[0] - 0.01, zr + 0.5];
-    tipBox(context, K + "pw", PEG_D - SR - PEG_R - 0.4, TG_D[1] + 1, PEG_T - PEG_R - 0.4, PEG_T + PEG_R + 0.4, wz[0], wz[1]);
+    tipBox(context, K + "pw", PEG_D - SR * RT_MAX / RT - PEG_R - 0.3, TG_D[1] + 1, PEG_T - PEG_R - 0.4, PEG_T + PEG_R + 0.4, wz[0], wz[1]);
     const chz = zs > 0 ? [c + SH_Z[0] - 0.01, c + SH_Z[1] + CL] : [c - SH_Z[1] - CL, c - SH_Z[0] + 0.01];
-    tipBox(context, K + "shc", SH_D0 - SR - 1.0, TG_D[1] + 1, SH_T[0] - CL, SH_T[1] + CL, chz[0], chz[1]);
+    tipBox(context, K + "shc", SH_D0 - SR * RT_MAX / RT - 0.4, TG_D[1] + 1, SH_T[0] - CL, SH_T[1] + CL, chz[0], chz[1]);
     opBoolean(context, id + "cutop", { "tools" : qUnion([solids(context, K), solids(context, id + "pq2")]), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     return { "carrier" : body, "button" : button, "shuttle" : shuttle, "xe" : xe };
 }
@@ -450,13 +456,14 @@ export function buildDepth(context is Context, id is Id, xs is number, zp is num
 {
     const fw = FOOT_Y[1] - FOOT_Y[0];
     const x0 = xe - JGAP;                                       // sleeve face (hairline gap to the arm end)
-    // straight run, same skin as the arm
-    rrLoft(context, id + "nk", [sec(vector(x0, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R), sec(vector(xs + FLARE_L, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R)], false, false);
-    // flare into the foot (tangent to the run), the foot runs 1 mm past the pad back and is then trimmed to it
-    rrLoft(context, id + "fl", [sec(vector(xs + FLARE_L, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R),
-                                sec(vector(xs + 0.4 * FLARE_L, lerp(YAX, FOOT_YC, 0.75), zp), vector(-1, 0, 0), lerp(ARM_W, fw, 0.45), lerp(ARM_H, 2 * FOOT_HZ, 0.55), lerp(ARM_W, fw, 0.45) / 2),
-                                sec(vector(xs - 1.0, FOOT_YC, zp), vector(-1, 0, 0), fw, 2 * FOOT_HZ, FOOT_R)], true, false);
-    opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
+    // ONE loft from the hairline to the foot (same skin as the arm, then the trumpet): no second seam
+    var ds = [sec(vector(x0, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R)];
+    if (x0 - (xs + FLARE_L) > 2) ds = append(ds, sec(vector(xs + FLARE_L, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R));
+    ds = append(ds, sec(vector(xs + 0.4 * FLARE_L, lerp(YAX, FOOT_YC, 0.4), zp), vector(-1, 0, 0), lerp(ARM_W, fw, 0.45), lerp(ARM_H, 2 * FOOT_HZ, 0.55), lerp(ARM_W, fw, 0.45) / 2));
+    ds = append(ds, sec(vector(xs - 1.0, FOOT_YC, zp), vector(-1, 0, 0), fw, 2 * FOOT_HZ, FOOT_R));
+    rrLoft(context, id + "fl", ds, true, false);
+    if (size(evaluateQuery(context, solids(context, id))) > 1)
+        opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "depth piece");
     const K = id + "cut";
     // the foot follows the pad back exactly (no gap): trim by the pad shell's outer surface
@@ -465,14 +472,14 @@ export function buildDepth(context is Context, id is Id, xs is number, zp is num
     rrLoft(context, K + "sl", [sec(vector(x0 + 1, YAX, zp), vector(-1, 0, 0), TEN_W + 2 * CL, TEN_H + 2 * CL, TEN_R + CL), sec(vector(xs + FLOOR_T, YAX, zp), vector(-1, 0, 0), TEN_W + 2 * CL, TEN_H + 2 * CL, TEN_R + CL)], false, false);
     // pad screw: M5x10 socket head sits on the hollow's floor (hex key down the hollow), clearance down into the boss recess
     cylAx(context, K + "ps", vector(xs - 2, PSY, zp), vector(xs + FLOOR_T + 1, PSY, zp), M5_CLEAR / 2);
-    cylAx(context, K + "hc", vector(xs + FLOOR_T - 0.01, PSY, zp), vector(xs + FLOOR_T + 6, PSY, zp), 4.6);           // socket head seat
     cylAx(context, K + "br", vector(xs - 2, PSY, zp), vector(xs + BOSS_H + 0.2, PSY, zp), BOSS_R + CL);
     // groove for the shell's rib
     fCuboid(context, K + "kg", { "corner1" : v3(xs - 2, FOOT_YC - KEY_L / 2 - CL, zp - KEY_H - CL), "corner2" : v3(xs + KEY_D + 0.2, FOOT_YC + KEY_L / 2 + CL, zp + KEY_H + CL) });
-    // joint screw: flush countersunk from the back face (+y) through the sleeve wall into the tenon's nut
+    // joint screw: M5x12 countersunk from the back face (+y, toward the chair back: out of normal view) into the tenon's nut
     const xj = xe - JS_DX;
-    cylAx(context, K + "js", vector(xj, YAX + ARM_W / 2 + 1, zp), vector(xj, YAX - TEN_W / 2 - CL, zp), M5_CLEAR / 2);
-    fCone(context, K + "jsk", { "bottomCenter" : v3(xj, YAX + ARM_W / 2 - (CSK_M5_R - 2.75), zp), "topCenter" : v3(xj, YAX + ARM_W / 2 + 0.05, zp), "bottomRadius" : 2.75 * millimeter, "topRadius" : CSK_M5_R * millimeter });
+    const yb = YAX + ARM_W / 2;
+    cylAx(context, K + "js", vector(xj, yb + 1, zp), vector(xj, YAX - 3.0, zp), M5_CLEAR / 2);
+    fCone(context, K + "jsk", { "bottomCenter" : v3(xj, yb - (CSK_M5_R - 2.75), zp), "topCenter" : v3(xj, yb + 0.05, zp), "bottomRadius" : 2.75 * millimeter, "topRadius" : CSK_M5_R * millimeter });
     opBoolean(context, id + "cutop", { "tools" : solids(context, K), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     return body;
 }
@@ -480,8 +487,10 @@ export function buildDepth(context is Context, id is Id, xs is number, zp is num
 export function tenonCuts(context is Context, id is Id, carrier is Query, xe is number, zp is number, zs is number)
 {
     const xj = xe - JS_DX;
-    hexPrism(context, id + "n", vector(xj, YAX - 0.6, zp), vector(0, 1, 0), M5_NUT_AF, M5_NUT_P);
-    fCuboid(context, id + "ns", { "corner1" : v3(xj - M5_NUT_AF / 2, YAX - 0.6 - M5_NUT_P / 2, zp), "corner2" : v3(xj + M5_NUT_AF / 2, YAX - 0.6 + M5_NUT_P / 2, zp + zs * (TEN_H / 2 + 1)) });
+    // nut on the y axis (flats across x), its pocket opening toward the tenon's hidden -y face: the screw from +y pulls it
+    // against 3.95 mm of tenon. Symmetric top-to-bottom, so the flipped HIGH carrier is the same part.
+    hexPrism(context, id + "n", vector(xj, YAX - 1.0, zp), vector(0, 1, 0), M5_NUT_AF, M5_NUT_P);
+    fCuboid(context, id + "ns", { "corner1" : v3(xj - M5_NUT_AF / 2, YAX - TEN_W / 2 - 1, zp - 4.8), "corner2" : v3(xj + M5_NUT_AF / 2, YAX - 1.0, zp + 4.8) });
     cylAx(context, id + "h", vector(xj, YAX + TEN_W, zp), vector(xj, YAX - TEN_W / 2 - 1, zp), M5_CLEAR / 2);
     opBoolean(context, id + "op", { "tools" : solids(context, id), "targets" : carrier, "operationType" : BooleanOperationType.SUBTRACTION });
 }
@@ -536,7 +545,7 @@ function planStrip(context is Context, id is Id, xs is number, a is number, b is
 export function buildClipRing(context is Context, id is Id, xs is number, zc is number) returns Query
 {
     // a flat band that presses the cover into the bead's groove; its top sits flush with the bead top
-    planStrip(context, id + "ts", xs, SHELL_T + BEAD_H - GROOVE_D + 0.4, SHELL_T + BEAD_H, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
+    planStrip(context, id + "ts", xs, SHELL_T - GROOVE_D + 0.4, SHELL_T, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
     yzPrism(context, id + "to", padOutlineYZ(zc, (GROOVE[0] + GROOVE[1]) / 2 - 0.8), xs - 80, xs + 20);
     yzPrism(context, id + "ti", padOutlineYZ(zc, (GROOVE[0] + GROOVE[1]) / 2 + 0.8), xs - 80, xs + 20);
     opBoolean(context, id + "tr", { "tools" : solids(context, id + "ti"), "targets" : solids(context, id + "to"), "operationType" : BooleanOperationType.SUBTRACTION });
@@ -548,14 +557,10 @@ export function buildClipRing(context is Context, id is Id, xs is number, zc is 
 // pad shell v1.1: shell + cover bead/groove (unchanged), groove for the foot rib, one countersunk M5 hole from the child side.
 export function buildPadShell(context is Context, id is Id, xs is number, zc is number) returns Query
 {
+    // one plain curved plate (no raised rim): the cover wraps its edge and is trapped in a groove in the back face
     planStrip(context, id + "st", xs, 0, SHELL_T, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
     yzPrism(context, id + "ol", padOutlineYZ(zc, 0), xs - 80, xs + 20);
     opBoolean(context, id + "int", { "tools" : qUnion([solids(context, id + "st"), solids(context, id + "ol")]), "operationType" : BooleanOperationType.INTERSECTION });
-    planStrip(context, id + "bs", xs, SHELL_T - 0.2, SHELL_T + BEAD_H, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
-    yzPrism(context, id + "bo", padOutlineYZ(zc, BEAD[0]), xs - 80, xs + 20);
-    yzPrism(context, id + "bi", padOutlineYZ(zc, BEAD[1]), xs - 80, xs + 20);
-    opBoolean(context, id + "bring", { "tools" : solids(context, id + "bi"), "targets" : solids(context, id + "bo"), "operationType" : BooleanOperationType.SUBTRACTION });
-    opBoolean(context, id + "bint", { "tools" : qUnion([solids(context, id + "bs"), solids(context, id + "bo")]), "operationType" : BooleanOperationType.INTERSECTION });
     // on the back, hidden under the foot: the key rib and the pad-screw boss (M5 nut drops in from the foot side)
     const xb = shellXi(PSY, xs) + SHELL_T;
     fCuboid(context, id + "key", { "corner1" : v3(xs - 2, FOOT_YC - KEY_L / 2, zc - KEY_H), "corner2" : v3(xs + KEY_D, FOOT_YC + KEY_L / 2, zc + KEY_H) });
@@ -563,7 +568,7 @@ export function buildPadShell(context is Context, id is Id, xs is number, zc is 
     opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "pad shell");
     const K = id + "cut";
-    planStrip(context, K + "gs", xs, SHELL_T + BEAD_H - GROOVE_D, SHELL_T + BEAD_H + 1, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
+    planStrip(context, K + "gs", xs, SHELL_T - GROOVE_D, SHELL_T + 1, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
     yzPrism(context, K + "go", padOutlineYZ(zc, GROOVE[0]), xs - 80, xs + 20);
     yzPrism(context, K + "gi", padOutlineYZ(zc, GROOVE[1]), xs - 80, xs + 20);
     opBoolean(context, K + "gring", { "tools" : solids(context, K + "gi"), "targets" : solids(context, K + "go"), "operationType" : BooleanOperationType.SUBTRACTION });
@@ -607,7 +612,7 @@ export function wingTools(context is Context, id is Id) returns map
     xyPrism(context, K + "olead", [Q(SL_D[1] - 0.1, TIP_T[0] - 1, 0), Q(SL_D[1] + lr, TIP_T[0] - 1, 0), Q(SL_D[1] - 0.1, TIP_T[0] + lr / tan(40 * degree), 0)], SL_Z[0], SL_Z[1]);
     // catch grooves (each takes the shuttle of the LOW and of the flipped HIGH carrier); all cuts first (contiguous ids)
     const gl = TG_D[1] + CL + ENG + SH_T[1] - 2.5 + 0.3;           // d + t of the groove's 45 deg wall (shuttle chamfer + 0.3)
-    const g0 = SL_D[1] - 0.5;  const g1 = SL_D[1] + ENG + 0.6;
+    const g0 = SL_D[1] - 0.5;  const g1 = SL_D[1] + ENG + 0.3;
     for (var k = 0; k < size(C_POS); k += 1)
         xyPrism(context, K + ("g" ~ k), [Q(g0, SH_T[0] - CL - 0.2, 0), Q(g1, SH_T[0] - CL - 0.2, 0), Q(g1, gl - g1, 0), Q(g0, gl - g0, 0)], C_POS[k] - SH_Z[1] - 0.4, C_POS[k] + SH_Z[1] + 0.4);
     // rails on the slot's inner wall, one per height position; chamfered front so the tongue's groove finds it
