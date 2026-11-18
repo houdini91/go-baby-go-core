@@ -1,47 +1,49 @@
-# Side pads (lateral trunk supports) v1.0: pre-first-print
+# Side pads (lateral trunk supports) v1.1: remodelled, pre-first-print
 
-FeatureScript: `featurescript/gbg_sidepad_v1.fs` (two features)
+FeatureScript: `featurescript/gbg_sidepad_v1.fs`. Onshape branch `sidepads-v1` of GbG_chair_forth:
+- **Part Studio 1:** the chair with the reshaped wings and the kit fitted on both sides.
+- **Side pads v1:** the kit on its own.
 
-- **GbG Side Pad Wing (chair):** the chair change. Each wing tip gets a vertical slot, comb ribs every 12.5 mm at the back of the slot, a column of 8 Ø6.4 bolt holes (one per height step) in a 12 mm recessed track on the outer face, and a 30° entry ramp.
-- **GbG Side Pad v1:** the kit, built in place on the chair for a chosen setting:
-  - carrier, the flip pair A / A' (LOW, or HIGH = flipped)
-  - depth piece N0 / N12 / N24 / N36
-  - pad shell
-  - clip ring
-  - tilt shim (8° or 15°, either way)
-  - snap-button bolt and retainer washer
+Two features:
+- **GbG Side Pad Wing (chair):** the wing reprint.
+  - Each wing tip gets a vertical slot with one **rail** per height position on its inner wall.
+  - The outer wall gets a **catch groove** per position, plus lead-ins at the mouth.
+  - Removes the modelled print-support plates (`support_*_wing`).
+- **GbG Side Pad v1:** the kit, built in place.
+  - Options: side, LOW/HIGH, height position 1–3, depth piece D0–D3, release parts, and a REFERENCE cushion.
+  - A "check all 24 settings" switch reports every clash, kit against kit and kit against the real chair, and the kit's max x.
 
-Design record (research, options, renders, decisions): `~/research/onshape/gobabygo/addons/laterals/options_v05/` (v0.5 to v1.0) and the published pages.
+## What changed from v1.0 (owner review, 18–19 Nov)
+The v1.0 arm could not be built as one smooth part: its hook needed a 5 mm bend for an 18 mm arm, and that fold was the "layer lines". v1.1 is a remodel to the owner's brief: **assembled, it reads as one flowing piece.**
+- **Arm:**
+  - The tongue tapers 50 → 32 tall *inside* the slot.
+  - It leaves the mouth 16 wide, then becomes one 18 × 28 pill-section arm (grown toward the inside of the bend only).
+  - It follows a circular plan arc (R ≈ 26.6) plus a two-arc vertical S, ending level and heading inboard.
+  - One loft through sections square to the path. Fold margin about 1.3; max x 163 (arm rests at 165).
+- **Release:** a flush pill button (7 × 9) on the side of the arm. Its cap is the arm's own surface. It drives the printed shuttle catch (coupons C1–C5) with your own spring.
+  - Rod travel 3.5, cap floor = stop at 3.9, shuttle retracts 4.5.
+  - Spring: OD ≤ 6, free length 11–12, **solid length ≤ 5.2**, as stiff as fits.
+- **Height:** 3 fixed tongue positions (z 227 / 259.5 / 292) × LOW/HIGH flip (±47.5) = 6 pad heights.
+  - Each position has a rail in the wing, and the tongue's groove rides on it (rail lever about 36 mm; the old rib-in-notch had 5.5).
+  - The comb can come back later.
+  - Flip = rotate the carrier 180° about the front–back axis and use it on the other side.
+- **Joint:** a hidden tenon (11 × 20 × 13) on the arm end slides into the depth piece's sleeve. The 18 × 28 skin is continuous, so only a hairline shows.
+  - One M5×12 countersunk screw from the back face (toward the chair back) into a nut inside the tenon.
+- **Depth piece:** one loft from the hairline into an 18 mm trumpet that flares into a pill foot. The foot follows the pad back; a 20 × 3.5 key sits in a groove.
+  - Pad screw: M5×10 **button head** inside the depth piece's hollow (long 3 mm key from the joint end). It goes into a nut in a boss (R 7) on the shell back, put in from the child side before the foam.
+  - No screws or nuts are visible.
+  - Depth set D0–D3: pad back at x 104 / 92 / 80 / 68 (with 17 / 30 / 43 mm foam).
+- **Pad:** a plain curved plate.
+  - The cover wraps its edge and is trapped by a **flush** clip ring in a groove in the back face.
+  - The REFERENCE cushion body shows the assembled look and is not printed.
+- **Carbon:** Ø4 × 62 and Ø3 × 59 rods, slid in from the tongue's rear face and bonded. They run across the wing mouth into the arm root.
+- **Deferred** (they brought back clutter or gaps): tilt shims, the ±6.25 fine seat adjustment, and the comb.
 
-## How it works
-- **Height:**
-  - the tongue sits on the comb, in 12.5 mm steps;
-  - the pad seat adds -6.25 / 0 / +6.25;
-  - the carrier gives LOW or HIGH by flipping it.
-- **Depth:**
-  - depth piece N0, N12, N24 or N36, moving the pad 12 mm per step;
-  - foam 17 / 30 / 43 mm.
-- **Tilt:** an 8° or 15° shim between the foot and the pad seat, plus a wedge plate under the screw heads. Flip both for the other direction.
-- **Lock:** a Ø6 snap-button bolt in the tongue. One spring from home stock (OD ≤ 6, 11–16 mm long, solid length ≤ 4.5) pushes it through the wing hole for that height. The domed top sits flush with the wing surface in a 16 mm finger channel. To release, press about 3.5 mm and slide the arm out. Slide it back in: the 30° ramp presses the bolt and it clicks into the hole.
-- **Loads:** the comb ribs carry up/down; the slot walls carry the lean twist; the dovetail carries the joint between carrier and depth piece; the foot sits in the shell's seat with ribs in grooves. Screws only hold parts together.
-- **Fasteners:** real screws and nuts only (DIN 7991 countersunk + DIN 934). No printed threads.
-
-| Joint | Fastener |
+| Joint | Fastener (from stock) |
 |---|---|
-| Carrier ↔ depth piece (dovetail retainer) | M5x30 + nut. The nut sits 6 mm up inside the part, so the screw tip ends inside it. |
-| Foot ↔ pad shell | 2x M5 socket/button head from **outside**, through slots in the foot's screw land, into nuts held in the shell's boss under the EVA. **No shim M5x16, 8° shim M5x25, 15° shim M5x30.** The same length works at every seat position. With a shim, the printed wedge plate goes under both heads. |
-| Bolt retainer washer | 2x M3x10 countersunk + nuts |
+| Carrier tenon ↔ depth piece | M5×12 countersunk + M5 nut (DIN 934 or ISO 4032; pockets 5.1 deep) |
+| Depth piece ↔ pad shell | M5×10 button head (ISO 7380) + M5 nut, from inside the depth piece |
 
-See [REVIEW.md](REVIEW.md) for the design review against the headrest standard.
+See [REVIEW.md](REVIEW.md) for the review rounds (design, mechanical, strength) and the open items.
 
-## Status
-- Sketch model reviewed: pages v0.5 to v1.0 (2026-11-18).
-- FeatureScript functions tested in an Onshape scratch Part Studio: every part builds; the wing change was tested on a stand-in block.
-- **Not yet done:**
-  - install on an Onshape branch of GbG_chair_forth;
-  - check against the real wings in the browser;
-  - export the STLs;
-  - print the test pieces (latch, dovetail, foot and seat);
-  - a pull test on one wing.
-
-Do not print production parts before the test pieces pass.
+Do not print production parts before the latch coupon and a carrier test print pass.

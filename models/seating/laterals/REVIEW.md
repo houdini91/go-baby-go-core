@@ -1,3 +1,62 @@
+# Side pads v1.1: remodel and independent reviews (2026-11-19, overnight)
+
+## Why v1.1
+The owner rejected the v1.0 Onshape model:
+- layer lines on the arm and the pad base;
+- a neck that narrowed to a snapping point;
+- the release not integrated as sketched;
+- busy, bulging joints;
+- overhangs and gaps;
+- not "one piece".
+
+Root cause: the v1.0 arm route needed a ~5 mm bend for an 18 mm arm inside the chair width. The loft failed, and the code silently fell back to piecewise lofts (the "layer lines"). Pad curves were 60-segment polylines.
+
+Rules now in force:
+- one loft per shape;
+- splines only;
+- any failure is a visible error;
+- no unapproved design changes;
+- compare against the approved design with the wing in view before showing.
+
+## Owner decisions (19 Nov)
+- **Arm route:** knee first, then superseded by the flowing S route under the "one piece" brief.
+- **Height:** 3 fixed positions × flip (comb later).
+- **Release:** pill in the side of the arm.
+- **Depth:** keep the dovetail idea, done as a hidden tenon in a sleeve.
+- **Look:** one flowing piece, no gaps or overhangs, elegant pad mount, high-quality bar.
+
+## Review rounds (independent agents: industrial designer, mechanical/DFM engineer, strength engineer)
+| Round | Main findings | Fixed |
+|---|---|---|
+| 1 | Design: pad back read as a stack of plates; collar plus two seams at the joint; plunger-like flare; taper crease outside the mouth; badge-like pill; open slot. Mechanical: the shuttle could only move 1 mm; peg clashed with and couldn't pass the wall; spring had no seat; carbon rods were sealed voids in the wrong place; pad screw/nut unusable; rib needed a lead-in. Strength: the rib-in-notch carried pitch at SF 0.2–0.6; pill pocket at the root SF 0.8; tenon 1.1. | Rails replace the rib (lever 5.5 → 36 mm). Arm 18 × 28, grown inward. Latch channels, window and slot reworked. Pad screw reversed (head in the depth piece hollow, nut in a shell boss). Taper inside the slot. Flush clip ring. Tenon 11 × 20. |
+| 2 | Design: pad edge still stepped; flare lopsided; two seams at the joint; pill distorted; countersink visible. Mechanical: the rod jammed at the spring bore (0.4 mm travel); the peg was the stop; hollow nearly broke through; carbon bores 0.65 mm apart; thin walls. Strength: root SF 1.4–2.0 along layers; tenon ~1 across layers. | Plain pad plate with the cover groove in its back face. Single-loft depth piece, 18 mm flare, foot within 3.5 mm of the axis. Square rod channel to t 15.4. Cap floor is the stop at 3.9. Groove floor +0.3. Rod channel inboard to d 10. Rails from t −12. Arm stays 16 wide past the mouth, then 18. Taper end 32 tall. Carbon Ø4/Ø3 extended past the mouth. Boss R 7. Key inside the flare. |
+| 3 | Verification of the round-2 fixes (see below). | — |
+
+## Checks run in Onshape (real chair, branch `sidepads-v1`)
+- The kit's "check all 24 settings" (LOW/HIGH × positions 1–3 × D0–D3, slot blanks included) reports **0 interference**, kit against kit and kit against chair, with **kit max x 163.0** (arm rests 165). It does not check motion or wall thickness; those were reviewed by reading the code (rounds 2–3).
+- Every part builds as one solid; no finish step is skipped (skips now show as a feature warning).
+- Visual pass on every view (iso, front, back, top, bottom, both sides, on the chair) for breakouts, slits and stray seams: the last slit (foot key) was fixed.
+
+## Open before "ready to print"
+1. **Carrier print orientation and strength across layers.** The strength review recommends confirming on the round-3 numbers below. The tenon is the section that depends on orientation.
+2. **Latch coupon first.** Reprint C1–C5 with the v1.1 numbers:
+   - RT 3.5 / SR 4.5;
+   - peg slot clearance 0.15;
+   - square rod channel past full travel;
+   - cap floor as the stop.
+   Test release force, snap-in over 100 cycles, and play.
+3. **Spring:** OD ≤ 6, free length 11–12, solid length ≤ 5.2, as stiff as fits.
+4. **Pad nut:** dab of glue in its child-face pocket (it is pushed out as the screw starts).
+5. **Clip ring:** print flat and bend it into the groove, or confirm a supported print.
+6. **Slot blanks:** modelled (option "Slot blanks", on by default). Two identical 32.6 mm push-in blanks per side ride the rails and close the unused slot at every position; their front is flush with the wing tip. Retention is by friction on the rail, so check the fit on the coupon.
+7. **Deferred features:** tilt shims, ±6.25 fine height, the comb.
+8. **Load test:** 300 N outward and 150 N down on a printed carrier before use; PT/OT fit check (pad top ≥ 25 mm below the armpit).
+
+
+---
+
+# Archive: v1.0 review (superseded)
+
 # Side pads v1.0: design review against the headrest standard (2026-11-18)
 
 The headrest went through rounds v1.0 → v1.2c. Each round left a rule, and this review checks the side-pad kit against all of them. The checks run on Onshape's own geometry (branch `sidepads-v1`), using the review harness in `featurescript/review/`. It builds the kit on the **real chair parts** and reports:

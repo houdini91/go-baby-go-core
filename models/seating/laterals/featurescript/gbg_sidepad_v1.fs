@@ -598,6 +598,38 @@ export function buildCushion(context is Context, id is Id, xs is number, zc is n
     return body;
 }
 
+// =============================================== SLOT BLANKS ===============================================
+// Two identical push-in blanks close the slot length the tongue does not use (pos 1: both above; pos 2: one each side;
+// pos 3: both below). Each rides on a wing rail through a groove 9.35 off its centre (flip it to suit); front flush with the tip.
+const BLANK_H = 32.6;  const BLANK_G = 9.35;
+export function buildBlanks(context is Context, id is Id, k is number) returns array
+{
+    const c = C_POS[k];
+    var spans = [];
+    const lo = c - TG_H - CL;  const hi = c + TG_H + CL;
+    if (k == 0) spans = [[hi, 1], [hi + BLANK_H + 0.3, 1]];
+    else if (k == 1) spans = [[lo - BLANK_H, -1], [hi, 1]];
+    else spans = [[lo - BLANK_H, -1], [lo - 2 * BLANK_H - 0.3, -1]];
+    var out = [];
+    for (var i = 0; i < size(spans); i += 1)
+    {
+        const z0 = spans[i][0];  const z1 = z0 + BLANK_H;
+        const bid = id + ("b" ~ i);
+        tipBox(context, bid + "x", SL_D[0] + CL, SL_D[1] - CL, TIP_T[0], SL_T[1] - 0.5, z0, z1);
+        // the rail inside this span
+        var rc = 0;
+        for (var cc in C_POS) if (cc > z0 && cc < z1) rc = cc;
+        if (rc == 0) throw regenError("slot blank: no rail inside its span");
+        const gh = RAIL_H / 2 + 0.6;
+        tzPrism(context, bid + "g", [[RAIL_T[0] - 1, rc - gh], [SL_T[1], rc - gh], [SL_T[1], rc + gh], [RAIL_T[0] - 1, rc + gh]], SL_D[0] - 1, SL_D[0] + RAIL_P + 0.3);
+        opBoolean(context, bid + "gc", { "tools" : solids(context, bid + "g"), "targets" : qCreatedBy(bid + "x" + "b", EntityType.BODY), "operationType" : BooleanOperationType.SUBTRACTION });
+        const front = qContainsPoint(qCreatedBy(bid + "x" + "b", EntityType.FACE), Q((SL_D[0] + SL_D[1]) / 2, TIP_T[0], (z0 + z1) / 2) * millimeter);
+        finishEdges(context, bid + "r", qAdjacent(front, AdjacencyType.EDGE, EntityType.EDGE), 1.0, "slot blank front round");
+        out = append(out, evaluateQuery(context, qBodyType(qCreatedBy(bid + "x" + "b", EntityType.BODY), BodyType.SOLID))[0]);
+    }
+    return out;
+}
+
 // =============================================== WING (chair change) ===============================================
 // one vertical slot, a rib per position at its back, a catch groove per position in the outer wall, lead-ins at the mouth
 export function wingTools(context is Context, id is Id) returns map
@@ -657,8 +689,14 @@ export function buildSide(context is Context, id is Id, def is map) returns Quer
         setProperty(context, { "entities" : cu, "propertyType" : PropertyType.NAME, "value" : "REFERENCE cushion (foam + cover, not printed)" });
         setProperty(context, { "entities" : cu, "propertyType" : PropertyType.APPEARANCE, "value" : color(0.13, 0.17, 0.30) });
     }
-    setVariable(context, "gbgRoles", { "carrier" : car.carrier, "button" : def.latch ? car.button : qNothing(), "shuttle" : def.latch ? car.shuttle : qNothing(), "depth" : dp, "pad" : pad, "ring" : ring });
-    return qUnion(concatenateArrays([parts, [dp, pad, ring]]));
+    var blanks = [];
+    if (def.blanks == true)
+    {
+        blanks = buildBlanks(context, id + "blk", k);
+        for (var b in blanks) setProperty(context, { "entities" : b, "propertyType" : PropertyType.NAME, "value" : "sidepad slot blank" });
+    }
+    setVariable(context, "gbgRoles", { "blank0" : size(blanks) > 0 ? blanks[0] : qNothing(), "blank1" : size(blanks) > 1 ? blanks[1] : qNothing(), "carrier" : car.carrier, "button" : def.latch ? car.button : qNothing(), "shuttle" : def.latch ? car.shuttle : qNothing(), "depth" : dp, "pad" : pad, "ring" : ring });
+    return qUnion(concatenateArrays([parts, [dp, pad, ring], blanks]));
 }
 
 
@@ -688,10 +726,10 @@ function checkAll(context is Context, id is Id, definition is map) returns strin
         startFeature(context, sid, definition);
         try
         {
-            buildSide(context, sid + "L", { "kit" : kk, "pos" : pp, "depth" : dd, "latch" : true });
+            buildSide(context, sid + "L", { "kit" : kk, "pos" : pp, "depth" : dd, "latch" : true, "blanks" : true });
             const roles = getVariable(context, "gbgRoles");
             var kit = [];  var names = [];
-            for (var r in ["carrier", "button", "shuttle", "depth", "pad", "ring"]) { kit = append(kit, roles[r]); names = append(names, r); }
+            for (var r in ["carrier", "button", "shuttle", "depth", "pad", "ring", "blank0", "blank1"]) { kit = append(kit, roles[r]); names = append(names, r); }
             for (var b in kit) maxX = max(maxX, evBox3d(context, { "topology" : b }).maxCorner[0] / millimeter);
             for (var i = 0; i < size(kit); i += 1)
                 for (var j = i + 1; j < size(kit); j += 1)
@@ -735,6 +773,8 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
         definition.latch is boolean;
         annotation { "Name" : "Show the cushion (reference, not printed)" }
         definition.cushion is boolean;
+        annotation { "Name" : "Slot blanks (close the unused slot)" }
+        definition.blanks is boolean;
         annotation { "Name" : "Check all 24 settings against the chair (slow; builds nothing)" }
         definition.check is boolean;
     }
@@ -750,7 +790,7 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
         var msg = "";
         try silent { msg = getVariable(context, "gbgSkipped"); }
         if (msg != "") reportFeatureWarning(context, id, "Finish skipped: " ~ msg);
-    }, { "side" : SidePadSide.LEFT, "kit" : SidePadKit.LOW, "pos" : SidePadPos.P2, "depth" : SidePadDepth.D0, "latch" : true, "cushion" : true, "check" : false });
+    }, { "side" : SidePadSide.LEFT, "kit" : SidePadKit.LOW, "pos" : SidePadPos.P2, "depth" : SidePadDepth.D0, "latch" : true, "cushion" : true, "blanks" : true, "check" : false });
 
 annotation { "Feature Type Name" : "GbG Side Pad Wing (chair)", "Feature Type Description" : "Adds the side-pad socket v1.1 (vertical slot, a rib and a catch groove per height position, lead-ins) to the chair's wings" }
 export const gbgSidePadWing = defineFeature(function(context is Context, id is Id, definition is map)
