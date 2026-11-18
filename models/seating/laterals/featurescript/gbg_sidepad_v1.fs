@@ -37,9 +37,11 @@ const HOLE_R = 3.2;  const WALL = 3.0;  const HOLE_CH = 0.8;      // Ø6.4 holes
 const CH_W = 16.0;                          // finger channel over the hole column: 16 wide floor, 45° flanks, 3 deep (dome top flush with the wing surface)
 const RAMP = 6.5;                           // 30° entry ramp on the outer wall at the slot mouth: presses the bolt in as the arm slides home
 // ---------------- carrier ----------------
-const K0 = 14.0;  const Z_HOLD = 0.35;                            // straight run of the neck out of the slot before it bends toward the chair
-const TG_D = [1.4, 17.4];  const TG_T = [-14.0, 27.5];  const TG_H = 25.0;                 // tongue 16 x 41.5 x 50
+const K0 = 20.0;  const K1 = 30.0;                                // arm Bezier handles: straight out of the slot / straight into the knee
+const KNEE_X1 = 162.0;  const ARM_R = 5.0;  const KNEE_BLEND = 2.5;  const ARM_END = [12.5, 15.0];                         // knee block outer face (chair arm rests at x 165), arm corner radius
+const TG_R = 1.5;  const TG_D = [1.4, 17.4];  const TG_T = [-14.0, 27.5];  const TG_H = 25.0;                 // tongue 16 x 41.5 x 50
 const NOTCH = [-18.75, -6.25, 6.25, 18.75];
+const ROD_DZ = [-12.0, 12.0];  const ROD_L = 45.0;  const ROD_R = 2.15;                         // 2x carbon rod Ø4 x 45 (bonded, Ø4.3 bores)
 const D_OFF = 50.0;                         // pad centre 50 below the tongue (LOW) / above (HIGH, flipped)
 const T_POS0 = 227.0;                       // tongue centre positions T_POS0 + 12.5 k, k = 0..7
 const NK_Y = [25.0, 43.0];  const NK_HZ = 18.0;  const NK_R = 6.0;                         // neck section 18 x 36, centre y 34
@@ -174,62 +176,59 @@ function tdHole(context is Context, id is Id, p0 is Vector, p1 is Vector, r is n
     opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : ax, "endBound" : BoundingType.BLIND, "endDepth" : norm(p1 - p0) * millimeter });
     opDeleteBodies(context, id + "dsk", { "entities" : qCreatedBy(id + "sk", EntityType.BODY) });
 }
-// closed planar section (array of [x, y, z]) -> face; sections -> lofted solid (fallback: pairwise lofts, united)
-function sectionFace(context is Context, id is Id, pts is array) returns Query
+// ---------------- smooth geometry (no polylines, no fallbacks) ----------------
+// Every visible curve is a line / tangent-arc profile or a spline, and every loft is ONE loft through a few sections set
+// square to the path. If a loft fails the feature fails with an error: there is no silent piecewise fallback (that is what
+// left "layer lines" on v1.0's arm and pad base).
+//
+// rounded-rectangle profile: centre c, plane normal n, width w along the horizontal in-plane direction, height h along
+// the in-plane "up", corner radius r. Lines + tangent arcs, always drawn in the same order so lofts do not twist.
+function rrProfile(context is Context, id is Id, c is Vector, nIn is Vector, w is number, h is number, r is number, hint) returns Query
 {
-    var p = [];
-    for (var q in pts) p = append(p, vv(q));
-    p = append(p, vv(pts[0]));
-    opFitSpline(context, id + "w", { "points" : p });
-    opFillSurface(context, id + "f", { "edgesG0" : qCreatedBy(id + "w", EntityType.EDGE) });
-    return qCreatedBy(id + "f", EntityType.FACE);
+    const n = normalize(nIn);
+    var xd = hint == undefined ? cross(vector(0, 0, 1), n) : hint - n * dot(hint, n);      // width direction, in the section plane
+    if (norm(xd) < 1e-6) xd = vector(1, 0, 0);
+    const sk = newSketchOnPlane(context, id, { "sketchPlane" : plane(c * millimeter, n, normalize(xd)) });
+    const a = w / 2;  const b = h / 2;  const rr = min(r, min(a, b) - 0.05);  const k = rr * sqrt(0.5);
+    skLineSegment(sk, "t", { "start" : vector(-a + rr, b) * millimeter, "end" : vector(a - rr, b) * millimeter });
+    skArc(sk, "tr", { "start" : vector(a - rr, b) * millimeter, "mid" : vector(a - rr + k, b - rr + k) * millimeter, "end" : vector(a, b - rr) * millimeter });
+    skLineSegment(sk, "r", { "start" : vector(a, b - rr) * millimeter, "end" : vector(a, -b + rr) * millimeter });
+    skArc(sk, "br", { "start" : vector(a, -b + rr) * millimeter, "mid" : vector(a - rr + k, -b + rr - k) * millimeter, "end" : vector(a - rr, -b) * millimeter });
+    skLineSegment(sk, "b", { "start" : vector(a - rr, -b) * millimeter, "end" : vector(-a + rr, -b) * millimeter });
+    skArc(sk, "bl", { "start" : vector(-a + rr, -b) * millimeter, "mid" : vector(-a + rr - k, -b + rr - k) * millimeter, "end" : vector(-a, -b + rr) * millimeter });
+    skLineSegment(sk, "l", { "start" : vector(-a, -b + rr) * millimeter, "end" : vector(-a, b - rr) * millimeter });
+    skArc(sk, "tl", { "start" : vector(-a, b - rr) * millimeter, "mid" : vector(-a + rr - k, b - rr + k) * millimeter, "end" : vector(-a + rr, b) * millimeter });
+    skSolve(sk);
+    return qSketchRegion(id);
 }
-function loftSections(context is Context, id is Id, secs is array)
+// section record for rrLoft
+function sec(c is Vector, n is Vector, w is number, h is number, r is number) returns map
 {
-    var faces = [];
-    for (var i = 0; i < size(secs); i += 1) faces = append(faces, sectionFace(context, id + ("s" ~ i), secs[i]));
-    try silent { opLoft(context, id + "loft", { "profileSubqueries" : faces, "bodyType" : ToolBodyType.SOLID }); }
-    if (size(evaluateQuery(context, solids(context, id + "loft"))) == 0)
-    {
-        for (var i = 0; i + 1 < size(faces); i += 1)
-            try silent { opLoft(context, id + ("pc" ~ i), { "profileSubqueries" : [faces[i], faces[i + 1]], "bodyType" : ToolBodyType.SOLID }); }
-        if (size(evaluateQuery(context, solids(context, id))) > 1)
-            opBoolean(context, id + "pu", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
-    }
-    cleanup(context, id + "cl", id);
+    return { "c" : c, "n" : n, "w" : w, "h" : h, "r" : r, "x" : undefined };
 }
-// rounded-rect section (w across, h tall) centred c, in the plane normal to the horizontal tangent tg
-function rsec(c is Vector, tg is Vector, w is number, h is number, r is number) returns array
+// one smooth loft through rounded-rect sections; optional end tangency (square to the end sections)
+function rrLoft(context is Context, id is Id, secs is array, tanStart is boolean, tanEnd is boolean)
 {
-    var t = normalize(vector(tg[0], tg[1], 0));
-    const n = cross(vector(0, 0, 1), t);
-    var o = [];
-    const corners = [[1, 1, 0], [-1, 1, 90], [-1, -1, 180], [1, -1, 270]];
-    for (var cc in corners)
-    {
-        const cx = cc[0] * (w / 2 - r);  const cz = cc[1] * (h / 2 - r);
-        for (var k = 0; k < 6; k += 1)
-        {
-            const a = (cc[2] + 90 * k / 5) * degree;
-            const u = cx + r * cos(a);  const v = cz + r * sin(a);
-            const p = c + n * u + vector(0, 0, v);
-            o = append(o, [p[0], p[1], p[2]]);
-        }
-    }
-    return o;
+    var profs = [];
+    for (var i = 0; i < size(secs); i += 1)
+        profs = append(profs, rrProfile(context, id + ("p" ~ i), secs[i].c, secs[i].n, secs[i].w, secs[i].h, secs[i].r, secs[i].x));
+    var di = [];
+    if (tanStart) di = append(di, { "profileIndex" : 0, "vector" : normalize(secs[0].n), "magnitude" : 1, "tangentToPlane" : false });
+    if (tanEnd) di = append(di, { "profileIndex" : size(secs) - 1, "vector" : normalize(secs[size(secs) - 1].n), "magnitude" : 1, "tangentToPlane" : false });
+    var def = { "profileSubqueries" : profs, "bodyType" : ToolBodyType.SOLID };
+    if (size(di) > 0) def.derivativeInfo = di;
+    try { opLoft(context, id + "loft", def); }
+    catch (e) { throw regenError("Side pad: smooth loft failed at " ~ toString(id) ~ " (" ~ size(secs) ~ " sections)"); }
+    var sks = [];
+    for (var i = 0; i < size(secs); i += 1) sks = append(sks, qCreatedBy(id + ("p" ~ i), EntityType.BODY));
+    opDeleteBodies(context, id + "dsk", { "entities" : qUnion(sks) });
 }
-// superellipse oval (exponent 2.6) in the plane x = const, centre (yc, zc)
-function ovalX(x is number, yc is number, zc is number, ry is number, rz is number) returns array
+// foot-family section in the plane x = const (foot, nose, seat recess, shim, boss): rounded rect, centre (yc, zc)
+function footSec(x is number, yc is number, zc is number, w is number, h is number, r is number) returns map
 {
-    var o = [];
-    for (var k = 0; k < 40; k += 1)
-    {
-        const a = 2 * PI * k / 40;
-        const c = cos(a * radian);  const s = sin(a * radian);
-        o = append(o, [x, yc + ry * sgn(c) * abs(c) ^ (2 / 2.6), zc + rz * sgn(s) * abs(s) ^ (2 / 2.6)]);
-    }
-    return o;
+    return sec(vector(x, yc, zc), vector(1, 0, 0), w, h, r);
 }
+const FOOT_R = 13.0;                 // foot corner radius (the v1.0 superellipse foot, as a rounded rectangle)
 function bez(p0 is Vector, p1 is Vector, p2 is Vector, p3 is Vector, s is number) returns Vector
 {
     return p0 * (1 - s) ^ 3 + p1 * 3 * (1 - s) ^ 2 * s + p2 * 3 * (1 - s) * s ^ 2 + p3 * s ^ 3;
@@ -237,8 +236,9 @@ function bez(p0 is Vector, p1 is Vector, p2 is Vector, p3 is Vector, s is number
 // straight neck bar along x (rounded 18 x 36 section)
 function barX(context is Context, id is Id, x0 is number, x1 is number, zc is number)
 {
-    loftSections(context, id, [rsec(vector(x0, (NK_Y[0] + NK_Y[1]) / 2, zc), vector(1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R),
-                                rsec(vector(x1, (NK_Y[0] + NK_Y[1]) / 2, zc), vector(1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R)]);
+    const yc = (NK_Y[0] + NK_Y[1]) / 2;
+    rrLoft(context, id, [sec(vector(x0, yc, zc), vector(1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R),
+                         sec(vector(x1, yc, zc), vector(1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R)], false, false);
 }
 // vertical prism of a world x-y polygon (points as mm vectors, z ignored), z0..z1
 function xyPrism(context is Context, id is Id, pts is array, z0 is number, z1 is number)
@@ -278,32 +278,43 @@ function splitRegion(context is Context, id is Id, zc is number, below is boolea
 export function buildCarrier(context is Context, id is Id, c is number, zp is number) returns Query
 {
     const low = zp < c;
-    // tongue in the slot
-    tipRBox(context, id + "tg", TG_D[0], TG_D[1], TG_T[0], TG_T[1], c - TG_H, c + TG_H, 1.5);
-    // swept neck: Bezier from the tongue nose (heading out of the slot) to the joint end (heading -x)
-    const nose = Q((TG_D[0] + TG_D[1]) / 2, TG_T[0] + 1, c);
+    // tongue in the slot: edges rounded 1.5, except round the nose face, where the arm continues flush (same section)
+    tipBox(context, id + "tg", TG_D[0], TG_D[1], TG_T[0], TG_T[1], c - TG_H, c + TG_H);
+    const tgNose = qContainsPoint(qCreatedBy(id + "tg" + "b", EntityType.FACE), Q((TG_D[0] + TG_D[1]) / 2, TG_T[0], c) * millimeter);
+    finishEdges(context, id + "tgf", qSubtraction(qCreatedBy(id + "tg" + "b", EntityType.EDGE), qAdjacent(tgNose, AdjacencyType.EDGE, EntityType.EDGE)), TG_R, "tongue edge round");
+    // ARM (knee route, owner's choice 2026-11-18): out of the slot along -t, then curving down (LOW) / up (HIGH) in a near-
+    // vertical plane onto the top of the KNEE block, which is the outer end of the joint bar (x J1+0.3 .. KNEE_X1). ONE loft through
+    // 5 sections square to the 3D path; the bend is in the arm's tall direction with a large radius, so it never folds.
+    // (v1.0's hook turned ~128 deg in plan inside the chair width: a ~5 mm bend for an 18 mm arm, which folded into lumps.)
+    const sz = low ? 1 : -1;                                   // the arm lands on the top (LOW) / bottom (HIGH) of the knee
+    const nose = Q((TG_D[0] + TG_D[1]) / 2, TG_T[0], c);
     const dout = -dirT();
-    const endp = vector(J1, (NK_Y[0] + NK_Y[1]) / 2, zp);
-    const p1 = nose + dout * K0;  const p2 = endp + vector(1, 0, 0) * 8;
+    const yn = (NK_Y[0] + NK_Y[1]) / 2;
+    const xe = (J1 + 0.3 + KNEE_X1) / 2;
+    const endp = vector(xe, yn, zp + sz * (NK_HZ - 3.0));      // sunk 3 into the knee (its top is rounded r 6)
+    const p1 = nose + dout * K0;  const p2 = endp + vector(0, 0, sz * K1);
+    const ch = vector(endp[0] - nose[0], endp[1] - nose[1], 0);
+    const side = normalize(cross(vector(0, 0, 1), normalize(ch)));       // width direction hint (horizontal, across the arm)
     var secs = [];
-    for (var s in linspace(0, 1, 13))
+    for (var s in [0, 0.25, 0.5, 0.75, 1])
     {
-        // plan path from the Bezier; height held at the tongue until the neck is out of the wing, then eased down/up to the pad
-        var c0 = bez(nose, p1, p2, endp, s);
-        const sz = min(max((s - Z_HOLD) / (1 - Z_HOLD), 0), 1);  const ez = sz * sz * (3 - 2 * sz);
-        c0 = vector(c0[0], c0[1], c + (zp - c) * ez);
-        const tg = bez(nose, p1, p2, endp, min(s + 0.02, 1)) - bez(nose, p1, p2, endp, max(s - 0.02, 0));
-        const sw = min(max((s - 0.3) / 0.7, 0), 1);  const ew = sw * sw * (3 - 2 * sw);      // stay tongue-size until clear of the slot
-        secs = append(secs, rsec(c0, tg, lerp(TG_D[1] - TG_D[0] - 0.2, NK_Y[1] - NK_Y[0], ew), lerp(2 * TG_H - 0.4, 2 * NK_HZ, ew), 5.0));
+        const tg = bez(nose, p1, p2, endp, min(s + 0.01, 1)) - bez(nose, p1, p2, endp, max(s - 0.01, 0));
+        const u = min(max((s - 0.1) / 0.9, 0), 1);  const e = u * u * (3 - 2 * u);   // tapers from the tongue section (never wider than the slot)
+        var q = sec(bez(nose, p1, p2, endp, s), tg, lerp(TG_D[1] - TG_D[0], ARM_END[0], e), lerp(2 * TG_H, ARM_END[1], e), lerp(TG_R, ARM_R, e));
+        q.x = side;
+        secs = append(secs, q);
     }
-    loftSections(context, id + "sw", secs);
-    // the sweep stops at the joint face (x J1) where it is behind the pad (y < 56)
-    fCuboid(context, id + "swc", { "corner1" : v3(0, 0, zp - 60), "corner2" : v3(J1, 56, zp + 60) });
-    opBoolean(context, id + "swcut", { "tools" : qCreatedBy(id + "swc", EntityType.BODY), "targets" : solids(context, id + "sw"), "operationType" : BooleanOperationType.SUBTRACTION });
-    // joint half
-    barX(context, id + "jb", J0, J1 + 2, zp);
+    rrLoft(context, id + "sw", secs, true, true);
+    // knee block: the joint bar's outer end, full height, x J1 + 0.3 .. KNEE_X1 (outside the depth piece's dovetail half)
+    barX(context, id + "kn", J1 - 0.01, KNEE_X1, zp);
+    finishEdges(context, id + "knf", qCapEntity(id + "kn" + "loft", CapType.END, EntityType.EDGE), ARM_R, "knee end round");
+    // joint half (dovetail), joined to the knee
+    barX(context, id + "jb", J0, J1 + 0.31, zp);
     splitRegion(context, id + "jr", zp, low, 0);
     opBoolean(context, id + "jint", { "tools" : qUnion([solids(context, id + "jb"), solids(context, id + "jr")]), "operationType" : BooleanOperationType.INTERSECTION });
+    // the knee joint: arm + knee first, blend their intersection, then everything else
+    opBoolean(context, id + "ak", { "tools" : qUnion([solids(context, id + "sw"), solids(context, id + "kn")]), "operationType" : BooleanOperationType.UNION });
+    finishEdges(context, id + "kf", qCreatedBy(id + "ak", EntityType.EDGE), KNEE_BLEND, "arm-knee blend");
     opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "carrier");
     // cuts: comb notches, bolt bore + washer pocket + 2 M3, retainer M5 + nut (6 mm up), all through tool bodies
@@ -311,6 +322,9 @@ export function buildCarrier(context is Context, id is Id, c is number, zp is nu
     for (var i = 0; i < size(NOTCH); i += 1)
         tipBox(context, C + ("n" ~ i), TG_D[0] - 1, TG_D[1] + 1, RIB_T[0] - 0.4, TG_T[1] + 1, c + NOTCH[i] - 3.1, c + NOTCH[i] + 3.1);
     cylAx(context, C + "bore", Q(B_BORE_D0, BOLT_T, c), Q(TG_D[1] + 1, BOLT_T, c), B_BORE_R);
+    // 2x Ø4 x 45 carbon rods bonded along the tongue into the neck (as v1.0), 12 above / below the bolt: clear of the bolt
+    // bore, the M3 nut channels and the comb notches
+    for (var dz in ROD_DZ) cylAx(context, C + ("cf" ~ (dz > 0 ? "u" : "d")), Q((TG_D[0] + TG_D[1]) / 2, TG_T[1] - 2.0, c + dz), Q((TG_D[0] + TG_D[1]) / 2, TG_T[1] - 2.0 - ROD_L - 1.5, c + dz), ROD_R);
     tipBox(context, C + "wp", TG_D[1] - WASH_T, TG_D[1] + 1, BOLT_T - M3_DT - 4.2, BOLT_T + M3_DT + 4.2, c - 6, c + 6);
     for (var s in [-1, 1])
     {
@@ -331,7 +345,8 @@ export function buildCarrier(context is Context, id is Id, c is number, zp is nu
 function noseBody(context is Context, id is Id, xs is number, zc is number)
 {
     const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    loftSections(context, id + "ns", [ovalX(xs + 0.6, yc, zc, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 3.0, FOOT_HZ - 3.0), ovalX(xs - NOSE, yc, zc, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 3.6, FOOT_HZ - 3.6)]);
+    const fw = FOOT_Y[1] - FOOT_Y[0];
+    rrLoft(context, id + "ns", [footSec(xs + 0.6, yc, zc, fw - 6.0, 2 * FOOT_HZ - 6.0, FOOT_R - 3.0), footSec(xs - NOSE, yc, zc, fw - 7.2, 2 * FOOT_HZ - 7.2, FOOT_R - 3.6)], false, false);
     for (var r in [-9.375, 9.375])
         fCuboid(context, id + ("rib" ~ (r > 0 ? "u" : "d")), { "corner1" : v3(xs - NOSE - 1.0, FOOT_Y[0] + 8, zc + r - NOSE_RIB), "corner2" : v3(xs - NOSE + 0.2, FOOT_Y[1] - 8, zc + r + NOSE_RIB) });
 }
@@ -341,7 +356,8 @@ function seatCut(context is Context, id is Id, xs is number, zc is number)
     const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
     // the nose shape (+0.2 all round) at each of the 3 seat positions: an oval stretched taller would pinch the nose's corners
     for (var k = -1; k <= 1; k += 1)
-        loftSections(context, id + ("seat" ~ (k + 1)), [ovalX(xs + 0.1, yc, zc + k * FINE, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 2.8, FOOT_HZ - 2.8), ovalX(xs - SEAT_D - 0.1, yc, zc + k * FINE, (FOOT_Y[1] - FOOT_Y[0]) / 2 - 3.4, FOOT_HZ - 3.4)]);
+        rrLoft(context, id + ("seat" ~ (k + 1)), [footSec(xs + 0.1, yc, zc + k * FINE, FOOT_Y[1] - FOOT_Y[0] - 5.6, 2 * FOOT_HZ - 5.6, FOOT_R - 2.8),
+                                                  footSec(xs - SEAT_D - 0.1, yc, zc + k * FINE, FOOT_Y[1] - FOOT_Y[0] - 6.8, 2 * FOOT_HZ - 6.8, FOOT_R - 3.4)], false, false);
     for (var k = -5; k <= 5; k += 1)
     {
         const z = zc + 3.125 + 6.25 * k;
@@ -360,23 +376,17 @@ export function buildDepth(context is Context, id is Id, xs is number, zp is num
     barX(context, id + "jb", J0, J1 - 0.3, zp);
     const L = 10.0;
     if (xs + L < J0) barX(context, id + "nk", xs + L, J0 + 0.02, zp);
-    // trumpet flare: neck section -> oval foot with a concave lip
-    const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    var rings = [rsec(vector(min(xs + L, J0 + 0.02), (NK_Y[0] + NK_Y[1]) / 2, zp), vector(1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R)];
-    for (var u in linspace(L * 0.8, 0.6, 6))
-    {
-        const f = 1 - u / L;
-        const ry = 9 + ((FOOT_Y[1] - FOOT_Y[0]) / 2 - 9) * (1 - (1 - f) ^ 2) + 2 * f ^ 3;
-        const rz = NK_HZ + (FOOT_HZ - NK_HZ) * f + 2 * f ^ 3;
-        const ycu = 34 + (yc - 34) * (1 - (1 - f) ^ 2);
-        rings = append(rings, ovalX(xs + u, ycu, zp, ry, rz));
-    }
-    loftSections(context, id + "fl", rings);
+    // trumpet flare: ONE loft, neck section -> waist -> foot (concave lip), tangent to the neck bar
+    const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;  const yn = (NK_Y[0] + NK_Y[1]) / 2;  const fw = FOOT_Y[1] - FOOT_Y[0];
+    const xn = min(xs + L, J0 + 0.02);
+    rrLoft(context, id + "fl", [sec(vector(xn, yn, zp), vector(-1, 0, 0), NK_Y[1] - NK_Y[0], 2 * NK_HZ, NK_R),
+                                sec(vector(xs + 0.45 * (xn - xs), lerp(yn, yc, 0.75), zp), vector(-1, 0, 0), lerp(NK_Y[1] - NK_Y[0], fw + 4, 0.55), lerp(2 * NK_HZ, 2 * FOOT_HZ + 4, 0.45), lerp(NK_R, FOOT_R, 0.6)),
+                                sec(vector(xs + 0.6, yc, zp), vector(-1, 0, 0), fw + 4, 2 * FOOT_HZ + 4, FOOT_R + 2)], true, false);
     // nose into the seat + 2 ribs into the seat grooves
     noseBody(context, id + "nb", xs, zp);
     // screw-head land behind the 2 pad screws (flat face at x = xs + HS, rounded corners)
     const yl0 = FOOT_Y[0] + 0.3;  const yl1 = PSYS[1] + M5_HEAD_R + 2.0;  const hl = 2 * (FINE + TILT_Z + M5_HEAD_R + 1.0);
-    loftSections(context, id + "land", [rsec(vector(xs + 0.4, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0), rsec(vector(xs + HS, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0)]);
+    rrLoft(context, id + "land", [sec(vector(xs + 0.4, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0), sec(vector(xs + HS, (yl0 + yl1) / 2, zp), vector(1, 0, 0), yl1 - yl0, hl, 3.0)], false, false);
     opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "depth piece");
     const C = id + "cut";
@@ -434,11 +444,13 @@ function yzPrism(context is Context, id is Id, pts is array, x0 is number, x1 is
 function planStrip(context is Context, id is Id, xs is number, a is number, b is number, z0 is number, z1 is number)
 {
     const sk = newSketchOnPlane(context, id + "sk", { "sketchPlane" : plane(v3(0, 0, z0), vector(0, 0, 1), vector(1, 0, 0)) });
-    var p = [];
-    for (var y in linspace(PAD_Y0 - 2, PAD_Y1 + 2, 30)) p = append(p, vector(shellXi(y, xs) + a, y) * millimeter);
-    for (var y in linspace(PAD_Y1 + 2, PAD_Y0 - 2, 30)) p = append(p, vector(shellXi(y, xs) + b, y) * millimeter);
-    p = append(p, p[0]);
-    for (var i = 0; i + 1 < size(p); i += 1) skLineSegment(sk, "l" ~ i, { "start" : p[i], "end" : p[i + 1] });
+    // the two curved faces are smooth splines through the shell curve (offset a and b); short straight ends close it
+    var pa = [];  var pb = [];
+    for (var y in linspace(PAD_Y0 - 2, PAD_Y1 + 2, 15)) { pa = append(pa, vector(shellXi(y, xs) + a, y) * millimeter);  pb = append(pb, vector(shellXi(y, xs) + b, y) * millimeter); }
+    skFitSpline(sk, "sa", { "points" : pa });
+    skFitSpline(sk, "sb", { "points" : pb });
+    skLineSegment(sk, "e0", { "start" : pa[0], "end" : pb[0] });
+    skLineSegment(sk, "e1", { "start" : pa[size(pa) - 1], "end" : pb[size(pb) - 1] });
     skSolve(sk);
     opExtrude(context, id + "ex", { "entities" : qSketchRegion(id + "sk"), "direction" : vector(0, 0, 1), "endBound" : BoundingType.BLIND, "endDepth" : (z1 - z0) * millimeter });
     opDeleteBodies(context, id + "dsk", { "entities" : qCreatedBy(id + "sk", EntityType.BODY) });
@@ -458,7 +470,7 @@ export function buildPadShell(context is Context, id is Id, xs is number, zc is 
     // inner thickening behind the foot seat (child side, under the EVA)
     const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
     const yb = (PSYS[0] + PSYS[1]) / 2;
-    loftSections(context, id + "boss", [ovalX(xs - SHELL_T + 0.5, yb, zc, 14.5, 12.0), ovalX(xs - SHELL_T - BOSS_T, yb, zc, 11.5, 8.5)]);
+    rrLoft(context, id + "boss", [footSec(xs - SHELL_T + 0.5, yb, zc, 29.0, 24.0, 9.0), footSec(xs - SHELL_T - BOSS_T, yb, zc, 23.0, 17.0, 7.0)], false, false);
     opBoolean(context, id + "u", { "tools" : solids(context, id), "operationType" : BooleanOperationType.UNION });
     const body = oneBody(context, id, "pad shell");
     const C = id + "cut";
@@ -543,7 +555,7 @@ export function buildShim(context is Context, id is Id, xs is number, za is numb
     const xf = tiltXf(xs, za, ang);
     const yc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
     const t = 2 * FOOT_HZ * tan(abs(ang) * degree);
-    loftSections(context, id + "w", [ovalX(xs, yc, za, (FOOT_Y[1] - FOOT_Y[0]) / 2 + 0.5, FOOT_HZ + 0.5), ovalX(xs - SHIM0 - t - 3, yc, za, (FOOT_Y[1] - FOOT_Y[0]) / 2 + 0.5, FOOT_HZ + 0.5)]);
+    rrLoft(context, id + "w", [footSec(xs, yc, za, FOOT_Y[1] - FOOT_Y[0] + 1.0, 2 * FOOT_HZ + 1.0, FOOT_R + 0.5), footSec(xs - SHIM0 - t - 3, yc, za, FOOT_Y[1] - FOOT_Y[0] + 1.0, 2 * FOOT_HZ + 1.0, FOOT_R + 0.5)], false, false);
     fCuboid(context, id + "hs", { "corner1" : v3(xs - 80, -80, zp - 120), "corner2" : v3(xs, 120, zp + 120) });
     opTransform(context, id + "hsx", { "bodies" : qCreatedBy(id + "hs", EntityType.BODY), "transform" : xf });
     opBoolean(context, id + "cutp", { "tools" : qCreatedBy(id + "hs", EntityType.BODY), "targets" : solids(context, id + "w"), "operationType" : BooleanOperationType.SUBTRACTION });
@@ -716,7 +728,7 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
         }
         var msg = "";
         try silent { msg = getVariable(context, "gbgSkipped"); }
-        if (msg != "") reportFeatureInfo(context, id, "Finish skipped: " ~ msg);
+        if (msg != "") reportFeatureWarning(context, id, "Finish skipped: " ~ msg);
     }, { "side" : SidePadSide.LEFT, "kit" : SidePadKit.LOW, "step" : 2, "depth" : SidePadDepth.N0, "seat" : SidePadSeat.MID, "tilt" : SidePadTilt.T0, "bolt" : true });
 
 annotation { "Feature Type Name" : "GbG Side Pad Wing (chair)", "Feature Type Description" : "Adds the side-pad socket (vertical slot, comb ribs, bolt-hole track, entry ramp) to the chair's wings" }
