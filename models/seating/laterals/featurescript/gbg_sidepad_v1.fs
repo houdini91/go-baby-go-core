@@ -55,7 +55,7 @@ const PILL_W = 7.0;  const PILL_H = 9.0;  const CAP_T = 4.5;                    
 // ---------------- joint (hidden tenon in a sleeve) ----------------
 const TEN_W = 13.0;  const TEN_H = 20.0;  const TEN_L = 13.0;  const TEN_R = 2.5;  const JS_DX = 6.5;  const JGAP = 0.3;
 // ---------------- depth piece + pad mount ----------------
-const TPIN = [[3.5, 7.0], [-3.5, 7.0], [3.5, -7.0], [-3.5, -7.0]];  const TPIN_R = 1.65;  const TPIN_IN = 12.0;   // 4x carbon Ø3 pins across the tenon root (y, z off the joint axis), 12 mm into the arm
+const TPIN = [[3.5, 7.4], [-3.5, 7.4], [3.5, -7.4], [-3.5, -7.4]];  const TPIN_R = 1.15;  const TPIN_IN = 8.0;   // 4x carbon Ø2 pins across the tenon root (y, z off the joint axis), 8 mm into the arm
 const FLARE_L = 18.0;  const FOOT_Y = [19.0, 46.0];  const FOOT_HZ = 20.0;  const FOOT_R = 14.5;
 const FLOOR_T = 6.0;                                       // foot wall between the pad back and the hollow's floor
 const PSY = YEND + (ARM_W - TAPER_W) / 2;  const BOSS_R = 7.0;  const BOSS_H = 3.0;                    // pad-screw boss on the shell BACK (hidden under the foot): M5 nut from the foot side
