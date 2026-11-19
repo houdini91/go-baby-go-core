@@ -71,7 +71,7 @@ const TPIN = [[3.5, 7.4], [-3.5, 7.4], [3.5, -7.4], [-3.5, -7.4]];  const TPIN_R
 // ---------------- depth piece + pad mount ----------------
 const XS = 104.0;                                               // D0: pad back x 104 (the one depth piece; width set by the foam)
 const PAD_OFF = 11.0;                                           // pad screw positions: pad centre = arm axis +- 11
-const FLARE_L = 18.0;  const FOOT_Y = [19.0, 46.0];  const FOOT_HZ = 20.0;  const FOOT_R = 13.0;
+const FLARE_L = 18.0;  const FOOT_Y = [19.0, 46.0];  const FOOT_HZ = 20.0;  const FOOT_R = 14.5;
 const DV = [9.0, 12.0, 2.5];                                    // dovetail rail: root width, top width (z), height
 const DV_CL = 0.15;  const DV_FRONT = 22.0;                     // groove clearance per side; groove closed in front of y 22 (the stop)
 const PS_Y = 32.5;                                              // pad screw y (foot centre)
@@ -267,6 +267,13 @@ function keepOnly(context is Context, id is Id, target is Query, d0, d1, t0, t1,
     if (sheared) opTransform(context, id + "sh", { "bodies" : qCreatedBy(id + "big" + "b", EntityType.BODY), "transform" : shearS() });
     opBoolean(context, id + "trim", { "tools" : qCreatedBy(id + "big" + "b", EntityType.BODY), "targets" : target, "operationType" : BooleanOperationType.SUBTRACTION });
 }
+// target := target ∩ other (by subtraction, so the target keeps its identity); `other` is deleted
+function intersectInto(context is Context, id is Id, target is Query, other is Query)
+{
+    opPattern(context, id + "c", { "entities" : target, "transforms" : [identityTransform()], "instanceNames" : ["c"] });
+    opBoolean(context, id + "a", { "tools" : other, "targets" : qCreatedBy(id + "c", EntityType.BODY), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, id + "b", { "tools" : qCreatedBy(id + "c", EntityType.BODY), "targets" : target, "operationType" : BooleanOperationType.SUBTRACTION });
+}
 function copyOf(context is Context, id is Id, q is Query) returns Query
 {
     opPattern(context, id, { "entities" : q, "transforms" : [identityTransform()], "instanceNames" : ["c"] });
@@ -293,7 +300,14 @@ function engrave(context is Context, id is Id, target is Query, o is Vector, xd 
         });
     if (!ok) warn(context, "engraving '" ~ txt ~ "' failed");
 }
-function stage(context is Context, st is string) { setVariable(context, "gbgStage", st); }
+function stage(context is Context, st is string)
+{
+    var prev = "";
+    try silent { prev = getVariable(context, "gbgStage"); }
+    const parts = splitIntoCharacters(prev);
+    if (size(parts) > 2000) { var t = ""; for (var i = size(parts) - 1500; i < size(parts); i += 1) t = t ~ parts[i]; prev = t; }
+    setVariable(context, "gbgStage", prev ~ " | " ~ st);
+}
 function stageOf(context is Context) returns string { var st = "?"; try silent { st = getVariable(context, "gbgStage"); } return st; }
 function name(context is Context, q is Query, n is string) { setProperty(context, { "entities" : q, "propertyType" : PropertyType.NAME, "value" : n }); }
 function paint(context is Context, q is Query, c is Color) { setProperty(context, { "entities" : q, "propertyType" : PropertyType.APPEARANCE, "value" : c }); }
@@ -626,23 +640,29 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     tdHole(context, id + "rodb", QS(ROD[0], 26.0, rz), QS(ROD[0], ROD_T[1], rz), ROD[2], -dirD());
     // shear everything into the leaned frame
     stage(context, "C39");
-    opTransform(context, L + "sh", { "bodies" : qUnion([solids(context, L + "con"), solids(context, L + "blk"), solids(context, L + "to"), solids(context, K + "cch"), solids(context, K + "spr"), solids(context, K + "bch"), solids(context, K + "tch")]), "transform" : shearS() });
+    const M = id + "lm";
+    const shl = [L + "con", L + "blk", L + "to", K + "cch", K + "spr", K + "bch", K + "tch"];
+    for (var i = 0; i < size(shl); i += 1)
+    {
+        stage(context, "C39 shear " ~ i ~ " n=" ~ size(evaluateQuery(context, solids(context, shl[i]))));
+        opTransform(context, M + ("sh" ~ i), { "bodies" : solids(context, shl[i]), "transform" : shearS() });
+    }
     // the cap: B - (A - nose) = the nose skin inside the stadium
     stage(context, "C40");
-    opBoolean(context, L + "o1", { "tools" : ncp, "targets" : solids(context, L + "ca"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, M + "o1", { "tools" : ncp, "targets" : solids(context, L + "ca"), "operationType" : BooleanOperationType.SUBTRACTION });
     stage(context, "C41");
-    opBoolean(context, L + "o2", { "tools" : solids(context, L + "ca"), "targets" : solids(context, L + "cb"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, M + "o2", { "tools" : solids(context, L + "ca"), "targets" : solids(context, L + "cb"), "operationType" : BooleanOperationType.SUBTRACTION });
     // thumb scoop: cylinder along t', 0.8 deep at the centre, 0 at the round ends
     stage(context, "C42");
     const RS = (BT_H * BT_H / 4 + 0.64) / 1.6;
     stage(context, "C43");
-    cylAx(context, L + "scoop", QS(FD - 0.8 + RS, BT_TC - 20, C), QS(FD - 0.8 + RS, BT_TC + 20, C), RS);
+    cylAx(context, M + "scoop", QS(FD - 0.8 + RS, BT_TC - 20, C), QS(FD - 0.8 + RS, BT_TC + 20, C), RS);
     stage(context, "C44");
-    opBoolean(context, L + "sco", { "tools" : solids(context, L + "scoop"), "targets" : solids(context, L + "cb"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opBoolean(context, M + "sco", { "tools" : solids(context, M + "scoop"), "targets" : solids(context, L + "cb"), "operationType" : BooleanOperationType.SUBTRACTION });
     stage(context, "C45");
     const bparts = qUnion([solids(context, L + "cb"), solids(context, L + "fl"), solids(context, L + "sp"), qCreatedBy(L + "con" + "b", EntityType.BODY), qCreatedBy(L + "blk" + "b", EntityType.BODY), solids(context, L + "to")]);
     stage(context, "C46");
-    opBoolean(context, L + "bu", { "tools" : bparts, "operationType" : BooleanOperationType.UNION });
+    opBoolean(context, M + "bu", { "tools" : bparts, "operationType" : BooleanOperationType.UNION });
     stage(context, "C47");
     const button = one(context, bparts, "button");
     // 0.4 round on the cap's face rim (the edges lying on the nose skin)
@@ -654,7 +674,7 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
         if (toS(mid)[0] > FD - 1.0) rim = append(rim, e);
     }
     stage(context, "C48");
-    finishEdges(context, L + "rim", qUnion(rim), 0.4, "button face rim round");
+    finishEdges(context, M + "rim", qUnion(rim), 0.4, "button face rim round");
     stage(context, "C49");
     const sleeve = one(context, solids(context, L + "so"), "tell sleeve");
     stage(context, "C50");
@@ -744,10 +764,7 @@ function band(context is Context, id is Id, xs is number, zc is number, i0 is nu
     yzPrism(context, id + "o", padOutlineYZ(zc, i0), xs - 80, xs + 20);
     yzPrism(context, id + "i", padOutlineYZ(zc, i1), xs - 80, xs + 20);
     opBoolean(context, id + "r", { "tools" : solids(context, id + "i"), "targets" : solids(context, id + "o"), "operationType" : BooleanOperationType.SUBTRACTION });
-    // keep the ring inside the strip: strip - (strip - ring) keeps the strip body
-    opPattern(context, id + "oc", { "entities" : solids(context, id + "o"), "transforms" : [identityTransform()], "instanceNames" : ["c"] });
-    opBoolean(context, id + "x1", { "tools" : solids(context, id + "oc"), "targets" : solids(context, id + "s"), "operationType" : BooleanOperationType.SUBTRACTION });
-    opBoolean(context, id + "x2", { "tools" : solids(context, id + "s"), "targets" : solids(context, id + "o"), "operationType" : BooleanOperationType.SUBTRACTION });
+    intersectInto(context, id + "x", solids(context, id + "o"), solids(context, id + "s"));
 }
 // dovetail rail along y (male) on the pad back at height zr; length y0..y1; x from xb (sunk 0.5) outward
 function dovetail(context is Context, id is Id, xb is number, zr is number, y0 is number, y1 is number, wr is number, wt is number, h is number)
@@ -768,13 +785,13 @@ export function buildPadShell(context is Context, id is Id, xs is number, zc is 
 {
     planStrip(context, id + "st", xs, 0, SHELL_T, zc - PAD_H / 2 - 2, zc + PAD_H / 2 + 2);
     yzPrism(context, id + "ol", padOutlineYZ(zc, 0), xs - 80, xs + 20);
-    opBoolean(context, id + "x1", { "tools" : solids(context, id + "ol"), "targets" : solids(context, id + "st"), "operationType" : BooleanOperationType.SUBTRACTION, "keepTools" : true });
-    opBoolean(context, id + "x2", { "tools" : solids(context, id + "st"), "targets" : solids(context, id + "ol"), "operationType" : BooleanOperationType.SUBTRACTION });
+    intersectInto(context, id + "x", solids(context, id + "ol"), solids(context, id + "st"));
     const plate = one(context, solids(context, id + "ol"), "pad plate");
     const xb = shellXi(PS_Y, xs) + SHELL_T;
     dovetail(context, id + "dv", xb, zc, DV_FRONT + 0.3, FOOT_Y[1], DV[0], DV[1], DV[2]);
-    opBoolean(context, id + "u", { "tools" : qUnion([plate, solids(context, id + "dv")]), "operationType" : BooleanOperationType.UNION });
-    const body = one(context, qUnion([plate, solids(context, id + "dv")]), "pad shell");
+    opBoolean(context, id + "u", { "tools" : qUnion([solids(context, id + "ol"), solids(context, id + "dv")]), "operationType" : BooleanOperationType.UNION });
+    one(context, qUnion([solids(context, id + "ol"), solids(context, id + "dv")]), "pad shell");
+    const body = qBodyType(qUnion([qCreatedBy(id + "ol", EntityType.BODY), qCreatedBy(id + "dv", EntityType.BODY)]), BodyType.SOLID);
     const K = id + "cut";
     band(context, K + "g", xs, zc, GROOVE[0], GROOVE[1], SHELL_T - GROOVE_D, SHELL_T + 1);
     band(context, K + "u", xs, zc, RING[1] - 0.2, UNDERCUT, SHELL_T - GROOVE_D, SHELL_T - GROOVE_D + 1.0);    // snap undercut
@@ -782,6 +799,13 @@ export function buildPadShell(context is Context, id is Id, xs is number, zc is 
     cylAx(context, K + "ph", vector(xb - SHELL_T - 1, PS_Y, zc), vector(xb + DV[2] + 1, PS_Y, zc), M5_CLEAR / 2);
     cylAx(context, K + "cb", vector(xb - SHELL_T - 1, PS_Y, zc), vector(xb - SHELL_T + BH_K, PS_Y, zc), BH_R);
     opBoolean(context, id + "cutop", { "tools" : solids(context, K), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
+    const pb = evaluateQuery(context, body);
+    if (size(pb) != 1)
+    {
+        var info2 = "";
+        for (var b in pb) info2 = info2 ~ " vol " ~ r1(evVolume(context, { "entities" : b }) / millimeter ^ 3) ~ " " ~ bboxStr(context, b);
+        throw regenError("pad shell after cuts: " ~ size(pb) ~ " bodies:" ~ info2);
+    }
     // rail ends: round the free back end (front end butts on the groove's closed front)
     return body;
 }
@@ -797,14 +821,12 @@ export function buildCushion(context is Context, id is Id, xs is number, zc is n
 {
     planStrip(context, id + "fs", xs, -foam, 0.0, zc - PAD_H / 2 - 4, zc + PAD_H / 2 + 4);
     yzPrism(context, id + "fo", padOutlineYZ(zc, 0.5), xs - 80, xs + 20);
-    opBoolean(context, id + "f1", { "tools" : solids(context, id + "fo"), "targets" : solids(context, id + "fs"), "operationType" : BooleanOperationType.SUBTRACTION, "keepTools" : true });
-    opBoolean(context, id + "f2", { "tools" : solids(context, id + "fs"), "targets" : solids(context, id + "fo"), "operationType" : BooleanOperationType.SUBTRACTION });
+    intersectInto(context, id + "f", solids(context, id + "fo"), solids(context, id + "fs"));
     const fm = one(context, solids(context, id + "fo"), "foam");
     // cover: 3 mm skin over the foam face, round the edges and onto the back face up to the groove
     planStrip(context, id + "cs", xs, -foam - COVER_T, SHELL_T - GROOVE_D + 0.4, zc - PAD_H / 2 - 6, zc + PAD_H / 2 + 6);
     yzPrism(context, id + "co", padOutlineYZ(zc, -COVER_T + 0.5), xs - 80, xs + 20);
-    opBoolean(context, id + "c1", { "tools" : solids(context, id + "co"), "targets" : solids(context, id + "cs"), "operationType" : BooleanOperationType.SUBTRACTION, "keepTools" : true });
-    opBoolean(context, id + "c2", { "tools" : solids(context, id + "cs"), "targets" : solids(context, id + "co"), "operationType" : BooleanOperationType.SUBTRACTION });
+    intersectInto(context, id + "c", solids(context, id + "co"), solids(context, id + "cs"));
     const cv = one(context, solids(context, id + "co"), "cover");
     var rim = [];
     for (var e in evaluateQuery(context, qOwnedByBody(cv, EntityType.EDGE)))
@@ -813,10 +835,8 @@ export function buildCushion(context is Context, id is Id, xs is number, zc is n
     // hollow it: everything inside the cover that the shell + foam occupy
     planStrip(context, id + "hs", xs, -foam, SHELL_T + 2, zc - PAD_H / 2 - 6, zc + PAD_H / 2 + 6);
     yzPrism(context, id + "ho", padOutlineYZ(zc, 0), xs - 80, xs + 20);
-    opBoolean(context, id + "h1", { "tools" : solids(context, id + "ho"), "targets" : solids(context, id + "hs"), "operationType" : BooleanOperationType.SUBTRACTION, "keepTools" : true });
-    opBoolean(context, id + "h2", { "tools" : solids(context, id + "hs"), "targets" : solids(context, id + "ho"), "operationType" : BooleanOperationType.SUBTRACTION });
-    band(context, id + "in", xs, zc, GROOVE[0], 60, SHELL_T - GROOVE_D - 0.5, SHELL_T + 3);
-    opBoolean(context, id + "hc", { "tools" : qUnion([solids(context, id + "ho"), solids(context, id + "in" + "o")]), "targets" : cv, "operationType" : BooleanOperationType.SUBTRACTION });
+    intersectInto(context, id + "h", solids(context, id + "ho"), solids(context, id + "hs"));
+    opBoolean(context, id + "hc", { "tools" : solids(context, id + "ho"), "targets" : cv, "operationType" : BooleanOperationType.SUBTRACTION });
     return { "foam" : fm, "cover" : cv };
 }
 
@@ -924,14 +944,23 @@ export function buildSide(context is Context, id is Id, cfg is map) returns map
     const zc = car.zp + cfg.padOff;
     const dp = buildDepth(context, id + "dep", car.zp, car.xe, cfg.deg);
     const pad = buildPadShell(context, id + "pad", XS, zc);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const pad = buildPadShell(context, id + ");
     const ring = buildClipRing(context, id + "ring", XS, zc);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const ring = buildClipRing(context, id +");
     var soft = {};
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var soft = {};");
     if (cfg.cushion) soft = buildCushion(context, id + "cush", XS, zc, cfg.foam);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.cushion) soft = buildCushion(con");
     var padSet = [pad, ring];
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var padSet = [pad, ring];");
     if (cfg.cushion) padSet = concatenateArrays([padSet, [soft.foam, soft.cover]]);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.cushion) padSet = concatenateArr");
     const rot = padRot(car.zp, cfg.deg);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const rot = padRot(car.zp, cfg.deg);");
     if (cfg.deg != 0) opTransform(context, id + "prot", { "bodies" : qUnion(padSet), "transform" : rot });
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.deg != 0) opTransform(context, i");
     const S = sideL(s);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const S = sideL(s);");
     const nm = {
         "carrier" : "GBG-SP-AR-" ~ S ~ "-" ~ armCode(cfg.drop) ~ "-" ~ flipCode(cfg.zs) ~ "-r5 carrier",
         "button" : "GBG-SP-BT-" ~ S ~ "-" ~ flipCode(cfg.zs) ~ "-r5 button-catch",
@@ -940,6 +969,7 @@ export function buildSide(context is Context, id is Id, cfg is map) returns map
         "pad" : "GBG-SP-PD-r5 pad shell",
         "ring" : "GBG-SP-RG-r5 clip ring" };
     var jobs = [];
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var jobs = [];");
     if (cfg.engrave)
     {
         // carrier: nose end face opposite the latch's drop-in openings (LOW: bottom, HIGH: top); hidden in the notch
@@ -959,11 +989,16 @@ export function buildSide(context is Context, id is Id, cfg is map) returns map
         jobs = append(jobs, [pad, op, vector(0, 1, 0), np, "PD r5", 5.0]);
     }
     var out = { "carrier" : car.carrier, "button" : car.button, "sleeve" : car.sleeve, "depth" : dp, "pad" : pad, "ring" : ring, "rodL" : car.rodL, "rodWall" : car.rodWall, "xe" : car.xe, "zp" : car.zp, "zc" : zc, "carbon" : car.carbon, "names" : nm };
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var out = { 'carrier' : car.carrier, 'bu");
     if (cfg.cushion) { out.foam = soft.foam;  out.cover = soft.cover; }
     var all = [car.carrier, car.button, car.sleeve, dp, pad, ring];
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var all = [car.carrier, car.button, car.");
     all = concatenateArrays([all, car.carbon]);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: all = concatenateArrays([all, car.carbon");
     if (cfg.cushion) all = concatenateArrays([all, [soft.foam, soft.cover]]);
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.cushion) all = concatenateArrays");
     if (s < 0) opTransform(context, id + "mir", { "bodies" : qUnion(all), "transform" : mirX() });
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (s < 0) opTransform(context, id + 'mi");
     for (var i = 0; i < size(jobs); i += 1)
     {
         const j = jobs[i];
@@ -971,12 +1006,16 @@ export function buildSide(context is Context, id is Id, cfg is map) returns map
         engrave(context, id + ("e" ~ i), j[0], vector(m[0] * j[1][0], j[1][1], j[1][2]), vector(m[0] * j[2][0], j[2][1], j[2][2]), vector(m[0] * j[3][0], j[3][1], j[3][2]), j[4], j[5], 0.4);
     }
     opDeleteBodies(context, id + "dcap", { "entities" : cfg.cap });
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: opDeleteBodies(context, id + 'dcap', { '");
     out.all = all;
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: out.all = all;");
     return out;
+    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: return out;");
 }
 function nameSide(context is Context, r is map, foam is number)
 {
-    for (var k in ["carrier", "button", "sleeve", "depth", "pad", "ring"]) name(context, r[k], r.names[k]);
+    for (var k in ["carrier", "button", "sleeve", "depth", "pad", "ring"]) { stage(context, "name " ~ k ~ " n=" ~ size(evaluateQuery(context, r[k]))); name(context, r[k], r.names[k]); }
+    stage(context, "carbon");
     paint(context, r.sleeve, color(1.0, 0.42, 0.16));
     if (size(r.carbon) > 0)
     {
@@ -1214,7 +1253,8 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
                 var r = {};
                 try { r = buildSide(context, id + (s > 0 ? "L" : "R"), mergeMaps(cfg, { "s" : s, "foam" : foam, "cushion" : definition.cushion, "carbon" : definition.carbon, "engrave" : definition.engrave, "cap" : findCap(context, s) })); }
                 catch (e) { throw regenError("Side pad r5 failed at " ~ stageOf(context) ~ ": " ~ toString(e)); }
-                nameSide(context, r, foam);
+                try { nameSide(context, r, foam); }
+                catch (e) { throw regenError("Side pad r5 naming failed at " ~ stageOf(context) ~ ": " ~ toString(e)); }
                 info = info ~ sideL(s) ~ ": pad centre z " ~ r1(r.zc) ~ ", top " ~ r1(r.zc + PAD_H / 2) ~ "; rod Ø6 x " ~ r.rodL ~ " (wall " ~ r1(r.rodWall) ~ "). ";
             }
         }
