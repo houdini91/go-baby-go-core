@@ -1,0 +1,70 @@
+patch areas mm2 {'inner wall': 361.8, 'outer wall': 499.8, 'rear faces': 642.3, 'tooth (latch)': 70.8, 'nose back face': 396.7, 'tongue bottom': 245.6, 'tongue top': 141.5, 'nose bottom': 359.3, 'nose top': 225.3}
+tongue mouth section area 460 mm2
+
+===== 300 N
+lean 300 centre          tongue  0.95 (Kt 1: 1.49)  outer-wall brg  0.80  inner-wall brg  0.98  (mean  1.77 /  2.32)  tooth F   978 N (brg   1.8, shoulder  10.3, pocket wall   3.9)  arm  1.90  M_root [6.6, 14.9, -19.1] N.m
+knock out 300 corner     tongue  0.65 (Kt 1: 1.01)  outer-wall brg  0.57  inner-wall brg  0.69  (mean  1.27 /  1.63)  tooth F  1333 N (brg   1.3, shoulder   7.6, pocket wall   2.8)  arm  1.24  M_root [10.5, 23.1, -27.5] N.m
+knock in 300 corner      tongue  1.00 (Kt 1: 1.37)  outer-wall brg  1.59  inner-wall brg  1.73  (mean  3.92 /  4.44)  tooth F   914 N (brg   1.9, shoulder  11.0, pocket wall   4.1)  arm  1.24  M_root [8.7, 18.6, 23.2] N.m
+knock back 300 corner    tongue  1.47 (Kt 1: 2.09)  outer-wall brg  2.98  inner-wall brg  3.68  (mean  8.82 /  9.05)  tooth F   304 N (brg   5.8, shoulder  33.2, pocket wall  12.4)  arm  1.57  M_root [-8.9, 10.2, 10.8] N.m
+pull fwd 300 centre      tongue  1.21 (Kt 1: 2.05)  outer-wall brg  1.31  inner-wall brg  1.45  (mean  2.96 /  3.44)  tooth F   702 N (brg   2.5, shoulder  14.4, pocket wall   5.4)  arm  1.90  M_root [8.4, -4.8, -14.2] N.m
+   tenon at nut slot  knock back 300 corner    SF  2.05
+   tenon at nut slot  knock in 300 corner      SF  1.16
+   tenon at nut slot  knock out 300 corner     SF  1.16
+   tenon at nut slot  lean 300 centre          SF  2.87
+   tenon at nut slot  pull fwd 300 centre      SF  2.76
+   tenon root         knock back 300 corner    SF  1.48
+   tenon root         knock in 300 corner      SF  1.36
+   tenon root         knock out 300 corner     SF  1.36
+   tenon root         lean 300 centre          SF  3.55
+   tenon root         pull fwd 300 centre      SF  2.65
+
+===== 450 N
+lean 450 centre          tongue  0.63 (Kt 1: 0.99)  outer-wall brg  0.53  inner-wall brg  0.65  (mean  1.18 /  1.55)  tooth F  1466 N (brg   1.2, shoulder   6.9, pocket wall   2.6)  arm  1.27  M_root [9.9, 22.4, -28.6] N.m
+knock out 450 corner     tongue  0.43 (Kt 1: 0.67)  outer-wall brg  0.38  inner-wall brg  0.46  (mean  0.85 /  1.09)  tooth F  2000 N (brg   0.9, shoulder   5.1, pocket wall   1.9)  arm  0.82  M_root [15.7, 34.7, -41.2] N.m
+knock in 450 corner      tongue  0.66 (Kt 1: 0.91)  outer-wall brg  1.06  inner-wall brg  1.15  (mean  2.62 /  2.96)  tooth F  1371 N (brg   1.3, shoulder   7.4, pocket wall   2.8)  arm  0.82  M_root [13.0, 27.9, 34.8] N.m
+knock back 450 corner    tongue  0.98 (Kt 1: 1.39)  outer-wall brg  1.98  inner-wall brg  2.45  (mean  5.88 /  6.03)  tooth F   456 N (brg   3.9, shoulder  22.1, pocket wall   8.3)  arm  1.05  M_root [-13.4, 15.3, 16.3] N.m
+pull fwd 450 centre      tongue  0.81 (Kt 1: 1.37)  outer-wall brg  0.87  inner-wall brg  0.97  (mean  1.98 /  2.29)  tooth F  1053 N (brg   1.7, shoulder   9.6, pocket wall   3.6)  arm  1.26  M_root [12.5, -7.3, -21.3] N.m
+   tenon at nut slot  knock back 450 corner    SF  1.37
+   tenon at nut slot  knock in 450 corner      SF  0.78
+   tenon at nut slot  knock out 450 corner     SF  0.78
+   tenon at nut slot  lean 450 centre          SF  1.91
+   tenon at nut slot  pull fwd 450 centre      SF  1.84
+   tenon root         knock back 450 corner    SF  0.99
+   tenon root         knock in 450 corner      SF  0.80
+   tenon root         knock out 450 corner     SF  0.80
+   tenon root         lean 450 centre          SF  2.36
+   tenon root         pull fwd 450 centre      SF  1.75
+
+===== 600 N
+lean 600 centre          tongue  0.47 (Kt 1: 0.75)  outer-wall brg  0.40  inner-wall brg  0.49  (mean  0.88 /  1.16)  tooth F  1955 N (brg   0.9, shoulder   5.2, pocket wall   1.9)  arm  0.95  M_root [13.2, 29.8, -38.2] N.m
+knock out 600 corner     tongue  0.32 (Kt 1: 0.51)  outer-wall brg  0.28  inner-wall brg  0.34  (mean  0.64 /  0.82)  tooth F  2666 N (brg   0.7, shoulder   3.8, pocket wall   1.4)  arm  0.62  M_root [21.0, 46.2, -55.0] N.m
+knock in 600 corner      tongue  0.50 (Kt 1: 0.68)  outer-wall brg  0.80  inner-wall brg  0.86  (mean  1.96 /  2.22)  tooth F  1828 N (brg   1.0, shoulder   5.5, pocket wall   2.1)  arm  0.62  M_root [17.4, 37.3, 46.4] N.m
+knock back 600 corner    tongue  0.74 (Kt 1: 1.04)  outer-wall brg  1.49  inner-wall brg  1.84  (mean  4.41 /  4.52)  tooth F   608 N (brg   2.9, shoulder  16.6, pocket wall   6.2)  arm  0.78  M_root [-17.8, 20.5, 21.7] N.m
+pull fwd 600 centre      tongue  0.60 (Kt 1: 1.02)  outer-wall brg  0.66  inner-wall brg  0.73  (mean  1.48 /  1.72)  tooth F  1404 N (brg   1.3, shoulder   7.2, pocket wall   2.7)  arm  0.95  M_root [16.7, -9.7, -28.4] N.m
+   tenon at nut slot  knock back 600 corner    SF  1.02
+   tenon at nut slot  knock in 600 corner      SF  0.58
+   tenon at nut slot  knock out 600 corner     SF  0.58
+   tenon at nut slot  lean 600 centre          SF  1.43
+   tenon at nut slot  pull fwd 600 centre      SF  1.38
+   tenon root         knock back 600 corner    SF  0.71
+   tenon root         knock in 600 corner      SF  0.57
+   tenon root         knock out 600 corner     SF  0.57
+   tenon root         lean 600 centre          SF  1.77
+   tenon root         pull fwd 600 centre      SF  1.17
+
+===== 900 N
+lean 900 centre          tongue  0.32 (Kt 1: 0.50)  outer-wall brg  0.27  inner-wall brg  0.33  (mean  0.59 /  0.77)  tooth F  2933 N (brg   0.6, shoulder   3.4, pocket wall   1.3)  arm  0.63  M_root [19.7, 44.7, -57.3] N.m
+knock out 900 corner     tongue  0.22 (Kt 1: 0.34)  outer-wall brg  0.19  inner-wall brg  0.23  (mean  0.42 /  0.54)  tooth F  3999 N (brg   0.4, shoulder   2.5, pocket wall   0.9)  arm  0.41  M_root [31.5, 69.3, -82.4] N.m
+knock in 900 corner      tongue  0.33 (Kt 1: 0.46)  outer-wall brg  0.53  inner-wall brg  0.58  (mean  1.31 /  1.48)  tooth F  2742 N (brg   0.6, shoulder   3.7, pocket wall   1.4)  arm  0.41  M_root [26.1, 55.9, 69.6] N.m
+knock back 900 corner    tongue  0.49 (Kt 1: 0.70)  outer-wall brg  0.99  inner-wall brg  1.23  (mean  2.94 /  3.02)  tooth F   912 N (brg   1.9, shoulder  11.1, pocket wall   4.1)  arm  0.52  M_root [-26.7, 30.7, 32.5] N.m
+pull fwd 900 centre      tongue  0.40 (Kt 1: 0.68)  outer-wall brg  0.44  inner-wall brg  0.48  (mean  0.99 /  1.15)  tooth F  2106 N (brg   0.8, shoulder   4.8, pocket wall   1.8)  arm  0.63  M_root [25.1, -14.5, -42.6] N.m
+   tenon at nut slot  knock back 900 corner    SF  0.68
+   tenon at nut slot  knock in 900 corner      SF  0.39
+   tenon at nut slot  knock out 900 corner     SF  0.39
+   tenon at nut slot  lean 900 centre          SF  0.96
+   tenon at nut slot  pull fwd 900 centre      SF  0.92
+   tenon root         knock back 900 corner    SF  0.46
+   tenon root         knock in 900 corner      SF  0.35
+   tenon root         knock out 900 corner     SF  0.35
+   tenon root         lean 900 centre          SF  1.10
+   tenon root         pull fwd 900 centre      SF  0.70

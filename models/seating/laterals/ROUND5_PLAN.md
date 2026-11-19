@@ -14,6 +14,15 @@ Final mock designs and diagrams will be added to this file later.
 
 ---
 
+
+## Round 5b: plan changes from the CAD build, accepted by the owner (2026-11-19)
+| # | Change | Status |
+|---|---|---|
+| 5b.1 | **4 carriers per arm length** instead of a flip pair A/B: the leaned nose cannot be z-mirrored, so AR-{L,R}-{S,L}-{LO,HI} (supersedes the A/B pair in §2/§8 and 4.10) | AGREED |
+| 5b.2 | **Button drops in from the nose's top face** (opening hidden in the notch); the split orange tell sleeve snaps in under the lip and holds the flange; serviceable (pick in the split) | AGREED |
+| 5b.3 | **No Ø6 carbon rod.** Carbon is the 4 Ø2 x 29 tenon pins only (supersedes "Ø6 carbon" in §8) | AGREED |
+| 5b.4 | **Pad screw from the child side** (M5 x 10 button head under the foam into a nut pressed into the foot), with a plastic +y snap stop on the dovetail so the screw only locks | AGREED |
+
 ## 1 Purpose & status
 
 This is the official issue of everything agreed for the side-pad kit up to Round 5. **Round 5 delivers production parts:** every part of the arm assembly is fine-tuned and gets a part number (§8). Nothing here has been built in Onshape yet. v1.1 is still the model of record until step 6.5 below.

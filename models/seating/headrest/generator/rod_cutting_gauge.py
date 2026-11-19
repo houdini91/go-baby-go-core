@@ -2,7 +2,7 @@
 (workshop tool, PETG, P1S).
 
 Lanes side by side, all against ONE shared end stop (x = 0):
-  Ø6  side-pad arm rod SP-6 35 (SIDEPAD_ROD6_L), pommel rods PM-6 155 (K23) and PM-6 200 (K45)
+  Ø6  pommel rods PM-6 155 (K23) and PM-6 200 (K45)
   Ø2  side-pad tenon pins SP-2 (SIDEPAD_PIN2_L, 4 per side); the groove sits in a raised rail
   Ø8  headrest rods H0…H100 = 85…185 (unchanged from v1: same groove, same PROUD, same slots)
 Each lane's 90° V-groove is sunk so that every rod's top is at the same height, H + PROUD. So one
@@ -12,7 +12,7 @@ Lid: 2x M3x30 countersunk screws (DIN 7991) into M3 nuts trapped under the base.
 under the screws sit LAND_GAP below the rod tops, so the lid stays level whichever lane is in use.
 Saw slots run through the full width (a hacksaw stroke and a 30 mm disc both need open ends). The
 slot's near edge (stop side) is at the rod length, so the piece between the stop and the slot is
-exactly that long. Every slot is labelled in its own lane's label strip ("H0 85", "SP-6 55", ...),
+exactly that long. Every slot is labelled in its own lane's label strip ("H0 85", "PM-6 155", ...),
 and the lane diameters are engraved on top of the stop.
 Flanges have Ø4.5 holes to screw the gauge to a board.
 
@@ -24,15 +24,14 @@ import numpy as np
 from manifold3d import Manifold as M, CrossSection as CS, FillRule
 
 # ---- rod lengths (mm): update after CAD ------------------------------------------------------
-SIDEPAD_ROD6_L = 35.0     # side-pad carrier arm rod Ø6 (GBG-SP-CF6), every carrier (r5 CAD: bore t' 13.5 -> -22, rod 0.5 short)
-SIDEPAD_PIN2_L = 21.0     # side-pad tenon pin Ø2 (GBG-SP-CF2), 4 per carrier (r5 CAD: bore 21.5 deep, pin 0.5 short)
+SIDEPAD_PIN2_L = 29.0     # side-pad tenon pin Ø2 (GBG-SP-CF2), 4 per carrier, the only side-pad carbon (r5b CAD: 13 in the tenon, 16 in the arm)
 POMMEL_K23_L = 155.0      # pommel K23A/B, 2 per pommel (models/seating/pommel/README.md)
 POMMEL_K45_L = 200.0      # pommel K45A/B, 2 per pommel
 HEADREST_L = [("H0", 85), ("H25", 110), ("H50", 135), ("H75", 160), ("H100", 185)]   # 85 + H
 
 # lanes in y order (−y → +y): (lane label, rod Ø, [(slot tag, length)])
 LANES = [
-    ("Ø6", 6.0, [("SP-6", SIDEPAD_ROD6_L), ("PM-6", POMMEL_K23_L), ("PM-6", POMMEL_K45_L)]),
+    ("Ø6", 6.0, [("PM-6", POMMEL_K23_L), ("PM-6", POMMEL_K45_L)]),
     ("Ø2", 2.0, [("SP-2", SIDEPAD_PIN2_L)]),
     ("Ø8", 8.0, HEADREST_L),
 ]

@@ -1,0 +1,462 @@
+{
+ "300.0": {
+  "mount": {
+   "lean 300 centre": {
+    "tongue": 0.8627639789223258,
+    "tongue_kt1": 1.4188584269360733,
+    "outer_wall_brg": 0.4201964058256572,
+    "inner_wall_brg": 0.31752466694261827,
+    "tooth_F": 593.0354179423596,
+    "tooth_brg": 2.9846446712092267,
+    "shoulder": 17.02765078523772,
+    "pocket_wall": 6.380731884664245,
+    "outer_wall_F": 3547.3350493985945,
+    "outer_wall_mean": 0.8973402913283677,
+    "inner_wall_mean": 0.8347340528606686,
+    "M": [
+     9.6,
+     13.6,
+     -20.9
+    ]
+   },
+   "knock out 300 corner": {
+    "tongue": 0.6008495472531675,
+    "tongue_kt1": 0.975075758061648,
+    "outer_wall_brg": 0.3254263136894873,
+    "inner_wall_brg": 0.27432910203363814,
+    "tooth_F": 861.7155610047322,
+    "tooth_brg": 2.0540420529672665,
+    "shoulder": 11.718483983538677,
+    "pocket_wall": 4.391240185552619,
+    "outer_wall_F": 4646.61120082625,
+    "outer_wall_mean": 0.7564107208179568,
+    "inner_wall_mean": 0.7163608815214847,
+    "M": [
+     14.4,
+     21.9,
+     -29.6
+    ]
+   },
+   "knock in 300 corner": {
+    "tongue": 0.9481535603469858,
+    "tongue_kt1": 1.2550979351648548,
+    "outer_wall_brg": 0.49469112014203775,
+    "inner_wall_brg": 0.3451518812279953,
+    "tooth_F": 1248.362527244571,
+    "tooth_brg": 1.4178573622414035,
+    "shoulder": 8.088996408990788,
+    "pocket_wall": 3.0311707676392494,
+    "outer_wall_F": 1056.8997876021083,
+    "outer_wall_mean": 1.2720596589233812,
+    "inner_wall_mean": 0.9745735389307646,
+    "M": [
+     -8.0,
+     -21.6,
+     19.9
+    ]
+   },
+   "knock back 300 corner": {
+    "tongue": 1.4941980583468086,
+    "tongue_kt1": 1.8470727045900401,
+    "outer_wall_brg": 0.6227571495380406,
+    "inner_wall_brg": 0.5896720400683673,
+    "tooth_F": 708.0160950001382,
+    "tooth_brg": 2.499943168664343,
+    "shoulder": 14.262387636820641,
+    "pocket_wall": 5.344511271314053,
+    "outer_wall_F": 771.217959031595,
+    "outer_wall_mean": 1.6266526888736121,
+    "inner_wall_mean": 1.1853857543177064,
+    "M": [
+     -9.0,
+     15.7,
+     10.3
+    ]
+   },
+   "pull fwd 300 centre": {
+    "tongue": 1.1729929824102376,
+    "tongue_kt1": 1.9508130556598027,
+    "outer_wall_brg": 0.44945335958572885,
+    "inner_wall_brg": 0.3653325517228692,
+    "tooth_F": 550.0427641430125,
+    "tooth_brg": 3.217931614385887,
+    "shoulder": 18.358572566140502,
+    "pocket_wall": 6.8794651010373995,
+    "outer_wall_F": 2220.3222850705038,
+    "outer_wall_mean": 1.2048152912287928,
+    "inner_wall_mean": 0.8475323479200156,
+    "M": [
+     9.6,
+     -8.8,
+     -14.0
+    ]
+   }
+  },
+  "arm": 1.2372424935454722,
+  "arm_root": 1.2372424935454722,
+  "arm_by_case": {
+   "pull fwd 300 centre": 1.8969603336352479,
+   "knock back 300 corner": 1.5682459895370895,
+   "lean 300 centre": 1.9028805261169144,
+   "knock in 300 corner": 1.2372424935454722,
+   "knock out 300 corner": 1.2372424935454722
+  },
+  "tenon": {
+   "tenon root | lean 300 centre": 3.546426392150136,
+   "tenon root | knock out 300 corner": 1.360492338140314,
+   "tenon root | knock in 300 corner": 1.360492338140314,
+   "tenon root | knock back 300 corner": 1.4826786089383426,
+   "tenon root | pull fwd 300 centre": 2.6499312545416203,
+   "tenon at nut slot | lean 300 centre": 2.8682444771959874,
+   "tenon at nut slot | knock out 300 corner": 1.164221299742486,
+   "tenon at nut slot | knock in 300 corner": 1.164221299742486,
+   "tenon at nut slot | knock back 300 corner": 2.0491042430596784,
+   "tenon at nut slot | pull fwd 300 centre": 2.7591074010954104
+  }
+ },
+ "450.0": {
+  "mount": {
+   "lean 450 centre": {
+    "tongue": 0.5779977257916203,
+    "tongue_kt1": 0.9492050139872577,
+    "outer_wall_brg": 0.3105220084707003,
+    "inner_wall_brg": 0.2701150446416355,
+    "tooth_F": 920.0232388339022,
+    "tooth_brg": 1.9238644474278868,
+    "shoulder": 10.975809711936046,
+    "pocket_wall": 4.112939587043573,
+    "outer_wall_F": 5009.873918548828,
+    "outer_wall_mean": 0.7148009227819639,
+    "inner_wall_mean": 0.6967616601416453,
+    "M": [
+     14.2,
+     20.5,
+     -31.3
+    ]
+   },
+   "knock out 450 corner": {
+    "tongue": 0.403969663510584,
+    "tongue_kt1": 0.6538380407124157,
+    "outer_wall_brg": 0.23863822683243496,
+    "inner_wall_brg": 0.22771779512258813,
+    "tooth_F": 1323.2917347302227,
+    "tooth_brg": 1.3375735323857718,
+    "shoulder": 7.630970355950015,
+    "pocket_wall": 2.8595357325128594,
+    "outer_wall_F": 6679.310203489895,
+    "outer_wall_mean": 0.5758568282813404,
+    "inner_wall_mean": 0.5696546181101382,
+    "M": [
+     21.0,
+     33.1,
+     -44.0
+    ]
+   },
+   "knock in 450 corner": {
+    "tongue": 0.6433555944091397,
+    "tongue_kt1": 0.853700158438582,
+    "outer_wall_brg": 0.38414525679475797,
+    "inner_wall_brg": 0.29513571663067445,
+    "tooth_F": 1846.6533301488307,
+    "tooth_brg": 0.9584906766758149,
+    "shoulder": 5.468270538458972,
+    "pocket_wall": 2.049112271492251,
+    "outer_wall_F": 1581.0679556115113,
+    "outer_wall_mean": 0.9957808686428592,
+    "inner_wall_mean": 0.8710570714886176,
+    "M": [
+     -10.0,
+     -32.5,
+     29.7
+    ]
+   },
+   "knock back 450 corner": {
+    "tongue": 1.0083982627207049,
+    "tongue_kt1": 1.2815122149747729,
+    "outer_wall_brg": 0.5547083670104047,
+    "inner_wall_brg": 0.4582585972842715,
+    "tooth_F": 874.0983343779815,
+    "tooth_brg": 2.02494379680926,
+    "shoulder": 11.552475966203339,
+    "pocket_wall": 4.329032388206915,
+    "outer_wall_F": 1095.5306858439935,
+    "outer_wall_mean": 1.3825355987047807,
+    "inner_wall_mean": 0.9666262776931955,
+    "M": [
+     -12.9,
+     22.3,
+     15.4
+    ]
+   },
+   "pull fwd 450 centre": {
+    "tongue": 0.7727346184092938,
+    "tongue_kt1": 1.2879970677223513,
+    "outer_wall_brg": 0.40426195947923393,
+    "inner_wall_brg": 0.307825671979152,
+    "tooth_F": 814.8258966265763,
+    "tooth_brg": 2.1722431838849214,
+    "shoulder": 12.39283145246889,
+    "pocket_wall": 4.643936840576578,
+    "outer_wall_F": 3011.972660909579,
+    "outer_wall_mean": 0.9983859281620047,
+    "inner_wall_mean": 0.8108555775589915,
+    "M": [
+     14.6,
+     -13.1,
+     -21.3
+    ]
+   }
+  },
+  "arm": 0.8248283290303148,
+  "arm_root": 0.8248283290303148,
+  "arm_by_case": {
+   "pull fwd 450 centre": 1.2646402224234987,
+   "lean 450 centre": 1.2685870174112766,
+   "knock in 450 corner": 0.8248283290303148,
+   "knock back 450 corner": 1.0454973263580598,
+   "knock out 450 corner": 0.8248283290303148
+  },
+  "tenon": {
+   "tenon root | lean 450 centre": 2.3642842614334243,
+   "tenon root | knock out 450 corner": 0.8028299036205422,
+   "tenon root | knock in 450 corner": 0.8028299036205422,
+   "tenon root | knock back 450 corner": 0.9860157653039952,
+   "tenon root | pull fwd 450 centre": 1.752821738499105,
+   "tenon at nut slot | lean 450 centre": 1.9121629847973247,
+   "tenon at nut slot | knock out 450 corner": 0.7761475331616573,
+   "tenon at nut slot | knock in 450 corner": 0.7761475331616573,
+   "tenon at nut slot | knock back 450 corner": 1.3660694953731185,
+   "tenon at nut slot | pull fwd 450 centre": 1.8394049340636067
+  }
+ },
+ "600.0": {
+  "mount": {
+   "lean 600 centre": {
+    "tongue": 0.43644527787473286,
+    "tongue_kt1": 0.7153847935325744,
+    "outer_wall_brg": 0.24929357561334928,
+    "inner_wall_brg": 0.2370059329363544,
+    "tooth_F": 1250.4320417037036,
+    "tooth_brg": 1.415510752258387,
+    "shoulder": 8.075608800172423,
+    "pocket_wall": 3.026154060195331,
+    "outer_wall_F": 6482.151875246045,
+    "outer_wall_mean": 0.5882565660547774,
+    "inner_wall_mean": 0.5868435160730349,
+    "M": [
+     18.5,
+     27.5,
+     -41.4
+    ]
+   },
+   "knock out 600 corner": {
+    "tongue": 0.3046056176836172,
+    "tongue_kt1": 0.49226701628592723,
+    "outer_wall_brg": 0.19019294940928058,
+    "inner_wall_brg": 0.196485956591861,
+    "tooth_F": 1817.7476955054412,
+    "tooth_brg": 0.9737324956463969,
+    "shoulder": 5.555226407365715,
+    "pocket_wall": 2.0816970415400937,
+    "outer_wall_F": 8732.725388620122,
+    "outer_wall_mean": 0.4632315944375248,
+    "inner_wall_mean": 0.4700642917506754,
+    "M": [
+     27.5,
+     44.2,
+     -58.4
+    ]
+   },
+   "knock in 600 corner": {
+    "tongue": 0.4852115263527395,
+    "tongue_kt1": 0.6454010252978072,
+    "outer_wall_brg": 0.31860836503980483,
+    "inner_wall_brg": 0.2661853661689139,
+    "tooth_F": 2388.4861984983518,
+    "tooth_brg": 0.7410551507950116,
+    "shoulder": 4.227782436569506,
+    "pocket_wall": 1.5842670568408608,
+    "outer_wall_F": 2111.158106556096,
+    "outer_wall_mean": 0.7808347559951908,
+    "inner_wall_mean": 0.8351685633954524,
+    "M": [
+     -12.2,
+     -43.3,
+     39.7
+    ]
+   },
+   "knock back 600 corner": {
+    "tongue": 0.7551628050757062,
+    "tongue_kt1": 0.9789111766720349,
+    "outer_wall_brg": 0.5055877384339755,
+    "inner_wall_brg": 0.3948989143205477,
+    "tooth_F": 1014.979824474082,
+    "tooth_brg": 1.7438770282129856,
+    "shoulder": 9.948966232143915,
+    "pocket_wall": 3.7281529235920554,
+    "outer_wall_F": 1384.4380374269003,
+    "outer_wall_mean": 1.155686089920893,
+    "inner_wall_mean": 0.9693078960122767,
+    "M": [
+     -17.1,
+     28.6,
+     20.5
+    ]
+   },
+   "pull fwd 600 centre": {
+    "tongue": 0.5754917127943913,
+    "tongue_kt1": 0.9608588402051434,
+    "outer_wall_brg": 0.35000976910233556,
+    "inner_wall_brg": 0.27169210273151306,
+    "tooth_F": 1071.9639132419939,
+    "tooth_brg": 1.6511749865225414,
+    "shoulder": 9.420093228194702,
+    "pocket_wall": 3.5299695757069474,
+    "outer_wall_F": 3795.7254889306073,
+    "outer_wall_mean": 0.8391445222762169,
+    "inner_wall_mean": 0.7163080250395191,
+    "M": [
+     19.5,
+     -17.3,
+     -28.7
+    ]
+   }
+  },
+  "arm": 0.6186212467727361,
+  "arm_root": 0.6186212467727361,
+  "arm_by_case": {
+   "knock back 600 corner": 0.7841229947685447,
+   "knock out 600 corner": 0.6186212467727361,
+   "knock in 600 corner": 0.6186212467727361,
+   "pull fwd 600 centre": 0.9484801668176239,
+   "lean 600 centre": 0.9514402630584572
+  },
+  "tenon": {
+   "tenon root | lean 600 centre": 1.773213196075068,
+   "tenon root | knock out 600 corner": 0.5662550952151366,
+   "tenon root | knock in 600 corner": 0.5662550952151366,
+   "tenon root | knock back 600 corner": 0.711370831694782,
+   "tenon root | pull fwd 600 centre": 1.1734984381737055,
+   "tenon at nut slot | lean 600 centre": 1.4341222385979937,
+   "tenon at nut slot | knock out 600 corner": 0.582110649871243,
+   "tenon at nut slot | knock in 600 corner": 0.582110649871243,
+   "tenon at nut slot | knock back 600 corner": 1.0245521215298392,
+   "tenon at nut slot | pull fwd 600 centre": 1.3795537005477052
+  }
+ },
+ "900.0": {
+  "mount": {
+   "lean 900 centre": {
+    "tongue": 0.29351496321499304,
+    "tongue_kt1": 0.4799524576909923,
+    "outer_wall_brg": 0.18124233022794953,
+    "inner_wall_brg": 0.19296510923549265,
+    "tooth_F": 1961.0527227080825,
+    "tooth_brg": 0.9025764475907351,
+    "shoulder": 5.1492751230346006,
+    "pocket_wall": 1.9295758630979332,
+    "outer_wall_F": 9453.79459841993,
+    "outer_wall_mean": 0.4349142807127382,
+    "inner_wall_mean": 0.44469967636950425,
+    "M": [
+     26.9,
+     41.5,
+     -61.7
+    ]
+   },
+   "knock out 900 corner": {
+    "tongue": 0.2046082693442176,
+    "tongue_kt1": 0.32985957363536234,
+    "outer_wall_brg": 0.13624144069546798,
+    "inner_wall_brg": 0.15584102358423166,
+    "tooth_F": 2837.5188368434933,
+    "tooth_brg": 0.6237844052408053,
+    "shoulder": 3.558742894983984,
+    "pocket_wall": 1.333559429057179,
+    "outer_wall_F": 12878.004423065724,
+    "outer_wall_mean": 0.32699664464850564,
+    "inner_wall_mean": 0.3581699059495578,
+    "M": [
+     40.2,
+     66.6,
+     -87.1
+    ]
+   },
+   "knock in 900 corner": {
+    "tongue": 0.32501925131429205,
+    "tongue_kt1": 0.4332885130824652,
+    "outer_wall_brg": 0.2430540660673981,
+    "inner_wall_brg": 0.22988527849618837,
+    "tooth_F": 3383.1883446598104,
+    "tooth_brg": 0.5231751293994182,
+    "shoulder": 2.9847584500990543,
+    "pocket_wall": 1.1184715760719768,
+    "outer_wall_F": 3190.216926619879,
+    "outer_wall_mean": 0.6279518991519892,
+    "inner_wall_mean": 0.6114918865237877,
+    "M": [
+     -16.9,
+     -64.9,
+     59.5
+    ]
+   },
+   "knock back 900 corner": {
+    "tongue": 0.4996908449248278,
+    "tongue_kt1": 0.6632305180873268,
+    "outer_wall_brg": 0.40650179220292854,
+    "inner_wall_brg": 0.33143573135097754,
+    "tooth_F": 1279.065166660023,
+    "tooth_brg": 1.38382315939534,
+    "shoulder": 7.894828397499516,
+    "pocket_wall": 2.9584106413287947,
+    "outer_wall_F": 1954.4272019604205,
+    "outer_wall_mean": 0.9454757481347805,
+    "inner_wall_mean": 0.9498037339178423,
+    "M": [
+     -25.7,
+     40.9,
+     31.1
+    ]
+   },
+   "pull fwd 900 centre": {
+    "tongue": 0.3810200461808261,
+    "tongue_kt1": 0.637406884720595,
+    "outer_wall_brg": 0.2576016327160056,
+    "inner_wall_brg": 0.2231011856461753,
+    "tooth_F": 1585.568430141057,
+    "tooth_brg": 1.1163188963358304,
+    "shoulder": 6.368693906892212,
+    "pocket_wall": 2.3865258213190863,
+    "outer_wall_F": 5358.4194360295205,
+    "outer_wall_mean": 0.6559297139273833,
+    "inner_wall_mean": 0.5694575704096585,
+    "M": [
+     29.3,
+     -25.4,
+     -43.6
+    ]
+   }
+  },
+  "arm": 0.4124141645151574,
+  "arm_root": 0.4124141645151574,
+  "arm_by_case": {
+   "knock back 900 corner": 0.5227486631790299,
+   "knock in 900 corner": 0.4124141645151574,
+   "knock out 900 corner": 0.4124141645151574,
+   "pull fwd 900 centre": 0.6323201112117494,
+   "lean 900 centre": 0.6342935087056383
+  },
+  "tenon": {
+   "tenon root | lean 900 centre": 1.1024874444793522,
+   "tenon root | knock out 900 corner": 0.3503227723648717,
+   "tenon root | knock in 900 corner": 0.3503227723648717,
+   "tenon root | knock back 900 corner": 0.45511176086733907,
+   "tenon root | pull fwd 900 centre": 0.7043619660750173,
+   "tenon at nut slot | lean 900 centre": 0.9560814923986624,
+   "tenon at nut slot | knock out 900 corner": 0.38807376658082865,
+   "tenon at nut slot | knock in 900 corner": 0.38807376658082865,
+   "tenon at nut slot | knock back 900 corner": 0.6830347476865593,
+   "tenon at nut slot | pull fwd 900 centre": 0.9197024670318034
+  }
+ }
+}
