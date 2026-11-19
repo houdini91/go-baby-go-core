@@ -47,7 +47,7 @@ const TG_Z = [214.3, 246.4];  const CLR = 0.2;                  // tongue height
 // tongue outline (d', t'): rectangle at the notch face, back edge 5.5 from the outer air and 6 (normal) from strap slit S1
 const TONGUE = [[3.75, 1.0], [17.45, 1.0], [17.45, 3.0], [17.285, 9.3], [11.4, 15.0], [9.6, 18.8], [8.65, 22.2], [7.9, 23.4], [4.012, 18.5], [3.75, 8.5]];
 // slot = tongue + 0.2, except the 1.5 deg/side wedge faces near the tip (inner t' 8.5-18.5, outer t' 3-9.3): zero clearance there
-const SLOT = [[3.55, 1.0], [17.65, 1.0], [17.65, 1.6], [17.45, 3.0], [17.285, 9.3], [11.565, 15.118], [9.788, 18.87], [8.835, 22.282], [7.919, 23.746], [4.012, 18.5], [3.75, 8.5], [3.55, 7.7]];
+const SLOT = [[3.55, 1.0], [17.65, 1.0], [17.65, 1.6], [17.5, 3.0], [17.335, 9.3], [11.565, 15.118], [9.788, 18.87], [8.835, 22.282], [7.919, 23.746], [3.962, 18.5], [3.7, 8.5], [3.55, 7.7]];   // wedge faces at 0.05 (CAD), zero play once seated by the latch
 const PADS = [5.5, 13.5];  const PAD_REL = 0.3;                 // tongue bottom relieved 0.3 between t' 5.5 and 13.5: it bears on pads at the mouth and the tip
 const RIBS = [15.0, 17.0];  const RIB_R = 0.4;                  // 2 crush ribs (0.2 interference) across the top and bottom faces near the tip
 const MOUTH = 3.3;  const TG_ROOT = 3.0;                        // slot mouth chamfer 3.3 x 45 (sides + bottom) clears the R3 tongue root fillet
@@ -522,7 +522,8 @@ function measureLean(context is Context, wing is Query) returns map
 export function wingTools(context is Context, id is Id, wing is Query, closePocket is boolean) returns map
 {
     const lm = measureLean(context, wing);
-    setVariable(context, "gbgLean", "measured lean LD " ~ roundToPrecision(lm.LD, 4) ~ " LT " ~ roundToPrecision(lm.LT, 4) ~ " (model " ~ LD ~ " / " ~ LT ~ "), front t' " ~ roundToPrecision(lm.front, 2));
+    var lean0 = "";  try silent { lean0 = getVariable(context, "gbgLean"); }
+    setVariable(context, "gbgLean", lean0 ~ (lean0 == "" ? "" : " || ") ~ "measured lean LD " ~ roundToPrecision(lm.LD, 4) ~ " LT " ~ roundToPrecision(lm.LT, 4) ~ " (model " ~ LD ~ " / " ~ LT ~ "), front t' " ~ roundToPrecision(lm.front, 2));
     // filled blade section near the tip: section at z 240 (blade + cheek) + the old tongue pocket W1 + the slit closed with z 215.2
     const p240 = sectionPrism(context, id + "s240", wing, 240.0, ENV, 207.0, 270.0, lm.v);
     const slit = sectionPrism(context, id + "s215", wing, 215.2, SLIT, 215.0, 248.0, lm.v);
@@ -555,9 +556,10 @@ export function wingTools(context is Context, id is Id, wing is Query, closePock
     // mouth chamfer MOUTH x 45 deg on the slot's sides and bottom (clears the tongue's R3 root fillet; lead-in)
     const mz0 = TG_Z[0] - CLR;
     const mz1 = TG_Z[1] + CLR;
-    rrLoftPoly(context, id + "mouth", [[SLOT[0][0] - MOUTH, mz0 - MOUTH], [SLOT[1][0] + MOUTH, mz0 - MOUTH], [SLOT[1][0] + MOUTH, mz1 + MOUTH], [SLOT[0][0] - MOUTH, mz1 + MOUTH]],
-                                     [[SLOT[0][0], mz0], [SLOT[1][0], mz0], [SLOT[1][0], mz1], [SLOT[0][0], mz1]], T_BACK - 0.01, T_BACK + MOUTH);
-    const wallT = 17.45 - (GR_T - 3.0) * 0.0262;
+    const M1 = MOUTH + 1.0;                                     // starts 1 mm in front of the notch face (no near-coincident faces)
+    rrLoftPoly(context, id + "mouth", [[SLOT[0][0] - M1, mz0 - M1], [SLOT[1][0] + M1, mz0 - M1], [SLOT[1][0] + M1, mz1 + M1], [SLOT[0][0] - M1, mz1 + M1]],
+                                     [[SLOT[0][0], mz0], [SLOT[1][0], mz0], [SLOT[1][0], mz1], [SLOT[0][0], mz1]], T_BACK - 1.0, T_BACK + MOUTH);
+    const wallT = 17.5 - (GR_T - 3.0) * 0.0262;
     const groove = sPoly(context, id + "gr", [[16.85, GR_T - GR_CH - 1.0], [wallT, GR_T - GR_CH - 1.0], [wallT, GR_T - GR_CH], [wallT + GR_CH, GR_T + (wallT + GR_CH - 17.65) * GK], [GR_D, GR_T + (GR_D - 17.65) * GK], [GR_D, BLK_T[1]], [16.85, BLK_T[1]]], GR_Z[0], GR_Z[1], 0);
     // blank cap: nose + stub tongue (relief frees a 2-thick finger on the outer side) + snap bump into the groove
     const stub = sPoly(context, id + "stub", [[3.75, 1.0], [17.45, 1.0], [17.45, 3.0], [17.29, 9.0], [3.75, 9.0]], 224.0, 245.0, 1.0);
@@ -568,6 +570,15 @@ export function wingTools(context is Context, id is Id, wing is Query, closePock
     opBoolean(context, id + "capu", { "tools" : qUnion([capSrc, stub, bump]), "operationType" : BooleanOperationType.UNION });
     const cap = one(context, qUnion([capSrc, stub, bump]), "blank cap");
     opDeleteBodies(context, id + "dnose", { "entities" : noseB });
+    var mi = "mouth tool: ";
+    for (var mb in evaluateQuery(context, solids(context, id + "mouth")))
+    {
+        const bb = evBox3d(context, { "topology" : mb });
+        const lo = toS(bb.minCorner / millimeter);  const hi = toS(bb.maxCorner / millimeter);
+        mi = mi ~ r1(evVolume(context, { "entities" : mb }) / millimeter ^ 3) ~ " mm3 d " ~ r1(lo[0]) ~ ".." ~ r1(hi[0]) ~ " t " ~ r1(lo[1]) ~ ".." ~ r1(hi[1]) ~ " z " ~ r1(lo[2]) ~ ".." ~ r1(hi[2]) ~ "; ";
+    }
+    var prevL = "";  try silent { prevL = getVariable(context, "gbgLean"); }
+    setVariable(context, "gbgLean", prevL ~ " | " ~ mi);
     return { "fill" : qUnion(fills), "cut" : qUnion([notch, slot, groove, solids(context, id + "mouth")]), "cuts" : [notch, slot, groove, solids(context, id + "mouth")], "cap" : cap };
 }
 
@@ -629,13 +640,17 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     {
         const ln = evEdgeTangentLine(context, { "edge" : e, "parameter" : 0.5 });
         const pS = toS(ln.origin / millimeter);
+        if (pS[2] > TG_Z[1] - 0.5) continue;                      // top edge: the nose back face ends 0.3 above it (no room for a fillet)
         if (pS[0] > 16.5 && abs(ln.direction[2]) > 0.7) tgOut = append(tgOut, e); else tgRest = append(tgRest, e);
     }
     var tgR = 0;  var tgRo = 0;
     for (var rr in [TG_ROOT, 2.5, 2.0, 1.5, 1.0])
         if (tgRo == 0 && size(tgOut) > 0 && attempt(context, id + ("tgro" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : qUnion(tgOut), "radius" : rr * millimeter }); }))
             tgRo = rr;
-    const tgRest2 = edgesAtT(context, qAdjacent(qCreatedBy(id + "tg", EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), T_BACK - SEAM - 0.05, T_BACK - SEAM + 0.05);
+    var tgRest2l = [];
+    for (var e in evaluateQuery(context, edgesAtT(context, qAdjacent(qCreatedBy(id + "tg", EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), T_BACK - SEAM - 0.05, T_BACK - SEAM + 0.05)))
+        if (toS(evEdgeTangentLine(context, { "edge" : e, "parameter" : 0.5 }).origin / millimeter)[2] < TG_Z[1] - 0.5) tgRest2l = append(tgRest2l, e);
+    const tgRest2 = qUnion(tgRest2l);
     for (var rr in [TG_ROOT, 2.5, 2.0, 1.5])
         if (tgR == 0 && attempt(context, id + ("tgrf" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : tgRest2, "radius" : rr * millimeter }); }))
             tgR = rr;
@@ -657,11 +672,12 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     stadiumD(context, L + "fl", BT_TC, C, FL_W, BT_H + 1.0, capD[0], capD[0] + FL_T);
     const bz = BLK_Z;
     circleD(context, L + "sp", SPR[0], SPR[1], 2.1, capD[0] - 2.0, capD[0] + 0.05);
-    tipBox(context, L + "con", BLK_D[0], capD[0] + 0.05, BLK_T[0], -0.9, bz[0], bz[1]);
+    tipBox(context, L + "con", BLK_D[0], capD[0] + 0.05, BLK_T[0], -0.9, bz[0], C + BT_H / 2 - 0.5);
     tipBox(context, L + "blk", BLK_D[0], BLK_D[1], BLK_T[0], BLK_T[1], bz[0], bz[1]);
     const tf0 = GR_T + 0.02 + (TO_D[0] - 17.65) * GK;  const tf1 = GR_T + 0.02 + (TO_D[1] - 17.65) * GK;
-    const wallT = 17.45 - (GR_T - 3.0) * 0.0262;              // slot outer wall at the shoulder (on the 1.5 deg wedge)
-    dtPrism(context, L + "to", [[TO_D[0], GR_T - GR_CH - 0.98], [wallT + GR_CH + 0.05, GR_T + 0.02 + (wallT + GR_CH + 0.05 - 17.65) * GK], [TO_D[1], tf1], [TO_D[1], 6.3], [TO_D[1] - 2.7, BLK_T[1]], [TO_D[0], BLK_T[1]]], bz[0], bz[1]);
+    const wallT = 17.5 - (GR_T - 3.0) * 0.0262;              // slot outer wall at the shoulder (on the 1.5 deg wedge)
+    // tooth front = groove front + 0.02, including the 0.5 root gusset that fills the groove's shoulder chamfer
+    dtPrism(context, L + "to", [[TO_D[0], GR_T - GR_CH + 0.02], [wallT, GR_T - GR_CH + 0.02], [wallT + GR_CH, GR_T + 0.02 + (wallT + GR_CH - 17.65) * GK], [TO_D[1], tf1], [TO_D[1], 6.3], [TO_D[1] - 2.7, BLK_T[1]], [TO_D[0], BLK_T[1]]], bz[0], bz[1]);
     // sleeve (orange tell ring)
     stadiumD(context, L + "so", BT_TC, C, SL_OUT, BT_H + 1.8, capD[0] + FL_T, capD[0] + FL_T + SL_H);
     stadiumD(context, L + "si", BT_TC, C, SL_IN, BT_H + 0.4, capD[0], FD + 1);
@@ -671,7 +687,7 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     stadiumD(context, K + "lip", BT_TC, C, LIP_W, BT_H + 1.2, FD - LIP - 0.05, FD + 3);
     stadiumD(context, K + "cb", BT_TC, C, SL_OUT + 0.2, BT_H + 2.0, capD[0] + FL_T, FD - LIP);
     stadiumD(context, K + "fp", BT_TC, C, FL_W + 0.4, BT_H + 1.4, capD[0] - TRAVEL, capD[0] + FL_T + 0.01);
-    dropBox(context, K + "cch", capD[0] - TRAVEL, capD[1] - TRAVEL + 0.2, BT_TC - (FL_W + 0.4) / 2, BT_TC + (FL_W + 0.4) / 2, C - BT_H / 2 - 0.5, 1);
+    dropBox(context, K + "cch", capD[0] - TRAVEL, max(capD[1] - TRAVEL + 0.2, capD[0] + 0.3), BT_TC - (FL_W + 0.4) / 2, BT_TC + (FL_W + 0.4) / 2, C - BT_H / 2 - 0.5, 1);
     dropBox(context, K + "spr", SPR[3], capD[0] - TRAVEL + 0.2, SPR[0] - SPR[2], SPR[0] + SPR[2], SPR[1] - SPR[2], 1);
     dropBox(context, K + "bch", BLK_D[0] - TRAVEL - 0.2, BLK_D[1] + 0.25, BLK_T[0] - 0.3, BLK_T[1] + 0.3, BLK_Z[0] - 0.3, 1);
     dropBox(context, K + "tch", TO_D[0] - TRAVEL - 0.2, 22.6, GR_T - GR_CH - 1.3, BLK_T[1] + 0.3, BLK_Z[0] - 0.3, 1);
@@ -1048,7 +1064,28 @@ function nameSide(context is Context, r is map, foam is number)
 }
 
 // =============================================== CHECK ===============================================
-function clashes(context is Context, names is array, kit is array, others is array) returns string
+// volume and S-frame box of the overlap of two bodies (copies; nothing is left behind)
+function overlapInfo(context is Context, id is Id, a is Query, b is Query) returns string
+{
+    var out = "";
+    startFeature(context, id);
+    try silent
+    {
+        opPattern(context, id + "a", { "entities" : a, "transforms" : [identityTransform()], "instanceNames" : ["a"] });
+        opPattern(context, id + "b", { "entities" : b, "transforms" : [identityTransform()], "instanceNames" : ["b"] });
+        opBoolean(context, id + "i", { "tools" : qUnion([qCreatedBy(id + "a", EntityType.BODY), qCreatedBy(id + "b", EntityType.BODY)]), "operationType" : BooleanOperationType.INTERSECTION });
+        const r = qBodyType(qUnion([qCreatedBy(id + "a", EntityType.BODY), qCreatedBy(id + "b", EntityType.BODY)]), BodyType.SOLID);
+        for (var c in evaluateQuery(context, r))
+        {
+            const bb = evBox3d(context, { "topology" : c });
+            const lo = toS(bb.minCorner / millimeter);  const hi = toS(bb.maxCorner / millimeter);
+            out = out ~ "[" ~ roundToPrecision(evVolume(context, { "entities" : c }) / millimeter ^ 3, 2) ~ " mm3 at d' " ~ r1(min(lo[0], hi[0])) ~ ".." ~ r1(max(lo[0], hi[0])) ~ " t' " ~ r1(min(lo[1], hi[1])) ~ ".." ~ r1(max(lo[1], hi[1])) ~ " z " ~ r1(lo[2]) ~ ".." ~ r1(hi[2]) ~ "]";
+        }
+    }
+    abortFeature(context, id);
+    return out;
+}
+function clashes(context is Context, id is Id, names is array, kit is array, others is array, detail is boolean) returns string
 {
     var msg = "";
     for (var i = 0; i < size(kit); i += 1)
@@ -1056,7 +1093,7 @@ function clashes(context is Context, names is array, kit is array, others is arr
         {
             var hit = false;
             for (var cc in evCollision(context, { "tools" : kit[i], "targets" : kit[j] })) if (cc["type"] == ClashType.INTERFERE) hit = true;
-            if (hit) msg = msg ~ names[i] ~ " x " ~ names[j] ~ ", ";
+            if (hit) msg = msg ~ names[i] ~ " x " ~ names[j] ~ (detail ? " " ~ overlapInfo(context, id + ("ok" ~ i ~ "_" ~ j), kit[i], kit[j]) : "") ~ ", ";
         }
     if (size(others) > 0)
         for (var i = 0; i < size(kit); i += 1)
@@ -1064,7 +1101,7 @@ function clashes(context is Context, names is array, kit is array, others is arr
             for (var cc in evCollision(context, { "tools" : kit[i], "targets" : qUnion(others) }))
                 if (cc["type"] == ClashType.INTERFERE)
                 {
-                    msg = msg ~ names[i] ~ " x chair" ~ bboxStr(context, cc["targetBody"]) ~ ", ";
+                    msg = msg ~ names[i] ~ " x chair " ~ (detail ? overlapInfo(context, id + ("ov" ~ i), kit[i], cc["targetBody"]) : "") ~ ", ";
                     break;
                 }
         }
@@ -1087,7 +1124,7 @@ function checkAll(context is Context, id is Id, definition is map, s is number) 
             const kit = [r.carrier, r.button, r.sleeve, r.depth, r.pad, r.ring, r.foam, r.cover];
             const names = ["carrier", "button", "sleeve", "depth", "pad", "ring", "foam", "cover"];
             for (var b in kit) maxX = max(maxX, abs(s > 0 ? evBox3d(context, { "topology" : b }).maxCorner[0] / millimeter : evBox3d(context, { "topology" : b }).minCorner[0] / millimeter));
-            msg = clashes(context, names, kit, others);
+            msg = clashes(context, sid + "cl", names, kit, others, n <= 2);
             // the pressed button (travel 3.8) must stay clear of the chair
             opTransform(context, sid + "press", { "bodies" : r.button, "transform" : transform(vector(s * dirD()[0], dirD()[1], 0) * (-TRAVEL) * millimeter) });
             for (var cc in evCollision(context, { "tools" : r.button, "targets" : qUnion(others) })) if (cc["type"] == ClashType.INTERFERE) { msg = msg ~ "PRESSED button x chair, ";  break; }
@@ -1250,7 +1287,19 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
         setVariable(context, "gbgSkipped", "");
         if (definition.checkSet != SidePadCheck.OFF)
         {
-            reportFeatureInfo(context, id, "CHECK " ~ checkAll(context, id, definition, definition.checkSet == SidePadCheck.LEFT ? 1 : -1));
+            const rep = "CHECK " ~ checkAll(context, id, definition, definition.checkSet == SidePadCheck.LEFT ? 1 : -1);
+            reportFeatureInfo(context, id, rep);
+            // the report also goes into the names of tiny marker parts far from the chair (readable from the parts list / API)
+            const ch = splitIntoCharacters(rep);
+            var k = 0;  var i = 0;
+            while (i < size(ch))
+            {
+                var piece = "";
+                for (var j = i; j < min(i + 200, size(ch)); j += 1) piece = piece ~ ch[j];
+                fCuboid(context, id + ("rp" ~ k), { "corner1" : v3(2000 + 2 * k, 2000, 0), "corner2" : v3(2001 + 2 * k, 2001, 1) });
+                name(context, qCreatedBy(id + ("rp" ~ k), EntityType.BODY), "RPT" ~ (k < 10 ? "0" : "") ~ k ~ " " ~ piece);
+                i += 200;  k += 1;
+            }
             return;
         }
         const foam = foamMM(definition.foam);
