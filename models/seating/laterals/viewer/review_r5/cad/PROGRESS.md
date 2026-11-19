@@ -23,3 +23,4 @@
 - 21:12 strength (strength_r5b/sf_r5b.py, reviewer's contact model): SF at 300 N lean ~1.0-1.5 at the tongue, 0.65-1.0 corner; tenon weak point 350-410 N corner; SF 3 at 300 N not reachable with one tongue (owner decision: second load path)
 - 21:15 gauge: SP-6 removed, SP-2 29; STL/PNG regenerated; headrest README + shopping list updated
 - 21:22 STLs of the fitted parts -> viewer/r5cad/ (+ print layout and all-parts grid)
+- 21:35 owner: old mount fully gone. 'Side pads v1' Part Studio: both v1 features (kit + coupon) suppressed, no error left (tab kept, not deleted). r5 FS uses no v1 geometry (only the v1.1 tip frame and arm path curve); gbg_sidepad_v1.fs is not imported anywhere. Note: the tongue/slot/latch changes were already built and committed (e3bf9a4) before the 'hold until the mount type is chosen' message arrived
