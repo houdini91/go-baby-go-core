@@ -1,3 +1,62 @@
+# Side pads (lateral trunk supports): Round 5 (built in Onshape, awaiting owner review)
+
+FeatureScript: `featurescript/gbg_sidepad_r5.fs` (v1.1 kept as `gbg_sidepad_v1.fs` for history). It is uploaded into the Feature Studio **"GbG Side Pads v1"** on branch `sidepads-v1` (same exported feature names, so Part Studio 1 picked it up). Nothing is merged to Main.
+
+Onshape views (branch `sidepads-v1`):
+- **Part Studio 1**: chair + kit, left long LOW lower pad, right short HIGH upper pad, 20 mm foam.
+- **Side pads r5 - kit (print layout + coupon)**: the left set in print orientation and the C7 latch coupon.
+- **Side pads r5 - all parts**: every part and variant in a grid, named by part number.
+- **Side pads r5** (assembly): Part Studio 1 inserted and fixed.
+- "Side pads v1" (old kit-only studio) now shows an error: the r5 kit needs the chair and the wing feature.
+
+Progress log and screenshots: `viewer/review_r5/cad/PROGRESS.md`, `viewer/review_r5/cad/shots/`.
+
+## What it is
+- **Wing reprint (WG):** the v1.1 tip block is gone. A 40 mm notch in the wing's front edge (z 207-247) takes the kit's nose. Behind it: a 14.1 mm slot (z 214.1-246.6), a 3.3 x 45° mouth chamfer, and a catch groove 4.0 deep in the outer wall (6° locking face). The old tongue pocket, the slit behind the cheek, the dead lower M5 pocket and (owner decision) the open pocket and screw seats above the nose (z 247-270) are filled with the wing's own sections, flush. The blade lean used for the fills is measured on the wing (LD 0.053, LT 0.069 per mm). Strap slits S1/S2, the teardrop channel, the hole column and the z 186 hole are untouched.
+- **Blank cap (CP):** the cut-out piece of wing plus a stub tongue with a snap finger. It closes the notch when the kit is off.
+- **Carrier (AR):** the nose (the wing's own front section, 0.3 hairlines), a tongue 13.7 x 32.1 (was 25.4 tall), and one smooth 18 x 28 loft arm (short S drop 22, long L drop 44) with an R3.5 root fillet and a hidden tenon. Tongue details: R3 root, a 1.5°/side wedge at the tip (zero play once latched), bearing pads top and bottom (0.3 relief between), and 2 crush ribs (0.2) top and bottom near the tip.
+- **Latch A (BT + TS):** one sliding button-catch: 12 x 24 stadium cap, flush with the nose's outer face, 0.8 thumb scoop, 0.4 rim round. It has a block and a tooth 22.5 tall x 5.0 (with a 0.5 root gusset). Travel is 4.9 to a hard stop. The tooth's 6° face hooks the groove; a 45° lead-in gives the click on entry. The button drops in from the nose top (a hidden opening), and the orange tell sleeve snaps in under the 1.6 lip and holds its flange, so it is captive. Hidden 0.4 slits in the tooth make the slicer add internal walls. Release: press and pull forward, as before.
+- **Carbon:** one Ø6 rod in a Ø6.5 teardrop bore (below the latch, through tongue and nose into the arm root), and 4 x Ø2 tenon pins.
+- **Depth piece (DP):** one depth, D0 (pad back x 104); the width comes from the foam. The tilt is in the foot: T0, 8° and 15° as A/B mirror pairs. The tenon sleeve ends at the tenon tip (the hidden step: an outward push goes into plastic). The foot face has two dovetail grooves (pad positions ±11), closed at the front, each with an M5 nut pocket under the groove.
+- **Pad (PD), ring (RG), foam (FM), cover (CV):** the plain curved shell with one dovetail rail and the pad-screw counterbore on the child side. The cover groove is 3.2-7.6 x 2.5 deep with a snap undercut to 8.0, and the clip ring band is 5.6-7.6 x 2.1 with a 0.4 barb. Shell and ring are z-symmetric, so one part serves both sides. The reference foam is 5/10/20/30 (FOAM parameter, default 20) under a 3 mm neoprene cover.
+
+## Why the flip became 4 carriers per arm length
+The wing tip leans (+3.2° in d, +3.95° in t). A z-mirrored nose would sit 2.3 / 2.8 mm off the wing at the notch ends, so one carrier cannot serve LOW and HIGH. Each carrier is built for its side and LOW/HIGH: AR-{L,R}-{S,L}-{LO,HI} = 8 STLs. A child set still needs 2 carriers.
+
+## Part list (numbers per ROUND5_PLAN §8, scheme awaiting owner OK; engraved 0.4 deep on a hidden face)
+| Part no. | Part | Qty per side | Engraving |
+|---|---|---|---|
+| GBG-SP-WG-L/R-r5 | Wing reprint (chair part; Onshape keeps the name left_wing/right_wing) | 1 | notch ceiling |
+| GBG-SP-CP-L/R-r5 | Blank cap | 1 (kit off) | cap bottom |
+| GBG-SP-AR-{L,R}-{S,L}-{LO,HI}-r5 | Carrier | 1 | nose bottom face |
+| GBG-SP-BT-L/R-r5 | Button-catch (same part for LOW and HIGH) | 1 | block inner face |
+| GBG-SP-TS-r5 | Orange tell sleeve | 1 | none (0.6 wall, too thin) |
+| GBG-SP-DP-D0-{T0, T8A, T8B, T15A, T15B}-r5 | Depth piece (A = left top-in = right top-out) | 1 | foot face between the grooves |
+| GBG-SP-PD-r5 | Pad shell (both sides) | 1 | child face |
+| GBG-SP-RG-r5 | Clip ring (both sides) | 1 | none yet (band too small) |
+| GBG-SP-FM-{5,10,20,30}-r5 | Foam | 1 | - |
+| GBG-SP-CV-r5 | Neoprene cover 3 mm, no-sew | 1 | - |
+| GBG-SP-CF6-r5 | Carbon rod Ø6 x **35.0** | 1 | - |
+| GBG-SP-CF2-r5 | Carbon pin Ø2 x **21.0** | 4 | - |
+| GBG-SP-SP-r5 | Spring SS304, wire 0.55, OD 6, L0 14, 6 + 2 coils (≈0.81 N/mm: 3.2 N latched, 7.2 N pressed, solid 4.4) | 1 | - |
+| GBG-SP-DW-r5 | Steel dowel tooth: **optional, not used**. The printed catch meets the target alone (see REVIEW) | 0 | - |
+
+## Fasteners (home stock)
+| Joint | Fastener |
+|---|---|
+| Tenon ↔ depth piece | M5 x 12 countersunk (DIN 7991) from the back face + M5 nut in the tenon |
+| Depth piece ↔ pad | M5 x 10 button head (ISO 7380) from the child side (counterbore under the foam) through the rail + M5 nut dropped into the foot's pocket. It clamps the rail and only locks the slide; the dovetail takes the loads |
+
+## Carbon, foam, cover
+- Carbon: Ø6 rod x 35.0 (one length for every carrier) and Ø2 pins x 21.0. Cut them in the rod cutting gauge v2 (`models/seating/headrest/generator/rod_cutting_gauge.py`, constants `SIDEPAD_ROD6_L` / `SIDEPAD_PIN2_L`). Bond with high-Tg epoxy (Tg > 80 °C).
+- Foam from the listed stock: 5 = one 5 mm Super2 EVA sheet, 10 = one 10 mm sheet, 20 (standard) = 2 x 10 EVA or 5 EVA + 15 HD top foam, 30 = 5 EVA + 25 HD. Cover: 3 mm SBR neoprene (listed 4000031372319), one layer down the groove's outer wall, squeezed to 2.4 by the clip ring.
+
+See [PRINT_GUIDE.md](PRINT_GUIDE.md) and [REVIEW.md](REVIEW.md) (Round 5 section) for numbers, checks and open items.
+
+---
+
+# Archive: v1.1
+
 # Side pads (lateral trunk supports) v1.1: remodelled, pre-first-print
 
 FeatureScript: `featurescript/gbg_sidepad_v1.fs`. Onshape branch `sidepads-v1` of GbG_chair_forth:

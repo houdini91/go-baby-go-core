@@ -1,3 +1,46 @@
+# Round 5 CAD (2026-11-19): what was built and checked
+
+Built from ROUND5_PLAN.md plus owner decisions given during the build: close the old pocket; make the joint beefier, printed only (steel dowel optional); add the joint tricks: pads, root fillets, wedge, crush ribs, slicer modifiers.
+
+## Checks run in Onshape (branch `sidepads-v1`, real chair)
+- **Clash matrix:** arm S/L x LOW/HIGH x pad upper/lower x tilt 0/±8/±15 = 40 settings per side, both sides. Each setting checks kit vs kit and kit vs every chair part, plus the pressed button (travel 4.9) vs the chair. Result: **left 0/40, right 0/40 clashes. Kit |x| max 163 (arm rest 165).** The crush ribs are left out of the check; they are a deliberate 0.2 interference.
+- Fitted Part Studio 1 builds with **no warnings**: arm root R3.5 and tongue root R3 fillets applied, button rim 0.4.
+- Offline cross-check on Onshape's fine tessellation (chord 0.01 mm): the only carrier ↔ wing overlaps are the 4 crush ribs.
+- Rod Ø6 bore wall (measured on the built carrier): ≥ 1.2 in the tongue and nose, ≥ 3.2 in the arm root.
+
+## Joint strength, before (r5mesh) → after (this build), printed only, 900 N corner-knock catch load
+| Item | Before | After |
+|---|---|---|
+| Tongue height | 25.4 (z 214.3-239.7) | **32.1** (z 214.3-246.4): uses the nose height freed by closing the old pocket |
+| Tongue section | 13.7 x 25.4 | 13.7 x 32.1 (+26 %), plus the 1.5°/side wedge, top/bottom pads, R3 root |
+| Engagement (from the notch face) | 8-20 | **unchanged: 16-19 inboard, 7.6 outboard.** The 6 mm S1 web and the blade's outer back face bound it. **≥ 30 mm is not reachable without a visible swell** (S1 sits behind the tongue for most of its width). Offered as an option, not built |
+| Tooth | 4 x 19.6, root at the tongue face | **22.5 tall x 5.0** (4.5 + 0.5 root gusset into a 0.5 shoulder chamfer), with 2 hidden 0.4 slits |
+| Bearing face | ≈ 3 x 12 → ~25 MPa | **4.05 x 22.5 = 91 mm² → 9.9 MPa (SF 2.5 vs 25 MPa allowable)** |
+| Tooth root bending | SF ~1.5 | lever 2.6 → **25 MPa, SF 2.0** (50 MPa along the layers; the button prints standing, so the root bends in the layer plane) |
+| Shoulder (wing) shear | 3 mm thick | 2.5 + 0.5 chamfer; ~76 mm² → 11.8 MPa, **SF 2.1** |
+| Skin behind the groove | 3.25 | **2.4** (the groove is 4.0 deep). Check on the coupon |
+| Steel dowel Ø6 | - | not needed for the target. Its pocket would need ≥ 3 mm round it behind a 2.5 shoulder, so the catch would move back past the tongue's outer end (t' 9.3). **Dropped**, as it would weaken the printed-only version |
+| Ø2 carbon pin across the tooth root | - | not added: the root is in-plane with the layers, and a pin at the neutral axis adds little |
+
+## Deviations from the plan, for the owner to OK
+1. **4 carriers per arm length (no flip pair).** The leaned nose cannot be z-mirrored (2.3 / 2.8 mm off at the notch ends). AR-{L,R}-{S,L}-{LO,HI}. A child set still needs 2 carriers.
+2. **Latch A assembly:** the button drops in from the nose's top face (an opening hidden in the notch). The orange sleeve snaps in under the lip and holds the button's flange. A one-piece button could not be put in from outside with load-bearing rear walls in the tongue. Release is unchanged (press, pull forward). Travel 4.9 (plan 5, fig2 3.5).
+3. **The Ø6 rod runs below the latch** (z 218.75), from the tongue's rear face to t' -22, 35 mm long. It reaches about 8 mm past the nose face; the HIGH arm rises, so a longer rod would break out. Pins Ø2 x 21.
+4. **Pad screw from the child side:** M5 x 10 button head, under the foam, into a nut dropped into the foot's dovetail groove. With two pad positions, both nuts can then hide inside the foot. The pad has one rail; the foot has two grooves (±11), closed at the front. The unused groove's open back end shows on the foot's back face.
+5. **One button part per side** (LO/HI share it). One pad shell and one clip ring for both sides.
+6. Button face: a flat leaned plane flush with the nose's outer face, not the wing skin itself (the skin there is split into small faces).
+7. Mouth chamfer 3.3 x 45° all round the slot (lead-in; clears the R3 tongue root).
+
+## Open items
+- **Coupon first** (Side pads r5 - kit: the C7 latch coupon): snap of the tell sleeve past the lip (0.3/side), drop-in assembly, click, 6° face self-holding dry/PTFE, wedge seating, crush-rib feel, 2.4 mm skin behind the groove.
+- Engagement ≥ 30: needs a visible local swell of the blade, or moving S1. Owner to decide.
+- Clip ring and sleeve carry no engraving (too thin).
+- The wing part keeps its Onshape name (left_wing/right_wing). The part number WG-L/R is engraved and listed.
+- The old "Side pads v1" Part Studio now errors (kit without chair). The old v1 coupon feature is retired.
+- Load tests 5.3/5.4 and the child fit (5.11) as planned.
+
+---
+
 # Side pads v1.1: remodel and independent reviews (2026-11-19, overnight)
 
 ## Why v1.1

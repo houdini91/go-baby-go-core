@@ -30,7 +30,7 @@ All quoted Nov 29 – Dec 6. Listings and prices change; check the variant befor
 
 Also used, usually already at hand: masking tape (wrap the cut line), nitrile gloves, 240–400 grit sandpaper (deburr the ends), a damp cloth or spray bottle, and a small clamp (any hardware store) to hold the printed **rod cutting gauge** on the table.
 
-**Pommel (long sizes K23/K45), same seller as the 8 mm rod:** solid carbon rod **6x500mm 1pcs** from the same listing (#3). Each long pommel needs 2 × 155 mm (K23) or 2 × 200 mm (K45), so one rod per pommel. The printed gauge is for the 8 mm headrest rods; mark the pommel rods with tape and a ruler (±1.5 mm).
+**Pommel (long sizes K23/K45), same seller as the 8 mm rod:** solid carbon rod **6x500mm 1pcs** from the same listing (#3). Each long pommel needs 2 × 155 mm (K23) or 2 × 200 mm (K45), so one rod per pommel. Cut them in the **Ø6 lane of the printed rod cutting gauge v2** (slots PM-6 155 and PM-6 200; the same lane has the side-pad arm rod SP-6 35, and the Ø2 lane the side-pad tenon pins SP-2 21).
 
 **Only if you don't already have them:**
 - Ø2.5 mm drill bit (pilot holes in the PVC rod through the pod's 3 lock holes, ~5 mm deep: see the print guide) and an 8 mm drill bit (to ream the rod bores if tight). Any HSS set.
