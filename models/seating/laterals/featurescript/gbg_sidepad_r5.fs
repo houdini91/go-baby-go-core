@@ -653,8 +653,7 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     // ---- latch A tools, built in S (unsheared) then sheared ----
     const L = id + "lt";
     const capD = [FD - BT_THK, FD];
-    stadiumD(context, L + "ca", BT_TC, C, BT_W, BT_H, capD[0], FD + 3);           // A (cut by the nose)
-    stadiumD(context, L + "cb", BT_TC, C, BT_W, BT_H, capD[0], FD + 3);           // B -> B - (A - nose) = cap
+    stadiumD(context, L + "cb", BT_TC, C, BT_W, BT_H, capD[0], FD);               // cap: its face is the nose's outer plane d' = FD (S)
     stadiumD(context, L + "fl", BT_TC, C, FL_W, BT_H + 1.0, capD[0], capD[0] + FL_T);
     const bz = BLK_Z;
     circleD(context, L + "sp", SPR[0], SPR[1], 2.1, capD[0] - 2.0, capD[0] + 0.05);
@@ -687,8 +686,7 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
         opTransform(context, M + ("sh" ~ i), { "bodies" : solids(context, shl[i]), "transform" : shearS() });
     }
     // the cap: B - (A - nose) = the nose skin inside the stadium
-    opBoolean(context, M + "o1", { "tools" : ncp, "targets" : solids(context, L + "ca"), "operationType" : BooleanOperationType.SUBTRACTION });
-    opBoolean(context, M + "o2", { "tools" : solids(context, L + "ca"), "targets" : solids(context, L + "cb"), "operationType" : BooleanOperationType.SUBTRACTION });
+    opDeleteBodies(context, M + "dncp", { "entities" : ncp });
     // thumb scoop: cylinder along t', 0.8 deep at the centre, 0 at the round ends
     const RS = ((BT_H / 2 + 1.0) * (BT_H / 2 + 1.0) + 0.64) / 1.6;   // scoop reaches the face 1 mm beyond the round ends (no slivers at the tips)
     cylAx(context, M + "scoop", QS(FD - 0.8 + RS, BT_TC - 20, C), QS(FD - 0.8 + RS, BT_TC + 20, C), RS);
@@ -709,9 +707,13 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     {
         const bb = evBox3d(context, { "topology" : e });
         const mid = (bb.minCorner + bb.maxCorner) / 2 / millimeter;
-        if (toS(mid)[0] > FD - 1.0) rim = append(rim, e);
+        if (toS(mid)[0] > FD - 1.0 && size(evaluateQuery(context, qIntersection([qAdjacent(e, AdjacencyType.EDGE, EntityType.FACE), qCreatedBy(L + "cb", EntityType.FACE)]))) > 0) rim = append(rim, e);
     }
-    finishEdges(context, M + "rim", qUnion(rim), 0.4, "button face rim round");
+    var rimR = 0;
+    for (var rr in [0.4, 0.3, 0.2])
+        if (rimR == 0 && attempt(context, M + ("rim" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : qUnion(rim), "radius" : rr * millimeter }); }))
+            rimR = rr;
+    if (rimR == 0) warn(context, "button face rim round failed (" ~ size(rim) ~ " edges)");
     const sleeve = one(context, solids(context, L + "so"), "tell sleeve");
     opBoolean(context, id + "cut", { "tools" : qUnion([solids(context, K), solids(context, id + "rodb")]), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     // rod: bonded from t' ROD_T[0] (inside the tongue, short of the slanted rear face) to 0.5 short of the bore's end
@@ -1211,27 +1213,27 @@ annotation { "Feature Type Name" : "GbG Side Pad r5", "Feature Type Description"
 export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
-        annotation { "Name" : "Side" }
+        annotation { "Name" : "Side", "Default" : SidePadSide.BOTH }
         definition.side is SidePadSide;
         annotation { "Name" : "Kit" }
         definition.mode is SidePadMode;
-        annotation { "Name" : "Left: arm" }
+        annotation { "Name" : "Left: arm", "Default" : SidePadArm.LONG }
         definition.arm is SidePadArm;
         annotation { "Name" : "Left: LOW / HIGH" }
         definition.kit is SidePadKit;
-        annotation { "Name" : "Left: pad position" }
+        annotation { "Name" : "Left: pad position", "Default" : SidePadPadPos.LOWER }
         definition.padPos is SidePadPadPos;
         annotation { "Name" : "Left: tilt" }
         definition.tilt is SidePadTilt;
         annotation { "Name" : "Right: arm" }
         definition.rArm is SidePadArm;
-        annotation { "Name" : "Right: LOW / HIGH" }
+        annotation { "Name" : "Right: LOW / HIGH", "Default" : SidePadKit.HIGH }
         definition.rKit is SidePadKit;
         annotation { "Name" : "Right: pad position" }
         definition.rPadPos is SidePadPadPos;
         annotation { "Name" : "Right: tilt" }
         definition.rTilt is SidePadTilt;
-        annotation { "Name" : "Foam (reference cushion)" }
+        annotation { "Name" : "Foam (reference cushion)", "Default" : SidePadFoam.F20 }
         definition.foam is SidePadFoam;
         annotation { "Name" : "Show foam + cover (reference, not printed)", "Default" : true }
         definition.cushion is boolean;
