@@ -1,0 +1,50 @@
+== 1. Where the angle lives: pad-centre shift (mm) vs pivot ==
+A = bend at the sleeve face (x 128.1 ); lever = sleeve face -> pad back
+  D0: lever 24.1  8deg dz 3.4  15deg dz 6.2 (dx 0.8)
+  D1: lever 36.1  8deg dz 5.0  15deg dz 9.3 (dx 1.2)
+  D2: lever 48.1  8deg dz 6.7  15deg dz 12.4 (dx 1.6)
+  D3: lever 60.1  8deg dz 8.4  15deg dz 15.6 (dx 2.0)
+B = angled foot, pivot on the pad back at the foot centre (x = xs, z = zp): pad centre does not move;
+    foam surface point at zp moves dz = -(FOAM+SHELL)*sin(theta); foam TOP corner moves:
+   +0deg: contact centre dz -0.0; foam top corner dx +0.0 dz +0.0; pad bottom edge dx +0.0
+   +8deg: contact centre dz -4.8; foam top corner dx -5.2 dz -5.2; pad bottom edge dx +5.6
+   -8deg: contact centre dz +4.8; foam top corner dx +5.9 dz +4.4; pad bottom edge dx -5.6
+  +15deg: contact centre dz -8.9; foam top corner dx -9.2 dz -10.3; pad bottom edge dx +10.4
+  -15deg: contact centre dz +8.9; foam top corner dx +11.5 dz +7.6; pad bottom edge dx -10.4
+
+== 2. Angled foot fits even at D0 (shortest)? tenon tip vs tilted hollow floor ==
+  D0  8deg: tenon tip x 115.1, tilted floor reaches x 111.4  -> margin 3.7; foot rim moves +-2.8
+  D0 15deg: tenon tip x 115.1, tilted floor reaches x 112.7  -> margin 2.4; foot rim moves +-5.4
+  D1  8deg: tenon tip x 115.1, tilted floor reaches x 99.4  -> margin 15.7; foot rim moves +-2.8
+  D1 15deg: tenon tip x 115.1, tilted floor reaches x 100.7  -> margin 14.4; foot rim moves +-5.4
+  D2  8deg: tenon tip x 115.1, tilted floor reaches x 87.4  -> margin 27.7; foot rim moves +-2.8
+  D2 15deg: tenon tip x 115.1, tilted floor reaches x 88.7  -> margin 26.4; foot rim moves +-5.4
+  D3  8deg: tenon tip x 115.1, tilted floor reaches x 75.4  -> margin 39.7; foot rim moves +-2.8
+  D3 15deg: tenon tip x 115.1, tilted floor reaches x 76.7  -> margin 38.4; foot rim moves +-5.4
+  armrest inner face (viewer mesh, y -9..62, z 120-160): x ~134; pad bottom at 15deg top-in D0: x 118.9
+
+== 3. Separate wedge (option B-wedge) thickness under the 40-tall foot (min 2.5) ==
+  8deg: 2.5 .. 8.1, at the screw 5.3; screw-to-pad-normal misalignment 8deg
+  15deg: 2.5 .. 13.2, at the screw 7.9; screw-to-pad-normal misalignment 15deg
+
+== 4. Screw audit: pad joint (foot 27 x 40 on the pad back, one M5 at y 36, rib has no undercut) ==
+Rigid-pad statics: the contact resultant must stay inside the foot rectangle (y 19..46, z -20..20); S = screw tension.
+  pad centre        (y 14, z +0): 300 N outward -> screw   88 N tension;  100 N inward -> screw  320 N tension
+  front edge        (y -27, z +0): 300 N outward -> screw  812 N tension;  100 N inward -> screw  730 N tension
+  top edge          (y 14, z +40): 300 N outward -> screw  300 N tension;  100 N inward -> screw  320 N tension
+  front-top corner  (y -27, z +40): 300 N outward -> screw  812 N tension;  100 N inward -> screw  730 N tension
+  over the foot     (y 32.5, z +0): 300 N outward -> screw    0 N tension;  100 N inward -> screw  135 N tension
+
+== 5. Tenon joint axial ==
+  hole play (5.5 - 5.0)/2 = 0.25 < hairline JGAP 0.3: an outward 300 N reaches the M5x12 shank (shear) before the faces touch;
+  a 100 N inward pull is held ONLY by the M5x12 (shear, cross-pin). Moments -> tenon in sleeve (plastic).
+  Proposed ledge: hollow steps 13.4x20.4 -> 11x18 at the tenon tip; bearing area 75 mm2 -> 4.0 MPa at 300 N
+
+== 6. Wing joint (no screws) ==
+  300 N outward (+x): along t -182 N (pull-out -> printed shuttle catch), across d +239 N -> slot walls; moments -> rails + walls
+  100 N inward (-x): along t +61 N (push-in -> tongue rear face on slot end (0.5 gap)), across d -80 N -> slot walls; moments -> rails + walls
+
+== 7. Print counts for 0 / +-8 / +-15, both sides ==
+  angled depth piece: 0 universal; each tilted print is handed: A_theta = L top-in = R top-out, B_theta = its mirror.
+  per depth: 2x P0 + A8 + B8 + A15 + B15 = 6 prints covers both-in and both-out at each angle (4 new STL per depth, 16 total)
+  wedge: 2x W8 + 2x W15 = 4 prints for every depth and every sign (flip about the screw axis), + per-angle screw length

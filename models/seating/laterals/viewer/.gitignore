@@ -1,0 +1,5 @@
+raw/
+site/geodata.json
+__pycache__/
+.venv/
+*.npy

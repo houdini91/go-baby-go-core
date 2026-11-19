@@ -1,0 +1,34 @@
+{
+ "_frame": "Q(d,t,z) of gbg_sidepad_v1.fs: d across the tip (+ outboard), t into the wing (- = front), z chair world mm. Tongue centre = c. Shown LOW (pad below); HIGH = z-mirror about c.",
+ "common": {
+  "wing_cut_face_t": 6.0, "nose": {"d": [-6.0, 23.6], "t": [-14.0, 6.0], "front_corner_R": 6.0},
+  "slot": {"d": [1.2, 17.6], "t_front": 6.0, "t_back(d)": "19.1 + 1.31*(d+4) - 9.9  (6 mm normal web to strap slit S1; S1 only at z 203-272)"},
+  "tongue": {"d": [1.4, 17.4], "t": [6.0, "t_back(d) - 0.5"], "note": "inboard corner only ~10 deep, outboard ~31 (S1 limits)"},
+  "U_walls": {"inner": [-6.0, 1.2], "outer": [17.6, 23.6]},
+  "carbon_rod": "Ø6 in Ø6.5 teardrop bore along t at d 9.4, z c-10 (LOW), from the tongue rear face to t ~ -29",
+  "seams": 0.3
+ },
+ "A_button_is_catch": {
+  "band": [201.3, 317.9], "carrier_nose_h": 40.0, "fillers": "4 x 19.15", "tongue_centres": [221.3, 240.45, 259.6, 278.75, 297.9],
+  "button": "12 (t) x 18 (z) stadium on nose outer face d 23.6, centre t -2.5, z c; travel 5 inboard (-d), hard stop",
+  "slider": "L-shape, button -> bar inside the tongue -> tooth; spring OD 6 along d from d 2.5 (seat) to d 10, t -2.5",
+  "tooth": "d 17.4 -> 21.1 (3.5 engaged), t 10-15, z c+-7.5; 6 deg taper on its front (t) face",
+  "wall_groove": "blind, in the outer wall inner face: d 17.6-21.4 (2.2 skin left), t 9.8-15.2, z c_k +-7.8, one per position (5)"
+ },
+ "B_hook_and_drop_keystone": {
+  "band": [201.3, 335.35], "cell_p": 19.15, "cells": 7, "carrier_cells": 2, "carrier_nose_h": 38.0, "filler_h": 18.85,
+  "tongue_centres": "220.45 + 19.15*j, j 0..4", "pads_LOW": [172.95, 192.1, 211.25, 230.4, 249.55],
+  "lips_wing": "both U-walls, at every cell centre z 210.875 + 19.15*j (j 0..6): d [1.2,4.2] and [14.6,17.6], t [6.5,12.5], z +-3.25",
+  "carrier_side_faces": "groove t [6.25,12.75] x 3.3 deep full height; channels to rear face z c+-5.075 and c+-[14.075,19.15]; hook rows z c+-[5.075,14.075], hook face t 12.75",
+  "insert": "push back raised +8 (lips run in the channels), drop 8 onto the filler below / band floor",
+  "keystone": "cell above the carrier; hangs on its lip (channel z +-3.4 rear->t 6.25, roof on lip top); underside ridge 3 x 1.5 along t (t -12..4) into a 3.4 x 1.8 groove on carrier top AND bottom faces",
+  "keystone_latch": "button 10 (t) x 12 (z) on nose outer face d 23.6, t -9..1, z cell centre; slider travel 4 (-d); bolt d 15-19.6 (2.0 engaged), t 15-19, z cell centre +4.6..8.1, 30 deg lead-in; wall pocket d 17.6-19.8, t 14.8-19.2, one per keystone cell (cells 2-6)",
+  "states_for_drawing": {"inserted_up": "carrier z +8, keystone out", "dropped_locked": "carrier at c, keystone in", "pressed_lifted": "keystone out (pulled -t), carrier z +8"}
+ },
+ "C_steel_plunger": {
+  "band": [201.3, 317.9], "carrier_nose_h": 40.0, "fillers": "4 x 19.15", "tongue_centres": [221.3, 240.45, 259.6, 278.75, 297.9],
+  "plunger": "bought Ø6.5 x 45 crib plunger (17.8 knob) or Ø6 dowel + spring + printed knob, in a printed boss Ø16 on the wing outer face: d 23.6 -> 33.6, t 14, z c_k; one per position (5 per side)",
+  "pin": "Ø6, into the tongue d 17.4 -> 9.4 at t 14, z c; tongue hole lined with brass tube Ø8/6 x 8; 6 deg x 3 mm taper on the tip into a matching countersink (zero play)",
+  "knob": "pull outboard 6 to release; knob face at d ~45 (x ~161)"
+ }
+}

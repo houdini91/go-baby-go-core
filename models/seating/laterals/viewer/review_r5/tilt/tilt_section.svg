@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" font-family="sans-serif" font-size="11">
+<polygon points="210.4,194.5 254.2,194.5 254.2,145.5 210.4,145.5" fill="#9bb" stroke="#455"/>
+<polygon points="187.7,187.5 210.4,187.5 210.4,152.5 187.7,152.5" fill="#7aa" stroke="#344"/>
+<polygon points="209.9,145.5 199.8,145.5 159.2,136.2 177.3,203.8 199.8,194.5 209.9,194.5" fill="#e6c27a" stroke="#7a5" fill-opacity="0.85"/>
+<polygon points="187.3,154.2 173.8,150.0 183.0,184.5 187.3,185.8" fill="#fff" stroke="#a85" stroke-dasharray="2,2"/>
+<polygon points="186.4,237.6 150.1,102.4 142.5,104.4 178.8,239.7" fill="#555"/>
+<polygon points="178.8,239.7 142.5,104.4 94.5,128.2 125.3,243.1" fill="#223" fill-opacity="0.55"/>
+<line x1="183.0" y1="166.1" x2="160.6" y2="172.0" stroke="#c22" stroke-width="2.5"/>
+<text x="50" y="265">D0  +15° top-in</text>
+<polygon points="535.4,194.5 579.2,194.5 579.2,145.5 535.4,145.5" fill="#9bb" stroke="#455"/>
+<polygon points="512.7,187.5 535.4,187.5 535.4,152.5 512.7,152.5" fill="#7aa" stroke="#344"/>
+<polygon points="534.9,145.5 524.8,145.5 493.2,135.0 493.2,205.0 524.8,194.5 534.9,194.5" fill="#e6c27a" stroke="#7a5" fill-opacity="0.85"/>
+<polygon points="512.3,154.2 503.8,152.2 503.8,187.8 512.3,185.8" fill="#fff" stroke="#a85" stroke-dasharray="2,2"/>
+<polygon points="493.2,240.0 493.2,100.0 485.4,100.0 485.4,240.0" fill="#555"/>
+<polygon points="485.4,240.0 485.4,100.0 432.9,110.5 432.9,229.5" fill="#223" fill-opacity="0.55"/>
+<line x1="508.5" y1="170.0" x2="485.4" y2="170.0" stroke="#c22" stroke-width="2.5"/>
+<text x="375" y="265">D0  0° </text>
+<polygon points="860.4,194.5 904.2,194.5 904.2,145.5 860.4,145.5" fill="#9bb" stroke="#455"/>
+<polygon points="837.7,187.5 860.4,187.5 860.4,152.5 837.7,152.5" fill="#7aa" stroke="#344"/>
+<polygon points="859.9,145.5 849.8,145.5 827.3,136.2 809.2,203.8 849.8,194.5 859.9,194.5" fill="#e6c27a" stroke="#7a5" fill-opacity="0.85"/>
+<polygon points="837.3,154.2 833.0,155.5 823.8,190.0 837.3,185.8" fill="#fff" stroke="#a85" stroke-dasharray="2,2"/>
+<polygon points="800.1,237.6 836.4,102.4 828.8,100.3 792.5,235.6" fill="#555"/>
+<polygon points="792.5,235.6 828.8,100.3 775.3,96.9 744.5,211.8" fill="#223" fill-opacity="0.55"/>
+<line x1="833.0" y1="173.9" x2="810.6" y2="168.0" stroke="#c22" stroke-width="2.5"/>
+<text x="700" y="265">D0  -15° top-out</text>
+<polygon points="210.4,434.5 254.2,434.5 254.2,385.5 210.4,385.5" fill="#9bb" stroke="#455"/>
+<polygon points="187.7,427.5 210.4,427.5 210.4,392.5 187.7,392.5" fill="#7aa" stroke="#344"/>
+<polygon points="209.9,385.5 136.8,385.5 96.2,376.2 114.3,443.8 136.8,434.5 209.9,434.5" fill="#e6c27a" stroke="#7a5" fill-opacity="0.85"/>
+<polygon points="187.3,394.2 110.8,390.0 120.0,424.5 187.3,425.8" fill="#fff" stroke="#a85" stroke-dasharray="2,2"/>
+<polygon points="123.4,477.6 87.1,342.4 79.5,344.4 115.8,479.7" fill="#555"/>
+<polygon points="115.8,479.7 79.5,344.4 31.5,368.2 62.3,483.1" fill="#223" fill-opacity="0.55"/>
+<line x1="120.0" y1="406.1" x2="97.6" y2="412.0" stroke="#c22" stroke-width="2.5"/>
+<text x="50" y="505">D3  +15° top-in</text>
+<polygon points="535.4,434.5 579.2,434.5 579.2,385.5 535.4,385.5" fill="#9bb" stroke="#455"/>
+<polygon points="512.7,427.5 535.4,427.5 535.4,392.5 512.7,392.5" fill="#7aa" stroke="#344"/>
+<polygon points="534.9,385.5 461.8,385.5 430.2,375.0 430.2,445.0 461.8,434.5 534.9,434.5" fill="#e6c27a" stroke="#7a5" fill-opacity="0.85"/>
+<polygon points="512.3,394.2 440.8,392.1 440.8,427.9 512.3,425.8" fill="#fff" stroke="#a85" stroke-dasharray="2,2"/>
+<polygon points="430.2,480.0 430.2,340.0 422.4,340.0 422.4,480.0" fill="#555"/>
+<polygon points="422.4,480.0 422.4,340.0 369.9,350.5 369.9,469.5" fill="#223" fill-opacity="0.55"/>
+<line x1="445.5" y1="410.0" x2="422.4" y2="410.0" stroke="#c22" stroke-width="2.5"/>
+<text x="375" y="505">D3  0° </text>
+<polygon points="860.4,434.5 904.2,434.5 904.2,385.5 860.4,385.5" fill="#9bb" stroke="#455"/>
+<polygon points="837.7,427.5 860.4,427.5 860.4,392.5 837.7,392.5" fill="#7aa" stroke="#344"/>
+<polygon points="859.9,385.5 786.8,385.5 764.3,376.2 746.2,443.8 786.8,434.5 859.9,434.5" fill="#e6c27a" stroke="#7a5" fill-opacity="0.85"/>
+<polygon points="837.3,394.2 770.0,395.5 760.8,430.0 837.3,425.8" fill="#fff" stroke="#a85" stroke-dasharray="2,2"/>
+<polygon points="737.1,477.6 773.4,342.4 765.8,340.3 729.5,475.6" fill="#555"/>
+<polygon points="729.5,475.6 765.8,340.3 712.3,336.9 681.5,451.8" fill="#223" fill-opacity="0.55"/>
+<line x1="770.0" y1="413.9" x2="747.6" y2="408.0" stroke="#c22" stroke-width="2.5"/>
+<text x="700" y="505">D3  -15° top-out</text>
+<text x="40" y="30" font-size="12">LEFT side, front view (x-z section at the joint axis). Angle in the depth-piece foot; pivot = pad back at the foot centre; red = pad M5 along the pad normal.</text>
+<text x="40" y="48">grey-blue = arm end + tenon (unchanged); tan = depth piece; dashed = hollow with tenon-tip ledge and tilted floor; dark = shell + foam.</text>
+</svg>

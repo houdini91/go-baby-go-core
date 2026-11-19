@@ -1,0 +1,40 @@
+
+== B hook-and-drop (2 rows x 2 walls, lips 3.0 d x 6.5 z x 6 t)
+  knock 300 N out (RT)               pull-out   182 N, pitch  -8.7 N.m -> element   441 N (row z -9.6, 221 N each), cut face  259 N | bearing 11.3 MPa SF  2.2 | root shear  5.7 SF  3.9 | root bend  8.5 SF  2.1(across)  4.7(along)
+  corner knock 300 N out (RT)        pull-out   182 N, pitch -12.3 N.m -> element   578 N (row z -9.6, 289 N each), cut face  396 N | bearing 14.8 MPa SF  1.7 | root shear  7.4 SF  3.0 | root bend 11.1 SF  1.6(across)  3.6(along)
+  lean 100 N out, 60 C sustained     pull-out    61 N, pitch  -2.9 N.m -> element   147 N (row z -9.6, 74 N each), cut face   86 N | bearing  3.8 MPa SF  2.1 | root shear  1.9 SF  3.7 | root bend  2.8 SF  2.1(across)  4.6(along)
+  forward pull 150 N (RT)            pull-out   119 N, pitch  -5.7 N.m -> element   288 N (row z -9.6, 144 N each), cut face  169 N | bearing  7.4 MPa SF  3.4 | root shear  3.7 SF  6.0 | root bend  5.5 SF  3.2(across)  7.2(along)
+  inward pull 100 N (RT)             push-in 61 N -> nose back face on the cut face; latch/hooks unloaded
+  push pad UP 100 N (RT)             vertical: keystone above (up) / stack below (down) in compression; lift +100 N, pitch -3.3 roll +6.3 N.m -> U-walls
+  push pad DOWN 150 N (RT)           vertical: keystone above (up) / stack below (down) in compression; lift -150 N, pitch +5.0 roll -9.4 N.m -> U-walls
+
+== A button-is-catch (1 tooth 4 d x 15 z, in a wall groove)
+  knock 300 N out (RT)               pull-out   182 N, pitch  -8.7 N.m -> element   688 N (row z +0.0, 688 N each), cut face  505 N | bearing 11.5 MPa SF  2.2 | root shear  9.2 SF  2.4 | root bend 22.0 SF  0.8(across)  1.8(along)
+  corner knock 300 N out (RT)        pull-out   182 N, pitch -12.3 N.m -> element   901 N (row z +0.0, 901 N each), cut face  718 N | bearing 15.0 MPa SF  1.7 | root shear 12.0 SF  1.8 | root bend 28.8 SF  0.6(across)  1.4(along)
+  lean 100 N out, 60 C sustained     pull-out    61 N, pitch  -2.9 N.m -> element   229 N (row z +0.0, 229 N each), cut face  168 N | bearing  3.8 MPa SF  2.1 | root shear  3.1 SF  2.3 | root bend  7.3 SF  0.8(across)  1.8(along)
+  forward pull 150 N (RT)            pull-out   119 N, pitch  -5.7 N.m -> element   449 N (row z +0.0, 449 N each), cut face  330 N | bearing  7.5 MPa SF  3.3 | root shear  6.0 SF  3.7 | root bend 14.4 SF  1.3(across)  2.8(along)
+  inward pull 100 N (RT)             push-in 61 N -> nose back face on the cut face; latch/hooks unloaded
+  push pad UP 100 N (RT)             vertical: filler stack (up and down) in compression; lift +100 N, pitch -3.3 roll +6.3 N.m -> U-walls
+  push pad DOWN 150 N (RT)           vertical: filler stack (up and down) in compression; lift -150 N, pitch +5.0 roll -9.4 N.m -> U-walls
+
+== C steel pin Ø6 (8 in tongue, brass liner Ø8 in a 6 wall)
+  knock 300 N out (RT)               pull-out   182 N, pitch  -8.7 N.m -> element   688 N (row z +0.0, 688 N each), cut face  505 N | bearing 14.3 MPa SF  1.7 | steel pin shear 24 MPa (allow ~200)
+  corner knock 300 N out (RT)        pull-out   182 N, pitch -12.3 N.m -> element   901 N (row z +0.0, 901 N each), cut face  718 N | bearing 18.8 MPa SF  1.3 | steel pin shear 32 MPa (allow ~200)
+  lean 100 N out, 60 C sustained     pull-out    61 N, pitch  -2.9 N.m -> element   229 N (row z +0.0, 229 N each), cut face  168 N | bearing  4.8 MPa SF  1.7 | steel pin shear 8 MPa (allow ~200)
+  forward pull 150 N (RT)            pull-out   119 N, pitch  -5.7 N.m -> element   449 N (row z +0.0, 449 N each), cut face  330 N | bearing  9.4 MPa SF  2.7 | steel pin shear 16 MPa (allow ~200)
+  inward pull 100 N (RT)             push-in 61 N -> nose back face on the cut face; latch/hooks unloaded
+  push pad UP 100 N (RT)             vertical: filler stack (up and down) in compression; lift +100 N, pitch -3.3 roll +6.3 N.m -> U-walls
+  push pad DOWN 150 N (RT)           vertical: filler stack (up and down) in compression; lift -150 N, pitch +5.0 roll -9.4 N.m -> U-walls
+
+knock 300 N out (RT): F(d,t,z) [ 239. -182.    0.]  M(d,t,z) [ -8.7 -11.3  19.4] N.m (yaw Mz and roll Mt -> U-walls, all concepts)
+
+corner knock 300 N out (RT): F(d,t,z) [ 239. -182.    0.]  M(d,t,z) [-12.3 -16.1  29.6] N.m (yaw Mz and roll Mt -> U-walls, all concepts)
+
+B lift: child pushes pad up 100 N (2-5 y, both hands) -> carrier lift 100 N into the keystone (compression, ~600 mm2: 0.2 MPa) -> keystone lip channel floor (2 lips x 3 x 6 = 36 mm2: 1.4 MPa, SF 18); 300 N kick-up: SF 6. Keystone bolt sees none of it.
+6 deg taper, mu 0.1: friction angle 5.7 deg -> BACK-DRIVES; spring/gravity preload gain cot(6+phi) = 4.8
+6 deg taper, mu 0.2: friction angle 11.3 deg -> self-holding; spring/gravity preload gain cot(6+phi) = 3.2
+6 deg taper, mu 0.3: friction angle 16.7 deg -> self-holding; spring/gravity preload gain cot(6+phi) = 2.4
+6 deg taper, mu 0.5: friction angle 26.6 deg -> self-holding; spring/gravity preload gain cot(6+phi) = 1.6
+spring SS304 d0.6 OD6.0 n6+2 Lf14.0: k 1.18 N/mm, solid 4.8, installed 10.0 -> 4.7 N, pressed 6.0 -> 9.5 N, tau 700 MPa
+spring SS304 d0.55 OD6.0 n6+2 Lf14.0: k 0.81 N/mm, solid 4.4, installed 10.0 -> 3.3 N, pressed 6.0 -> 6.5 N, tau 622 MPa
+spring SS304 d0.5 OD5.0 n6+2 Lf12.0: k 0.99 N/mm, solid 4.0, installed 9.0 -> 3.0 N, pressed 5.5 -> 6.4 N, tau 683 MPa

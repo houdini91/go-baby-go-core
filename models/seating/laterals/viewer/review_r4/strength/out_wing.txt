@@ -1,0 +1,7 @@
+== wing tip block -> wing (sections normal to t), PETG only; tongue P1 and P3 ==
+t  -10 A   3118 holes [(np.float64(-9.6), np.float64(259.5), np.float64(16.4), np.float64(117.0))]  ['P1 LOW: smax 1.0 MPa', 'P3 HIGH: smax 1.0 MPa']
+t    0 A   2902 holes [(np.float64(-10.9), np.float64(259.5), np.float64(20.6), np.float64(117.0))]  ['P1 LOW: smax 1.1 MPa', 'P3 HIGH: smax 1.2 MPa']
+t   20 A   3818 holes [(np.float64(-9.7), np.float64(259.5), np.float64(16.4), np.float64(117.0))]  ['P1 LOW: smax 1.1 MPa', 'P3 HIGH: smax 1.3 MPa']
+t   33 A   5987 holes []  ['P1 LOW: smax 1.1 MPa', 'P3 HIGH: smax 1.1 MPa']
+t   40 A   3687 holes []  ['P1 LOW: smax 2.5 MPa', 'P3 HIGH: smax 2.5 MPa']
+t   46 A   3895 holes [(np.float64(7.1), np.float64(237.2), np.float64(3.8), np.float64(70.3)), (np.float64(-3.1), np.float64(323.9), np.float64(10.0), np.float64(141.8))]  ['P1 LOW: smax 2.2 MPa', 'P3 HIGH: smax 2.1 MPa']

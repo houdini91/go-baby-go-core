@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Side pad ranges (Round 5) test</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f6f6f4,#121416);--panel:light-dark(#ffffff,#1b1e21);--ink:light-dark(#17191c,#e8eaec);--mute:light-dark(#5d646c,#9aa3ab);--line:light-dark(#dcdfe2,#2c3136);--acc:#ff6a2a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+main{padding:18px max(3vw,14px) 40px}
+.tt{float:right;font:inherit;font-size:13px;padding:4px 9px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+</style></head>
+<body><main>
+<button class="tt" id="tt" type="button">Theme: auto</button>
+<div id="ranges"></div>
+</main>
+<script type="module">
+import { mountRanges } from './ranges5.js';
+mountRanges(document.getElementById('ranges'));
+const m=['auto','light','dark'];let i=0;const q=new URLSearchParams(location.search).get('theme');if(q==='light'||q==='dark'){document.documentElement.dataset.theme=q;i=m.indexOf(q);document.getElementById('tt').textContent='Theme: '+q;}
+document.getElementById('tt').onclick=e=>{i=(i+1)%3;if(m[i]==='auto')delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=m[i];e.target.textContent='Theme: '+m[i];};
+</script>
+</body></html>

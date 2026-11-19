@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Side pad v1.1 viewer</title>
+<style>
+/* VOICE: calm workshop service manual, clinical and exact.
+   IDEA: an exploded service drawing you can turn in your hand: cut it, pull it apart, press the button.
+   PICTURE: the real Onshape geometry, full-bleed, with the section cut filled like a drawing hatch.
+   COLOUR and TYPE: paper white / graphite night; one signal orange for the button, teal for the catch. IBM Plex Sans.
+   LAYOUT: viewer left, a quiet control column right; notes on each joint below, then the button options. */
+:root{color-scheme:light dark;--bg:light-dark(#f6f6f4,#121416);--panel:light-dark(#ffffff,#1b1e21);--ink:light-dark(#17191c,#e8eaec);--mute:light-dark(#5d646c,#9aa3ab);--line:light-dark(#dcdfe2,#2c3136);--acc:#ff6a2a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
+h1{font-size:30px;line-height:1.1;margin:0 0 4px;font-weight:600;text-wrap:balance}
+h2{font-size:20px;margin:0 0 8px;font-weight:600}
+h3{font-size:15px;margin:14px 0 6px;font-weight:600}
+.top{padding:18px max(3vw,14px) 10px}.top p{margin:0;color:var(--mute);max-width:80ch}
+.top a{color:inherit}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+#view{position:relative;height:min(78vh,820px);min-height:420px;background:light-dark(#eceeef,#0c0e10);touch-action:none}
+#view canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hud{position:absolute;left:12px;bottom:10px;font-size:13px;color:var(--mute);pointer-events:none}
+#load{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute)}
+.side{background:var(--panel);border-left:1px solid var(--line);padding:12px 14px;overflow:auto;height:min(78vh,820px);min-height:420px}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+button.b{font:inherit;font-size:14px;min-height:36px;padding:4px 10px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;cursor:pointer}
+button.b:hover{border-color:var(--mute)}button.b.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible,.ocard:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+label.s{display:block;font-size:13px;color:var(--mute);margin:8px 0 2px}
+input[type=range]{width:100%;accent-color:var(--acc);height:28px}
+select{font:inherit;font-size:14px;width:100%;min-height:36px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:4px 6px}
+.parts{list-style:none;margin:0;padding:0}
+.parts li{display:grid;grid-template-columns:22px 14px 1fr auto;align-items:center;gap:6px;padding:3px 0;font-size:14px;border-bottom:1px solid var(--line)}
+.parts li small{color:var(--mute);font-size:12px}
+.sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.25)}
+.parts input{width:18px;height:18px;margin:0}
+.parts .iso{font-size:12px;border:0;background:none;color:var(--mute);cursor:pointer;padding:4px}
+.notes{padding:22px max(3vw,14px) 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px 28px;max-width:1500px}
+.notes div p{margin:0 0 6px}.notes div p.m{color:var(--mute);font-size:14px}
+.opts{padding:26px max(3vw,14px) 48px;border-top:1px solid var(--line);background:var(--panel)}
+.opts>p{max-width:86ch;margin:0 0 10px}
+.ogrid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+#mview{position:relative;height:min(62vh,600px);min-height:360px;background:light-dark(#eceeef,#0c0e10);border-radius:10px;overflow:hidden;touch-action:none}
+#mview canvas{position:absolute;inset:0;width:100%;height:100%}
+#mload{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);padding:20px;text-align:center}
+.ocard{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.ocard.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.ocard h3{margin:0 0 4px}.ocard p{margin:0 0 4px;font-size:14px}.ocard .m{color:var(--mute)}
+.scroll{overflow-x:auto}
+table.cmp{border-collapse:collapse;width:100%;min-width:720px;font-size:14px;margin-top:14px}
+table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+table.cmp th{font-weight:600;color:var(--mute)}
+.good{color:light-dark(#0b7a44,#4fd18b)}.bad{color:light-dark(#b42318,#ff7b70)}
+.cuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:12px 0 6px}
+.cfig{margin:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px}
+.cfig figcaption{font-size:14px;margin-bottom:6px}.cfig svg{width:100%;height:auto;display:block;max-height:560px}
+.cfig .wing{fill:none;stroke:light-dark(#8b867c,#9b968c);stroke-width:.35}
+.cfig .kit{fill:none;stroke:light-dark(#3d4650,#c9d1d9);stroke-width:.35}
+.cfig .btn{fill:none;stroke:#ff6a2a;stroke-width:.6}.cfig .cat{fill:none;stroke:#16a394;stroke-width:.6}
+.cfig .btnfill{fill:#ff6a2a;stroke:#b8471a;stroke-width:.25}.cfig .catfill{fill:#16a394;stroke:#0d6e64;stroke-width:.25}
+.cfig .nose{fill:light-dark(#eef0f2,#2a2f35);stroke:light-dark(#3d4650,#c9d1d9);stroke-width:.35}
+.cfig .tongue{fill:light-dark(#eef0f2,#2a2f35);stroke:light-dark(#3d4650,#c9d1d9);stroke-width:.35}
+.cfig .slot{fill:light-dark(#fff,#15181b);stroke:none}.cfig .groove{fill:light-dark(#fff,#15181b);stroke:light-dark(#8b867c,#9b968c);stroke-width:.3}
+.cfig .pocket{fill:light-dark(#fff,#15181b);stroke:light-dark(#3d4650,#c9d1d9);stroke-width:.2}
+.cfig .swell{fill:none;stroke:light-dark(#8b867c,#9b968c);stroke-width:.4;stroke-dasharray:1.2 .9}
+.cfig .armln{fill:none;stroke:light-dark(#3d4650,#c9d1d9);stroke-width:.35;stroke-dasharray:2 1}
+.cfig .spr{fill:none;stroke:light-dark(#59616b,#aab3bc);stroke-width:.35}.cfig .seat{stroke:light-dark(#3d4650,#c9d1d9);stroke-width:.6}
+.cfig .thumb{stroke:#ff6a2a;stroke-width:.7;fill:none}.cfig .finger{stroke:#2a6df4;stroke-width:.7;fill:none}
+.cfig .fillarrow.thumb{fill:#ff6a2a}.cfig .fillarrow.finger{fill:#2a6df4}
+.cfig .lb{font:2.6px "IBM Plex Sans",sans-serif;fill:var(--mute)}.cfig .sm{font-size:2.2px}
+.cfig .st{font:600 3px "IBM Plex Sans",sans-serif;fill:var(--ink)}.cfig .st.ok{fill:light-dark(#0b7a44,#4fd18b)}
+@media(max-width:700px){.cuts{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:900px){.ogrid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:860px){.app{grid-template-columns:minmax(0,1fr)}.side{border-left:0;border-top:1px solid var(--line);height:auto}#view{height:62vh}}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/","three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.3/build/index.module.js"}}</script>
+</head>
+<body>
+<div class="top">
+  <h1>Side pad round 5: one small mount, the button on it</h1>
+  <p>The design we've agreed so far, shown first. Today's v1.1 (3 heights in a tall slot, slot blanks, push-rod button) is further down, labelled as being replaced.</p>
+</div>
+<section class="opts" id="draft-r4" style="background:var(--bg)">
+  <h2 style="font-size:28px;line-height:1.15">Round 5 direction: one small mount that completes the wing</h2>
+  <p>A concept to review, not CAD yet. <b>One mount only.</b> Just a 40 mm piece of the wing's front edge belongs to the kit (the "nose"). It has the blade's own width and follows its edge, and the arm grows out of its front. Nothing sits above or below it: the block, tall slot, rails and slot blanks all go. Heights come from 2 arm lengths × the LOW/HIGH flip × 2 screw positions on the pad (table on the right), not from more mounts. The release button sits on the nose's outer side, square to its press, and <b>the button is the catch</b>: one sliding part, pressed straight in to free the arm.</p>
+  <div class="ogrid">
+    <div>
+      <div id="dview" style="position:relative;height:min(66vh,640px);min-height:380px;background:light-dark(#eceeef,#0c0e10);border-radius:10px;overflow:hidden;touch-action:none"><div id="dload" style="position:absolute;inset:0;display:grid;place-items:center;color:var(--mute)">Building the draft…</div></div>
+      <div class="row" style="margin-top:8px" id="dviews"><button class="b" data-v="outer">Outer side (button)</button><button class="b on" data-v="parent">Parent's view</button><button class="b" data-v="front">From the front</button><button class="b" data-v="whole">Whole side</button><button class="b" data-v="child">From the child</button></div>
+      <div class="row"><button class="b on" data-s="draft">Draft</button><button class="b" data-s="now">Today (v1.1, being replaced)</button><span style="width:12px"></span><button class="b on" data-m="single">Single 40 mm mount</button><span style="width:12px"></span><button class="b on" data-k="on">Kit on</button><button class="b" data-k="off-cap">Kit off + blank cap</button><button class="b" data-k="off-open">Kit off, no cap</button><button class="b on" id="darrows">Pinch arrows</button><button class="b" id="dhl">Highlight kit parts</button></div>
+    </div>
+    <div>
+      <div class="ocard" style="cursor:default"><h3>The button: final</h3><p><b>12 × 24 mm</b> stadium on the nose's outer face, at the arm's height, on the side away from the child. The face is <b>square to its press</b> (no sideways slide), with a shallow thumb scoop. Chair colour, with an <b>orange ring that shows only when it isn't latched</b>. Flush means latched.</p><p><b>How it works:</b> the button and the catch are one sliding part. Its tooth sits in a groove in the wing. To remove: squeeze the button with your thumb against your fingers on the inner face (5 mm travel to a hard stop), then pull the arm forward. To fit: push the arm in until it clicks.</p><p class="m">Agreed upgrades: a bigger tooth, sized for the corner knock (about 900 N, from the latest load check); a 6° tapered locking face so it can't rattle; a sharp-edged entry for a clear click. A bought steel dowel as the tooth is a coupon-test option. To check: thumb room beside the car's side wall.</p></div>
+      <div class="ocard" style="cursor:default"><h3>The spring doesn't need to be strong</h3><p>The arm is held by the <b>shape</b> of the tooth in its groove, not by the spring. The plastic tooth takes the pull-out load (up to about 900 N in a hard corner knock, so it's sized for that). The spring only pushes the button back out.</p><p>Proposed: <b>OD 6, wire 0.55, free length 16, 9 coils</b>. That's about 4 N at rest and 8 N fully pressed, so the press is about <b>9 N</b>. The comfortable thumb range is about 3–23 N. While a child leans on the pad, friction on the tooth stops it releasing: unload the pad, then press.</p></div>
+      <div class="ocard" style="cursor:default"><h3>Heights with ONE mount (ages 2–5)</h3><p>Mount at z 227. Arm drops 22 or 44 mm × LOW/HIGH flip × pad screw position ±11 mm gives <b>6 pad heights, 22 mm apart</b>. That covers every child from a small 2-year-old to a big 5-year-old with the pad top 25–50 mm below the armpit.</p>
+<table class="cmp" style="min-width:0;margin-top:6px"><thead><tr><th>Pad centre z</th><th>Arm</th><th>Flip</th><th>Pad hole</th><th>Fits armpit z</th></tr></thead><tbody>
+<tr><td>172</td><td>long</td><td>LOW</td><td>lower</td><td>237–262 (age 2)</td></tr>
+<tr><td>194</td><td>short</td><td>LOW</td><td>lower</td><td>259–284</td></tr>
+<tr><td>216</td><td>short</td><td>LOW</td><td>upper</td><td>281–306</td></tr>
+<tr><td>238</td><td>short</td><td>HIGH</td><td>lower</td><td>303–328</td></tr>
+<tr><td>260</td><td>short</td><td>HIGH</td><td>upper</td><td>325–350 (age 5, median)</td></tr>
+<tr><td>282</td><td>long</td><td>HIGH</td><td>upper</td><td>347–372 (age 5, large)</td></tr></tbody></table>
+<p class="m">194 and 260 can also be made with the other arm. Armpit heights are estimates from child measurement tables; a real-child check confirms them.</p></div>
+    </div>
+  </div>
+  <h3 style="margin-top:22px;font-size:20px">How the latch works: today vs. round 5 (cut from above, at the button)</h3>
+  <p style="max-width:90ch">Both catches do the same job: a small block (teal) sits in a groove in the wing's outer wall and stops the arm being pulled out. What changes is how your thumb moves it. <b>Today</b> you press the button along the arm, into the wing (orange arrow). A push-rod carries that motion back, and an angled slot turns it 90° to slide the catch sideways out of its groove. <b>In the draft</b> the button and the catch are one piece. You press sideways, toward the child, and the same piece slides straight out of the groove. Same motion, same direction, no conversion.</p>
+  <div class="cuts" id="cuts"></div>
+  <label class="s" for="cpress">Press both buttons <span id="cpv">0 %</span></label><input id="cpress" type="range" min="0" max="1" step="0.01" value="0" style="max-width:520px">
+  <p style="color:var(--mute);font-size:14px">Left is cut from the real v1.1 parts (thin outlines: wing, carrier, rod, catch). Right is a schematic of the draft at the same scale. The dashed lines show where the wing must thicken around the slot: walls ≥ 6 mm, per the strength review.</p>
+  <div class="scroll"><table class="cmp" style="min-width:640px">
+    <thead><tr><th>Topic</th><th>Draft</th><th>Why</th></tr></thead><tbody>
+    <tr><td>Wing</td><td>Only a 40 mm piece of the front edge (z ≈ 207–247) is replaced by the kit's nose; <b>block, tall slot, rails and blanks removed</b>; kit off: a small blank cap closes the notch</td><td>"Completes the chair"; the block looked bolted on</td></tr>
+    <tr><td>Existing wing slots</td><td><b>All kept, none moved.</b> Today's v1.1 block actually covers the inner mouth of the slanted strap slit; the draft frees it. Tongue stops ≥ 3 mm short of it.</td><td>Your rule; measured on the original wing</td></tr>
+    <tr><td>Fit</td><td>Tongue (16 wide) slides into a slot behind the nose; lead-ins guide it; a key stops a wrong-way carrier</td><td>Self-locating, can't go in wrong</td></tr>
+    <tr><td>Carbon</td><td><b>One Ø6 rod</b> in the arm (replaces Ø4 + Ø3, you approved); the 4 × Ø2 joint pins stay (they double the joint's strength). Lengths go into the rod cutting gauge.</td><td>Strength review</td></tr>
+    <tr><td>Strength</td><td>The old button pocket at the arm root goes away, removing the weakest zone (safety factor about 1.4 there). Engagement in the wing ≥ 30 mm.</td><td>Strength review guardrails</td></tr>
+    <tr><td>Still to check</td><td>Thumb room beside the car's side wall (x &gt; 160); how the wing prints with the cut; outer wall at the catch (3.4 mm); an inner wing bracket (z 268–304) against the HIGH positions</td><td>Before CAD</td></tr>
+    </tbody></table></div>
+  <p style="color:var(--mute);font-size:14px;margin-top:10px">Draft limits: the nose and fairings are drawn as simple lofts over the original wing; the old pill cap is shown filled in; the arm is today's. Proportions only.</p>
+</section>
+
+<section class="opts" id="ranges-r5" style="background:var(--panel)">
+  <h2 style="font-size:28px;line-height:1.15">Where the pad can go, against what children aged 2–5 need</h2>
+  <p style="max-width:90ch">Front view at true scale, with child outlines from a small 2-year-old to a big 5-year-old. Pick a child, a height, a width and a tilt to see the pad-top-to-armpit and pad-to-chest checks. Below that are the ranges each child needs against what the kit offers, and a table of conditions. <b>Main finding: the heights fit every child, but the width doesn't.</b> With 30 mm foam the pads are too close together for most children over about age 2 (see "gaps & recommendations").</p>
+  <div id="ranges"></div>
+</section>
+<section class="opts" id="parts-r5" style="background:var(--bg)">
+  <h2 style="font-size:28px;line-height:1.15">Round 5 parts: every piece, numbered</h2>
+  <p style="max-width:90ch">Every part of the kit, with a sketch and its proposed part number (numbering scheme awaiting your OK). It shows both arm lengths (pad drop 22 / 44 mm) side by side, plus the depth pieces, tilt variants, pad, cover, hardware and carbon. Then an exploded assembly with numbered callouts, and the full parts list. <b>Pending:</b> the depth-piece set and foam thickness are being reworked for the width fix (listed products only), so D0–D3 and the 30 mm foam will change.</p>
+  <div id="parts5"></div>
+</section>
+<div class="top" id="today" style="border-top:1px solid var(--line);margin-top:10px">
+  <h1 style="font-size:26px">Today (v1.1), being replaced: inside the joints</h1>
+  <p style="margin:6px 0 8px;padding:8px 12px;border-radius:8px;background:light-dark(#fff3ec,#2b1c14);color:var(--ink);max-width:90ch"><b>This top viewer shows TODAY's v1.1, which is being replaced.</b> It still has the old wing block with one tall slot for 3 heights, two slot blanks filling the unused heights, and the push-rod button. The new direction (one 40 mm mount, no slot band, no blanks) is at the <a href="#draft-r4">top of the page ↑</a>.</p>
+  <p>The real Onshape geometry (branch <b>sidepads-v1</b>, left side, position 1, LOW, depth D0), with the screws, nuts, carbon rods, pins and spring drawn in. Cut it, pull it apart and press the button to see how each joint works. <a href="#draft-r4">Round 5 direction ↑</a></p>
+</div>
+<div class="app">
+  <div id="view"><div id="load">Loading geometry…</div><div id="hud">drag to turn · right-drag to pan · scroll to zoom</div></div>
+  <aside class="side">
+    <h3 style="margin-top:0">Look at</h3>
+    <div class="row" id="views"></div>
+    <h3>Section cut</h3>
+    <select id="cut" aria-label="Section plane">
+      <option value="off">No cut</option>
+      <option value="latch">Through the latch (along the push-rod)</option>
+      <option value="latchz">Latch, seen from above (horizontal)</option>
+      <option value="joint">Through the arm-to-depth joint (vertical)</option>
+      <option value="jointz">Joint and pad screw, horizontal</option>
+      <option value="x">Free: across x</option><option value="y">Free: across y</option><option value="z">Free: horizontal (z)</option>
+    </select>
+    <label class="s" for="cutoff">Move the cut <span id="cutv"></span></label>
+    <input id="cutoff" type="range" min="-30" max="30" step="0.1" value="0">
+    <div class="row"><button class="b" id="flipcut">Flip side</button></div>
+    <h3>Pull apart</h3>
+    <label class="s" for="exp">Explode</label><input id="exp" type="range" min="0" max="1" step="0.01" value="0">
+    <h3>Release button</h3>
+    <label class="s" for="press">Press <span id="pressv">0.0 mm</span> (stop at 3.9)</label><input id="press" type="range" min="0" max="3.9" step="0.05" value="0">
+    <div class="row"><button class="b" id="anim">Animate press</button></div>
+    <h3>Chair</h3>
+    <label class="s" for="xray">Chair opacity</label><input id="xray" type="range" min="0" max="1" step="0.01" value="1">
+    <h3>Parts</h3>
+    <ul class="parts" id="parts"></ul>
+    <p style="font-size:12px;color:var(--mute)">Shaded fill at a cut = solid material. Hardware is drawn from the model's numbers, not modelled in Onshape.</p>
+  </aside>
+</div>
+<section class="notes">
+  <div><h2>1 · Wing slot and height</h2><p>The tongue (top of the carrier) slides down into the vertical slot in the wing tip. A 2.5 mm rail on the slot's inner wall, one per height position, runs in a groove along the tongue: that sets the height and stops it tipping.</p><p class="m">Slot blanks fill the unused slot above and below. Try <i>Wing slot</i>.</p></div>
+  <div><h2>2 · Latch</h2><p>The pill button is the end of a 5.6 mm square push-rod. Pressing moves the rod 3.5 mm into the wing; an angled slot in the rod pulls the shuttle's peg sideways 4.5 mm, out of the catch groove in the wing's outer wall. The spring behind the rod pushes it all back.</p><p class="m">Use <i>Latch</i> (it cuts along the rod), then drag <i>Press</i>.</p></div>
+  <div><h2>3 · Carbon rods</h2><p>An Ø4 and an Ø3 carbon rod are bonded into bores from the tongue's rear face. They run through the slot mouth and 18–20 mm into the arm, where the bending is highest.</p></div>
+  <div><h2>4 · Arm-to-depth joint</h2><p>A 13 × 20 mm tenon on the arm end slides 13 mm into the depth piece's sleeve; only a 0.3 mm hairline shows. Four Ø2 carbon pins cross the tenon root and run 8 mm into the arm. One M5×12 countersunk screw from the back face (+y) pulls into a nut inside the tenon.</p><p class="m">Use <i>Arm-to-depth joint</i>.</p></div>
+  <div><h2>5 · Pad mount</h2><p>The depth piece flares into a foot that sits on the pad back. A 20 mm rib on the pad back keys into a groove in the foot. One M5×10 button-head screw sits on the floor of the depth piece's hollow and pulls into a nut in a pocket on the child face of the pad (under the foam).</p></div>
+  <div><h2>6 · Cover</h2><p>The neoprene cover wraps the pad edge and is trapped in the groove in the pad back by the clip ring. No sewing. The navy body is the reference foam and cover, not printed.</p></div>
+</section><section class="opts" id="button-options">
+  <p style="margin:0 0 6px;color:var(--mute)"><b>History (round 4, superseded):</b> the first study of the old push-rod button. Kept for reference; the current button is in the Round 5 section above.</p>
+  <h2 style="font-size:28px;line-height:1.15">The release button: what's wrong, and five options</h2>
+  <p><b>Diagnosis (the designer and mechanical-engineer reviews agree).</b> The button pushes straight into the wing, along the push-rod. But where the rod line comes out, the arm surface faces almost straight outboard, about <b>50° off that axis</b> (38–61° across the cap). So:</p>
+  <ul style="max-width:86ch;margin:0 0 10px;padding-left:20px">
+    <li>The 7 × 9 pill, projected onto that slanted face, becomes an <b>11.3 × 9 lopsided egg</b>, with an uneven gap and a 0.25 mm knife-edge lip at one end.</li>
+    <li>A thumb pushes square to the face, so it shoves the rod sideways about as hard as it pushes it in (side/push ≈ 1.1–1.5). With PETG friction (μ 0.3–0.5) that can <b>wedge the rod</b>: pressed at the end nearest the wing it self-locks from μ ≈ 0.51; mid-cap needs an estimated 38–99 N.</li>
+    <li>By the time it releases, the cap is about 2 mm below the surface, and release needs 3.4 of the 3.5 mm travel, so a thumb barely reaches it.</li>
+  </ul>
+  <p style="color:var(--mute)">These are mockups shaped on the real arm surface in your browser, to judge look and proportion. They are not CAD yet. Nothing has been changed in Onshape or the repo model.</p>
+  <div class="ogrid">
+    <div>
+      <div id="mview"><div id="mload">Shaping the mockups…</div></div>
+      <div class="row" style="margin-top:8px" id="mviews"><button class="b on" data-v="face">Face-on</button><button class="b" data-v="parent">Parent's view</button><button class="b" data-v="thumb">Along the push</button><button class="b" data-v="side">Profile</button><button class="b" id="mcol">Cap colour: on</button></div>
+    </div>
+    <div id="ocards">
+      <div class="ocard" data-o="current" tabindex="0"><h3>0 · Now</h3><p>The arm surface inside a 7 × 9 pill, cut along the push. Reads as an off-centre egg on the bend.</p></div>
+      <div class="ocard" data-o="pill" tabindex="0"><h3>1 · Clean pill</h3><p>A true 12 × 9.5 stadium drawn on the surface, even 0.3 gap, softened edges. Still flush, still sleek.</p><p class="m">Fixes the look, not the push angle. Needs the fit fixes below to be safe from jamming.</p></div>
+      <div class="ocard" data-o="grip" tabindex="0"><h3>2 · Clean pill + 3 grip lines</h3><p>As 1, with three fine grooves (0.7 wide, 0.4 deep, 2.2 pitch) cut across the flow.</p><p class="m">The grooves give the thumb purchase to push along the rod (≈ 14–17 N) instead of square to the face.</p></div>
+      <div class="ocard" data-o="landing" tabindex="0"><h3>3 · Angled landing (designer's pick)</h3><p>A small 12 × 15 flat facet turned 20° toward the push. A flat 8 × 11 cap sits flush in it with a 2 mm ledge all round: your "ledge" idea.</p><p class="m">Off-axis drops from ~50° to ~28–35°. Self-lock would need μ ≥ 1.1 (not possible); about 23 N to press (18 N lubed). The cap prints face-down, crisp.</p></div>
+      <div class="ocard" data-o="scoop" tabindex="0"><h3>4 · Thumb scoop</h3><p>A soft teardrop dish (3–3.5 mm deep) with an 8 × 10 cap in its floor and a small dimple to find by feel. Nothing stands proud.</p><p class="m">Guides the push well, but removes the most material where the arm is already near its strength limit.</p></div>
+      <div class="ocard" data-o="dome" tabindex="0"><h3>5 · Small dome</h3><p>A true 11 × 8 pill with a 1 mm crown: the "small bulge".</p><p class="m">Easy to find blind, but the push angle is unchanged and it sticks out unevenly on the slanted face. Toddlers find bumps.</p></div>
+    </div>
+  </div>
+  <div class="scroll"><table class="cmp">
+    <thead><tr><th>Option</th><th>Looks symmetric</th><th>Jam risk</th><th>Press force (est.)</th><th>Toddler-proof</th><th>Strength / print</th></tr></thead>
+    <tbody>
+      <tr><td>0 Now</td><td class="bad">No</td><td class="bad">Can self-lock (μ ≥ 0.51)</td><td>38–99 N, worse at the wing end</td><td class="good">Yes</td><td class="bad">0.25 mm knife lip</td></tr>
+      <tr><td>1 Clean pill</td><td class="good">Yes</td><td>Same angle; OK only with the fit fixes</td><td>20–33 N with fit fixes + dry lube</td><td class="good">Yes</td><td>As now</td></tr>
+      <tr><td>2 + grip lines</td><td class="good">Yes</td><td>Lower when pushed along the lines</td><td>14–17 N along the push</td><td class="good">Yes</td><td>Grooves print crisp upright</td></tr>
+      <tr><td>3 Angled landing</td><td class="good">Yes</td><td class="good">Cannot self-lock</td><td>≈ 23 N (18 lubed)</td><td>Mostly: the wing end of the facet stands ~1–2.7 mm proud</td><td>~2 mm less wall at the pocket: strength recheck</td></tr>
+      <tr><td>4 Thumb scoop</td><td class="good">Yes</td><td class="good">Low (floor ~30° off)</td><td>≈ 20–25 N (rough)</td><td class="good">Yes</td><td class="bad">Deepest cut where strength is tightest</td></tr>
+      <tr><td>5 Small dome</td><td>Mostly</td><td class="bad">Same as now</td><td>Same as now</td><td class="bad">Invites picking</td><td>Fine</td></tr>
+    </tbody>
+  </table></div>
+  <h3 style="margin-top:20px">Fit fixes for whichever option you pick (no visible change)</h3>
+  <ul style="max-width:90ch;padding-left:20px;margin:0">
+    <li>Rod clearance 0.2 → 0.25 mm per side, a 0.5 mm chamfer on the rod's rear end, and a 0.3–0.4 mm edge break on the cap and pocket rim (removes the knife lips).</li>
+    <li>A 45° peaked roof on the rod channel, so it prints without a sagging bridge when the carrier lies on its outer face.</li>
+    <li>Print the button standing on its rod end. Dry PTFE lube on the rod.</li>
+    <li>Coupon test: print the current cap and the chosen one, and measure the release force pushing square to the face vs. along the rod.</li>
+  </ul>
+  <p style="margin-top:14px;max-width:90ch"><b>Recommendation:</b> <b>3 (angled landing) + fit fixes</b> is the only option that fixes the look, the jam and the reach together. <b>2 (clean pill + grip lines)</b> is the conservative, fully flush alternative if you'd rather have no facet. Ruled out: tilting the rod to meet the surface square (it would collide with the rail groove) and sliding the button along the rod line (every exit point there is ≥ 30° off).</p>
+</section>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { toCreasedNormals, mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+{
+// ---------- model frame (copied from gbg_sidepad_v1.fs) ----------
+const P0=[131.3,80.7],AXH=[0.79577626,0.60559074],TH=[-0.6083053,0.79370313],SHX=(244.25-227.8)*0.8/32.9,SHY=(244.25-227.8)*2.7/32.9;
+const Q=(d,t,z)=>new THREE.Vector3(P0[0]+(d+2)*AXH[0]+t*TH[0]+SHX,P0[1]+(d+2)*AXH[1]+t*TH[1]+SHY,z);
+const dirD=new THREE.Vector3(AXH[0],AXH[1],0).normalize(),dirT=new THREE.Vector3(TH[0],TH[1],0).normalize();
+const c=227,zp=179.5,xe=128.1,YAX=36,xs=104,xj=xe-6.5,ROD_DC=9.5;
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+// ---------- parts ----------
+const P={
+ wing:{label:'Chair wing (with slot)',col:0xd8d4cc,chair:1},armrest:{label:'Arm rest',col:0xcfcbc3,chair:1},back:{label:'Mid back',col:0xcfcbc3,chair:1,off:1},base:{label:'Base',col:0xcfcbc3,chair:1,off:1},
+ carrier:{label:'Carrier (tongue + arm)',col:0xf1f2f3,ex:V(0,0,0)},
+ button:{label:'Pill button + push-rod',col:0xff6a2a,ex:dirT.clone().multiplyScalar(-16)},
+ shuttle:{label:'Shuttle (catch)',col:0x16a394,ex:dirD.clone().multiplyScalar(16).add(V(0,0,10))},
+ depth:{label:'Depth piece',col:0xbcc8d3,ex:V(-28,0,0)},
+ pad:{label:'Pad shell',col:0xa9b6c2,ex:V(-62,0,0)},
+ ring:{label:'Clip ring',col:0x5e6a77,ex:V(-48,0,0)},
+ cushion:{label:'Foam + cover (reference)',col:0x22304d,ex:V(-95,0,0)},
+ blank1:{label:'Slot blank',col:0xe4dccb,ex:dirT.clone().multiplyScalar(-45).add(V(0,0,8))},blank2:{label:'Slot blank',col:0xe4dccb,ex:dirT.clone().multiplyScalar(-45).add(V(0,0,30))},
+ hw:{label:'Screws, nuts, spring',col:0x8b939c},carbon:{label:'Carbon rods + pins',col:0x26282b}
+};
+const view=document.getElementById('view');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.localClippingEnabled=true;view.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(35,1,1,5000);cam.up.set(0,0,1);
+const ctl=new OrbitControls(cam,renderer.domElement);ctl.enableDamping=true;
+scene.add(new THREE.HemisphereLight(0xffffff,0x8a8f96,1.6));
+const dl=new THREE.DirectionalLight(0xffffff,1.6);scene.add(cam);cam.add(dl);dl.position.set(200,300,400);
+const plane=new THREE.Plane(V(1,0,0),0);
+const groups={};
+function addMesh(key,geo){
+  const p=P[key];const g=groups[key]||(groups[key]=new THREE.Group());
+  const m=new THREE.MeshStandardMaterial({color:p.col,roughness:.62,clippingPlanes:[plane],side:THREE.FrontSide,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1});
+  const cap=new THREE.MeshBasicMaterial({color:new THREE.Color(p.col).multiplyScalar(.55),clippingPlanes:[plane],side:THREE.BackSide});
+  g.add(new THREE.Mesh(geo,m));g.add(new THREE.Mesh(geo,cap));
+  if(!g.parent)scene.add(g);
+  return g;
+}
+// ---------- hardware drawn from the FS numbers ----------
+const orient=(g,d)=>g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(V(0,1,0),d.clone().normalize()));
+function cyl(a,b,r,seg=24){const d=b.clone().sub(a),L=d.length();const g=new THREE.CylinderGeometry(r,r,L,seg);g.translate(0,L/2,0);orient(g,d);g.translate(a.x,a.y,a.z);return g;}
+function cone(a,b,r0,r1){const d=b.clone().sub(a),L=d.length();const g=new THREE.CylinderGeometry(r1,r0,L,24);g.translate(0,L/2,0);orient(g,d);g.translate(a.x,a.y,a.z);return g;}
+function hex(cn,axis,af,h){const r=af/Math.sqrt(3);const g=new THREE.CylinderGeometry(r,r,h,6);g.rotateY(Math.PI/6);orient(g,axis);g.translate(cn.x,cn.y,cn.z);return g;}
+function spring(a,b,r,turns=7,wire=.5){const d=b.clone().sub(a);const L=d.length();const pts=[];for(let i=0;i<=turns*24;i++){const t=i/(turns*24);const an=t*turns*2*Math.PI;pts.push(V(r*Math.cos(an),t*L,r*Math.sin(an)));}
+  const g=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),turns*24,wire,6);orient(g,d);g.translate(a.x,a.y,a.z);return g;}
+const HW={};
+function hw(name,geo,owner,ex,kind='hw'){HW[name]={geo,owner,ex:ex||V(0,0,0),kind};}
+hw('cf4',cyl(Q(5.5,28.5,c-7),Q(5.5,-29.5,c-7),2),'carrier',dirT.clone().multiplyScalar(55),'carbon');
+hw('cf3',cyl(Q(9.5,28.5,c-11),Q(9.5,-31,c-11),1.5),'carrier',dirT.clone().multiplyScalar(70),'carbon');
+[[3.5,7.4],[-3.5,7.4],[3.5,-7.4],[-3.5,-7.4]].forEach((p,i)=>hw('tp'+i,cyl(V(xe-13.5,YAX+p[0],zp+p[1]),V(xe+8,YAX+p[0],zp+p[1]),1,12),'carrier',V(-22,0,0),'carbon'));
+const yb=YAX+9;
+hw('js',mergeGeometries([cone(V(xj,yb-2.75,zp),V(xj,yb,zp),2.5,5),cyl(V(xj,yb-2.7,zp),V(xj,yb-12,zp),2.5,16)]),'depth',V(0,28,0));
+hw('jn',hex(V(xj,YAX-1,zp),V(0,1,0),8,4),'carrier',V(0,-22,0));
+hw('ps',mergeGeometries([cyl(V(xs+6,YAX,zp),V(xs+8.75,YAX,zp),4.75,24),cyl(V(xs+6.01,YAX,zp),V(xs-4,YAX,zp),2.5,16)]),'depth',V(34,0,0));
+hw('pn',hex(V(xs-1.95,YAX,zp),V(1,0,0),8,4),'pad',V(-20,0,0));
+const springSeat=Q(ROD_DC,19.5,c);
+const springGeo=p=>spring(Q(ROD_DC,10.1+p,c),springSeat,2.6,6,.45);
+// ---------- load meshes ----------
+const man=await (await fetch('geo.json')).json();
+const b64=(await (await fetch('geodata.json')).json()).b;const bin=Uint8Array.from(atob(b64),ch=>ch.charCodeAt(0)).buffer;
+window.__geo={};
+for(const m of man){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(bin,m.pos[0],m.pos[1]*3),3));g.setIndex(new THREE.BufferAttribute(new Uint32Array(bin,m.idx[0],m.idx[1]),1));
+  const gc=toCreasedNormals(g,Math.PI/7);if(P[m.name])addMesh(m.name,gc);window.__geo[m.name]=gc;}
+window.dispatchEvent(new Event('geo-ready'));
+const hwGroups={};for(const [n,h] of Object.entries(HW)){const p=P[h.kind];const g=new THREE.Group();
+  g.add(new THREE.Mesh(h.geo,new THREE.MeshStandardMaterial({color:p.col,roughness:.35,metalness:h.kind==='hw'?.7:.1,clippingPlanes:[plane]})));
+  g.add(new THREE.Mesh(h.geo,new THREE.MeshBasicMaterial({color:new THREE.Color(p.col).multiplyScalar(.6),clippingPlanes:[plane],side:THREE.BackSide})));
+  scene.add(g);hwGroups[n]=g;}
+const vis={};for(const k in P)vis[k]=!P[k].off;
+let sprG=null;function setSpring(p){if(sprG){scene.remove(sprG);sprG.children.forEach(o=>o.geometry.dispose());}sprG=new THREE.Group();
+  sprG.add(new THREE.Mesh(springGeo(p),new THREE.MeshStandardMaterial({color:0x9aa3ab,metalness:.7,roughness:.3,clippingPlanes:[plane]})));scene.add(sprG);}
+document.getElementById('load').remove();
+let explode=0,press=0;
+function apply(){
+  for(const k in groups){const g=groups[k];g.visible=vis[k];g.position.copy(P[k].ex?P[k].ex.clone().multiplyScalar(explode):V(0,0,0));}
+  groups.button.position.add(dirT.clone().multiplyScalar(press));
+  groups.shuttle.position.add(dirD.clone().multiplyScalar(-Math.min(press,3.5)*4.5/3.5));
+  for(const [n,h] of Object.entries(HW)){const g=hwGroups[n];g.visible=vis[h.kind]&&vis[h.owner];const own=P[h.owner].ex?P[h.owner].ex.clone():V(0,0,0);g.position.copy(own.add(h.ex).multiplyScalar(explode));}
+  if(sprG)sprG.visible=vis.hw&&vis.carrier&&explode<.02;
+  document.getElementById('pressv').textContent=press.toFixed(1)+' mm';
+}
+function setChairOpacity(o){for(const k in groups){if(!P[k].chair)continue;groups[k].children.forEach((m,i)=>{m.material.transparent=o<1;m.material.opacity=o;m.material.depthWrite=o>.6;if(i===1)m.visible=o>.6;});}}
+// ---------- section planes ----------
+let cutMode='off',cutSign=1;
+const cutDefs={latch:{n:V(0,0,1).cross(dirT).normalize(),p:Q(ROD_DC,0,c),r:20},latchz:{n:V(0,0,-1),p:Q(ROD_DC,0,c),r:30},joint:{n:V(0,1,0),p:V(xe,YAX,zp),r:15},jointz:{n:V(0,0,-1),p:V(xe,YAX,zp),r:20},
+  x:{n:V(-1,0,0),p:V(130,60,230),r:90},y:{n:V(0,1,0),p:V(130,60,230),r:90},z:{n:V(0,0,-1),p:V(130,60,230),r:120}};
+function setCut(){const d=cutDefs[cutMode];const r=document.getElementById('cutoff');
+  if(!d){plane.normal.set(0,0,1);plane.constant=1e5;document.getElementById('cutv').textContent='';return;}
+  r.min=-d.r;r.max=d.r;const off=+r.value;const p=d.p.clone().add(d.n.clone().multiplyScalar(off));
+  plane.setFromNormalAndCoplanarPoint(d.n.clone().multiplyScalar(cutSign),p);document.getElementById('cutv').textContent=(off>=0?'+':'')+off.toFixed(1)+' mm';}
+document.getElementById('cut').onchange=e=>{cutMode=e.target.value;document.getElementById('cutoff').value=0;setCut();};
+document.getElementById('cutoff').oninput=setCut;document.getElementById('flipcut').onclick=()=>{cutSign*=-1;setCut();};
+// ---------- views ----------
+const T1=Q(9.5,-6,c),T2=Q(9,5,262),T3=V(xe-4,YAX,zp),T4=V(xs+3,YAX,zp);
+const views={
+ 'Whole side':{t:V(110,40,225),p:V(110,40,225).add(V(300,-380,230))},
+ 'Latch':{t:T1,p:T1.clone().add(dirD.clone().multiplyScalar(95)).add(dirT.clone().multiplyScalar(-25)).add(V(0,0,30)),cut:'latch',chair:.3},
+ 'Wing slot':{t:T2,p:T2.clone().add(dirT.clone().multiplyScalar(-150)).add(dirD.clone().multiplyScalar(70)).add(V(0,0,70)),chair:.35},
+ 'Arm-to-depth joint':{t:T3,p:T3.clone().add(V(-15,-95,35)),cut:'joint'},
+ 'Pad mount':{t:T4,p:T4.clone().add(V(35,-30,120)),cut:'jointz',chair:.25},
+ 'From the child':{t:V(100,30,205),p:V(100,30,205).add(V(-260,-120,70))}
+};
+const vrow=document.getElementById('views');
+Object.keys(views).forEach((k,i)=>{const b=document.createElement('button');b.className='b'+(i?'':' on');b.textContent=k;b.onclick=()=>go(k,b);vrow.appendChild(b);});
+let tween=null;
+function go(k,btn){const v=views[k];vrow.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===btn));
+  cutMode=v.cut||'off';document.getElementById('cut').value=cutMode;document.getElementById('cutoff').value=0;setCut();
+  const o=v.chair??1;document.getElementById('xray').value=o;setChairOpacity(o);
+  tween={t0:performance.now(),fp:cam.position.clone(),ft:ctl.target.clone(),tp:v.p.clone(),tt:v.t.clone()};}
+document.getElementById('exp').oninput=e=>{explode=+e.target.value;apply();};
+document.getElementById('press').oninput=e=>{press=+e.target.value;setSpring(press);apply();};
+document.getElementById('xray').oninput=e=>setChairOpacity(+e.target.value);
+let animT=null;document.getElementById('anim').onclick=e=>{animT=animT?null:performance.now();e.target.classList.toggle('on',!!animT);};
+const ul=document.getElementById('parts');
+const order=['carrier','button','shuttle','hw','carbon','depth','pad','ring','cushion','blank1','blank2','wing','armrest','back','base'];
+const notes={carrier:'printed',button:'printed',shuttle:'printed',depth:'printed',pad:'printed',ring:'printed',blank1:'printed',blank2:'printed',hw:'stock M5 + spring',carbon:'bought',cushion:'not printed'};
+ul.innerHTML=order.map(k=>`<li><input type="checkbox" id="v_${k}" ${vis[k]?'checked':''}><span class="sw" style="background:#${P[k].col.toString(16).padStart(6,'0')}"></span><label for="v_${k}">${P[k].label} <small>${notes[k]||'chair'}</small></label><button class="iso" data-k="${k}" title="Show only this">only</button></li>`).join('');
+order.forEach(k=>{document.getElementById('v_'+k).onchange=e=>{vis[k]=e.target.checked;apply();};});
+const showAll=document.createElement('button');showAll.className='b';showAll.textContent='Show all parts';showAll.style.marginTop='8px';ul.after(showAll);
+showAll.onclick=()=>{order.forEach(j=>{vis[j]=!P[j].off;document.getElementById('v_'+j).checked=vis[j];});apply();};
+ul.querySelectorAll('.iso').forEach(b=>b.onclick=()=>{const k=b.dataset.k;order.forEach(j=>{vis[j]=(j===k)||(k==='button'&&j==='shuttle');document.getElementById('v_'+j).checked=vis[j];});apply();});
+function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();}
+const ro=new ResizeObserver(resize);ro.observe(view);resize();
+cam.position.copy(views['Whole side'].p);ctl.target.copy(views['Whole side'].t);
+setCut();setSpring(0);apply();
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+renderer.setAnimationLoop(now=>{
+  if(tween){const k=reduce?1:Math.min(1,(now-tween.t0)/700);const e=k<.5?2*k*k:1-((-2*k+2)**2)/2;cam.position.lerpVectors(tween.fp,tween.tp,e);ctl.target.lerpVectors(tween.ft,tween.tt,e);if(k>=1)tween=null;}
+  if(animT){const ph=((now-animT)/2400)%1;const p=3.9*Math.max(0,Math.min(1,ph<.5?ph*3-.2:(1-ph)*3-.2));press=p;document.getElementById('press').value=p;setSpring(p);apply();}
+  ctl.update();renderer.render(scene,cam);});
+window.__v={scene,cam,ctl,groups,go,views};
+}
+</script>
+<script type="module">
+{
+const start=async()=>{
+  let m;
+  try{const {mountMock}=await import('./mock.js');m=mountMock(document.getElementById('mview'),window.__geo);document.getElementById('mload')?.remove();}
+  catch(e){document.getElementById('mload').textContent='Mockups failed to build: '+e.message;console.error(e);return;}
+  const cards=[...document.querySelectorAll('.ocard')];let cur='current';
+  const pick=k=>{cur=k;m.show(k);cards.forEach(c=>c.classList.toggle('on',c.dataset.o===k));};
+  cards.forEach(c=>{c.onclick=()=>pick(c.dataset.o);c.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(c.dataset.o);}};});
+  document.querySelectorAll('#mviews [data-v]').forEach(b=>b.onclick=()=>{m.view(b.dataset.v);document.querySelectorAll('#mviews [data-v]').forEach(x=>x.classList.toggle('on',x===b));});
+  let col=true;document.getElementById('mcol').onclick=e=>{col=!col;m.setColour(col);e.target.textContent='Cap colour: '+(col?'on':'off');m.show(cur);};
+  pick('current');window.__m=m;};
+if(window.__geo)start();else window.addEventListener('geo-ready',start,{once:true});
+}
+</script>
+<script type="module">
+{
+const start=async()=>{
+  let d;
+  try{const {mountDraft}=await import('./draft4.js');d=mountDraft(document.getElementById('dview'),window.__geo);document.getElementById('dload')?.remove();}
+  catch(e){document.getElementById('dload').textContent='Draft failed to build: '+e.message;console.error(e);return;}
+  const grp=(sel,fn)=>{const bs=[...document.querySelectorAll(sel)];bs.forEach(b=>b.onclick=()=>{bs.forEach(x=>x.classList.toggle('on',x===b));fn(b);});};
+  grp('#dviews [data-v]',b=>d.view(b.dataset.v));grp('#draft-r4 [data-s]',b=>d.show(b.dataset.s));grp('#draft-r4 [data-m]',b=>d.setMode(b.dataset.m));grp('#draft-r4 [data-k]',b=>d.kit(b.dataset.k));
+  let ar=true;document.getElementById('darrows').onclick=e=>{ar=!ar;d.arrows(ar);e.target.classList.toggle('on',ar);};
+  let hl=false;document.getElementById('dhl').onclick=e=>{hl=!hl;d.highlight(hl);e.target.classList.toggle('on',hl);};
+  window.__d=d;};
+if(window.__geo)start();else window.addEventListener('geo-ready',start,{once:true});
+}
+</script>
+<script type="module">
+{
+(async()=>{try{const {mountCutaway}=await import('./cutaway.js');const S=await (await fetch('sections.json')).json();const c=mountCutaway(document.getElementById('cuts'),S);
+const r=document.getElementById('cpress');r.oninput=()=>{c.set(+r.value);document.getElementById('cpv').textContent=Math.round(r.value*100)+' %';};}
+catch(e){document.getElementById('cuts').textContent='Cutaway failed: '+e.message;console.error(e);}})();
+}
+</script>
+<script type="module">
+{ (async()=>{ try{ const {mountRanges}=await import('./ranges5.js'); mountRanges(document.getElementById('ranges')); }catch(e){ document.getElementById('ranges').textContent='Ranges failed to load: '+e.message; console.error(e);} })(); }
+</script>
+<script type="module">
+{ (async()=>{ try{ const {mountParts}=await import('./parts5.js'); mountParts(document.getElementById('parts5')); }catch(e){ document.getElementById('parts5').textContent='Parts failed to load: '+e.message; console.error(e);} })(); }
+</script>
+</body>
+</html>

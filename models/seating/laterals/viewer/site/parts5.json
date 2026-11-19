@@ -1,0 +1,746 @@
+{
+  "title": "Side-pad kit, Round 5: part list",
+  "date": "2026-11-19",
+  "source": "ROUND5_PLAN.md (§2, §3, §7, §8); featurescript/gbg_sidepad_v1.fs (v1.1 dimensions); review_r5/hookdrop/geometry_ABC.json; review_r5/tilt/tilt_out.txt; review_r5/button_design/fig2_favourite_spec.png",
+  "scheme": {
+    "pattern": "GBG-SP-<code>-<variant>-r5",
+    "variant_order": "side L/R, or mirror A/B for flip-handed parts; arm S (drop 22) / L (drop 44); depth D0–D3; angle T0 / T8 / T15",
+    "engraving": "short form without GBG-SP-, e.g. 'AR-S-A r5', 0.4 deep on a hidden face",
+    "status": "RECOMMENDED",
+    "status_note": "Numbering scheme awaiting owner OK (plan 4.16). New in this list: code TS (orange tell sleeve) and EP (epoxy). The plan's LK code is merged into BT, because with latch A the button is the catch (one sliding part)."
+  },
+  "colours": {
+    "chair": "#d8d4cc",
+    "kit": "#f1f2f3",
+    "button": "#ff6a2a",
+    "carbon": "#26282b",
+    "steel": "#8b939c",
+    "soft": "#22304d"
+  },
+  "parts": [
+    {
+      "id": "WG",
+      "code": "WG",
+      "kind": "chair",
+      "group": "Chair change",
+      "numbers": [
+        "GBG-SP-WG-L-r5",
+        "GBG-SP-WG-R-r5"
+      ],
+      "name": "Wing reprint with the 40 mm nose notch",
+      "short": "Wing reprint, 40 mm notch",
+      "variants": [
+        "L",
+        "R (mirror)"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 2,
+        "note": "chair part: reprinted once, stays on the chair"
+      },
+      "material": "PETG, chair colour",
+      "print": "To check with the notch (bridged face, plan 4.9)",
+      "dims": [
+        "tip block 32 × 54 × 149, rails and slot blanks removed",
+        "notch only at z 207–247 (40) on the front edge; mount = tongue centre z 227",
+        "tongue pocket d 1.2–17.6 (16.4 wide), from t 6 back to S1: ~10 deep inboard, ~31 outboard",
+        "6 mm web to strap slit S1 (z 203–272); walls ≥ 6, back ≥ 8 around the pocket",
+        "catch groove in the outer wall: d 17.6–21.4 (2.2 skin), t 9.8–15.2, z 227 ± 7.8, 6° locking face, click entry"
+      ],
+      "function": "Takes the kit's nose in a 40 mm notch and holds the tongue and the button's tooth; nothing else on the wing changes.",
+      "status": "AGREED",
+      "status_note": "part AGREED; print orientation and any local swell OPEN (4.8, 4.9)",
+      "sketch": "wing"
+    },
+    {
+      "id": "AR",
+      "code": "AR",
+      "kind": "printed",
+      "group": "Carrier",
+      "wide": true,
+      "numbers": [
+        "GBG-SP-AR-S-A-r5",
+        "GBG-SP-AR-S-B-r5",
+        "GBG-SP-AR-L-A-r5",
+        "GBG-SP-AR-L-B-r5"
+      ],
+      "name": "Carrier: nose + arm + tenon (short S and long L arm)",
+      "short": "Carrier, short + long arm",
+      "variants": [
+        "S: pad drop 22",
+        "L: pad drop 44",
+        "A = left LOW / right HIGH",
+        "B = mirror of A"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 4,
+        "note": "one carrier fitted per side; the full kit has S-A, S-B, L-A, L-B"
+      },
+      "material": "PETG, chair colour + 1 × Ø6 carbon rod + 4 × Ø2 carbon pins (high-Tg epoxy)",
+      "print": "On its outer face, tree support under the arm bend (v1.1 study); recheck with the button pocket",
+      "dims": [
+        "nose 40 tall (z 207–247) × 29.6 wide (d −6…23.6) × 20 deep (t −14…6), front corner R6, hairline seams 0.3",
+        "tongue 16 wide (d 1.4–17.4), into the pocket ~10 (inboard) to ~31 (outboard)",
+        "arm 18 × 28 pill, one smooth loft out of the nose's front, plan arc R ≈ 26.6, ends level heading inboard",
+        "joint axis 22 (S) or 44 (L) below the mount when LOW (above when flipped HIGH)",
+        "tenon 13 × 20 × 13, R2.5; 4 × Ø2 pin holes at (±3.5, ±7.4), 8 into the arm",
+        "Ø6.5 teardrop bore (peak up) at d 9.4, z c − 10, tongue rear face → t ≈ −29",
+        "button pocket 12 × 24 stadium on the nose's outer face; max x ≤ 165"
+      ],
+      "function": "Carries the pad: the nose completes the wing, the arm sets the height, the tenon takes the depth piece.",
+      "status": "AGREED",
+      "status_note": "part and both lengths AGREED; A/B mirror under the flip and print orientation OPEN (4.10); corner-knock SF < 1 OPEN (4.11)",
+      "heights": {
+        "S": [
+          194,
+          216,
+          238,
+          260
+        ],
+        "L": [
+          172,
+          194,
+          260,
+          282
+        ]
+      },
+      "sketch": "carrier"
+    },
+    {
+      "id": "BT",
+      "code": "BT",
+      "kind": "printed",
+      "group": "Latch",
+      "numbers": [
+        "GBG-SP-BT-r5"
+      ],
+      "name": "Button-catch (latch A: the button is the catch)",
+      "short": "Button-catch (latch A)",
+      "variants": [
+        "one part for A and B (to confirm with the flip, 4.7/4.10)"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 4,
+        "note": "one per carrier"
+      },
+      "material": "PETG, chair colour",
+      "print": "Standing, 24 along z (crisp face; fig2); recheck with the tooth",
+      "dims": [
+        "face 12 (t) × 24 (z) stadium, R6 ends, flat and square to the push, 0.8 thumb scoop, 0.4 edge chamfer, gap 0.3",
+        "centred t −2.5, z 227 on the nose's outer face (d 23.6)",
+        "travel 5 inboard (−d) to a hard stop",
+        "tooth d 17.4 → 21.1 (3.5 engaged), t 10–15, z c ± 7.5: to be upsized for the ~900 N corner knock",
+        "6° tapered locking face (no rattle), sharp-edged click entry"
+      ],
+      "function": "One sliding part: press it in and the tooth leaves the wing's groove; let go and the spring pushes it out into the groove.",
+      "status": "AGREED",
+      "status_note": "form and latch A AGREED; tooth size and 6° face with the flip OPEN (CAD + coupon 5.5); replaces the plan's LK row",
+      "sketch": "button"
+    },
+    {
+      "id": "TS",
+      "code": "TS",
+      "kind": "printed",
+      "group": "Latch",
+      "numbers": [
+        "GBG-SP-TS-r5"
+      ],
+      "name": "Orange tell sleeve (not-latched ring)",
+      "short": "Orange tell sleeve",
+      "variants": [
+        "–"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 4,
+        "note": "one per carrier, around the button"
+      },
+      "material": "PETG, orange",
+      "print": "Standing, separate print in orange",
+      "dims": [
+        "stadium ring around the 12 × 24 button, 0.6 wall",
+        "hidden 0.6 below the face when latched; shows as an orange ring when the button is held in (not latched)"
+      ],
+      "function": "Status: flush and quiet = latched; orange ring visible = not latched.",
+      "status": "AGREED",
+      "status_note": "function AGREED; separate sleeve vs 2-colour button and the new code TS are RECOMMENDED",
+      "sketch": "sleeve"
+    },
+    {
+      "id": "SP",
+      "code": "SP",
+      "kind": "bought",
+      "group": "Latch",
+      "numbers": [
+        "GBG-SP-SP-r5"
+      ],
+      "name": "Latch spring",
+      "short": "Latch spring",
+      "variants": [
+        "–"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 4,
+        "note": "one per carrier"
+      },
+      "material": "Stainless spring wire (SS304)",
+      "print": "Bought / from stock",
+      "dims": [
+        "OD 6, wire 0.55, free length 16, 9 coils",
+        "~4 N at rest, ~8 N pressed",
+        "sits along d, seat d 2.5 → d 10"
+      ],
+      "function": "Pushes the button-catch out; the latch holds by its shape, not by the spring.",
+      "status": "AGREED",
+      "status_note": "spec as plan 7.5; rate check on a kitchen scale (5.7)",
+      "sketch": "spring"
+    },
+    {
+      "id": "DW",
+      "code": "DW",
+      "kind": "bought",
+      "group": "Latch",
+      "numbers": [
+        "GBG-SP-DW-r5"
+      ],
+      "name": "Steel dowel tooth (optional)",
+      "short": "Steel dowel tooth (optional)",
+      "variants": [
+        "size from the coupon"
+      ],
+      "qty": {
+        "side": "0–1",
+        "pair": "0–2",
+        "kit": "0–4",
+        "note": "only if the coupon picks the steel tooth"
+      },
+      "material": "Steel dowel pin",
+      "print": "Bought / from stock",
+      "dims": [
+        "diameter and length set on the latch coupon (5.5–5.6)",
+        "pressed into the button-catch as its tooth"
+      ],
+      "function": "Optional steel tooth for the latch if the printed tooth is too weak.",
+      "status": "OPEN",
+      "status_note": "AGREED as a coupon option; size and use OPEN",
+      "sketch": "dowel"
+    },
+    {
+      "id": "CF6",
+      "code": "CF6",
+      "kind": "carbon",
+      "group": "Carbon",
+      "numbers": [
+        "GBG-SP-CF6-r5"
+      ],
+      "name": "Carbon rod Ø6, arm",
+      "short": "Carbon rod Ø6, arm",
+      "variants": [
+        "one length for S and L (to confirm in CAD)"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 4,
+        "note": "one per carrier"
+      },
+      "material": "Pultruded carbon Ø6 + high-Tg epoxy",
+      "print": "Cut on gauge v2, Ø6 lane",
+      "dims": [
+        "Ø6 in a Ø6.5 teardrop bore, peak up",
+        "from the tongue's rear face to t ≈ −29: ≈ 55 long (estimate, final in CAD, 4.14)"
+      ],
+      "function": "Stiffens the arm root across the wing mouth (arm SF 1.20 → 1.50 at a 300 N knock).",
+      "status": "AGREED",
+      "status_note": "rod AGREED; length OPEN (4.14)",
+      "sketch": "rod6"
+    },
+    {
+      "id": "CF2",
+      "code": "CF2",
+      "kind": "carbon",
+      "group": "Carbon",
+      "numbers": [
+        "GBG-SP-CF2-r5"
+      ],
+      "name": "Carbon tenon pins Ø2 × 21",
+      "short": "Carbon pins Ø2 × 21",
+      "variants": [
+        "–"
+      ],
+      "qty": {
+        "side": 4,
+        "pair": 8,
+        "kit": 16,
+        "note": "four per carrier"
+      },
+      "material": "Pultruded carbon Ø2 + high-Tg epoxy",
+      "print": "Cut on gauge v2, Ø2 lane",
+      "dims": [
+        "Ø2 × 21: 13 in the tenon + 8 into the arm",
+        "at (±3.5, ±7.4) about the joint axis"
+      ],
+      "function": "Pins the tenon to the arm across its root (about 2× the tenon-root capacity).",
+      "status": "AGREED",
+      "sketch": "pins"
+    },
+    {
+      "id": "DP0",
+      "code": "DP",
+      "kind": "printed",
+      "group": "Depth piece",
+      "wide": true,
+      "numbers": [
+        "GBG-SP-DP-D0-T0-r5",
+        "GBG-SP-DP-D1-T0-r5",
+        "GBG-SP-DP-D2-T0-r5",
+        "GBG-SP-DP-D3-T0-r5"
+      ],
+      "name": "Depth piece, straight foot (T0)",
+      "short": "Depth piece D0–D3, T0",
+      "variants": [
+        "D0 pad back x 104",
+        "D1 x 92",
+        "D2 x 80",
+        "D3 x 68",
+        "universal L/R"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 8,
+        "note": "2 of the chosen depth; full kit 2 × D0–D3"
+      },
+      "material": "PETG, chair colour",
+      "print": "Joint end down (v1.1); recheck with the dovetail",
+      "dims": [
+        "sleeve face (x 128.1) to pad back: 24.1 / 36.1 / 48.1 / 60.1",
+        "18 × 28 pill sleeve (same skin as the arm, hairline 0.3) flaring over 18 into a 27 × 40 foot, R14.5",
+        "hollow 13.4 × 20.4 for the tenon, stepping to 11 × 18 at the tenon tip (hidden step)",
+        "foot: front-to-back dovetail with a closed front stop (replaces the 20 × 3.5 key); floor 6",
+        "M5×12 countersunk from the back face into the tenon nut; M5×10 button head to the pad inside the hollow"
+      ],
+      "function": "Sets how far in the pad sits (4 depths, 12 apart) and carries the pad on a dovetail.",
+      "status": "AGREED",
+      "status_note": "D0–D3 AGREED; tenon-tip step and dovetail RECOMMENDED (2.24)",
+      "sketch": "depth"
+    },
+    {
+      "id": "DPT",
+      "code": "DP",
+      "kind": "printed",
+      "group": "Depth piece",
+      "numbers": [
+        "GBG-SP-DP-Dn-T8A-r5",
+        "GBG-SP-DP-Dn-T8B-r5",
+        "GBG-SP-DP-Dn-T15A-r5",
+        "GBG-SP-DP-Dn-T15B-r5"
+      ],
+      "name": "Depth piece, tilted foot (8° and 15°)",
+      "short": "Depth piece, 8° / 15° feet",
+      "variants": [
+        "D0–D3",
+        "T8, T15",
+        "A = left top-in / right top-out",
+        "B = mirror of A"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": "16 (4 per depth)",
+        "note": "a full tilt set per depth: 2 × T0 + T8A + T8B + T15A + T15B"
+      },
+      "material": "PETG, chair colour",
+      "print": "Joint end down, as T0; engraved use label, e.g. 'DP-D2-T15A · L+15 / R−15'",
+      "dims": [
+        "foot face turned θ about the foot centre on the pad back; pad centre does not move",
+        "contact point moves ∓4.8 at 8°, ∓8.9 at 15° (re-check the armpit gap)",
+        "D0 at 15°: tenon tip to tilted floor 2.4 (3.7 at 8°), keep ≥ 2"
+      ],
+      "function": "Tilts the pad top in or out; one print per angle, not flippable.",
+      "status": "RECOMMENDED",
+      "status_note": "angle set 0 / ±8 / ±15 awaiting owner OK (2.23)",
+      "sketch": "tilt"
+    },
+    {
+      "id": "PD",
+      "code": "PD",
+      "kind": "printed",
+      "group": "Pad",
+      "numbers": [
+        "GBG-SP-PD-L-r5",
+        "GBG-SP-PD-R-r5"
+      ],
+      "name": "Pad shell (2 screw positions, dovetail, cover groove)",
+      "short": "Pad shell",
+      "variants": [
+        "L, R (or one part if it stays symmetric in z)",
+        "screw position upper / lower (± 11)"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 2,
+        "note": ""
+      },
+      "material": "PETG, chair colour",
+      "print": "Child side down, tree supports on the hidden side",
+      "dims": [
+        "82 (y −27…55) × 80 tall, shell 4.5, plain curved plate (front edge curves ~7.5 toward the child)",
+        "two boss + nut positions at ± 11 about the pad centre, both hidden under the foot (boss R7)",
+        "dovetail socket under the foot (27 × 40 footprint), closed front",
+        "cover groove in the back face 3.2–8.8 in from the edge, 2.5 deep"
+      ],
+      "function": "The pad's stiff back; the screw position picks ± 11 of height.",
+      "status": "AGREED",
+      "status_note": "AGREED; dovetail RECOMMENDED (2.24); L/R vs one part OPEN",
+      "sketch": "pad"
+    },
+    {
+      "id": "RG",
+      "code": "RG",
+      "kind": "printed",
+      "group": "Pad",
+      "numbers": [
+        "GBG-SP-RG-L-r5",
+        "GBG-SP-RG-R-r5"
+      ],
+      "name": "Clip ring with snap retention",
+      "short": "Clip ring",
+      "variants": [
+        "L, R (or one)"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 2,
+        "note": ""
+      },
+      "material": "PETG",
+      "print": "Flat and bent in, or supported (plan 4.13)",
+      "dims": [
+        "closed loop at mid-groove (~6 in from the pad edge), 1.6 thick, 2.5 tall",
+        "groove 5.6 = ring 1.6 + 2 × 2 neoprene",
+        "positive retention: snap lip or undercut, stays flush"
+      ],
+      "function": "Traps the cover's edge in the back groove: no sewing, cannot work loose.",
+      "status": "AGREED",
+      "status_note": "retention AGREED; form (lip vs undercut) and print method OPEN (4.13)",
+      "sketch": "ring"
+    },
+    {
+      "id": "FM",
+      "code": "FM",
+      "kind": "soft",
+      "group": "Pad",
+      "numbers": [
+        "GBG-SP-FM-r5"
+      ],
+      "name": "Foam cushion 30 mm",
+      "short": "Foam 30",
+      "variants": [
+        "one thickness (FS reference); README's 17 / 30 / 43 per depth to confirm"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 2,
+        "note": ""
+      },
+      "material": "Foam (from stock)",
+      "print": "Cut",
+      "dims": [
+        "pad outline 82 × 80, 30 thick",
+        "child-side rim rounded ~R10"
+      ],
+      "function": "Soft contact with the child's side.",
+      "status": "OPEN",
+      "status_note": "30 mm in the brief and the FS; per-depth thickness (plan §8 row) OPEN",
+      "sketch": "foam"
+    },
+    {
+      "id": "CV",
+      "code": "CV",
+      "kind": "soft",
+      "group": "Pad",
+      "numbers": [
+        "GBG-SP-CV-r5"
+      ],
+      "name": "Cover (no-sew)",
+      "short": "Neoprene cover",
+      "variants": [
+        "–"
+      ],
+      "qty": {
+        "side": 1,
+        "pair": 2,
+        "kit": 2,
+        "note": ""
+      },
+      "material": "Neoprene 2 mm",
+      "print": "Cut pattern",
+      "dims": [
+        "≈ 170 × 165 blank (pad + 2 × (foam 30 + shell 4.5 + wrap ~8)), trim on the pad coupon",
+        "wraps foam and shell edge into the back groove under the ring"
+      ],
+      "function": "Washable, wipe-clean skin held only by the clip ring.",
+      "status": "AGREED",
+      "status_note": "AGREED; wrap and pattern size to review on the pad coupon (5.8)",
+      "sketch": "cover"
+    },
+    {
+      "id": "HW12",
+      "code": "HW",
+      "kind": "hardware",
+      "group": "Hardware",
+      "numbers": [
+        "GBG-SP-HW-M5x12C"
+      ],
+      "name": "Tenon screw M5×12 countersunk + M5 nut",
+      "short": "Tenon screw + nut",
+      "variants": [
+        "–"
+      ],
+      "qty": {
+        "side": "1 + 1",
+        "pair": "2 + 2",
+        "kit": "2 + 2",
+        "note": ""
+      },
+      "material": "Steel, from stock (ISO 10642; nut DIN 934 / ISO 4032)",
+      "print": "From stock",
+      "dims": [
+        "head Ø10, flush in the depth piece's back face",
+        "nut in a 5.1 deep pocket inside the tenon"
+      ],
+      "function": "Locks the depth piece on the tenon; plastic takes the load (hidden step).",
+      "status": "AGREED",
+      "sketch": "csk"
+    },
+    {
+      "id": "HW10",
+      "code": "HW",
+      "kind": "hardware",
+      "group": "Hardware",
+      "numbers": [
+        "GBG-SP-HW-M5x10B"
+      ],
+      "name": "Pad screw M5×10 button head + M5 nut",
+      "short": "Pad screw + nut",
+      "variants": [
+        "–"
+      ],
+      "qty": {
+        "side": "1 + 1",
+        "pair": "2 + 2",
+        "kit": "2 + 2",
+        "note": ""
+      },
+      "material": "Steel, from stock (ISO 7380)",
+      "print": "From stock",
+      "dims": [
+        "head Ø9.5 × 2.75",
+        "from inside the depth piece's hollow into a nut in the pad boss"
+      ],
+      "function": "Locks the pad on the dovetail; the closed front stop takes the load.",
+      "status": "AGREED",
+      "sketch": "button_head"
+    },
+    {
+      "id": "CP",
+      "code": "CP",
+      "kind": "printed",
+      "group": "Optional",
+      "numbers": [
+        "GBG-SP-CP-L-r5",
+        "GBG-SP-CP-R-r5"
+      ],
+      "name": "Blank cap for the notch (kit off)",
+      "short": "Blank cap (kit off)",
+      "variants": [
+        "L, R"
+      ],
+      "qty": {
+        "side": "1 (kit off)",
+        "pair": 2,
+        "kit": 2,
+        "note": "optional: owner to confirm cap vs no cap (4.6)"
+      },
+      "material": "PETG, chair colour",
+      "print": "Outer face down",
+      "dims": [
+        "matches the nose: 40 tall × 29.6 × 20, front corner R6, flush, hairlines 0.3",
+        "short tongue into the same pocket; retention detail OPEN"
+      ],
+      "function": "Closes the 40 mm notch so the wing looks whole when the kit is off.",
+      "status": "OPEN",
+      "status_note": "cap AGREED in principle, confirm (4.6)",
+      "sketch": "cap"
+    },
+    {
+      "id": "EP",
+      "code": "EP",
+      "kind": "consumable",
+      "group": "Consumable",
+      "numbers": [
+        "GBG-SP-EP-r5"
+      ],
+      "name": "High-Tg epoxy",
+      "short": "High-Tg epoxy",
+      "variants": [
+        "–"
+      ],
+      "qty": {
+        "side": "as needed",
+        "pair": "as needed",
+        "kit": "1 pack",
+        "note": ""
+      },
+      "material": "Epoxy, Tg > 80 °C",
+      "print": "–",
+      "dims": [
+        "bonds CF6 and the 4 × CF2 pins"
+      ],
+      "function": "Keeps the carbon bonded in a hot car.",
+      "status": "AGREED",
+      "status_note": "material AGREED; code EP RECOMMENDED",
+      "sketch": "epoxy"
+    },
+    {
+      "id": "GA",
+      "code": "GA",
+      "kind": "tool",
+      "group": "Tool",
+      "numbers": [
+        "GBG-SP-GA-r5"
+      ],
+      "name": "Rod cutting gauge v2 (tool)",
+      "short": "Rod cutting gauge v2",
+      "variants": [
+        "lanes Ø8 / Ø6 / Ø2"
+      ],
+      "qty": {
+        "side": "–",
+        "pair": "–",
+        "kit": 1,
+        "note": "workshop tool, not fitted"
+      },
+      "material": "PETG + 2 × M3×30 + nuts",
+      "print": "Flat, no supports",
+      "dims": [
+        "Ø8 lane (headrest H0–H100), Ø6 lane (arm rod), Ø2 lane (pins 21)",
+        "accuracy ±0.3"
+      ],
+      "function": "Cuts every carbon length right first time.",
+      "status": "AGREED",
+      "sketch": "gauge"
+    }
+  ],
+  "child_set": {
+    "title": "Example: a 2-year-old (P50, sitting armpit z ≈ 268), both sides",
+    "setting": "H2: short arm, LOW, lower pad-screw hole → pad centre z 194, pad top 234 (34 below the armpit)",
+    "items": [
+      {
+        "number": "GBG-SP-WG-L-r5 + GBG-SP-WG-R-r5",
+        "qty": "1 + 1",
+        "note": "chair reprint, once"
+      },
+      {
+        "number": "GBG-SP-AR-S-A-r5",
+        "qty": 1,
+        "note": "left side, LOW"
+      },
+      {
+        "number": "GBG-SP-AR-S-B-r5",
+        "qty": 1,
+        "note": "right side, LOW"
+      },
+      {
+        "number": "GBG-SP-BT-r5",
+        "qty": 2,
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-TS-r5",
+        "qty": 2,
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-SP-r5",
+        "qty": 2,
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-CF6-r5",
+        "qty": 2,
+        "note": "bonded in the carriers"
+      },
+      {
+        "number": "GBG-SP-CF2-r5",
+        "qty": 8,
+        "note": "bonded, 4 per carrier"
+      },
+      {
+        "number": "GBG-SP-DP-D1-T0-r5",
+        "qty": 2,
+        "note": "depth chosen at the fitting; D1 shown"
+      },
+      {
+        "number": "GBG-SP-PD-L-r5 + GBG-SP-PD-R-r5",
+        "qty": "1 + 1",
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-RG-L-r5 + GBG-SP-RG-R-r5",
+        "qty": "1 + 1",
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-FM-r5",
+        "qty": 2,
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-CV-r5",
+        "qty": 2,
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-HW-M5x12C",
+        "qty": "2 + 2 nuts",
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-HW-M5x10B",
+        "qty": "2 + 2 nuts",
+        "note": ""
+      },
+      {
+        "number": "GBG-SP-CP-L-r5 + GBG-SP-CP-R-r5",
+        "qty": "optional",
+        "note": "only if the cap is confirmed (4.6)"
+      }
+    ],
+    "growth": "H3 (~3 y): same parts, move the pad screw to the upper hole. H4–H5 (~4–5 y): swap the two short carriers left↔right (flip to HIGH). Only H1 (smallest) and H6 (5y P95) need the long carriers."
+  },
+  "open": [
+    "Numbering scheme and new codes TS, EP; LK merged into BT (4.16)",
+    "Carrier A/B mirror under the flip; button and 6° face both ways up (4.7, 4.10)",
+    "Tooth size for the ~900 N corner knock; arm corner-knock SF < 1 (4.11)",
+    "Ø6 rod final length (≈ 55 estimated) (4.14)",
+    "Tilt angle set 0 / ±8 / ±15; dovetail and tenon-tip step (2.23, 2.24)",
+    "Clip ring retention form and print method (4.13)",
+    "Foam: one 30 mm vs 17 / 30 / 43 per depth",
+    "Pad shell and clip ring: one part or L/R",
+    "Blank cap vs no cap (4.6); wing print orientation and local swell (4.8, 4.9)",
+    "Button travel: 5 (geometry_ABC, plan 3.1) vs 3.5 (fig2): confirm in CAD"
+  ]
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>parts5 test</title>
+<style>:root{color-scheme:light dark;--bg:light-dark(#f6f6f4,#121416);--panel:light-dark(#ffffff,#1b1e21);--ink:light-dark(#17191c,#e8eaec);--mute:light-dark(#5d646c,#9aa3ab);--line:light-dark(#dcdfe2,#2c3136);--acc:#ff6a2a}
+html.dark{color-scheme:dark}html.light{color-scheme:light}
+body{margin:0;padding:18px;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}</style>
+<script>const m=location.hash.slice(1);if(m)document.documentElement.className=m;</script>
+</head><body><h1>Round 5 part list (test)</h1><div id="parts5"></div><div id="missing-test"></div>
+<script type="module">
+import { mountParts } from './parts5.js';
+const d = await mountParts(document.getElementById('parts5'));
+await mountParts(null);
+await mountParts(document.getElementById('missing-test'), './nope.json');
+document.title = d ? 'OK ' + d.parts.length : 'FAIL';
+document.body.dataset.done = '1';
+</script></body></html>

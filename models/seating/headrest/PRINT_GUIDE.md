@@ -31,12 +31,12 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 | Blank | 4 | 40 % | 4 / 3 | v1.2: tree, build plate only (under the flange) | v1.1: 0.16 h, 2.6 g (v1.2 with flange not sliced yet) |
 | Fit-test bar | 3 | 20 % | 4 / 3 | none | 1.37 h, 43.5 g |
 | Template part | 2 | 15 % | 4 / 3 | none | 1.27 h, 44.2 g |
-| Rod cutting gauge base / lid (`stl/tools/`) | 3 | 15 % | 4 / 3 | none | 2.16 h, 70.0 g / 0.24 h, 6.7 g |
+| Rod cutting gauge v2 base / lid (`stl/tools/`) | 3 | 15 % | 4 / 3 | none | not sliced yet; estimate from v1 (2.16 h, 70.0 g / 0.24 h, 6.7 g) scaled by volume and area: ~4.3 h, ~150 g / ~0.2 h, ~5 g |
 | Chair `top_back` with receiver | follow the chair's settings, at least 4 walls round the socket; print upright (top edge up) so the M5 teardrops point up | | | | |
 
 ## 5. Order for the first prototype
 1. **Fit-test bar** (1.4 h). Check the Ø8 rod slide (Ø8.3/8.5/8.7), the nuts in their traps (2.8 / 4.4 deep), the PVC in the rings (Ø20.6/20.8/21.0: it should slide in by hand), and the wedge clicking into the pocket. Edit the constants at the top of `featurescript/gbg_headrest_v10.fs` if needed.
-2. **Rod cutting gauge** (base + lid, 2.4 h), so the rods are cut to length, square, and held still.
+2. **Rod cutting gauge v2** (base + lid, ~4.5 h est.), so the rods are cut to length, square, and held still. It also cuts the pommel Ø6 rods and the side-pad Ø6 rod and Ø2 pins.
 3. **Chair `top_back` with the receiver** (from the Onshape branch `headrest-v1`).
 4. **Mast H50 + pad** (about 11.3 h together). Check the slide-in, the taper wedge, the lock screws and the rods.
 5. **Pod + blank.**
@@ -44,7 +44,7 @@ The triangle pocket already suits these orientations: in the upside-down pad it 
 7. Load tests (README), then the other heights only as children need them.
 
 ## 6. Assembly
-1. Cut 2 carbon rods to **85 + H mm** (H0 85, H25 110, H50 135, H75 160, H100 185) in the **rod cutting gauge**: push the rod against the stop, tighten the lid (2× M3×30 + nuts), wrap tape round the rod at the slot for your height, and cut through the slot with a diamond disc or a fine hacksaw. Wear an FFP3 mask, goggles and gloves; cut outside or over a damp cloth; no blower (wipe or vacuum). Seal both ends with a drop of thin CA, sand lightly.
+1. Cut 2 carbon rods to **85 + H mm** (H0 85, H25 110, H50 135, H75 160, H100 185) in the **Ø8 lane of the rod cutting gauge**: push the rod against the stop, bolt the lid at station B (x 70; station A next to the stop also works) and tighten it (2× M3×30 + nuts), wrap tape round the rod at the slot for your height, and cut through the slot with a diamond disc or a fine hacksaw. Wear an FFP3 mask, goggles and gloves; cut outside or over a damp cloth; no blower (wipe or vacuum). Seal both ends with a drop of thin CA, sand lightly.
 2. Slide the 2 M5 nuts into the plug slots (from −x); a drop of CA keeps them in.
 3. Slide the 2 M3 nuts into the slots on the tenon side edges.
 4. Push the rods into the mast from the plug end until they stop.

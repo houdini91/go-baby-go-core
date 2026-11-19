@@ -1,0 +1,183 @@
+{
+ "units": "mm",
+ "frame": "chair world; S = tip frame with the lean removed: d' = d - 0.0565 (z - 227), t' = t - 0.069 (z - 227)",
+ "dropped_bad_tris": 1683,
+ "T_BACK": 2.0,
+ "nose_t": [
+  -14.27,
+  1.7
+ ],
+ "nose_z": [
+  207.3,
+  246.7
+ ],
+ "tongue_d": [
+  3.75,
+  17.45
+ ],
+ "tongue_z": [
+  214.3,
+  239.7
+ ],
+ "slot_width": 14.1,
+ "slot_z": [
+  214.10000000000002,
+  239.89999999999998
+ ],
+ "wing_r5": {
+  "volume": 303521.7,
+  "genus": 12,
+  "status": "NoError",
+  "parts": 1
+ },
+ "nose_arm_r5_L": {
+  "volume": 55399.7,
+  "genus": 2,
+  "status": "NoError",
+  "parts": 1
+ },
+ "nose_arm_r5_S": {
+  "volume": 49007.1,
+  "genus": 2,
+  "status": "NoError",
+  "parts": 1
+ },
+ "button_r5": {
+  "volume": 1829.7,
+  "genus": 0,
+  "status": "NoError",
+  "parts": 1
+ },
+ "sleeve_r5": {
+  "volume": 196.3,
+  "genus": 1,
+  "status": "NoError",
+  "parts": 1
+ },
+ "cap_r5": {
+  "volume": 20488.2,
+  "genus": 0,
+  "status": "NoError",
+  "parts": 1
+ },
+ "wing0_volume": 317540.0,
+ "clash_button^carrier": 0.0,
+ "clash_button^wing": 0.0,
+ "clash_carrierL^wing": 0.0,
+ "clash_carrierS^wing": 0.0,
+ "clash_cap^wing": 0.0,
+ "clash_sleeve^carrier": -0.0,
+ "clash_sleeve^button": 0.0,
+ "clash_button_pressed^wing": 0.0,
+ "clash_button_pressed^carrier": -0.0,
+ "tongue_engagement": {
+  "4.0": 17.2,
+  "6.0": 19.8,
+  "9.0": 18.1,
+  "12.0": 12.6,
+  "15.0": 9.9,
+  "17.0": 8.1
+ },
+ "walls_around_slot": {
+  "214.15": {
+   "inner": 6.02,
+   "back": 5.48,
+   "outer": 5.9
+  },
+  "217.0": {
+   "inner": 6.1,
+   "back": 5.48,
+   "outer": 5.9
+  },
+  "227.0": {
+   "inner": 6.1,
+   "back": 5.48,
+   "outer": 5.9
+  },
+  "237.0": {
+   "inner": 6.1,
+   "back": 5.48,
+   "outer": 5.9
+  },
+  "239.85": {
+   "inner": 6.1,
+   "back": 5.48,
+   "outer": 5.9
+  }
+ },
+ "groove": {
+  "t": [
+   5.0,
+   9.0
+  ],
+  "z": [
+   217.0,
+   237.0
+  ],
+  "depth": 3.5,
+  "skin_behind": 3.25,
+  "shoulder_t": 3.0
+ },
+ "slot_floor_ceiling": {
+  "floor_to_notch_bottom": 7.1,
+  "ceiling_to_notch_top": 7.1
+ },
+ "hole_clearance_2d": {
+  "z204 feature centred d-2 t39 (43 mm2)": {
+   "to_slot_or_groove": null,
+   "to_notch": null
+  },
+  "z210 feature centred d-2 t39 (43 mm2)": {
+   "to_slot_or_groove": null,
+   "to_notch": 32.95
+  },
+  "z227 feature centred d-2 t39 (43 mm2)": {
+   "to_slot_or_groove": 14.16,
+   "to_notch": 32.96
+  },
+  "z240 feature centred d-2 t39 (43 mm2)": {
+   "to_slot_or_groove": null,
+   "to_notch": 32.97
+  },
+  "z244 feature centred d-2 t39 (43 mm2)": {
+   "to_slot_or_groove": null,
+   "to_notch": 32.97
+  }
+ },
+ "clearance_slot": {
+  "S1_front_wall_x118_55": 6.02,
+  "S2_front_wall_x101_15": 23.42,
+  "hole_column_x75_5": 47.42
+ },
+ "clearance_groove": {
+  "S1_front_wall_x118_55": 22.65,
+  "S2_front_wall_x101_15": 40.05,
+  "hole_column_x75_5": 64.05
+ },
+ "clearance_notch_face": {
+  "S1_front_wall_x118_55": 6.3,
+  "S2_front_wall_x101_15": 23.7,
+  "hole_column_x75_5": 47.7
+ },
+ "clearance_fill": {
+  "S1_front_wall_x118_55": 12.76,
+  "S2_front_wall_x101_15": 30.16,
+  "hole_column_x75_5": 54.16
+ },
+ "hole_z186_to_notch_bottom": 18.75,
+ "upper_M5_counterbore_to_notch_top": 6.2,
+ "arm_L": {
+  "xe": 128.15,
+  "zp": 183.0,
+  "L": 59.26,
+  "R": 26.64,
+  "Rv": 30.95
+ },
+ "arm_S": {
+  "xe": 128.15,
+  "zp": 205.0,
+  "L": 59.26,
+  "R": 26.64,
+  "Rv": 45.41
+ }
+}
