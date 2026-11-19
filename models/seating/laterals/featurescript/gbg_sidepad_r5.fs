@@ -43,22 +43,26 @@ const LD = 0.0565;  const LT = 0.069;  const ZC = 227.0;        // blade lean (m
 const C = 227.0;                                                // tongue centre = the one mount
 const NZ = [207.0, 247.0];  const SEAM = 0.3;                   // notch band; the nose is 0.3 smaller each side (hairlines)
 const T_FRONT = -14.27;  const T_BACK = 2.0;                    // wing front face; notch back face (nose t' -14.27 .. 1.7)
-const TG_Z = [214.3, 239.7];  const CLR = 0.2;                  // tongue height; slot = tongue + 0.2
+const TG_Z = [214.3, 246.4];  const CLR = 0.2;                  // tongue height: up to the nose top (the old pocket above is filled); slot = tongue + 0.2, top flush with the notch ceiling
 // tongue outline (d', t'): rectangle at the notch face, back edge 5.5 from the outer air and 6 (normal) from strap slit S1
-const TONGUE = [[3.75, 1.0], [17.45, 1.0], [17.45, 9.3], [11.4, 15.0], [9.6, 18.8], [8.65, 22.2], [7.9, 23.4], [3.75, 18.5]];
-const SLOT = [[3.55, 1.0], [17.65, 1.0], [17.65, 9.386], [11.565, 15.12], [9.788, 18.87], [8.835, 22.282], [7.924, 23.738], [3.55, 18.573]];
+const TONGUE = [[3.75, 1.0], [17.45, 1.0], [17.45, 3.0], [17.285, 9.3], [11.4, 15.0], [9.6, 18.8], [8.65, 22.2], [7.9, 23.4], [4.012, 18.5], [3.75, 8.5]];
+// slot = tongue + 0.2, except the 1.5 deg/side wedge faces near the tip (inner t' 8.5-18.5, outer t' 3-9.3): zero clearance there
+const SLOT = [[3.55, 1.0], [17.65, 1.0], [17.65, 1.6], [17.45, 3.0], [17.285, 9.3], [11.565, 15.118], [9.788, 18.87], [8.835, 22.282], [7.919, 23.746], [4.012, 18.5], [3.75, 8.5], [3.55, 7.7]];
+const PADS = [5.5, 13.5];  const PAD_REL = 0.3;                 // tongue bottom relieved 0.3 between t' 5.5 and 13.5: it bears on pads at the mouth and the tip
+const RIBS = [15.0, 17.0];  const RIB_R = 0.4;                  // 2 crush ribs (0.2 interference) across the top and bottom faces near the tip
+const MOUTH = 3.3;  const TG_ROOT = 3.0;                        // slot mouth chamfer 3.3 x 45 (sides + bottom) clears the R3 tongue root fillet
 const W1 = [7.3, 17.9, 14.0];                                   // old tongue pocket filled in the band (d0, d1, t1)
 const SLIT = [8.0, 26.0, 11.0, 22.0];                           // old slit behind the cheek, closed with the z 215.2 section
 const ENV = [-14.0, 34.0, -20.0, 40.0];                         // tip region (d', t') used for the live sections
 // ---------------- latch A (S frame, LOW; HIGH = z-mirror about C) ----------------
 const GK = 0.10510423526567646;                                 // tan 6 deg: the locking face
-const GR_T = 4.5;  const GR_D = 21.1;  const GR_Z = [215.0, 239.0];   // catch groove: front face t' 4.5 at the slot wall (d' 17.65), to d' 21.1
-const BT_TC = -6.3;  const BT_W = 12.0;  const BT_H = 24.0;  const BT_THK = 4.6;  const TRAVEL = 3.8;   // button 12 x 24, travel 3.8 to a hard stop
-const BLK_D = [13.0, 17.35];  const BLK_T = [-4.0, 9.0];  const BLK_Z = [223.5, 239.0];          // LOW: block above the rod
-const TO_D = [17.3, 20.9];                                      // tooth (6 deg face at t' 4.52, 45 deg lead-in behind), z = block
+const GR_T = 4.5;  const GR_D = 22.2;  const GR_Z = [223.2, 246.3];  const GR_CH = 0.5;   // groove 4.0 deep; 0.5 chamfer at the shoulder edge   // catch groove: front face t' 4.5 at the slot wall (d' 17.65), to d' 21.1
+const BT_TC = -6.3;  const BT_W = 12.0;  const BT_H = 24.0;  const BT_THK = 4.6;  const TRAVEL = 4.9;   // button 12 x 24, travel 3.8 to a hard stop
+const BLK_D = [13.0, 17.35];  const BLK_T = [-4.0, 9.0];  const BLK_Z = [223.5, 246.0];          // block + tooth above the rod (LOW and HIGH alike)
+const TO_D = [17.3, 22.0];                                      // tooth (6 deg face at t' 4.52, 45 deg lead-in behind), z = block
 const LIP = 1.6;  const LIP_W = 13.2;  const FL_W = 13.0;  const FL_T = 0.6;  const SL_OUT = 13.8;  const SL_IN = 12.4;  const SL_H = 2.4;
 const SPR = [-8.5, 231.0, 3.25, 10.0];                          // spring slot (t', z LOW, r, d' floor): OD 6, L0 14, installed 10
-const ROD = [8.6, 218.75, 3.25];  const ROD_T = [13.5, -26.0];  // Ø6 rod in a Ø6.5 teardrop: (d', z LOW, bore r); rod t' from .. to
+const ROD = [8.6, 218.75, 3.25];  const ROD_T = [13.5, -26.0, -22.0];  // Ø6 rod in a Ø6.5 teardrop: (d', z LOW, bore r); rod t' from .. to
 const PIN_L = 21.0;                                             // Ø2 tenon pins
 // ---------------- arm (v1.1 path) ----------------
 const TAPER_T = -14.0;  const DC = 9.4;  const YEND = 35.0;
@@ -300,6 +304,18 @@ function engrave(context is Context, id is Id, target is Query, o is Vector, xd 
         });
     if (!ok) warn(context, "engraving '" ~ txt ~ "' failed");
 }
+// edges of q whose midpoint lies at S-frame t' in [t0, t1]
+function edgesAtT(context is Context, q is Query, t0 is number, t1 is number) returns Query
+{
+    var out = [];
+    for (var e in evaluateQuery(context, q))
+    {
+        const ln = evEdgeTangentLine(context, { "edge" : e, "parameter" : 0.5 });
+        const pS = toS(ln.origin / millimeter);
+        if (pS[1] >= t0 && pS[1] <= t1) out = append(out, e);
+    }
+    return qUnion(out);
+}
 function stage(context is Context, st is string)
 {
     var prev = "";
@@ -418,18 +434,39 @@ function armCentre(p is map, u is number) returns Vector
 // =============================================== WING (chair change) ===============================================
 // live section of `wing` at z: a slab copy cut to the tip region (unsheared F box around the S region), its face at z
 // extruded along the lean from z0 to z1 -> a leaned prism of the wing's own section
-function sectionPrism(context is Context, id is Id, wing is Query, z is number, reg is array, z0 is number, z1 is number) returns Query
+function sectionPrism(context is Context, id is Id, wing is Query, z is number, reg is array, z0 is number, z1 is number, lean is Vector) returns Query
 {
     const cp = copyOf(context, id + "cp", wing);
     keepOnly(context, id + "k", cp, reg[0] + LD * (z - ZC), reg[1] + LD * (z - ZC), reg[2] + LT * (z - ZC), reg[3] + LT * (z - ZC), z, z + 1.0, false);
     const faces = qCoincidesWithPlane(qOwnedByBody(cp, EntityType.FACE), plane(v3(0, 0, z), vector(0, 0, 1)));
     if (size(evaluateQuery(context, faces)) == 0) throw regenError("Side Pad Wing: no wing section at z " ~ z);
-    const w = leanV() + vector(0, 0, 1);
+    const w = lean + vector(0, 0, 1);
     opExtrude(context, id + "up", { "entities" : faces, "direction" : normalize(w), "endBound" : BoundingType.BLIND, "endDepth" : (z1 - z) * norm(w) * millimeter });
     opExtrude(context, id + "dn", { "entities" : faces, "direction" : -normalize(w), "endBound" : BoundingType.BLIND, "endDepth" : (z - z0) * norm(w) * millimeter });
     opDeleteBodies(context, id + "dcp", { "entities" : cp });
     opBoolean(context, id + "u", { "tools" : qUnion([solids(context, id + "up"), solids(context, id + "dn")]), "operationType" : BooleanOperationType.UNION });
     return qUnion([solids(context, id + "up"), solids(context, id + "dn")]);
+}
+// loft between two (d', z) polygons in the planes t' = t0 and t' = t1 (S frame), then sheared into the leaned frame
+function rrLoftPoly(context is Context, id is Id, p0 is array, p1 is array, t0 is number, t1 is number)
+{
+    var profs = [];
+    const pls = [[p0, t0], [p1, t1]];
+    for (var k = 0; k < 2; k += 1)
+    {
+        const sk = newSketchOnPlane(context, id + ("s" ~ k), { "sketchPlane" : plane(Q(0, pls[k][1], ZC) * millimeter, -dirT(), dirD()) });
+        const pts = pls[k][0];
+        for (var i = 0; i < size(pts); i += 1)
+        {
+            const a = pts[i];  const b = pts[(i + 1) % size(pts)];
+            skLineSegment(sk, "l" ~ i, { "start" : vector(a[0], a[1] - ZC) * millimeter, "end" : vector(b[0], b[1] - ZC) * millimeter });
+        }
+        skSolve(sk);
+        profs = append(profs, qSketchRegion(id + ("s" ~ k)));
+    }
+    opLoft(context, id + "loft", { "profileSubqueries" : profs, "bodyType" : ToolBodyType.SOLID });
+    opDeleteBodies(context, id + "dsk", { "entities" : qUnion([qCreatedBy(id + "s0", EntityType.BODY), qCreatedBy(id + "s1", EntityType.BODY)]) });
+    opTransform(context, id + "sh", { "bodies" : solids(context, id + "loft"), "transform" : shearS() });
 }
 // S box (sheared)
 function sBox(context is Context, id is Id, d0, d1, t0, t1, z0, z1) returns Query
@@ -445,11 +482,22 @@ function sPoly(context is Context, id is Id, pts is array, z0 is number, z1 is n
     const b = solids(context, id + "p");
     if (r > 0)
     {
+        // round only the real corners (turn > 20 deg); the near-straight wedge kinks stay as they are
+        var sharp = [];
+        for (var i = 0; i < size(pts); i += 1)
+        {
+            const a0 = pts[(i + size(pts) - 1) % size(pts)];  const a1 = pts[i];  const a2 = pts[(i + 1) % size(pts)];
+            const u = normalize(vector(a1[0] - a0[0], a1[1] - a0[1]));  const w = normalize(vector(a2[0] - a1[0], a2[1] - a1[1]));
+            if (dot(u, w) < cos(20 * degree)) sharp = append(sharp, a1);
+        }
         var vert = [];
         for (var e in evaluateQuery(context, qOwnedByBody(b, EntityType.EDGE)))
         {
             const ln = evEdgeTangentLine(context, { "edge" : e, "parameter" : 0.5 });
-            if (abs(ln.direction[2]) > 0.99) vert = append(vert, e);
+            if (abs(ln.direction[2]) < 0.99) continue;
+            const pS = toS(ln.origin / millimeter);
+            const pd = pS[0] + LD * (pS[2] - ZC);  const pt = pS[1] + LT * (pS[2] - ZC);     // back to the unsheared tip frame (not yet sheared)
+            for (var v in sharp) if (abs(v[0] - pd) < 0.05 && abs(v[1] - pt) < 0.05) { vert = append(vert, e); break; }
         }
         mustFillet(context, id + "r", qUnion(vert), r, "slot/tongue corner round");
     }
@@ -457,36 +505,39 @@ function sPoly(context is Context, id is Id, pts is array, z0 is number, z1 is n
     return b;
 }
 // all wing tools for the LEFT wing body `wing` (for the right side pass the mirrored copy and mirror the results back)
+// the blade's lean measured on this wing (front face and cheek outer face at z 220 and 262), as a world vector per mm of z
+function measureLean(context is Context, wing is Query) returns map
+{
+    var tf = [];  var dout = [];
+    for (var z in [220.0, 262.0])
+    {
+        const hf = evRaycast(context, { "entities" : wing, "ray" : line(Q(4.0, -60, z) * millimeter, dirT()) });
+        const ho = evRaycast(context, { "entities" : wing, "ray" : line(Q(60, -4.0, z) * millimeter, -dirD()) });
+        if (size(hf) == 0 || size(ho) == 0) throw regenError("Side Pad Wing: could not measure the blade lean");
+        tf = append(tf, -60 + hf[0].distance / millimeter);  dout = append(dout, 60 - ho[0].distance / millimeter);
+    }
+    const lt = (tf[1] - tf[0]) / 42;  const ld = (dout[1] - dout[0]) / 42;
+    return { "LT" : lt, "LD" : ld, "v" : vector(ld * AXH[0] + lt * TH[0], ld * AXH[1] + lt * TH[1], 0), "front" : tf[0] - LT * (220 - ZC) };
+}
 export function wingTools(context is Context, id is Id, wing is Query, closePocket is boolean) returns map
 {
+    const lm = measureLean(context, wing);
+    setVariable(context, "gbgLean", "measured lean LD " ~ roundToPrecision(lm.LD, 4) ~ " LT " ~ roundToPrecision(lm.LT, 4) ~ " (model " ~ LD ~ " / " ~ LT ~ "), front t' " ~ roundToPrecision(lm.front, 2));
     // filled blade section near the tip: section at z 240 (blade + cheek) + the old tongue pocket W1 + the slit closed with z 215.2
-    stage(context, "W0");
-    const p240 = sectionPrism(context, id + "s240", wing, 240.0, ENV, 207.0, closePocket ? 270.0 : 248.0);
-    stage(context, "W1");
-    const slit = sectionPrism(context, id + "s215", wing, 215.2, SLIT, 215.0, closePocket ? 270.0 : 248.0);
-    stage(context, "W2");
-    const w1 = sBox(context, id + "w1", W1[0], W1[1], T_FRONT + 0.02, W1[2], 207.0, closePocket ? 270.0 : 248.0);
+    const p240 = sectionPrism(context, id + "s240", wing, 240.0, ENV, 207.0, 270.0, lm.v);
+    const slit = sectionPrism(context, id + "s215", wing, 215.2, SLIT, 215.0, 248.0, lm.v);
+    const w1 = sectionPrism(context, id + "w1", wing, 215.2, [W1[0], W1[1], -20.0, W1[2]], 207.0, 270.0, lm.v);
     // NOSE / CAP source = (wing + fill) inside the nose box: the wing's own front section, 0.3 smaller each side
-    stage(context, "W3");
     const ncp = copyOf(context, id + "ncp", qUnion([p240, w1]));
-    stage(context, "W4");
     keepOnly(context, id + "nk", ncp, ENV[0], ENV[1], T_FRONT - 0.4, T_BACK + 0.6, 215.5, NZ[1] + 0.5, true);
-    stage(context, "W5");
     const wcp = copyOf(context, id + "wcp", wing);
-    stage(context, "W6");
     opBoolean(context, id + "nu", { "tools" : qUnion([wcp, ncp]), "operationType" : BooleanOperationType.UNION });
-    stage(context, "W7");
     const noseB = one(context, qUnion([wcp, ncp]), "nose");
-    stage(context, "W8");
     keepOnly(context, id + "nb", noseB, -40, 50, -40, T_BACK - SEAM, NZ[0] + SEAM, NZ[1] - SEAM, true);
     // wing fill inside the band (behind the notch face), optionally also closing the open pocket above the nose
-    stage(context, "W9");
     const fill = copyOf(context, id + "fcp", qUnion([p240, w1, slit]));
-    stage(context, "W10");
     opBoolean(context, id + "fu", { "tools" : fill, "operationType" : BooleanOperationType.UNION });
-    stage(context, "W11");
     const fillB = qBodyType(fill, BodyType.SOLID);              // may be more than one piece; each merges with the wing
-    stage(context, "W12");
     keepOnly(context, id + "fk", fillB, ENV[0], ENV[1], T_BACK - 0.6, 26.0, 215.0, NZ[1], true);
     var fills = [fillB];
     if (closePocket)
@@ -497,33 +548,27 @@ export function wingTools(context is Context, id is Id, wing is Query, closePock
         keepOnly(context, id + "f2k", f2B, ENV[0], ENV[1], T_FRONT + 0.02, 26.0, NZ[1] - 0.01, 270.0, true);
         fills = append(fills, f2B);
     }
-    stage(context, "W13");
     opDeleteBodies(context, id + "dsrc", { "entities" : qUnion([p240, w1, slit]) });
     // cuts: notch, slot (tongue + 0.2), catch groove (6 deg locking face)
-    stage(context, "W14");
     const notch = sBox(context, id + "notch", -40, 50, -40, T_BACK, NZ[0], NZ[1]);
-    stage(context, "W15");
-    const slot = sPoly(context, id + "slot", SLOT, TG_Z[0] - CLR, TG_Z[1] + CLR, 1.2);
-    stage(context, "W16");
-    const groove = sPoly(context, id + "gr", [[SLOT[1][0] - 0.8, GR_T - 0.8 * GK], [GR_D, GR_T + (GR_D - 17.65) * GK], [GR_D, BLK_T[1]], [SLOT[1][0] - 0.8, BLK_T[1]]], GR_Z[0], GR_Z[1], 0);
+    const slot = sPoly(context, id + "slot", SLOT, TG_Z[0] - CLR, TG_Z[1] + CLR, 1.0);
+    // mouth chamfer MOUTH x 45 deg on the slot's sides and bottom (clears the tongue's R3 root fillet; lead-in)
+    const mz0 = TG_Z[0] - CLR;
+    const mz1 = TG_Z[1] + CLR;
+    rrLoftPoly(context, id + "mouth", [[SLOT[0][0] - MOUTH, mz0 - MOUTH], [SLOT[1][0] + MOUTH, mz0 - MOUTH], [SLOT[1][0] + MOUTH, mz1 + MOUTH], [SLOT[0][0] - MOUTH, mz1 + MOUTH]],
+                                     [[SLOT[0][0], mz0], [SLOT[1][0], mz0], [SLOT[1][0], mz1], [SLOT[0][0], mz1]], T_BACK - 0.01, T_BACK + MOUTH);
+    const wallT = 17.45 - (GR_T - 3.0) * 0.0262;
+    const groove = sPoly(context, id + "gr", [[16.85, GR_T - GR_CH - 1.0], [wallT, GR_T - GR_CH - 1.0], [wallT, GR_T - GR_CH], [wallT + GR_CH, GR_T + (wallT + GR_CH - 17.65) * GK], [GR_D, GR_T + (GR_D - 17.65) * GK], [GR_D, BLK_T[1]], [16.85, BLK_T[1]]], GR_Z[0], GR_Z[1], 0);
     // blank cap: nose + stub tongue (relief frees a 2-thick finger on the outer side) + snap bump into the groove
-    stage(context, "W17");
-    const stub = sPoly(context, id + "stub", [[3.75, 1.0], [17.45, 1.0], [17.45, 9.0], [3.75, 9.0]], 216.0, 238.0, 1.0);
-    stage(context, "W18");
-    const relief = sBox(context, id + "rel", 13.6, 15.4, 2.6, 10.0, 215.0, 239.0);
-    stage(context, "W19");
+    const stub = sPoly(context, id + "stub", [[3.75, 1.0], [17.45, 1.0], [17.45, 3.0], [17.29, 9.0], [3.75, 9.0]], 224.0, 245.0, 1.0);
+    const relief = sBox(context, id + "rel", 13.6, 15.4, 2.6, 10.0, 223.0, 246.0);
     opBoolean(context, id + "stc", { "tools" : relief, "targets" : stub, "operationType" : BooleanOperationType.SUBTRACTION });
-    stage(context, "W20");
-    const bump = sPoly(context, id + "bump", [[17.2, 5.4], [19.0, 5.8], [19.0, 6.6], [17.2, 8.6]], 221.0, 233.0, 0);
-    stage(context, "W21");
+    const bump = sPoly(context, id + "bump", [[17.2, 5.0], [19.0, 5.4], [19.0, 6.2], [17.2, 8.2]], 228.0, 240.0, 0);
     const capSrc = copyOf(context, id + "capc", noseB);
-    stage(context, "W22");
     opBoolean(context, id + "capu", { "tools" : qUnion([capSrc, stub, bump]), "operationType" : BooleanOperationType.UNION });
-    stage(context, "W23");
     const cap = one(context, qUnion([capSrc, stub, bump]), "blank cap");
-    stage(context, "W24");
     opDeleteBodies(context, id + "dnose", { "entities" : noseB });
-    return { "fill" : qUnion(fills), "cut" : qUnion([notch, slot, groove]), "cap" : cap };
+    return { "fill" : qUnion(fills), "cut" : qUnion([notch, slot, groove, solids(context, id + "mouth")]), "cuts" : [notch, slot, groove, solids(context, id + "mouth")], "cap" : cap };
 }
 
 // =============================================== CARRIER + LATCH A ===============================================
@@ -541,130 +586,123 @@ function dropBox(context is Context, id is Id, d0, d1, t0, t1, z0 is number, zs 
     const zz = zlr(z0, 262.0, zs);
     tipBox(context, id, d0, d1, t0, t1, zz[0], zz[1]);
 }
-export function buildCarrier(context is Context, id is Id, noseSrc is Query, drop is number, zs is number, showCarbon is boolean) returns map
+export function buildCarrier(context is Context, id is Id, noseSrc is Query, drop is number, zs is number, showCarbon is boolean, ribs is boolean) returns map
 {
-    stage(context, "C0");
     const zp = C - zs * drop;
     // ---- nose: copy of the cap, cut to the nose box ----
-    stage(context, "C1");
     const nose = copyOf(context, id + "nose", noseSrc);
-    stage(context, "C2");
     keepOnly(context, id + "nk", nose, -40, 50, -40, T_BACK - SEAM, NZ[0] + SEAM, NZ[1] - SEAM, true);
-    stage(context, "C3");
     const hits = evRaycast(context, { "entities" : nose, "ray" : line(QS(60, BT_TC, C) * millimeter, -dirD()) });
     if (size(hits) == 0) throw regenError("carrier: button ray missed the nose");
-    stage(context, "C4");
     const FD = 60 - hits[0].distance / millimeter;               // d' of the nose's outer face (S frame)
-    stage(context, "C5");
     const ncp = copyOf(context, id + "ncp", nose);              // for the button cap (the nose skin)
     // ---- tongue ----
-    stage(context, "C6");
     const tg = sPoly(context, id + "tg", TONGUE, TG_Z[0], TG_Z[1], 1.0);
     // ---- arm: ONE loft through sections square to the path, from inside the nose to the joint ----
-    stage(context, "C7");
     const p = armPath(C, zp);
     var secs = [];
     for (var u in [-5.0, 0.0, p.L / 6, 2 * p.L / 6, 3 * p.L / 6, 4 * p.L / 6, 5 * p.L / 6, p.L])
         secs = append(secs, sec(armCentre(p, u), armAt(p, u).t, ARM_W, ARM_H, ARM_R));
-    stage(context, "C8");
     rrLoft(context, id + "arm", secs, true, true);
-    stage(context, "C9");
     const xe = armAt(p, p.L).p[0];
-    stage(context, "C10");
     rrLoft(context, id + "ten", [sec(vector(xe + 0.5, YAX, zp), vector(-1, 0, 0), TEN_W, TEN_H, TEN_R), sec(vector(xe - TEN_L, YAX, zp), vector(-1, 0, 0), TEN_W, TEN_H, TEN_R)], false, false);
-    stage(context, "C11");
     const parts = qUnion([nose, tg, solids(context, id + "arm"), solids(context, id + "ten")]);
-    stage(context, "C12");
     opBoolean(context, id + "u", { "tools" : parts, "operationType" : BooleanOperationType.UNION });
-    stage(context, "C13");
     const body = one(context, parts, "carrier");
     // R 3.5 root fillet where the arm leaves the nose's front face
-    stage(context, "C14");
-    const rootE = qIntersection([qAdjacent(qCreatedBy(id + "arm", EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE),
+    const rootE0 = qIntersection([qAdjacent(qCreatedBy(id + "arm", EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE),
                                  qAdjacent(qCreatedBy(id + "nose", EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE)]);
-    stage(context, "C15");
-    warn(context, "root edges " ~ size(evaluateQuery(context, rootE)));
-    finishEdges(context, id + "rootf", rootE, ROOT_R, "arm root fillet R3.5");
-    stage(context, "C16");
+    // R 3.5 root fillet where the arm leaves the nose's front face (smaller radius only with a visible warning)
+    const rootE = edgesAtT(context, rootE0, -30.0, T_FRONT + 1.5);
+    var rootR = 0;
+    for (var rr in [ROOT_R, 3.0, 2.5, 2.0])
+        if (rootR == 0 && attempt(context, id + ("rootf" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : rootE, "radius" : rr * millimeter }); }))
+            rootR = rr;
+    if (rootR == 0) warn(context, "arm root fillet failed");
+    else if (rootR < ROOT_R) warn(context, "arm root fillet only R" ~ rootR);
+    // R3 tongue root (tongue sides and bottom into the nose's back face)
+    const tgRoot0 = qAdjacent(qCreatedBy(id + "tg", EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE);
+    const tgRoot = edgesAtT(context, tgRoot0, T_BACK - SEAM - 0.05, T_BACK - SEAM + 0.05);
+    // the outer side edge runs 3 mm from the nose's outer chamfer near the bottom: it gets the largest radius that fits
+    var tgOut = [];  var tgRest = [];
+    for (var e in evaluateQuery(context, tgRoot))
+    {
+        const ln = evEdgeTangentLine(context, { "edge" : e, "parameter" : 0.5 });
+        const pS = toS(ln.origin / millimeter);
+        if (pS[0] > 16.5 && abs(ln.direction[2]) > 0.7) tgOut = append(tgOut, e); else tgRest = append(tgRest, e);
+    }
+    var tgR = 0;  var tgRo = 0;
+    for (var rr in [TG_ROOT, 2.5, 2.0, 1.5, 1.0])
+        if (tgRo == 0 && size(tgOut) > 0 && attempt(context, id + ("tgro" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : qUnion(tgOut), "radius" : rr * millimeter }); }))
+            tgRo = rr;
+    const tgRest2 = edgesAtT(context, qAdjacent(qCreatedBy(id + "tg", EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), T_BACK - SEAM - 0.05, T_BACK - SEAM + 0.05);
+    for (var rr in [TG_ROOT, 2.5, 2.0, 1.5])
+        if (tgR == 0 && attempt(context, id + ("tgrf" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : tgRest2, "radius" : rr * millimeter }); }))
+            tgR = rr;
+    setVariable(context, "gbgTgRoot", "tongue root R" ~ tgR ~ " (outer side R" ~ tgRo ~ ")");
+    if (tgR < TG_ROOT) warn(context, "tongue root fillet " ~ (tgR == 0 ? "failed" : "only R" ~ tgR) ~ " (" ~ size(tgRest) ~ " edges)");
+    if (tgRo == 0 && size(tgOut) > 0) warn(context, "tongue root outer edge not rounded");
+    // bearing pads: relieve the tongue's bottom and top 0.3 between the mouth pad and the tip pad
+    {
+        sBox(context, id + "pr0", 0, 20, PADS[0], PADS[1], TG_Z[0] - 1, TG_Z[0] + PAD_REL);
+        sBox(context, id + "pr1", 0, 20, PADS[0], PADS[1], TG_Z[1] - PAD_REL, TG_Z[1] + 1);
+        opBoolean(context, id + "prc", { "tools" : qUnion([qCreatedBy(id + "pr0", EntityType.BODY), qCreatedBy(id + "pr1", EntityType.BODY)]), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
+    }
     finishEdges(context, id + "tenf", qAdjacent(qCapEntity(id + "ten" + "loft", CapType.END, EntityType.FACE), AdjacencyType.EDGE, EntityType.EDGE), 1.0, "tenon end round");
 
     // ---- latch A tools, built in S (unsheared) then sheared ----
     const L = id + "lt";
-    stage(context, "C17");
     const capD = [FD - BT_THK, FD];
-    stage(context, "C18");
     stadiumD(context, L + "ca", BT_TC, C, BT_W, BT_H, capD[0], FD + 3);           // A (cut by the nose)
-    stage(context, "C19");
     stadiumD(context, L + "cb", BT_TC, C, BT_W, BT_H, capD[0], FD + 3);           // B -> B - (A - nose) = cap
-    stage(context, "C20");
     stadiumD(context, L + "fl", BT_TC, C, FL_W, BT_H + 1.0, capD[0], capD[0] + FL_T);
-    stage(context, "C21");
-    const bz = zlr(BLK_Z[0], BLK_Z[1], zs);
-    stage(context, "C22");
-    circleD(context, L + "sp", SPR[0], zl(SPR[1], zs), 2.1, capD[0] - 2.0, capD[0] + 0.05);
-    stage(context, "C23");
+    const bz = BLK_Z;
+    circleD(context, L + "sp", SPR[0], SPR[1], 2.1, capD[0] - 2.0, capD[0] + 0.05);
     tipBox(context, L + "con", BLK_D[0], capD[0] + 0.05, BLK_T[0], -0.9, bz[0], bz[1]);
-    stage(context, "C24");
     tipBox(context, L + "blk", BLK_D[0], BLK_D[1], BLK_T[0], BLK_T[1], bz[0], bz[1]);
-    stage(context, "C25");
     const tf0 = GR_T + 0.02 + (TO_D[0] - 17.65) * GK;  const tf1 = GR_T + 0.02 + (TO_D[1] - 17.65) * GK;
-    stage(context, "C26");
-    dtPrism(context, L + "to", [[TO_D[0], tf0], [TO_D[1], tf1], [TO_D[1], 6.0], [TO_D[1] - 3.0, BLK_T[1]], [TO_D[0], BLK_T[1]]], bz[0], bz[1]);
+    const wallT = 17.45 - (GR_T - 3.0) * 0.0262;              // slot outer wall at the shoulder (on the 1.5 deg wedge)
+    dtPrism(context, L + "to", [[TO_D[0], GR_T - GR_CH - 0.98], [wallT + GR_CH + 0.05, GR_T + 0.02 + (wallT + GR_CH + 0.05 - 17.65) * GK], [TO_D[1], tf1], [TO_D[1], 6.3], [TO_D[1] - 2.7, BLK_T[1]], [TO_D[0], BLK_T[1]]], bz[0], bz[1]);
     // sleeve (orange tell ring)
-    stage(context, "C27");
     stadiumD(context, L + "so", BT_TC, C, SL_OUT, BT_H + 1.8, capD[0] + FL_T, capD[0] + FL_T + SL_H);
-    stage(context, "C28");
     stadiumD(context, L + "si", BT_TC, C, SL_IN, BT_H + 0.4, capD[0], FD + 1);
-    stage(context, "C29");
     opBoolean(context, L + "sr", { "tools" : solids(context, L + "si"), "targets" : solids(context, L + "so"), "operationType" : BooleanOperationType.SUBTRACTION });
     // carrier cuts
     const K = id + "ct";
-    stage(context, "C30");
     stadiumD(context, K + "lip", BT_TC, C, LIP_W, BT_H + 1.2, FD - LIP - 0.05, FD + 3);
-    stage(context, "C31");
     stadiumD(context, K + "cb", BT_TC, C, SL_OUT + 0.2, BT_H + 2.0, capD[0] + FL_T, FD - LIP);
-    stage(context, "C32");
     stadiumD(context, K + "fp", BT_TC, C, FL_W + 0.4, BT_H + 1.4, capD[0] - TRAVEL, capD[0] + FL_T + 0.01);
-    stage(context, "C33");
-    dropBox(context, K + "cch", capD[0] - TRAVEL, capD[1] - TRAVEL + 0.2, BT_TC - (FL_W + 0.4) / 2, BT_TC + (FL_W + 0.4) / 2, C - BT_H / 2 - 0.5, zs);
-    stage(context, "C34");
-    dropBox(context, K + "spr", SPR[3], capD[0] - TRAVEL + 0.2, SPR[0] - SPR[2], SPR[0] + SPR[2], SPR[1] - SPR[2], zs);
-    stage(context, "C35");
-    dropBox(context, K + "bch", BLK_D[0] - TRAVEL - 0.2, BLK_D[1] + 0.25, BLK_T[0] - 0.3, BLK_T[1] + 0.3, BLK_Z[0] - 0.3, zs);
-    stage(context, "C36");
-    dropBox(context, K + "tch", TO_D[0] - TRAVEL - 0.2, 21.5, GR_T - 0.3, BLK_T[1] + 0.3, BLK_Z[0] - 0.3, zs);
+    dropBox(context, K + "cch", capD[0] - TRAVEL, capD[1] - TRAVEL + 0.2, BT_TC - (FL_W + 0.4) / 2, BT_TC + (FL_W + 0.4) / 2, C - BT_H / 2 - 0.5, 1);
+    dropBox(context, K + "spr", SPR[3], capD[0] - TRAVEL + 0.2, SPR[0] - SPR[2], SPR[0] + SPR[2], SPR[1] - SPR[2], 1);
+    dropBox(context, K + "bch", BLK_D[0] - TRAVEL - 0.2, BLK_D[1] + 0.25, BLK_T[0] - 0.3, BLK_T[1] + 0.3, BLK_Z[0] - 0.3, 1);
+    dropBox(context, K + "tch", TO_D[0] - TRAVEL - 0.2, 22.6, GR_T - GR_CH - 1.3, BLK_T[1] + 0.3, BLK_Z[0] - 0.3, 1);
     // Ø6 rod bore (teardrop, peak toward -d = up when printed on the nose's outer face), open at the tongue's rear face
-    stage(context, "C37");
-    const rz = zl(ROD[1], zs);
-    stage(context, "C38");
-    tdHole(context, id + "rodb", QS(ROD[0], 26.0, rz), QS(ROD[0], ROD_T[1], rz), ROD[2], -dirD());
+    const rz = ROD[1];  const rodEnd = zs > 0 ? ROD_T[1] : ROD_T[2];
+    tdHole(context, id + "rodb", QS(ROD[0], 26.0, rz), QS(ROD[0], rodEnd, rz), ROD[2], -dirD());
     // shear everything into the leaned frame
-    stage(context, "C39");
     const M = id + "lm";
     const shl = [L + "con", L + "blk", L + "to", K + "cch", K + "spr", K + "bch", K + "tch"];
     for (var i = 0; i < size(shl); i += 1)
     {
-        stage(context, "C39 shear " ~ i ~ " n=" ~ size(evaluateQuery(context, solids(context, shl[i]))));
         opTransform(context, M + ("sh" ~ i), { "bodies" : solids(context, shl[i]), "transform" : shearS() });
     }
     // the cap: B - (A - nose) = the nose skin inside the stadium
-    stage(context, "C40");
     opBoolean(context, M + "o1", { "tools" : ncp, "targets" : solids(context, L + "ca"), "operationType" : BooleanOperationType.SUBTRACTION });
-    stage(context, "C41");
     opBoolean(context, M + "o2", { "tools" : solids(context, L + "ca"), "targets" : solids(context, L + "cb"), "operationType" : BooleanOperationType.SUBTRACTION });
     // thumb scoop: cylinder along t', 0.8 deep at the centre, 0 at the round ends
-    stage(context, "C42");
-    const RS = (BT_H * BT_H / 4 + 0.64) / 1.6;
-    stage(context, "C43");
+    const RS = ((BT_H / 2 + 1.0) * (BT_H / 2 + 1.0) + 0.64) / 1.6;   // scoop reaches the face 1 mm beyond the round ends (no slivers at the tips)
     cylAx(context, M + "scoop", QS(FD - 0.8 + RS, BT_TC - 20, C), QS(FD - 0.8 + RS, BT_TC + 20, C), RS);
-    stage(context, "C44");
     opBoolean(context, M + "sco", { "tools" : solids(context, M + "scoop"), "targets" : solids(context, L + "cb"), "operationType" : BooleanOperationType.SUBTRACTION });
-    stage(context, "C45");
+    // hidden slits (0.4 wide, >= 1.2 inside every surface): the slicer wraps perimeters round them -> internal ribs in the tooth root
+    for (var i = 0; i < 2; i += 1)
+    {
+        tipBox(context, M + ("sl" ~ i), 14.4, 19.0, 5.9 + i * 1.3, 6.3 + i * 1.3, BLK_Z[0] + 1.2, BLK_Z[1] - 1.2);
+        opTransform(context, M + ("ss" ~ i), { "bodies" : qCreatedBy(M + ("sl" ~ i) + "b", EntityType.BODY), "transform" : shearS() });
+    }
     const bparts = qUnion([solids(context, L + "cb"), solids(context, L + "fl"), solids(context, L + "sp"), qCreatedBy(L + "con" + "b", EntityType.BODY), qCreatedBy(L + "blk" + "b", EntityType.BODY), solids(context, L + "to")]);
-    stage(context, "C46");
     opBoolean(context, M + "bu", { "tools" : bparts, "operationType" : BooleanOperationType.UNION });
-    stage(context, "C47");
     const button = one(context, bparts, "button");
+    opBoolean(context, M + "slc", { "tools" : qUnion([qCreatedBy(M + "sl0" + "b", EntityType.BODY), qCreatedBy(M + "sl1" + "b", EntityType.BODY)]), "targets" : button, "operationType" : BooleanOperationType.SUBTRACTION });
     // 0.4 round on the cap's face rim (the edges lying on the nose skin)
     var rim = [];
     for (var e in evaluateQuery(context, qOwnedByBody(button, EntityType.EDGE)))
@@ -673,26 +711,30 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
         const mid = (bb.minCorner + bb.maxCorner) / 2 / millimeter;
         if (toS(mid)[0] > FD - 1.0) rim = append(rim, e);
     }
-    stage(context, "C48");
     finishEdges(context, M + "rim", qUnion(rim), 0.4, "button face rim round");
-    stage(context, "C49");
     const sleeve = one(context, solids(context, L + "so"), "tell sleeve");
-    stage(context, "C50");
     opBoolean(context, id + "cut", { "tools" : qUnion([solids(context, K), solids(context, id + "rodb")]), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     // rod: bonded from t' ROD_T[0] (inside the tongue, short of the slanted rear face) to 0.5 short of the bore's end
-    stage(context, "C51");
-    const rodL = round((ROD_T[0] - ROD_T[1] - 0.5) * 2) / 2;
+    const rodL = round((ROD_T[0] - rodEnd - 0.5) * 2) / 2;
     // rod wall: a probe the size of the bore, t' 12 .. end, against every carrier face except the bore's own
     var rodWall = -1;
-    stage(context, "C52");
-    cylAx(context, id + "rp", Q(ROD[0], 12.0, rz), Q(ROD[0], ROD_T[1], rz), ROD[2]);
-    stage(context, "C53");
-    opTransform(context, id + "rps", { "bodies" : solids(context, id + "rp"), "transform" : shearS() });
+    cylAx(context, id + "rp", QS(ROD[0], 12.0, rz), QS(ROD[0], rodEnd, rz), ROD[2]);
     try silent { rodWall = evDistance(context, { "side0" : solids(context, id + "rp"), "side1" : qSubtraction(qOwnedByBody(body, EntityType.FACE), qCreatedBy(id + "rodb", EntityType.FACE)) }).distance / millimeter; }
-    stage(context, "C54");
     opDeleteBodies(context, id + "drp", { "entities" : solids(context, id + "rp") });
-    stage(context, "C55");
     tenonCuts(context, id + "tc", body, xe, zp);
+    // crush ribs (0.2 interference with the slot) across the tongue's bottom and top near the tip
+    if (ribs)
+    {
+        for (var i = 0; i < size(RIBS); i += 1)
+        {
+            cylAx(context, id + ("rb" ~ i), QS(4.3, RIBS[i], TG_Z[0]), QS(9.0, RIBS[i], TG_Z[0]), RIB_R);
+            cylAx(context, id + ("rt" ~ i), QS(4.3, RIBS[i], TG_Z[1]), QS(8.4, RIBS[i], TG_Z[1]), RIB_R);
+        }
+        var rq = [];
+        for (var i = 0; i < size(RIBS); i += 1) rq = concatenateArrays([rq, [solids(context, id + ("rb" ~ i)), solids(context, id + ("rt" ~ i))]]);
+        opBoolean(context, id + "rbu", { "tools" : qUnion(concatenateArrays([[body], rq])), "operationType" : BooleanOperationType.UNION });
+    }
+    const carrierB = one(context, qContainsPoint(qBodyType(qCreatedBy(id, EntityType.BODY), BodyType.SOLID), QS(0, -8, C) * millimeter), "carrier after ribs");
     var carbon = [];
     if (showCarbon)
     {
@@ -701,7 +743,7 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
             cylAx(context, id + ("cf2" ~ i), vector(xe - TEN_L, YAX + TPIN[i][0], zp + TPIN[i][1]), vector(xe - TEN_L + PIN_L, YAX + TPIN[i][0], zp + TPIN[i][1]), 1.0);
         carbon = evaluateQuery(context, qUnion([solids(context, id + "cf6"), solids(context, id + "cf20"), solids(context, id + "cf21"), solids(context, id + "cf22"), solids(context, id + "cf23")]));
     }
-    return { "carrier" : body, "button" : button, "sleeve" : sleeve, "carbon" : carbon, "xe" : xe, "zp" : zp, "rodL" : rodL, "rodWall" : rodWall, "FD" : FD };
+    return { "carrier" : carrierB, "button" : button, "sleeve" : sleeve, "carbon" : carbon, "xe" : xe, "zp" : zp, "rodL" : rodL, "rodWall" : rodWall, "FD" : FD };
 }
 // joint nut + screw hole in the tenon, 4 x Ø2 pin bores across its root
 export function tenonCuts(context is Context, id is Id, carrier is Query, xe is number, zp is number)
@@ -852,25 +894,19 @@ function padRot(zp is number, deg is number) returns Transform
 }
 export function buildDepth(context is Context, id is Id, zp is number, xe is number, deg is number) returns Query
 {
-    stage(context, "D0");
     const fw = FOOT_Y[1] - FOOT_Y[0];  const fyc = (FOOT_Y[0] + FOOT_Y[1]) / 2;
-    stage(context, "D1");
     const x0 = xe - JGAP;
     // ONE loft from the hairline (arm skin) through the trumpet into the foot; the foot continues past the pad back (trimmed)
-    stage(context, "D2");
     rrLoft(context, id + "fl", [sec(vector(x0, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R),
                                 sec(vector(XS + FLARE_L, YAX, zp), vector(-1, 0, 0), ARM_W, ARM_H, ARM_R),
                                 sec(vector(XS + 0.45 * FLARE_L, lerp(YAX, fyc, 0.45), zp), vector(-1, 0, 0), lerp(ARM_W, fw, 0.5), lerp(ARM_H, 2 * FOOT_HZ, 0.6), lerp(ARM_W, fw, 0.5) / 2),
                                 sec(vector(XS + 1.5, fyc, zp), vector(-1, 0, 0), fw, 2 * FOOT_HZ, FOOT_R),
                                 sec(vector(XS - 9.0, fyc, zp), vector(-1, 0, 0), fw, 2 * FOOT_HZ, FOOT_R)], true, false);
-    stage(context, "D3");
     const body = oneBody(context, id, "depth piece");
     const K = id + "cut";
     // tools in the PAD frame (untilted), then rotated with the pad: pad back trim, 2 dovetail grooves (closed front), nut recesses
-    stage(context, "D4");
     const P = id + "pf";
     planStrip(context, P + "pb", XS, -60, SHELL_T, zp - 60, zp + 60);
-    stage(context, "D5");
     const xb = shellXi(PS_Y, XS) + SHELL_T;
     for (var s in [1, -1])
     {
@@ -883,20 +919,14 @@ export function buildDepth(context is Context, id is Id, zp is number, xe is num
         hexPrism(context, P + (s > 0 ? "nu" : "nl"), vector(xb + DV[2] + 2.5, PS_Y, zr), vector(1, 0, 0), M5_NUT_AF, 5.0);
         cylAx(context, P + (s > 0 ? "hu" : "hl"), vector(xb, PS_Y, zr), vector(xb + 9.0, PS_Y, zr), M5_CLEAR / 2);
     }
-    stage(context, "D6");
     const rot = padRot(zp, deg);
-    stage(context, "D7");
     opTransform(context, P + "rot", { "bodies" : solids(context, P), "transform" : rot });
     // sleeve for the tenon, ending at the tenon tip: its end face is the hidden step (outward push -> plastic, not the screw)
-    stage(context, "D8");
     rrLoft(context, K + "sl", [sec(vector(x0 + 1, YAX, zp), vector(-1, 0, 0), TEN_W + 2 * CL, TEN_H + 2 * CL, TEN_R + CL), sec(vector(xe - TEN_L - STEP_GAP, YAX, zp), vector(-1, 0, 0), TEN_W + 2 * CL, TEN_H + 2 * CL, TEN_R + CL)], false, false);
     // joint screw: M5 x 12 countersunk from the back face (+y) into the tenon's nut
-    stage(context, "D9");
     const xj = xe - JS_DX;  const yb = YAX + ARM_W / 2;
-    stage(context, "D10");
     cylAx(context, K + "js", vector(xj, yb + 1, zp), vector(xj, YAX - 3.0, zp), M5_CLEAR / 2);
     fCone(context, K + "jsk", { "bottomCenter" : v3(xj, yb - (CSK_M5_R - 2.75), zp), "topCenter" : v3(xj, yb + 0.05, zp), "bottomRadius" : 2.75 * millimeter, "topRadius" : CSK_M5_R * millimeter });
-    stage(context, "D11");
     opBoolean(context, id + "cutop", { "tools" : qUnion([solids(context, K), solids(context, P)]), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     return body;
 }
@@ -927,6 +957,7 @@ function capPoint(s is number) returns Vector { const p = QS(0, -8, C); return v
 function findCap(context is Context, s is number) returns Query
 {
     const hit = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), capPoint(s) * millimeter));
+    if (size(hit) == 1 && evVolume(context, { "entities" : hit[0] }) > 40 * centimeter ^ 3) throw regenError("Side pad r5: no blank cap at the " ~ (s > 0 ? "left" : "right") ~ " nose (the wing feature failed or is missing)");
     if (size(hit) != 1) throw regenError("Side pad r5: the " ~ (s > 0 ? "left" : "right") ~ " blank cap (made by 'GbG Side Pad Wing (chair)') was not found (" ~ size(hit) ~ " bodies at the nose). Put the wing feature before this one.");
     return hit[0];
 }
@@ -939,45 +970,35 @@ export function buildSide(context is Context, id is Id, cfg is map) returns map
         src = copyOf(context, id + "srcm", cfg.cap);
         opTransform(context, id + "srcmx", { "bodies" : src, "transform" : mirX() });
     }
-    const car = buildCarrier(context, id + "car", src, cfg.drop, cfg.zs, cfg.carbon);
+    const car = buildCarrier(context, id + "car", src, cfg.drop, cfg.zs, cfg.carbon, cfg.ribs != false);
     if (s < 0) opDeleteBodies(context, id + "dsrc", { "entities" : src });
     const zc = car.zp + cfg.padOff;
     const dp = buildDepth(context, id + "dep", car.zp, car.xe, cfg.deg);
     const pad = buildPadShell(context, id + "pad", XS, zc);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const pad = buildPadShell(context, id + ");
     const ring = buildClipRing(context, id + "ring", XS, zc);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const ring = buildClipRing(context, id +");
     var soft = {};
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var soft = {};");
     if (cfg.cushion) soft = buildCushion(context, id + "cush", XS, zc, cfg.foam);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.cushion) soft = buildCushion(con");
     var padSet = [pad, ring];
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var padSet = [pad, ring];");
     if (cfg.cushion) padSet = concatenateArrays([padSet, [soft.foam, soft.cover]]);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.cushion) padSet = concatenateArr");
     const rot = padRot(car.zp, cfg.deg);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const rot = padRot(car.zp, cfg.deg);");
     if (cfg.deg != 0) opTransform(context, id + "prot", { "bodies" : qUnion(padSet), "transform" : rot });
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.deg != 0) opTransform(context, i");
     const S = sideL(s);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: const S = sideL(s);");
     const nm = {
         "carrier" : "GBG-SP-AR-" ~ S ~ "-" ~ armCode(cfg.drop) ~ "-" ~ flipCode(cfg.zs) ~ "-r5 carrier",
-        "button" : "GBG-SP-BT-" ~ S ~ "-" ~ flipCode(cfg.zs) ~ "-r5 button-catch",
+        "button" : "GBG-SP-BT-" ~ S ~ "-r5 button-catch",
         "sleeve" : "GBG-SP-TS-r5 tell sleeve (orange)",
         "depth" : "GBG-SP-DP-D0-" ~ tiltCode(cfg.deg, s) ~ "-r5 depth piece",
         "pad" : "GBG-SP-PD-r5 pad shell",
         "ring" : "GBG-SP-RG-r5 clip ring" };
     var jobs = [];
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var jobs = [];");
     if (cfg.engrave)
     {
         // carrier: nose end face opposite the latch's drop-in openings (LOW: bottom, HIGH: top); hidden in the notch
-        const ez = cfg.zs > 0 ? NZ[0] + SEAM : NZ[1] - SEAM;
-        jobs = append(jobs, [car.carrier, QS(7.5, -6.5, ez), dirD(), vector(0, 0, -cfg.zs), "AR-" ~ S ~ "-" ~ armCode(cfg.drop) ~ "-" ~ flipCode(cfg.zs) ~ " r5", 3.0]);
+        const ez = NZ[0] + SEAM;
+        jobs = append(jobs, [car.carrier, QS(7.5, -6.5, ez), dirD(), vector(0, 0, -1), "AR-" ~ S ~ "-" ~ armCode(cfg.drop) ~ "-" ~ flipCode(cfg.zs) ~ " r5", 3.0]);
         // button: inner face of the block (d' 13), hidden inside the carrier
-        const bz = zlr(BLK_Z[0], BLK_Z[1], cfg.zs);
-        jobs = append(jobs, [car.button, QS(BLK_D[0], 2.8, (bz[0] + bz[1]) / 2), dirT(), -dirD(), "BT-" ~ S ~ "-" ~ flipCode(cfg.zs), 2.2]);
+        const bz = BLK_Z;
+        jobs = append(jobs, [car.button, QS(BLK_D[0], 2.8, (bz[0] + bz[1]) / 2), dirT(), -dirD(), "BT-" ~ S, 2.2]);
         // depth piece: foot face between the two dovetail grooves (against the pad back)
         const xb = shellXi(PS_Y, XS) + SHELL_T;
         var o = vector(xb, (DV_FRONT + FOOT_Y[1]) / 2 + 1, car.zp);  var n = vector(-1, 0, 0);
@@ -989,16 +1010,11 @@ export function buildSide(context is Context, id is Id, cfg is map) returns map
         jobs = append(jobs, [pad, op, vector(0, 1, 0), np, "PD r5", 5.0]);
     }
     var out = { "carrier" : car.carrier, "button" : car.button, "sleeve" : car.sleeve, "depth" : dp, "pad" : pad, "ring" : ring, "rodL" : car.rodL, "rodWall" : car.rodWall, "xe" : car.xe, "zp" : car.zp, "zc" : zc, "carbon" : car.carbon, "names" : nm };
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var out = { 'carrier' : car.carrier, 'bu");
     if (cfg.cushion) { out.foam = soft.foam;  out.cover = soft.cover; }
     var all = [car.carrier, car.button, car.sleeve, dp, pad, ring];
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: var all = [car.carrier, car.button, car.");
     all = concatenateArrays([all, car.carbon]);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: all = concatenateArrays([all, car.carbon");
     if (cfg.cushion) all = concatenateArrays([all, [soft.foam, soft.cover]]);
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (cfg.cushion) all = concatenateArrays");
     if (s < 0) opTransform(context, id + "mir", { "bodies" : qUnion(all), "transform" : mirX() });
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: if (s < 0) opTransform(context, id + 'mi");
     for (var i = 0; i < size(jobs); i += 1)
     {
         const j = jobs[i];
@@ -1006,11 +1022,8 @@ export function buildSide(context is Context, id is Id, cfg is map) returns map
         engrave(context, id + ("e" ~ i), j[0], vector(m[0] * j[1][0], j[1][1], j[1][2]), vector(m[0] * j[2][0], j[2][1], j[2][2]), vector(m[0] * j[3][0], j[3][1], j[3][2]), j[4], j[5], 0.4);
     }
     opDeleteBodies(context, id + "dcap", { "entities" : cfg.cap });
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: opDeleteBodies(context, id + 'dcap', { '");
     out.all = all;
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: out.all = all;");
     return out;
-    stage(context, "side pad n=" ~ size(evaluateQuery(context, pad)) ~ " after: return out;");
 }
 function nameSide(context is Context, r is map, foam is number)
 {
@@ -1068,7 +1081,7 @@ function checkAll(context is Context, id is Id, definition is map, s is number) 
         try
         {
             const cap = findCap(context, s);
-            const r = buildSide(context, sid + "k", { "s" : s, "drop" : drop, "zs" : zs, "padOff" : po, "deg" : deg, "foam" : 30, "cushion" : true, "carbon" : false, "engrave" : false, "cap" : cap });
+            const r = buildSide(context, sid + "k", { "s" : s, "drop" : drop, "zs" : zs, "padOff" : po, "deg" : deg, "foam" : 30, "cushion" : true, "carbon" : false, "engrave" : false, "ribs" : false, "cap" : cap });
             const kit = [r.carrier, r.button, r.sleeve, r.depth, r.pad, r.ring, r.foam, r.cover];
             const names = ["carrier", "button", "sleeve", "depth", "pad", "ring", "foam", "cover"];
             for (var b in kit) maxX = max(maxX, abs(s > 0 ? evBox3d(context, { "topology" : b }).maxCorner[0] / millimeter : evBox3d(context, { "topology" : b }).minCorner[0] / millimeter));
@@ -1116,8 +1129,6 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
     {
         annotation { "Name" : "Remove the modelled wing print supports (support_left/right_wing)", "Default" : true }
         definition.dropSupports is boolean;
-        annotation { "Name" : "Close the open pocket above the nose (z 247-270; default: original wing left open)", "Default" : false }
-        definition.closePocket is boolean;
         annotation { "Name" : "Engrave the part number in the notch ceiling", "Default" : true }
         definition.engrave is boolean;
     }
@@ -1155,18 +1166,23 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
                 opTransform(context, sid + "srcx", { "bodies" : src, "transform" : mirX() });
             }
             var t = {};
-            try { t = wingTools(context, sid + "t", src, definition.closePocket); }
+            try { t = wingTools(context, sid + "t", src, true); }
             catch (e) { throw regenError("Side Pad Wing failed at " ~ stageOf(context) ~ ": " ~ toString(e)); }
             if (s < 0)
             {
                 opDeleteBodies(context, sid + "dsrc", { "entities" : src });
                 opTransform(context, sid + "tm", { "bodies" : qUnion([t.fill, t.cut, t.cap]), "transform" : mirX() });
             }
-            opBoolean(context, sid + "add", { "tools" : qUnion([wing, t.fill]), "operationType" : BooleanOperationType.UNION });
+            try { opBoolean(context, sid + "add", { "tools" : qUnion([wing, t.fill]), "operationType" : BooleanOperationType.UNION }); }
+            catch (e) { throw regenError("Side Pad Wing: fill union failed (" ~ size(evaluateQuery(context, t.fill)) ~ " fill bodies)"); }
             const w2 = evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), v3(s * probe[0], probe[1], probe[2])));
             if (size(w2) != 1) throw regenError("Side Pad Wing: merged wing not found");
-            try { opBoolean(context, sid + "cut", { "tools" : t.cut, "targets" : w2[0], "operationType" : BooleanOperationType.SUBTRACTION }); }
-            catch (e) { throw regenError("Side Pad Wing: notch cut failed"); }
+            const cnames = ["notch", "slot", "groove", "mouth chamfer"];
+            for (var ci = 0; ci < 4; ci += 1)
+            {
+                try { opBoolean(context, sid + ("cut" ~ ci), { "tools" : t.cuts[ci], "targets" : w2[0], "operationType" : BooleanOperationType.SUBTRACTION }); }
+                catch (e) { throw regenError("Side Pad Wing: " ~ cnames[ci] ~ " cut failed (" ~ size(evaluateQuery(context, t.cuts[ci])) ~ " tool bodies)"); }
+            }
             const nb = size(evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), v3(s * probe[0], probe[1], probe[2]))));
             if (nb != 1) throw regenError("Side Pad Wing: the wing split into pieces");
             const S = sideL(s);
@@ -1184,7 +1200,8 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
         var msg = "";
         try silent { msg = getVariable(context, "gbgSkipped"); }
         if (msg != "") reportFeatureWarning(context, id, "Finish skipped: " ~ msg);
-    }, { "dropSupports" : true, "closePocket" : false, "engrave" : true });
+        else { var lmsg = ""; try silent { lmsg = getVariable(context, "gbgLean"); } reportFeatureInfo(context, id, lmsg); }
+    }, { "dropSupports" : true, "engrave" : true });
 
 function dropOf(a is SidePadArm) returns number { return a == SidePadArm.SHORT ? DROPS[0] : DROPS[1]; }
 function zsOf(k is SidePadKit) returns number { return k == SidePadKit.LOW ? 1 : -1; }
@@ -1255,7 +1272,8 @@ export const gbgSidePadV1 = defineFeature(function(context is Context, id is Id,
                 catch (e) { throw regenError("Side pad r5 failed at " ~ stageOf(context) ~ ": " ~ toString(e)); }
                 try { nameSide(context, r, foam); }
                 catch (e) { throw regenError("Side pad r5 naming failed at " ~ stageOf(context) ~ ": " ~ toString(e)); }
-                info = info ~ sideL(s) ~ ": pad centre z " ~ r1(r.zc) ~ ", top " ~ r1(r.zc + PAD_H / 2) ~ "; rod Ø6 x " ~ r.rodL ~ " (wall " ~ r1(r.rodWall) ~ "). ";
+                var tgr = "";  try silent { tgr = getVariable(context, "gbgTgRoot"); }
+                info = info ~ sideL(s) ~ ": pad centre z " ~ r1(r.zc) ~ ", top " ~ r1(r.zc + PAD_H / 2) ~ "; rod Ø6 x " ~ r.rodL ~ " (wall " ~ r1(r.rodWall) ~ "); " ~ tgr ~ ". ";
             }
         }
         else if (definition.view == SidePadView.PRINT) info = printLayout(context, id, definition, foam);
