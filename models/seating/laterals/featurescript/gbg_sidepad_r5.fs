@@ -555,6 +555,75 @@ function measureLean(context is Context, wing is Query) returns map
     const lt = (tf[1] - tf[0]) / 42;  const ld = (dout[1] - dout[0]) / 42;
     return { "LT" : lt, "LD" : ld, "v" : vector(ld * AXH[0] + lt * TH[0], ld * AXH[1] + lt * TH[1], 0), "front" : tf[0] - LT * (220 - ZC) };
 }
+// child-safe rounds on the add-on location (kit off): every convex edge lying in the given S planes (z = zA / zB for
+// t' < tP, or t' = tP for zA < z < zB), except where the slot mouth meets the back face (covered by the cap / the nose).
+// sx = -1 for the right side (built mirrored). Tries ROUND_R, then smaller, never below 1.5 without a warning.
+const ROUND_R = 2.5;
+function sideEdges(context is Context, body is Query, zA is number, zB is number, tP is number, sx is number, skipMouth is boolean) returns array
+{
+    var out = [];
+    for (var e in evaluateQuery(context, qOwnedByBody(body, EntityType.EDGE)))
+    {
+        var ps = [];
+        for (var u in [0.0, 0.5, 1.0])
+        {
+            const o = evEdgeTangentLine(context, { "edge" : e, "parameter" : u }).origin / millimeter;
+            ps = append(ps, toS(vector(sx * o[0], o[1], o[2])));
+        }
+        var onZ = true;  var onT = true;
+        for (var q in ps)
+        {
+            if (!((abs(q[2] - zA) < 0.03 || abs(q[2] - zB) < 0.03) && q[1] < tP - 0.03)) onZ = false;
+            if (!(abs(q[1] - tP) < 0.03 && q[2] > zA + 0.03 && q[2] < zB - 0.03)) onT = false;
+        }
+        if (onT && skipMouth)
+        {
+            const m = ps[1];
+            if (m[0] > SLOT[0][0] - MOUTH - 0.6 && m[0] < SLOT[1][0] + MOUTH_OUT + 0.6 && m[2] > TG_Z[0] - CLR - MOUTH - 0.6 && m[2] < TG_Z[1] + CLR + MOUTH + 0.6) onT = false;
+        }
+        if ((onZ || onT) && evEdgeConvexity(context, { "edge" : e }) == EdgeConvexityType.CONVEX) out = append(out, e);
+    }
+    return out;
+}
+function zEdgesOnly(edges is array, context is Context, sx is number) returns array
+{
+    var out = [];
+    for (var e in edges)
+    {
+        const o = evEdgeTangentLine(context, { "edge" : e, "parameter" : 0.5 }).origin / millimeter;
+        if (toS(vector(sx * o[0], o[1], o[2]))[1] < T_BACK - SEAM - 0.05) out = append(out, e);
+    }
+    return out;
+}
+function roundEdges(context is Context, id is Id, edges is array, what is string, sx is number) returns number
+{
+    if (size(edges) == 0) { if (what != "") warn(context, what ~ ": no edges found to round");  return 0; }
+    for (var rr in [ROUND_R, 2.0])
+        if (attempt(context, id + ("r" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : qUnion(edges), "radius" : rr * millimeter }); }))
+            return rr;
+    // edge by edge (the wing's skin is split into many faces): largest radius that each edge takes
+    var minR = 99;  var failed = 0;  var k = 0;  var where = "";
+    var byLen = [];
+    for (var e in edges) byLen = append(byLen, { "e" : e, "l" : evLength(context, { "entities" : e }) / millimeter });
+    byLen = sort(byLen, function(a, b) { return b.l - a.l; });
+    var sorted = [];
+    for (var m in byLen) sorted = append(sorted, m.e);
+    for (var e in sorted)
+    {
+        k += 1;
+        if (size(evaluateQuery(context, e)) == 0) continue;            // consumed by a neighbour's round
+        const o = evEdgeTangentLine(context, { "edge" : e, "parameter" : 0.5 }).origin / millimeter;
+        const q = toS(vector(sx * o[0], o[1], o[2]));
+        const len = evLength(context, { "entities" : e }) / millimeter;
+        var got = 0;
+        for (var rr in [ROUND_R, 2.0, 1.5])
+            if (got == 0 && attempt(context, id + ("e" ~ k ~ "_" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : e, "radius" : rr * millimeter }); }))
+                got = rr;
+        if (got == 0) { failed += 1;  where = where ~ " (d " ~ r1(q[0]) ~ " t " ~ r1(q[1]) ~ " z " ~ r1(q[2]) ~ " L " ~ r1(len) ~ ")"; } else minR = min(minR, got);
+    }
+    if (failed > 0 && what != "") warn(context, what ~ ": " ~ failed ~ " of " ~ size(edges) ~ " edges could not take R1.5:" ~ where);
+    return failed > 0 ? 0 : minR;
+}
 // the swell behind the cheek: the wing's own section at t' = SWELL_T (d' >= 7, z SWELL_Z), its old receiver pocket filled,
 // extruded straight back along t' to t' 37 and trimmed by the SWELL plan outline
 function swell(context is Context, id is Id, wing is Query) returns Query
@@ -589,6 +658,9 @@ export function wingTools(context is Context, id is Id, wing is Query, closePock
     opBoolean(context, id + "nu", { "tools" : qUnion([wcp, ncp]), "operationType" : BooleanOperationType.UNION });
     const noseB = one(context, qUnion([wcp, ncp]), "nose");
     keepOnly(context, id + "nb", noseB, -40, 50, -40, T_BACK - SEAM, NZ[0] + SEAM, NZ[1] - SEAM, true);
+    const capR = roundEdges(context, id + "nbr", zEdgesOnly(sideEdges(context, noseB, NZ[0] + SEAM, NZ[1] - SEAM, T_BACK - SEAM, 1, false), context, 1), "blank cap / nose edge round", 1);
+    var pr0 = "";  try silent { pr0 = getVariable(context, "gbgRounds"); }
+    setVariable(context, "gbgRounds", pr0 ~ "cap/nose edges R" ~ capR ~ "; ");
     // wing fill inside the band (behind the notch face), optionally also closing the open pocket above the nose
     const fill = copyOf(context, id + "fcp", qUnion([p240, w1, slit]));
     opBoolean(context, id + "fu", { "tools" : fill, "operationType" : BooleanOperationType.UNION });
@@ -715,6 +787,20 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     for (var rr in [TG_ROOT, 2.5, 2.0, 1.5])
         if (tgR == 0 && size(rest2) > 0 && attempt(context, id + ("tgrf" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : qUnion(rest2), "radius" : rr * millimeter }); }))
             tgR = rr;
+    if (tgR == 0 && size(rest2) > 0)
+    {
+        // one edge at a time (inner side, then bottom)
+        var mr = 99;  var ok = true;  var k = 0;
+        for (var e in rest2)
+        {
+            k += 1;  var got = 0;
+            for (var rr in [TG_ROOT, 2.5, 2.0, 1.5])
+                if (got == 0 && attempt(context, id + ("tge" ~ k ~ "_" ~ round(rr * 10)), function(sid) { opFillet(context, sid + "f", { "entities" : e, "radius" : rr * millimeter }); }))
+                    got = rr;
+            if (got == 0) ok = false; else mr = min(mr, got);
+        }
+        if (ok) tgR = mr;
+    }
     setVariable(context, "gbgTgRoot", "tongue root R" ~ tgR ~ " (outer side R" ~ tgRo ~ "), arm root R" ~ rootR);
     if (tgR < TG_ROOT) warn(context, "tongue root fillet " ~ (tgR == 0 ? "failed" : "only R" ~ tgR));
     if (tgRo == 0) warn(context, "tongue root outer edge not rounded");
@@ -763,6 +849,22 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     cylAx(context, M + "ct", QS(FD + CROWN - RT, BT_TC, C - 30), QS(FD + CROWN - RT, BT_TC, C + 30), RT);
     intersectInto(context, M + "ix", solids(context, L + "cb"), solids(context, M + "cz"));
     intersectInto(context, M + "iy", solids(context, L + "cb"), solids(context, M + "ct"));
+    // round the ridge where the two crown cylinders meet (no crease)
+    {
+        var ridge = [];
+        for (var e in evaluateQuery(context, qOwnedByBody(solids(context, L + "cb"), EntityType.EDGE)))
+        {
+            const fs = evaluateQuery(context, qAdjacent(e, AdjacencyType.EDGE, EntityType.FACE));
+            var curved = 0;
+            for (var f in fs) if (!(evSurfaceDefinition(context, { "face" : f }) is Plane) && size(evaluateQuery(context, qIntersection([f, qCreatedBy(L + "cb", EntityType.FACE)]))) == 0) curved += 1;
+            if (curved == 2) ridge = append(ridge, e);
+        }
+        var cr = 0;
+        for (var rr in [8.0, 5.0, 3.0])
+            if (cr == 0 && size(ridge) > 0 && attempt(context, M + ("crr" ~ rr), function(sid) { opFillet(context, sid + "f", { "entities" : qUnion(ridge), "radius" : rr * millimeter }); }))
+                cr = rr;
+        if (cr == 0) warn(context, "button crown ridge round failed (" ~ size(ridge) ~ " edges)");
+    }
     const bparts = qUnion([solids(context, L + "cb"), solids(context, L + "fl"), solids(context, L + "sp"), solids(context, L + "con"), solids(context, L + "blk"), solids(context, L + "bar"), solids(context, L + "to")]);
     opBoolean(context, M + "bu", { "tools" : bparts, "operationType" : BooleanOperationType.UNION });
     const button = one(context, bparts, "button");
@@ -1264,7 +1366,7 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
             }
             if (size(sup) > 0) opDeleteBodies(context, id + "dropSup", { "entities" : qUnion(sup) });
         }
-        var info = "";
+        var info = "";  var roundsInfo = "";
         for (var s in [1, -1])
         {
             const sid = id + (s > 0 ? "L" : "R");
@@ -1298,6 +1400,30 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
             }
             const nb = size(evaluateQuery(context, qContainsPoint(qBodyType(qEverything(EntityType.BODY), BodyType.SOLID), v3(s * probe[0], probe[1], probe[2]))));
             if (nb != 1) throw regenError("Side Pad Wing: the wing split into pieces");
+            // child-safe rounds on the notch's outside edges (floor/ceiling and back face meeting the wing's faces)
+            // two passes: an edge that fails next to an unrounded neighbour usually takes its round once the neighbour has one
+            var wr = 0;
+            try silent { wr = roundEdges(context, sid + "wr", sideEdges(context, w2[0], NZ[0], NZ[1], T_BACK, s, true), "", s); }
+            const left = sideEdges(context, w2[0], NZ[0], NZ[1], T_BACK, s, true);
+            if (size(left) > 0) wr = roundEdges(context, sid + "wr2", left, "wing notch edge round (2nd pass)", s);
+            roundsInfo = roundsInfo ~ sideL(s) ~ " notch edges R" ~ wr ~ "; ";
+            // the swell's back meets the blade: round that crease
+            var crease = [];
+            for (var e in evaluateQuery(context, qOwnedByBody(w2[0], EntityType.EDGE)))
+            {
+                var inside = true;
+                for (var u in [0.0, 0.5, 1.0])
+                {
+                    const o = evEdgeTangentLine(context, { "edge" : e, "parameter" : u }).origin / millimeter;
+                    const q = toS(vector(s * o[0], o[1], o[2]));
+                    if (!(q[1] > 32.0 && q[1] < 38.5 && q[0] > 9.5 && q[0] < 14.5 && q[2] > SWELL_Z[0] && q[2] < SWELL_Z[1])) inside = false;
+                }
+                if (inside) crease = append(crease, e);
+            }
+            var concave = [];
+            for (var e in crease) if (evEdgeConvexity(context, { "edge" : e }) != EdgeConvexityType.SMOOTH) concave = append(concave, e);
+            const crR = roundEdges(context, sid + "cr", concave, "swell/blade crease round", s);
+            roundsInfo = roundsInfo ~ "swell crease R" ~ crR ~ "; ";
             const S = sideL(s);
             name(context, w2[0], (s > 0 ? "left_wing" : "right_wing") ~ " (reprint GBG-SP-WG-" ~ S ~ "-r5)");
             name(context, t.cap, "GBG-SP-CP-" ~ S ~ "-r5 blank cap");
@@ -1313,7 +1439,7 @@ export const gbgSidePadWing = defineFeature(function(context is Context, id is I
         var msg = "";
         try silent { msg = getVariable(context, "gbgSkipped"); }
         if (msg != "") reportFeatureWarning(context, id, "Finish skipped: " ~ msg);
-        else { var lmsg = ""; try silent { lmsg = getVariable(context, "gbgLean"); } reportFeatureInfo(context, id, lmsg); }
+        else { var cr = ""; try silent { cr = getVariable(context, "gbgRounds"); } reportFeatureInfo(context, id, "Child-safe rounds: " ~ roundsInfo ~ cr); }
     }, { "dropSupports" : true, "engrave" : true });
 
 function dropOf(a is SidePadArm) returns number { return a == SidePadArm.SHORT ? DROPS[0] : DROPS[1]; }
