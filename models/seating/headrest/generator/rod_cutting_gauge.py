@@ -2,7 +2,7 @@
 (workshop tool, PETG, P1S).
 
 Lanes side by side, all against ONE shared end stop (x = 0):
-  Ø6  side-pad arm rod SP-6 (SIDEPAD_ROD6_L), pommel rods PM-6 155 (K23) and PM-6 200 (K45)
+  Ø6  side-pad arm rod SP-6 35 (SIDEPAD_ROD6_L), pommel rods PM-6 155 (K23) and PM-6 200 (K45)
   Ø2  side-pad tenon pins SP-2 (SIDEPAD_PIN2_L, 4 per side); the groove sits in a raised rail
   Ø8  headrest rods H0…H100 = 85…185 (unchanged from v1: same groove, same PROUD, same slots)
 Each lane's 90° V-groove is sunk so that every rod's top is at the same height, H + PROUD. So one
@@ -24,8 +24,8 @@ import numpy as np
 from manifold3d import Manifold as M, CrossSection as CS, FillRule
 
 # ---- rod lengths (mm): update after CAD ------------------------------------------------------
-SIDEPAD_ROD6_L = 55.0     # side-pad carrier arm rod Ø6 (GBG-SP-CF6), placeholder until the r5 CAD
-SIDEPAD_PIN2_L = 21.5     # side-pad tenon pin Ø2 (GBG-SP-CF2), 4 per carrier; may become 24.5
+SIDEPAD_ROD6_L = 35.0     # side-pad carrier arm rod Ø6 (GBG-SP-CF6), every carrier (r5 CAD: bore t' 13.5 -> -22, rod 0.5 short)
+SIDEPAD_PIN2_L = 21.0     # side-pad tenon pin Ø2 (GBG-SP-CF2), 4 per carrier (r5 CAD: bore 21.5 deep, pin 0.5 short)
 POMMEL_K23_L = 155.0      # pommel K23A/B, 2 per pommel (models/seating/pommel/README.md)
 POMMEL_K45_L = 200.0      # pommel K45A/B, 2 per pommel
 HEADREST_L = [("H0", 85), ("H25", 110), ("H50", 135), ("H75", 160), ("H100", 185)]   # 85 + H

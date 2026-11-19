@@ -58,11 +58,11 @@ const ENV = [-14.0, 34.0, -20.0, 40.0];                         // tip region (d
 const GK = 0.10510423526567646;                                 // tan 6 deg: the locking face
 const GR_T = 4.5;  const GR_D = 22.2;  const GR_Z = [223.2, 246.3];  const GR_CH = 0.5;   // groove 4.0 deep; 0.5 chamfer at the shoulder edge   // catch groove: front face t' 4.5 at the slot wall (d' 17.65), to d' 21.1
 const BT_TC = -6.3;  const BT_W = 12.0;  const BT_H = 24.0;  const BT_THK = 4.6;  const TRAVEL = 4.9;   // button 12 x 24, travel 3.8 to a hard stop
-const BLK_D = [13.0, 17.35];  const BLK_T = [-4.0, 9.0];  const BLK_Z = [223.5, 246.0];          // block + tooth above the rod (LOW and HIGH alike)
-const TO_D = [17.3, 22.0];                                      // tooth (6 deg face at t' 4.52, 45 deg lead-in behind), z = block
+const BLK_D = [13.0, 17.2];  const BLK_T = [-4.0, 9.0];  const BLK_Z = [223.5, 246.0];          // block + tooth above the rod (LOW and HIGH alike)
+const TO_D = [17.15, 22.0];                                      // tooth (6 deg face at t' 4.52, 45 deg lead-in behind), z = block
 const LIP = 1.6;  const LIP_W = 13.2;  const FL_W = 13.0;  const FL_T = 0.6;  const SL_OUT = 13.8;  const SL_IN = 12.4;  const SL_H = 2.4;
 const SPR = [-8.5, 231.0, 3.25, 10.0];                          // spring slot (t', z LOW, r, d' floor): OD 6, L0 14, installed 10
-const ROD = [8.6, 218.75, 3.25];  const ROD_T = [13.5, -26.0, -22.0];  // Ø6 rod in a Ø6.5 teardrop: (d', z LOW, bore r); rod t' from .. to
+const ROD = [8.6, 218.75, 3.25];  const ROD_T = [13.5, -22.0, -22.0];  // Ø6 rod in a Ø6.5 teardrop: (d', z LOW, bore r); rod t' from .. to
 const PIN_L = 21.0;                                             // Ø2 tenon pins
 // ---------------- arm (v1.1 path) ----------------
 const TAPER_T = -14.0;  const DC = 9.4;  const YEND = 35.0;
@@ -659,7 +659,7 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     if (tgRo == 0 && size(tgOut) > 0) warn(context, "tongue root outer edge not rounded");
     // bearing pads: relieve the tongue's bottom and top 0.3 between the mouth pad and the tip pad
     {
-        sBox(context, id + "pr0", 0, 20, PADS[0], PADS[1], TG_Z[0] - 1, TG_Z[0] + PAD_REL);
+        sBox(context, id + "pr0", ROD[0] + ROD[2] + 1.2 + PAD_REL + 0.5, 20, PADS[0], PADS[1], TG_Z[0] - 1, TG_Z[0] + PAD_REL);   // bottom: not under the rod (keeps its 1.2 floor)
         sBox(context, id + "pr1", 0, 20, PADS[0], PADS[1], TG_Z[1] - PAD_REL, TG_Z[1] + 1);
         opBoolean(context, id + "prc", { "tools" : qUnion([qCreatedBy(id + "pr0", EntityType.BODY), qCreatedBy(id + "pr1", EntityType.BODY)]), "targets" : body, "operationType" : BooleanOperationType.SUBTRACTION });
     }
@@ -677,7 +677,7 @@ export function buildCarrier(context is Context, id is Id, noseSrc is Query, dro
     const tf0 = GR_T + 0.02 + (TO_D[0] - 17.65) * GK;  const tf1 = GR_T + 0.02 + (TO_D[1] - 17.65) * GK;
     const wallT = 17.5 - (GR_T - 3.0) * 0.0262;              // slot outer wall at the shoulder (on the 1.5 deg wedge)
     // tooth front = groove front + 0.02, including the 0.5 root gusset that fills the groove's shoulder chamfer
-    dtPrism(context, L + "to", [[TO_D[0], GR_T - GR_CH + 0.02], [wallT, GR_T - GR_CH + 0.02], [wallT + GR_CH, GR_T + 0.02 + (wallT + GR_CH - 17.65) * GK], [TO_D[1], tf1], [TO_D[1], 6.3], [TO_D[1] - 2.7, BLK_T[1]], [TO_D[0], BLK_T[1]]], bz[0], bz[1]);
+    dtPrism(context, L + "to", [[TO_D[0], GR_T - GR_CH + 0.02], [wallT, GR_T - GR_CH + 0.02], [wallT + GR_CH, GR_T + 0.02 + (wallT + GR_CH - 17.65) * GK], [TO_D[1], tf1], [TO_D[1], 6.3], [TO_D[1] - 2.5, BLK_T[1] - 0.2], [TO_D[0], BLK_T[1] - 0.2]], bz[0], bz[1]);
     // sleeve (orange tell ring)
     stadiumD(context, L + "so", BT_TC, C, SL_OUT, BT_H + 1.8, capD[0] + FL_T, capD[0] + FL_T + SL_H);
     stadiumD(context, L + "si", BT_TC, C, SL_IN, BT_H + 0.4, capD[0], FD + 1);
@@ -1134,7 +1134,7 @@ function checkAll(context is Context, id is Id, definition is map, s is number) 
         abortFeature(context, sid);
         if (msg != "") { nBad += 1; out = out ~ armCode(drop) ~ "-" ~ flipCode(zs) ~ "-" ~ (po > 0 ? "upper" : "lower") ~ "-" ~ deg ~ ": " ~ msg ~ "; "; }
     }
-    return sideL(s) ~ ": " ~ n ~ " settings, " ~ nBad ~ " with clashes; kit |x| max " ~ r1(maxX) ~ " (arm rest 165); min rod wall " ~ rods ~ (out == "" ? "" : " -- " ~ out);
+    return sideL(s) ~ ": " ~ n ~ " settings, " ~ nBad ~ " with clashes; kit |x| max " ~ r1(maxX) ~ " (arm rest 165)" ~ (out == "" ? "" : " -- " ~ out);
 }
 
 // =============================================== LAYOUTS ===============================================
