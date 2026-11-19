@@ -11,3 +11,4 @@
 - 16:39 rod walls (fine tessellation, LOW long carrier): >= 1.2 in tongue/nose, >= 3.2 in the arm root; bottom pad relief kept away from the rod. One Ø6 rod length for every carrier: 35.0 mm (bore t' 13.5 -> -22). Pins Ø2 x 21.0. Gauge constants SIDEPAD_ROD6_L 35.0 / SIDEPAD_PIN2_L 21.0, STL + PNG regenerated.
 - 16:48 views: 'Side pads r5 - kit (print layout + coupon)' (11 parts, left set in print orientation + C7 latch coupon) and 'Side pads r5 - all parts' (34 bodies) created as duplicates of Part Studio 1 with View = print / all; shots 08, 09
 - 16:52 assembly 'Side pads r5' (Part Studio 1 inserted, 33 instances fixed); docs: README round 5, REVIEW round 5 (numbers, deviations, open items), PRINT_GUIDE.md (new), shopping_list pommel line -> gauge v2
+- 16:53 done for this session; tab closed, local server stopped
