@@ -1,6 +1,6 @@
 # Side pads Round 5b: print guide (P1S, PETG)
 
-Use the STLs named by part number (`GBG-SP-<code>-<variant>-r5.stl`), exported from the Onshape Part Studio **"Side pads r5 - kit (print layout + coupon)"**, where every part is already in its print orientation. Measurement copies of the final parts are in `viewer/r5cad/`: `fitted/` (Part Studio 1, chair coordinates, both sides with the wings), `print_layout/` (the left set as printed, plus the C7 coupon), `all_parts/` (every variant). They are Onshape tessellations at 0.02-0.05 mm for reviewers, not print files.
+Use the STLs named by part number (`GBG-SP-<code>-<variant>-r5.stl`), exported from the Onshape Part Studio **"Side pads r5 - kit (print layout + coupon)"**, where every part is already in its print orientation. Measurement copies of the final parts are in `viewer/r5cad/` (local only, git-ignored): `fitted/` (Part Studio 1, chair coordinates, both sides with the wings), `print_layout/` (the left set as printed, plus the C7 coupon), `all_parts/` (every variant). They are Onshape tessellations at 0.02-0.05 mm for reviewers, not print files.
 
 | Part | Orientation | Supports | Notes |
 |---|---|---|---|

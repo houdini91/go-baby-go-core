@@ -2,3 +2,4 @@ raw/
 __pycache__/
 .venv/
 *.npy
+r5cad/
