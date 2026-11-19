@@ -3,3 +3,6 @@ __pycache__/
 .venv/
 *.npy
 r5cad/
+options/*.stl
+options/log*.txt
+options/__pycache__/

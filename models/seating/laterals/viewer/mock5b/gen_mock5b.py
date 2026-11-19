@@ -1,12 +1,8 @@
-# Round 5b mockups (mock fidelity, real dimensions, on the real left wing). Writes *.stl + report.json here.
-#   saddle:   wing_sad.stl (wing for the saddle option: notch + latch cut, old block wall trimmed to d' 21 behind t' 9.5 in the band)
-#             saddle_L.stl (saddle carrier: the same nose + two jaws clamping the blade faces + the long arm + the latch-A pockets)
-#             orig_block.stl (the original chair mount block, for the ghost)
-#   carriers: carrier_H_L.stl (correctly made HIGH carrier, long arm = LOW mirrored in the lean-free frame)
-#             flip_over.stl / flip_gap.stl (LOW carrier turned over for HIGH: where its nose sticks out / leaves a gap)
-#   drop-in:  carrier_drop_L.stl (carrier L with the drop-in opening from the nose top), sleeve_split.stl
-#   pad:      foot_r5.stl, pad_r5.stl, snap_r5.stl, nut_r5.stl, screw_r5.stl, foam_r5.stl
+# Round 5b mockups, part 2 (mock fidelity, real dimensions). Writes *.stl + report.json here.
 #   features: feat_slits.stl (S1, S2), feat_tear.stl (teardrop channel), feat_holes.stl (hole column + hole at z 186)
+#   orig_block.stl: the chair's original mount, a faint size reference only (it is removed from the clean wing)
+#   pad:      foot_r5.stl, pad_r5.stl, snap_r5.stl, nut_r5.stl, screw_r5.stl, foam_r5.stl
+# The clean wing, the round-5 parts on it and the best versions of the mount options are in gen_clean.py.
 # Run: ../.venv/bin/python gen_mock5b.py
 import json, math, os, numpy as np, trimesh, manifold3d as mf, shapely.geometry as sg
 from common import load_r5, HERE
@@ -67,112 +63,12 @@ export_W(holes, 'feat_holes.stl')
 rep['hole_column_z'] = zc_holes
 rep['S1_area_mm2'] = round(S1.area(), 1); rep['S2_area_mm2'] = round(S2.area(), 1)
 
-# ------------------------------------------------------------------ 1. saddle (S frame, band z 207.3-246.7)
-TRIM_T, TRIM_D, JAW, D_MAX = T_BACK - 0.6, 21.6, 4.0, 24.7   # block wall trimmed to d' 21.6 in the band; the outer jaw (3.1 there) ends flush with the nose
-IN_END, OUT_END = 14.5, 33.5                # inner jaw stops 3+ mm short of S1's inner mouth, outer jaw 3+ short of its outer mouth
-Z0, Z1 = NZ0 + SEAM, NZ1 - SEAM
-fill_w = prism_z(env ^ rect(-14, 34, T_BACK - 0.6, 26.0), 215.0, NZ1)
-trim = box(TRIM_D, 40, TRIM_T, 40, NZ0, NZ1)
-latch_cut = (g['channel'] + prism_z(g['groove2d'], *g['GROOVE_Z'])) ^ box(-40, 50, T_BACK - 1.0, 40, 200, 260)
-wing_sad = ((W + fill_w) - box(-40, 50, -40, T_BACK, NZ0, NZ1)) - trim - latch_cut
-base = env - rect(TRIM_D, 40, TRIM_T, 40)
-# jaws as a smooth level set: thickness r(t', z) over the blade's own surface (2D signed distance of the section), swelling out of the
-# nose over t' -3..5 (fused with the nose), rounded at the back end and at the top and bottom; never within 3 mm of S1
-from scipy.ndimage import distance_transform_edt
-from matplotlib.path import Path
-G0, GS = np.array([-22.0, -18.0]), 0.2
-gd, gt = np.arange(G0[0], 34.0, GS), np.arange(G0[1], 42.0, GS)
-DD, TT = np.meshgrid(gd, gt, indexing='ij'); PTS = np.c_[DD.ravel(), TT.ravel()]
-def sdf2(cs):                                   # signed distance (mm), negative inside, on the grid
-    pg = shp(cs); inside = np.zeros(len(PTS), bool)
-    for p in getattr(pg, 'geoms', [pg]):
-        m = Path(np.asarray(p.exterior.coords)).contains_points(PTS)
-        for h in p.interiors: m &= ~Path(np.asarray(h.coords)).contains_points(PTS)
-        inside |= m
-    ins = inside.reshape(DD.shape)
-    return (distance_transform_edt(~ins) - distance_transform_edt(ins)) * GS
-DB, DS1 = sdf2(base), sdf2(S1)
-def bil(A, d, t):
-    x = (d - G0[0]) / GS; y = (t - G0[1]) / GS; i = min(max(int(x), 0), A.shape[0] - 2); j = min(max(int(y), 0), A.shape[1] - 2)
-    fx = min(max(x - i, 0.0), 1.0); fy = min(max(y - j, 0.0), 1.0)
-    return (A[i, j] * (1 - fx) + A[i + 1, j] * fx) * (1 - fy) + (A[i, j + 1] * (1 - fx) + A[i + 1, j + 1] * fx) * fy
-ZM, HH, RZ = (Z0 + Z1) / 2, (Z1 - Z0) / 2, 5.0
-def rt(t, tend):
-    if t < -3.0: return -0.5
-    if t < 5.0: k = (t + 3.0) / 8.0; k = k * k * (3 - 2 * k); return -0.5 + (JAW + 0.5) * k
-    if t > tend: return -0.5
-    if t > tend - JAW: return JAW * math.sqrt(max(0.0, 1 - ((t - (tend - JAW)) / JAW) ** 2)) - 0.5 * (t > tend - 0.2)
-    return JAW
-def rz(z):
-    e = abs(z - ZM) - (HH - RZ)
-    return 1.0 if e <= 0 else math.sqrt(max(0.0, 1 - (e / RZ) ** 2))
-def jaw_f(d, t, z):                             # > 0 inside
-    r = rt(t, IN_END if d < 4.0 else OUT_END) * rz(z)
-    return min(r - bil(DB, d, t), bil(DS1, d, t) - 3.3, D_MAX - d, t - T_FRONT)
-jaws3 = mf.Manifold.level_set(jaw_f, [-20.0, T_FRONT - 0.5, Z0 - 0.01, D_MAX + 0.5, OUT_END + 1.0, Z1 + 0.01], 0.45).simplify(0.02)
-nose3 = prism_z(env ^ rect(-40, 50, T_FRONT, T_BACK - SEAM), Z0, Z1)
-body = nose3 + jaws3
-arm_w, info = g['build_arm'](44.0)
-arm_S = tf(arm_w, W2S)
-saddle = (body + arm_S) - wing_sad - g['pocket'] - g['channel'] - g['spring_well']
-saddle = max(saddle.decompose(), key=lambda m: m.volume())
-export_S(wing_sad, 'wing_sad.stl'); export_S(saddle, 'saddle_L.stl')
+# ------------------------------------------------------------------ the chair's original mount (size reference only; removed from the clean wing)
 orig_block = W ^ box(16.8, 40, -20, 16.5, 195, 285)
 export_S(orig_block, 'orig_block.stl')
-# size numbers
-jaw_only = saddle ^ box(-40, 50, T_BACK, 60, 190, 260)
-MB = box(-40, 50, T_FRONT - 0.5, 60, Z0 - 1, Z1 + 1)
-rep['saddle'] = dict(extent_S=ext_S(saddle ^ MB), jaw_t=[T_BACK, OUT_END], inner_jaw_t=[T_BACK, IN_END],
-                     outer_jaw_t=[T_BACK, OUT_END], jaw_thickness=JAW, clamp_length_t=round(OUT_END - T_FRONT, 1),
-                     volume_mount_cm3=round((saddle ^ MB).volume() / 1000, 1),
-                     clash_with_wing=round((saddle ^ wing_sad).volume(), 2), clash_with_slits=round((saddle ^ slits).volume(), 2),
-                     clash_with_tear=round((saddle ^ tear_m).volume(), 2),
-                     to_S1=round(min(shp(saddle.slice(z)).distance(shp(S1)) for z in (210.0, C, 244.0)), 2), to_S2=round(min(shp(saddle.slice(z)).distance(shp(S2)) for z in (210.0, C, 244.0)), 2))
 rep['orig_block'] = dict(extent_S=ext_S(orig_block), volume_cm3=round(orig_block.volume() / 1000, 1))
-nose_m = g['carriers']['L'] ^ box(-40, 50, T_FRONT - 0.5, T_BACK, 190, 260)
-rep['current_nose'] = dict(extent_S=ext_S(nose_m), volume_cm3=round(nose_m.volume() / 1000, 1),
-                           tongue_hidden=ext_S(g['carriers']['L'] ^ box(-40, 50, T_BACK, 60, 190, 260)))
-# v1.1 carrier + blanks (Onshape tessellation, raw/)
-def raw_pts(key):
-    P = []
-    for body_ in json.load(open(os.path.join(HERE, '..', 'raw', key + '.json'))):
-        for face in body_['faces']:
-            for fc in face['facets']: P += fc['vertices']
-    return np.array(P).reshape(-1, 3) * 1000.0
-v11 = np.vstack([raw_pts(k) for k in ('ps1_RUgD', 'ps1_RkkD', 'ps1_RvkD')]) if os.path.exists(os.path.join(HERE, '..', 'raw', 'ps1_RUgD.json')) else None
-if v11 is not None:
-    Pq = g['to_S'](v11); near = Pq[(Pq[:, 1] < 40)]
-    rep['v11_carrier_blanks_near_wing_S'] = dict(d=[round(near[:, 0].min(), 1), round(near[:, 0].max(), 1)], t=[round(near[:, 1].min(), 1), round(near[:, 1].max(), 1)], z=[round(near[:, 2].min(), 1), round(near[:, 2].max(), 1)])
-
-# ------------------------------------------------------------------ 2. LOW / HIGH carriers
-MzS = np.diag([1.0, 1.0, -1.0, 1.0]); MzS[2, 3] = 2 * C                        # z-mirror about C in the lean-free frame S
-carL = g['carriers']['L']
-carH = carL.transform(MzS[:3, :4])
-export_S(carH, 'carrier_H_L.stl')
-MzW = np.diag([1.0, 1.0, -1.0, 1.0]); MzW[2, 3] = 2 * C                        # the same part turned over in the chair (world z-mirror)
-flip_S = W2S @ MzW @ S2W
-carF = carL.transform(flip_S[:3, :4])
-noseF = g['nose'].transform(flip_S[:3, :4])
-noseOK = g['nose']
-ends = box(-40, 50, -40, 60, 190, C - 8) + box(-40, 50, -40, 60, C + 8, 265)     # show it where the step is over ~1 mm
-over = (noseF - noseOK) ^ ends
-gap = (noseOK - noseF) ^ ends
-rep['flip'] = dict(over_vol=round(over.volume(), 1), gap_vol=round(gap.volume(), 1),
-                   step_d_at_ends=round(2 * g['LD'] * (C - Z0), 2), step_t_at_ends=round(2 * g['LT'] * (C - Z0), 2),
-                   flip_clash_with_wing=round((carF ^ g['wing_r5']).volume(), 1))
-export_S(over, 'flip_over.stl'); export_S(gap, 'flip_gap.stl')
-
-# ------------------------------------------------------------------ 3. drop-in: opening from the nose top, split sleeve
-pressed = g['button'].translate([-b['travel'], 0, 0])
-foot = pressed.project().offset(0.25, JT)                 # the pressed button's footprint in (d', t')
-drop = prism_z(foot, C, NZ1 + 2.0) ^ box(-40, 50, -40, 13.0, 190, 270)
-drop = drop + box(7.8, 15.5, b['tc'] - 2.2 - 3.4, b['tc'] - 2.2 + 3.4, C, NZ1 + 2.0)      # the spring rides down with the button
-car_drop = carL - drop
-export_S(car_drop, 'carrier_drop_L.stl')
-split = box(fd - g['LIP'] - 6, fd + 1, b['tc'] + b['w'] / 2 - 1.0, b['tc'] + b['w'] / 2 + 2.0, C - 0.5, C + 0.5)
-sleeve_split = g['sleeve'] - split
-export_S(sleeve_split, 'sleeve_split.stl')
-rep['drop'] = dict(opening_top_S=ext_S(drop), carrier_vol=round(car_drop.volume(), 1))
+arm_w, info = g['build_arm'](44.0)
+# (the saddle / carrier / drop-in meshes moved to gen_clean.py, built on the clean wing)
 
 # ------------------------------------------------------------------ 4. pad screw from the child side (world frame, long arm, LOW, upper pad)
 XS, PS_Y, ZP = 104.0, 32.5, info['zp']; ZR = ZP + 11.0      # pad centre / rail height: upper position

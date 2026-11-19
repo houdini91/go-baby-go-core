@@ -1,0 +1,53 @@
+{
+ "tongue_S": [
+  1.45,
+  3.0,
+  213.8,
+  18.3,
+  25.48,
+  246.9
+ ],
+ "tongue_centre_z": 230.35,
+ "rods_z": [
+  206.35,
+  254.35
+ ],
+ "nose_z": [
+  195.85,
+  264.85
+ ],
+ "lower": {
+  "z": 206.35,
+  "axis_d": 5.92,
+  "bore_t": [
+   2.0,
+   20.0
+  ],
+  "bore_depth": 18.0,
+  "wall_to_faces": 5.77,
+  "clear_to_S1": 3.23,
+  "clear_to_filled_M5": "not at this height",
+  "blade_d": [
+   -3.91,
+   15.75
+  ]
+ },
+ "upper": {
+  "z": 254.35,
+  "axis_d": 7.46,
+  "bore_t": [
+   2.0,
+   20.25
+  ],
+  "bore_depth": 18.2,
+  "wall_to_faces": 7.23,
+  "clear_to_S1": 4.3,
+  "clear_to_filled_M5": 3.36,
+  "blade_d": [
+   -4.06,
+   18.98
+  ]
+ },
+ "clash_carrier_wing": 0.0,
+ "clash_rods_wing": 0.0
+}

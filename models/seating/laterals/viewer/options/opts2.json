@@ -1,0 +1,34 @@
+{
+ "4": {
+  "k_round": 5.0,
+  "clash": 21.34,
+  "rods_clash": 26.2
+ },
+ "5": {
+  "swell_to_z": 296.0,
+  "upper_slot_centre": 271.0,
+  "clash_upper": -0.0,
+  "clash_lower": -0.0
+ },
+ "6": {
+  "pocket_t": [
+   -11.5,
+   14.0
+  ],
+  "pocket_z": [
+   211.0,
+   243.0
+  ],
+  "depth": 14.0,
+  "inner_face_d": -4.49,
+  "floor_d": 9.51,
+  "flange_proud": 4.0,
+  "clash": 0.0,
+  "proud_world_x_min": 108.1
+ },
+ "2": {
+  "jaw": 12.0,
+  "catch_outer_d": 24.42,
+  "clash": -0.0
+ }
+}

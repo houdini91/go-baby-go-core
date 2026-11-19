@@ -58,7 +58,7 @@ SK.wing = () => {
   b += lead(X(54), Z(225), 164, 152, '6 web to S1');
   b += lead(X(26.5), Z(221), 164, 176, 'catch groove, 6° face');
   b += mute(16, 236, 'walls ≥ 6, back ≥ 8 around the pocket');
-  b += mute(16, 253, 'tip block, rails and slot blanks removed');
+  b += mute(16, 253, 'old chair mount removed: block, pocket, M5 holes');
   return svg(320, 262, b, 'Wing front edge with the 40 mm notch');
 };
 

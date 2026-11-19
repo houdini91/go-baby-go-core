@@ -42,7 +42,7 @@
       "material": "PETG, chair colour",
       "print": "To check with the notch (bridged face, plan 4.9)",
       "dims": [
-        "tip block 32 × 54 × 149, rails and slot blanks removed",
+        "the chair's old mount removed: block, pocket and socket, M5 clamp-bolt holes (tip restored to the blade's own 20 mm section)",
         "notch only at z 207–247 (40) on the front edge; mount = tongue centre z 227",
         "tongue pocket d 1.2–17.6 (16.4 wide), from t 6 back to S1: ~10 deep inboard, ~31 outboard",
         "6 mm web to strap slit S1 (z 203–272); walls ≥ 6, back ≥ 8 around the pocket",
@@ -79,7 +79,7 @@
         "kit": 4,
         "note": "one carrier fitted per side; the full kit has S-A, S-B, L-A, L-B"
       },
-      "material": "PETG, chair colour + 1 × Ø6 carbon rod + 4 × Ø2 carbon pins (high-Tg epoxy)",
+      "material": "PETG, chair colour + 4 × Ø2 carbon pins (high-Tg epoxy); Ø6 rod removed",
       "print": "On its outer face, tree support under the arm bend (v1.1 study); recheck with the button pocket",
       "dims": [
         "nose 40 tall (z 207–247) × 29.6 wide (d −6…23.6) × 20 deep (t −14…6), front corner R6, hairline seams 0.3",

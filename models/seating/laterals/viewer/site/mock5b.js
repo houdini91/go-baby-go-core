@@ -1,6 +1,7 @@
-// ROUND 5b mockups (#mocks-5b): four small 3D views on the real left wing, meshes from viewer/mock5b/gen_mock5b.py (packed by pack.py).
-//   1 saddle      option 3 for comparison: a mount that grips both faces of the blade (m5b_saddle_L on m5b_wing_sad) vs today's tongue
-//   2 carriers    why LOW and HIGH are separate prints: the LOW carrier turned over leaves a 2.3 / 2.8 mm step (m5b_flip_over / _gap)
+// ROUND 5b mockups (#mocks-5b), on the Onshape round-5 build (r5cad, wing repaired by options/wingrepair.py) +
+// gen_mock5b.py, packed by pack.py.
+//   (the mount-type comparison is on its own page: viewer/options/)
+//   2 carriers    why LOW and HIGH are separate prints: the LOW carrier turned over leaves a 2.3 / 2.8 mm step
 //   3 drop-in     how the button goes in: spring + button down the opening in the nose top, split sleeve, slide on, click, release
 //   4 pad screw   pad onto the foot's dovetail, nut in the groove, M5 x 10 from the child side under the foam, snap stop on the rail
 import * as THREE from 'three';
@@ -16,7 +17,8 @@ const O = QS(0, 0, 0), eD = QS(1, 0, 0).sub(O), eT = QS(0, 1, 0).sub(O), eZ = QS
 const S2W = new THREE.Matrix4().makeBasis(eD, eT, eZ).setPosition(O);
 const sv = (d, t, z) => eD.clone().multiplyScalar(d).add(eT.clone().multiplyScalar(t)).add(eZ.clone().multiplyScalar(z));   // S move -> world move
 const dirD = V(AXH[0], AXH[1], 0), dirT = V(TH[0], TH[1], 0);
-const BT = { tc: -6.3, face: 24.6, thick: 4.6, travel: 5.0 };
+const BT = { tc: -6.3, face: 24.6, thick: 4.6, travel: 4.0 };   // gbg_sidepad_r5.fs (r5b): button 12 x 24, hard stop at 4.0
+const SPR0 = 9.0;                                    // spring floor d' 10 less the 1.0 counterbore (SPR in the FS)
 const NZ = [207.3, 246.7];
 
 const M = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .58, ...o });
@@ -85,64 +87,19 @@ function cutMesh(g, color, planes, o = {}, fill = null) {
 }
 function edges(g, color, op = .55) { return new THREE.LineSegments(new THREE.EdgesGeometry(g, 35), new THREE.LineBasicMaterial({ color, transparent: true, opacity: op, depthWrite: false })); }
 
-// ===================================================================== 1. saddle
-function saddleView(el, row, geo) {
-  need(geo, ['m5b_wing_sad', 'm5b_saddle_L', 'm5b_orig_block', 'm5b_feat_slits', 'm5b_feat_tear', 'm5b_feat_holes', 'wing_r5', 'nosearm_L', 'button_r5', 'sleeve_r5', 'carrier', 'blank1', 'blank2']);
-  const v = makeView(el);
-  const chairM = M(COL.chair), chairX = M(COL.chair, { transparent: true, opacity: .38, depthWrite: false });
-  const hcut = new THREE.Plane(V(0, 0, -1), 230);              // across the mount at z 230 (keep below): tongue, jaws and button in section
-  const sad = new THREE.Group(), cur = new THREE.Group();
-  const wingS = cutMesh(geo.m5b_wing_sad, COL.chair, [hcut]), wingC = cutMesh(geo.wing_r5, COL.chair, [hcut]);
-  sad.add(wingS, cutMesh(geo.m5b_saddle_L, COL.kit, [hcut], {}, 0x5d82b5), cutMesh(geo.button_r5, COL.btn, [hcut]), cutMesh(geo.sleeve_r5, COL.btn, [hcut]));
-  cur.add(wingC, cutMesh(geo.nosearm_L, COL.kit, [hcut], {}, 0x5d82b5), cutMesh(geo.button_r5, COL.btn, [hcut]), cutMesh(geo.sleeve_r5, COL.btn, [hcut]));
-  let cutOn = false;
-  const setCut = () => { for (const g of [sad, cur]) g.traverse((m) => { if (!m.isMesh) return; m.material.clippingPlanes = cutOn ? [hcut] : []; m.material.needsUpdate = true; if (m.material.side === THREE.BackSide) m.visible = cutOn; }); };
-  const arm = new THREE.Mesh(geo.armrest, chairM);
-  const gh = new THREE.Group();               // the chair's original mount block (from the original wing) + today's v1.1 carrier and blanks
-  gh.add(new THREE.Mesh(geo.m5b_orig_block, ghost(0xff9a3c, .35)), edges(geo.m5b_orig_block, 0xd0661a, .9));
-  for (const k of ['carrier', 'blank1', 'blank2']) gh.add(new THREE.Mesh(geo[k], ghost(0x2a6df4, .14)), edges(geo[k], 0x2a6df4, .35));
-  const feat = new THREE.Group(); const fM = M(COL.feat, { emissive: 0x3a1a80, roughness: .4 });
-  for (const k of ['m5b_feat_slits', 'm5b_feat_tear', 'm5b_feat_holes']) feat.add(new THREE.Mesh(geo[k], fM));
-  v.scene.add(sad, cur, arm, gh, feat);
-  const T = Q(10, 8, 230);
-  const labs = [v.label('strap slit S1', QS(3, 30, 262)), v.label('strap slit S2', QS(-6, 47, 266)), v.label('teardrop channel', QS(-2, 39, 300)),
-    v.label('hole column', V(75.5, 135, 300)), v.label('hole at z 186', V(141.3, 88.5, 186.6))];
-  const gl = [v.label('original chair mount', QS(24, 0, 272), null, 'og'), v.label('today (v1.1) block + blanks', QS(19, -18, 320), null, 'bl')];
-  let mode = 'saddle', showG = false, showF = false;
-  const apply = () => {
-    sad.visible = mode === 'saddle'; cur.visible = mode === 'tongue'; gh.visible = showG; feat.visible = showF;
-    for (const w of [wingS, wingC]) { w.children[0].material.transparent = showF; w.children[0].material.opacity = showF ? .38 : 1; w.children[0].material.depthWrite = !showF; w.children[0].material.needsUpdate = true; }
-    arm.material = showF ? chairX : chairM;
-    labs.forEach((L) => L.on = showF); gl.forEach((L) => L.on = showG);
-  };
-  v.views = {
-    outer: () => [T.clone().add(dirD.clone().multiplyScalar(260)).add(dirT.clone().multiplyScalar(-60)).add(V(0, 0, 40)), T],
-    child: () => [T.clone().add(dirD.clone().multiplyScalar(-250)).add(dirT.clone().multiplyScalar(-90)).add(V(0, 0, 60)), T],
-    top: () => [T.clone().add(V(0, 0, 110)).add(dirT.clone().multiplyScalar(-12)), T],
-    parent: () => [T.clone().add(dirD.clone().multiplyScalar(170)).add(dirT.clone().multiplyScalar(-150)).add(V(0, 0, 120)), T]
-  };
-  radio(row, [['saddle', 'Saddle (option 3)'], ['tongue', 'Bigger tongue (fixes)']], mode, (k) => { mode = k; apply(); }); spacer(row);
-  toggle(row, 'Cut across (z 230)', cutOn, (o) => { cutOn = o; setCut(); if (o) v.view('top'); });
-  toggle(row, 'Original mount (ghost)', showG, (o) => { showG = o; apply(); });
-  toggle(row, 'Slits and holes', showF, (o) => { showF = o; apply(); }); spacer(row);
-  radio(row, [['parent', 'Parent\'s view'], ['outer', 'Outer side'], ['child', 'Child side'], ['top', 'From above']], 'parent', (k) => v.view(k));
-  setCut(); apply(); v.view('parent');
-  return { v, set: (o) => { if (o.mode) mode = o.mode; if ('ghost' in o) showG = o.ghost; if ('feat' in o) showF = o.feat; if ('cut' in o) { cutOn = o.cut; setCut(); } apply(); } };
-}
-
 // ===================================================================== 2. LOW / HIGH carriers
 function carriersView(el, row, geo) {
-  need(geo, ['wing_r5', 'nosearm_L', 'm5b_carrier_H_L', 'm5b_flip_over', 'm5b_flip_gap', 'button_r5', 'sleeve_r5']);
+  need(geo, ['wing', 'carL', 'carH', 'flip_over', 'flip_gap', 'btn', 'sleeve']);
   const v = makeView(el);
   const chairM = M(COL.chair, { polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2 }), kitM = M(COL.kit, { polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }), btnM = M(COL.btn, { roughness: .45 });
-  v.scene.add(new THREE.Mesh(geo.wing_r5, chairM), new THREE.Mesh(geo.armrest, chairM));
-  const low = new THREE.Group(); low.add(new THREE.Mesh(geo.nosearm_L, kitM), new THREE.Mesh(geo.button_r5, btnM), new THREE.Mesh(geo.sleeve_r5, btnM));
+  v.scene.add(new THREE.Mesh(geo.wing, chairM), new THREE.Mesh(geo.armrest, chairM));
+  const low = new THREE.Group(); low.add(new THREE.Mesh(geo.carL, kitM), new THREE.Mesh(geo.btn, btnM), new THREE.Mesh(geo.sleeve, btnM));
   // the LOW part turned over for HIGH: in the chair that is a mirror about z 227 (the right-hand LOW turned over = this; see gen_mock5b.py)
-  const flip = new THREE.Group(); flip.add(new THREE.Mesh(geo.nosearm_L, kitM), new THREE.Mesh(geo.button_r5, btnM), new THREE.Mesh(geo.sleeve_r5, btnM));
+  const flip = new THREE.Group(); flip.add(new THREE.Mesh(geo.carL, kitM), new THREE.Mesh(geo.btn, btnM), new THREE.Mesh(geo.sleeve, btnM));
   flip.scale.set(1, 1, -1); flip.position.set(0, 0, 2 * C);
-  const red = new THREE.Group(); red.add(new THREE.Mesh(geo.m5b_flip_over, M(COL.red, { emissive: 0x500000 })), new THREE.Mesh(geo.m5b_flip_gap, ghost(COL.red, .55)));
-  const high = new THREE.Group(); high.add(new THREE.Mesh(geo.m5b_carrier_H_L, kitM));
-  const bH = new THREE.Group(); bH.add(new THREE.Mesh(geo.button_r5, btnM), new THREE.Mesh(geo.sleeve_r5, btnM)); bH.scale.set(1, 1, -1); bH.position.set(0, 0, 2 * C); high.add(bH);
+  const red = new THREE.Group(); red.add(new THREE.Mesh(geo.flip_over, M(COL.red, { emissive: 0x500000 })), new THREE.Mesh(geo.flip_gap, ghost(COL.red, .55)));
+  const high = new THREE.Group(); high.add(new THREE.Mesh(geo.carH, kitM));
+  const bH = new THREE.Group(); bH.add(new THREE.Mesh(geo.btn, btnM), new THREE.Mesh(geo.sleeve, btnM)); bH.scale.set(1, 1, -1); bH.position.set(0, 0, 2 * C); high.add(bH);
   v.scene.add(low, flip, red, high);
   // measurement: the nose's front-outer corner, where it should be vs where the turned-over part puts it, top and bottom
   const mk = new THREE.Group(); v.scene.add(mk);
@@ -179,15 +136,15 @@ function carriersView(el, row, geo) {
 
 // ===================================================================== 3. button drop-in (animated, cut open)
 function dropView(el, row, stat, geo) {
-  need(geo, ['wing_r5', 'm5b_carrier_drop_L', 'button_r5', 'm5b_sleeve_split']);
+  need(geo, ['wing', 'carL', 'btn', 'sleeve']);
   const v = makeView(el);
   // cut: keep t' >= the button's centre line (we look from the front at the cut face), moving with the carrier
   const W2S = S2W.clone().invert(), e = W2S.elements, nT = V(e[1], e[5], e[9]), nl = nT.length();
   const cut = new THREE.Plane(nT.clone().divideScalar(nl), 0), cut2 = new THREE.Plane(nT.clone().divideScalar(-nl), 0), cutOn = [cut, cut2];   // remove only the slab t' -13.3..tc (the front half of the nose); the arm stays
-  const wing = new THREE.Group(); wing.add(new THREE.Mesh(geo.wing_r5, M(COL.chair)), new THREE.Mesh(geo.armrest, M(COL.chair)));
-  const car = cutMesh(geo.m5b_carrier_drop_L, COL.kit, cutOn, {}, 0x5d82b5);
-  const btn = new THREE.Mesh(geo.button_r5, M(COL.btn, { roughness: .45 }));
-  const slv = cutMesh(geo.m5b_sleeve_split, 0xff8f4a, cutOn, { roughness: .45 });
+  const wing = new THREE.Group(); wing.add(new THREE.Mesh(geo.wing, M(COL.chair)), new THREE.Mesh(geo.armrest, M(COL.chair)));
+  const car = cutMesh(geo.carL, COL.kit, cutOn, {}, 0x5d82b5);
+  const btn = new THREE.Mesh(geo.btn, M(COL.btn, { roughness: .45 }));
+  const slv = cutMesh(geo.sleeve, 0xff8f4a, cutOn, { roughness: .45 });
   // spring OD 6, wire 0.55, 8 coils, built along +x on a unit length, placed in S (d' from 8 to the button's back face)
   const pts = []; const N = 8, R = 2.725; for (let i = 0; i <= N * 32; i++) { const a = i / 32 * Math.PI * 2; pts.push(V(i / (N * 32), R * Math.cos(a), R * Math.sin(a))); }
   const spr = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), N * 32, .275, 6), M(COL.steel, { metalness: .6, roughness: .35 }));
@@ -218,8 +175,8 @@ function dropView(el, row, stat, geo) {
     const so = co.clone().add(sv(s.sl, 0, 0)); slv.matrix.makeTranslation(so.x, so.y, so.z);
     const riding = Math.abs(s.sp - s.b[1]) < 1e-6;
     const dBack = BT.face - BT.thick + (riding ? s.b[0] : -BT.travel);   // the spring's front end sits on the button's back face
-    const len = dBack - 8.0;
-    spr.matrix.copy(S2W).multiply(tmp.makeTranslation(0, s.car, 0)).multiply(tmp.makeTranslation(8.0, BT.tc - 2.2, C + s.sp)).multiply(tmp.makeScale(len, 1, 1));
+    const len = dBack - SPR0;
+    spr.matrix.copy(S2W).multiply(tmp.makeTranslation(0, s.car, 0)).multiply(tmp.makeTranslation(SPR0, -8.5, 231.0 + s.sp)).multiply(tmp.makeScale(len, 1, 1));
     wing.visible = s.wing;
     cut.constant = (e[13] - (BT.tc + s.car)) / nl;                          // keep t'(p) - car >= tc
     cut2.constant = -(e[13] - (-13.3 + s.car)) / nl;                       // or t'(p) - car <= -13.3
@@ -230,7 +187,7 @@ function dropView(el, row, stat, geo) {
     const dt = last ? (t - last) / 1000 : 0; last = t;
     if (playing) { u += dt / 2.6; if (u >= 1) { if (cur < steps.length - 1) { if (u >= 1.35) { cur++; u = 0; } } else { u = 1; playing = false; pb.textContent = 'Play'; } } show(); }
   };
-  const T = QS(14, -6, 236);
+  const T = QS(4, -6, 236);
   v.views = {
     cut: () => [T.clone().add(dirT.clone().multiplyScalar(-200)).add(dirD.clone().multiplyScalar(170)).add(V(0, 0, 150)), T.clone().add(sv(0, A * 0.75, 0))],
     top: () => [T.clone().add(V(0, 0, 260)).add(dirT.clone().multiplyScalar(-120)).add(dirD.clone().multiplyScalar(40)), T.clone().add(sv(0, A * 0.75, 0))],
@@ -250,17 +207,18 @@ function dropView(el, row, stat, geo) {
 
 // ===================================================================== 4. pad screw from the child side
 function padView(el, row, stat, geo) {
-  need(geo, ['m5b_foot_r5', 'm5b_pad_r5', 'm5b_snap_r5', 'm5b_nut_r5', 'm5b_screw_r5', 'm5b_foam_r5', 'nosearm_L', 'wing_r5']);
+  need(geo, ['depth', 'pad', 'foam', 'cover', 'm5b_nut_r5', 'm5b_screw_r5', 'carL']);
   const v = makeView(el);
   const cut = new THREE.Plane(V(0, 1, 0), -32.5), cutOn = [cut];      // keep y >= 32.5: the screw's own plane
-  v.scene.add(new THREE.Mesh(geo.nosearm_L, M(COL.kit)));          // wing and arm rest left out: they hide the pad from most angles
-  const foot = cutMesh(geo.m5b_foot_r5, COL.foot, cutOn), pad = cutMesh(geo.m5b_pad_r5, COL.pad, cutOn);
-  const snap = new THREE.Mesh(geo.m5b_snap_r5, M(COL.snap, { emissive: 0x0a4a42 })); pad.add(snap);
+  v.scene.add(new THREE.Mesh(geo.carL, M(COL.kit)));          // wing and arm rest left out: they hide the pad from most angles
+  const foot = cutMesh(geo.depth, COL.foot, cutOn), pad = cutMesh(geo.pad, COL.pad, cutOn);
+  const snap = new THREE.Mesh(new THREE.SphereGeometry(1.4, 16, 12), M(COL.snap, { emissive: 0x0a4a42 })); snap.position.set(106.8, 45.0, 172.0); pad.add(snap);   // marks the rail's snap bump (in the pad part)
   const nut = cutMesh(geo.m5b_nut_r5, COL.steel, cutOn, { metalness: .5 }), screw = cutMesh(geo.m5b_screw_r5, COL.dark, cutOn, { metalness: .5 });
+  const HW_DZ = -22.0;                                   // the hardware mocks were drawn at the upper hole (z 194); the fitted pad uses the lower one (z 172)
   const foamM = M(COL.foam, { clippingPlanes: cutOn, side: THREE.DoubleSide }), foamX = M(COL.foam, { clippingPlanes: cutOn, transparent: true, opacity: .3, depthWrite: false, side: THREE.DoubleSide });
-  const foam = new THREE.Mesh(geo.m5b_foam_r5, foamM);
+  const foam = new THREE.Group(); foam.add(new THREE.Mesh(geo.foam, foamM), new THREE.Mesh(geo.cover, foamM));
   v.scene.add(foot, pad, nut, screw, foam);
-  const ZR = 194, PS = V(0, 32.5, ZR);
+  const ZR = 172, PS = V(0, 32.5, ZR);
   const lb = { nut: v.label('nut, hidden in the foot', V(111, 32.5, ZR + 14)), screw: v.label('M5 × 10 button head', V(100, 32.5, ZR - 9)), snap: v.label('snap stop', V(108, 45, ZR - 4), null, 'grn'), foam: v.label('foam covers the head', V(88, 32.5, ZR + 22)) };
   const S0 = { nut: -45, pad: 75, scr: -50, rot: 0, foam: -60, foamOn: false };
   const steps = [
@@ -268,13 +226,13 @@ function padView(el, row, stat, geo) {
     ['1 · The nut drops through the groove mouth into its pocket in the foot (then it is hidden).', (u) => ({ ...S0, nut: lerp(-45, 0, ease(u)) })],
     ['2 · The pad\'s rail slides into the groove from the back until it stops. The green snap clicks into its notch: plastic holds the pad.', (u) => ({ ...S0, nut: 0, pad: lerp(75, 0, ease(u)) })],
     ['3 · The M5 × 10 button-head screw goes in from the child side and pulls the rail tight. It only locks; it does not carry the load.', (u) => ({ ...S0, nut: 0, pad: 0, scr: lerp(-50, 0, ease(u)), rot: lerp(-8 * Math.PI, 0, ease(u)) })],
-    ['4 · Foam (10 mm) and cover go on: the screw head is under the foam, nothing hard faces the child.', (u) => ({ ...S0, nut: 0, pad: 0, scr: 0, foam: lerp(-60, 0, ease(u)), foamOn: true })]
+    ['4 · Foam (20 mm) and cover go on: the screw head is under the foam, nothing hard faces the child.', (u) => ({ ...S0, nut: 0, pad: 0, scr: 0, foam: lerp(-60, 0, ease(u)), foamOn: true })]
   ];
   let seeThrough = false;
   const pose = (s) => {
-    nut.position.set(s.nut, 0, 0); pad.position.set(0, s.pad, 0);
-    screw.position.set(s.scr, 0, 0); screw.position.add(PS); screw.rotation.set(s.rot, 0, 0); screw.position.sub(PS.clone().applyEuler(screw.rotation));
-    foam.position.set(s.foam, 0, 0); foam.visible = s.foamOn; foam.material = seeThrough ? foamX : foamM;
+    nut.position.set(s.nut, 0, HW_DZ); pad.position.set(0, s.pad, 0);
+    const PS0 = V(0, 32.5, 194); screw.position.set(s.scr, 0, 0); screw.position.add(PS0); screw.rotation.set(s.rot, 0, 0); screw.position.sub(PS0.clone().applyEuler(screw.rotation)); screw.position.z += HW_DZ;
+    foam.position.set(s.foam, 0, 0); foam.visible = s.foamOn; foam.children.forEach((m) => m.material = seeThrough ? foamX : foamM);
     lb.nut.on = s.nut === 0; lb.snap.on = s.pad === 0; lb.screw.on = s.scr === 0; lb.foam.on = s.foamOn && s.foam === 0;
     snap.material.emissive.setHex(s.pad === 0 ? 0x1fbfa9 : 0x0a4a42);
   };
@@ -311,7 +269,6 @@ export function mountMocks5b(geo) {
   const q = (id) => document.getElementById(id);
   const out = {};
   const run = (k, fn) => { try { out[k] = fn(); q('m5b-' + k)?.querySelector('.m5load')?.remove(); } catch (e) { console.error(e); const l = q('m5b-' + k)?.querySelector('.m5load'); if (l) l.textContent = 'Mockup failed: ' + e.message; } };
-  run('saddle', () => saddleView(q('m5b-saddle'), q('m5b-saddle-ctl'), geo));
   run('carriers', () => carriersView(q('m5b-carriers'), q('m5b-carriers-ctl'), geo));
   run('drop', () => dropView(q('m5b-drop'), q('m5b-drop-ctl'), q('m5b-drop-st'), geo));
   run('pad', () => padView(q('m5b-pad'), q('m5b-pad-ctl'), q('m5b-pad-st'), geo));

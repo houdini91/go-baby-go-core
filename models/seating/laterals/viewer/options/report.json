@@ -1,0 +1,33 @@
+{
+ "stay": {
+  "section": "20 x 30 PETG (flared ends)",
+  "short_setting": "long arm LOW (foot bottom z 158.7)",
+  "long_setting": "short arm HIGH (foot bottom z 224.7)",
+  "path_length_mm": [
+   34,
+   86
+  ],
+  "arm_rest_top_z": 150.0,
+  "fixing": "2 x M5 into the arm rest top (inserts)"
+ },
+ "thick_saddle": {
+  "jaw_mm": 12.0,
+  "outer_jaw_z": [
+   181,
+   281
+  ],
+  "inner_jaw_z": [
+   181,
+   250
+  ],
+  "outer_jaw_t_end": 34.0,
+  "inner_jaw_t_end": 14.0,
+  "front_wrap_mm": 6.0,
+  "taper": "thickness tapers over the last 10-12 mm",
+  "min_clear_S1": 3.5,
+  "min_clear_hole186": 3.25,
+  "kit_x_max": 164.1,
+  "clash_wing": 0.0,
+  "clash_armrest": "n/a"
+ }
+}

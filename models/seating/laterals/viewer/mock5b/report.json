@@ -8,128 +8,6 @@
  ],
  "S1_area_mm2": 74.3,
  "S2_area_mm2": 64.7,
- "saddle": {
-  "extent_S": {
-   "d": [
-    -8.1,
-    24.7
-   ],
-   "t": [
-    -14.8,
-    33.6
-   ],
-   "z": [
-    207.3,
-    246.7
-   ]
-  },
-  "jaw_t": [
-   2.0,
-   33.5
-  ],
-  "inner_jaw_t": [
-   2.0,
-   14.5
-  ],
-  "outer_jaw_t": [
-   2.0,
-   33.5
-  ],
-  "jaw_thickness": 4.0,
-  "clamp_length_t": 47.8,
-  "volume_mount_cm3": 22.7,
-  "clash_with_wing": 0.0,
-  "clash_with_slits": 0.0,
-  "clash_with_tear": 0.0,
-  "to_S1": 3.08,
-  "to_S2": 21.17
- },
- "orig_block": {
-  "extent_S": {
-   "d": [
-    16.8,
-    24.7
-   ],
-   "t": [
-    -14.2,
-    16.5
-   ],
-   "z": [
-    208.2,
-    277.1
-   ]
-  },
-  "volume_cm3": 12.0
- },
- "current_nose": {
-  "extent_S": {
-   "d": [
-    -7.4,
-    24.6
-   ],
-   "t": [
-    -14.8,
-    2.0
-   ],
-   "z": [
-    207.3,
-    246.7
-   ]
-  },
-  "volume_cm3": 15.2,
-  "tongue_hidden": {
-   "d": [
-    3.8,
-    17.5
-   ],
-   "t": [
-    2.0,
-    23.4
-   ],
-   "z": [
-    214.3,
-    239.7
-   ]
-  }
- },
- "v11_carrier_blanks_near_wing_S": {
-  "d": [
-   -44.9,
-   18.8
-  ],
-  "t": [
-   -46.9,
-   29.1
-  ],
-  "z": [
-   165.5,
-   317.7
-  ]
- },
- "flip": {
-  "over_vol": 2238.3,
-  "gap_vol": 2238.3,
-  "step_d_at_ends": 2.23,
-  "step_t_at_ends": 2.72,
-  "flip_clash_with_wing": 712.6
- },
- "drop": {
-  "opening_top_S": {
-   "d": [
-    7.8,
-    19.8
-   ],
-   "t": [
-    -12.6,
-    9.2
-   ],
-   "z": [
-    227.0,
-    249.0
-   ]
-  },
-  "carrier_vol": 53412.8
- },
  "pad": {
   "zp": 183.0,
   "rail_z": 194.0,
@@ -144,5 +22,6 @@
   "clash_nut_foot": 0.0,
   "clash_pad_foot": 0.0,
   "clash_snap_foot": 0.0
- }
+ },
+ "note": "Round 5b mock hardware + protected wing features. The mount-option meshes (incl. saddle dimensions) are in viewer/options/ (gen_opts2.py, opts2.json, report.json)."
 }
