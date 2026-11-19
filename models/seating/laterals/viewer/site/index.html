@@ -75,6 +75,23 @@ table.cmp th{font-weight:600;color:var(--mute)}
 @media(max-width:700px){.cuts{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:900px){.ogrid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:860px){.app{grid-template-columns:minmax(0,1fr)}.side{border-left:0;border-top:1px solid var(--line);height:auto}#view{height:62vh}}
+/* round 5b mockups */
+.m5{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px;align-items:start;margin:22px 0 30px;padding-top:18px;border-top:1px solid var(--line)}
+.m5v{position:relative;height:min(60vh,560px);min-height:360px;background:light-dark(#eceeef,#0c0e10);border-radius:10px;overflow:hidden;touch-action:none}
+.m5v canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.m5load{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute)}
+.m5ctl{margin-top:8px}.m5st{margin:4px 0 0;min-height:3em;font-size:14px;max-width:80ch}
+.m5c h3{font-size:18px;margin:0 0 8px;line-height:1.3}.m5c p{margin:0 0 8px;font-size:15px}.m5c p.m{color:var(--mute);font-size:14px}
+.m5note{color:var(--mute);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;margin-right:6px;vertical-align:2px}
+.tag.acc{background:light-dark(#dff5e9,#123526);color:light-dark(#0b7a44,#4fd18b)}.tag.opt{background:light-dark(#fff1e6,#3a2416);color:light-dark(#b4500f,#ffa463)}
+table.m5t{min-width:0;margin:6px 0 10px}.sw2{display:inline-block;width:10px;height:10px;border-radius:2px;margin-left:4px;opacity:.8}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px}.pc ul{margin:4px 0 0;padding-left:18px}.pc li{margin-bottom:3px}
+.m5lab{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.m5l{position:absolute;transform:translate(-50%,-120%);font-size:12px;line-height:1.2;padding:2px 6px;border-radius:6px;white-space:nowrap;background:light-dark(rgba(255,255,255,.88),rgba(20,22,25,.85));color:var(--ink);border:1px solid #7b3fe4}
+.m5l.og{border-color:#d0661a}.m5l.bl{border-color:#2a6df4}.m5l.red{border-color:#e0302a;color:light-dark(#b42318,#ff7b70);font-weight:600}.m5l.grn{border-color:#16a394}
+.m5l.hd{font-size:13px;font-weight:600;border-color:#e0302a}.m5l.hd.ok{border-color:#16a394}
+@media(max-width:900px){.m5{grid-template-columns:minmax(0,1fr)}.pc{grid-template-columns:1fr}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/","three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.3/build/index.module.js"}}</script>
@@ -123,6 +140,79 @@ table.cmp th{font-weight:600;color:var(--mute)}
     </tbody></table></div>
   <p style="color:var(--mute);font-size:14px;margin-top:10px">Draft limits: the nose and fairings are drawn as simple lofts over the original wing; the old pill cap is shown filled in; the arm is today's. Proportions only.</p>
 </section>
+<section class="opts" id="mocks-5b" style="background:var(--panel)">
+  <h2 style="font-size:28px;line-height:1.15">Round 5b: four things to look at</h2>
+  <p>Quick mockups on the real chair wing (left side), at real size. The first is an <b>option for comparison only</b>. The other three show plan changes <b>you have accepted</b>. Drag to turn, scroll to zoom. Also accepted, not shown: <b>the Ø6 carbon rod is removed.</b> It sat in the wrong place and added nothing, so the tongue and nose are now solid plastic. The only carbon left is the 4 Ø2 pins across the tenon root, lengthened to 29 mm.</p>
+  <p class="m5note">Mock fidelity: the shapes come from the round 5 study meshes, not the final Onshape parts. The latch is shown where round 5 had it, and the tongue at its round 5 size (13.7 wide). The accepted fixes move the latch forward into the nose and make the tongue 16.2 wide and solid.</p>
+
+  <div class="m5" id="m5b-1">
+    <div>
+      <div class="m5v" id="m5b-saddle"><div class="m5load">Building…</div></div>
+      <div class="row m5ctl" id="m5b-saddle-ctl"></div>
+    </div>
+    <div class="m5c">
+      <h3><span class="tag opt">Open decision</span> Saddle mount (option 3) vs the bigger tongue</h3>
+      <p>The one choice still open. Instead of a tongue hidden in the wing's edge, the saddle <b>clamps both faces of the wing</b>. The front is the same nose as today's plan. Behind it, two thin jaws wrap back: <b>48 mm</b> along the outer face (front to back) and <b>31 mm</b> along the child side. The button and arm are the same. Toggle <i>Bigger tongue</i> to compare it with the plan you accepted, and <i>Cut across</i> to see both mounts in section (blue = kit, brown = chair). Use <i>Slits and holes</i> to check the saddle: its jaws stop 3 mm short of strap slit S1. Nothing touches S2, the teardrop channel, the hole column or the hole at z 186.</p>
+      <table class="cmp m5t"><thead><tr><th>Seen on the wing</th><th>Size on the outer face</th><th>Stands out</th></tr></thead><tbody>
+        <tr><td>Chair's original mount <span class="sw2" style="background:#ff9a3c"></span></td><td>31 front-back × 69 tall</td><td>about 8 mm from the blade behind it</td></tr>
+        <tr><td>Today's v1.1 block + blanks <span class="sw2" style="background:#2a6df4"></span></td><td>about 54 × 150 tall</td><td>block, slot and blanks</td></tr>
+        <tr><td>Bigger tongue (accepted fixes)</td><td>nose only: 16 × 40</td><td>flush; the tongue (16.2 wide × 32.1 tall, solid) is hidden in the wing</td></tr>
+        <tr><td><b>Saddle</b></td><td><b>48 × 40</b> (+ 31 × 40 on the child side)</td><td>flush at the nose, 3–4 mm further back on both faces</td></tr>
+      </tbody></table>
+      <p>The saddle stays within the original mount's height and its outermost face. It reaches 17 mm further back than the original did, and it adds a 4 mm jaw on the child side, which the original never had.</p>
+      <p><b>Strength:</b> the bigger tongue's safety margin is about 3.5–4.4 at a 300 N lean (target 3) and 1.8–2.2 at 600 N. At the 900 N corner knock it is only 0.8–1.0, against a target of 2. The strength review says only a grip like the saddle's (40 mm or more front to back) can reach 900 N. The saddle itself hasn't been calculated in detail yet.</p>
+      <div class="pc"><div><b class="good">Saddle: for</b><ul><li>Much stronger: it is the only mount that can reach the 900 N corner-knock case.</li><li>No deep slot cut into the wing.</li></ul></div>
+      <div><b class="bad">Saddle: against</b><ul><li>Bigger and more visible: 3× the nose's area on the outer face, plus a jaw on the child side.</li><li>A new ridge on the child side, next to the strap slit (3 mm gap).</li><li>The old mount's outer wall has to be trimmed 3 mm where the jaw sits.</li></ul></div></div>
+    </div>
+  </div>
+
+  <div class="m5" id="m5b-2">
+    <div>
+      <div class="m5v" id="m5b-carriers"><div class="m5load">Building…</div></div>
+      <div class="row m5ctl" id="m5b-carriers-ctl"></div>
+    </div>
+    <div class="m5c">
+      <h3><span class="tag acc">Accepted</span> Four carriers per arm length: LOW and HIGH can't be one part turned over</h3>
+      <p>The wing isn't vertical: going up, it leans about 3° outward and 4° backward. The nose copies that lean so it sits flush. If you turn a LOW carrier over to use it HIGH, the lean goes the wrong way. At the top and bottom of the nose it is then about <b>2.3 mm off sideways and 2.8 mm off front-to-back</b> (red). It wouldn't go in, and the step would show. So LOW and HIGH are each made the right way up. The right side shows a correctly made HIGH carrier fitting.</p>
+      <p><b>Why accepted:</b> a child's set still uses only <b>2 carriers</b> (one per side). The cost is more print files (left/right × LOW/HIGH per arm length), not more parts per child.</p>
+      <p class="m">The alternative was a symmetric nose that ignores the lean. One part would then flip, but the nose would show a step of about 2.5 mm against the wing at its top and bottom.</p>
+    </div>
+  </div>
+
+  <div class="m5" id="m5b-3">
+    <div>
+      <div class="m5v" id="m5b-drop"><div class="m5load">Building…</div></div>
+      <div class="row m5ctl" id="m5b-drop-ctl"></div>
+      <p class="m5st" id="m5b-drop-st"></p>
+    </div>
+    <div class="m5c">
+      <h3><span class="tag acc">Accepted</span> How the button goes in: dropped in from the top</h3>
+      <p>The button can't be pushed in through its face, so it goes in from <b>an opening in the top of the nose</b>. Once the carrier is on the chair, the wing covers that opening. The spring goes onto the button, and both drop down the opening. Then the <b>split orange sleeve</b> snaps in under the rim and keeps the button captive. The carrier then slides onto the wing and clicks. To remove it: press and pull. Use <i>Next</i> / <i>Play</i>; the carrier is shown cut open.</p>
+      <p><b>Why accepted:</b> a one-piece button can't go in from outside if the walls behind it are to carry load.</p>
+      <p><b>With the strength fixes:</b> the latch moves <b>out of the tongue into the nose</b>, so the tongue stays solid and strong (this mock still shows it in the tongue). The sleeve is <b>split</b>, so it can be prised out with a pick to service the button. A closed ring could only be cut out.</p>
+    </div>
+  </div>
+
+  <div class="m5" id="m5b-4">
+    <div>
+      <div class="m5v" id="m5b-pad"><div class="m5load">Building…</div></div>
+      <div class="row m5ctl" id="m5b-pad-ctl"></div>
+      <p class="m5st" id="m5b-pad-st"></p>
+    </div>
+    <div class="m5c">
+      <h3><span class="tag acc">Accepted</span> The pad screw goes in from the child side, under the foam</h3>
+      <p>The pad slides onto the foot's dovetail from behind. A nut hides in the foot's groove. The <b>M5 × 10 button-head screw</b> goes in from the child side, and the foam and cover then go over its head. A small <b>plastic snap stop</b> on the rail (green) clicks into a notch in the groove. The plastic holds the pad, and the screw only locks it. Shown cut through the screw, long arm, LOW, upper pad hole.</p>
+      <p><b>Why accepted:</b> with two pad positions, both nuts can hide inside the foot. Nothing shows on the back, and the screw head is under at least 10 mm of foam (the review's minimum). The unused groove's open back end shows on the foot's back face (cosmetic only).</p>
+    </div>
+  </div>
+</section>
+<script type="module">
+{
+const start=async()=>{ try{ const {mountMocks5b}=await import('./mock5b.js'); window.__m5b=mountMocks5b(window.__geo); }
+  catch(e){ document.querySelectorAll('#mocks-5b .m5load').forEach(l=>l.textContent='Mockups failed: '+e.message); console.error(e);} };
+if(window.__geo&&window.__geo.m5b_saddle_L)start();else window.addEventListener('geo-ready',start,{once:true});
+}
+</script>
 
 <section class="opts" id="ranges-r5" style="background:var(--panel)">
   <h2 style="font-size:28px;line-height:1.15">Where the pad can go, against what children aged 2–5 need</h2>

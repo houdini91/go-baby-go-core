@@ -12,6 +12,9 @@ EXTRA = [('wing0', '/home/mikey/research/onshape/gobabygo/chair_mesh/chair_left_
 # Round 5 wing-side parts, real solids from r5mesh/gen_r5.py (left side, LOW)
 EXTRA += [('wing_r5', 'r5mesh/wing_r5.stl'), ('nosearm_L', 'r5mesh/nose_arm_r5_L.stl'), ('nosearm_S', 'r5mesh/nose_arm_r5_S.stl'),
           ('button_r5', 'r5mesh/button_r5.stl'), ('sleeve_r5', 'r5mesh/sleeve_r5.stl'), ('cap_r5', 'r5mesh/cap_r5.stl')]
+# Round 5b mockups (mock5b/gen_mock5b.py): saddle option, LOW/HIGH carriers, button drop-in, pad screw, protected wing features
+EXTRA += [('m5b_' + n, f'mock5b/{n}.stl') for n in ('wing_sad', 'saddle_L', 'orig_block', 'carrier_H_L', 'flip_over', 'flip_gap', 'carrier_drop_L',
+          'sleeve_split', 'foot_r5', 'pad_r5', 'snap_r5', 'nut_r5', 'screw_r5', 'foam_r5', 'feat_slits', 'feat_tear', 'feat_holes')]
 buf = bytearray(); man = []
 for name, f in PARTS + EXTRA:
     if f.endswith('.stl'): a = stl(f)

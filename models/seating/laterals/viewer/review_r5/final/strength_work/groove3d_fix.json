@@ -1,0 +1,14 @@
+{
+ "shoulder (in front of the groove face)": {
+  "FI99_per_kN": 0.810970219294962,
+  "FImax_per_kN": 2.350794828266144
+ },
+ "skin behind the groove": {
+  "FI99_per_kN": 0.8597307421300427,
+  "FImax_per_kN": 1.6399667722923519
+ },
+ "groove ends (z closures)": {
+  "FI99_per_kN": 0.670341718303032,
+  "FImax_per_kN": 1.5703980471095942
+ }
+}
