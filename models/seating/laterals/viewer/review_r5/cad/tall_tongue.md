@@ -75,3 +75,44 @@ Method: `strength_r5b/tall.py` (the r5b contact model, the same patches and latc
 | Looks | 40 mm notch | 74 mm notch, taller swell | same | + 2 round holes | bulky clamp |
 
 **Conclusion:** the tall tongue is worth having as the base (about 1.65× r5b, a cleaner single opening, no extra parts). Alone, or with R2 and rods, it does not reach SF 3. SF 3 needs the Ø8 prongs added (O1 in mount_research.md: tall tongue + prongs, untested estimate ≈ 2.5–4), a support stay, or the thick saddle.
+
+## Add-on: tall tongue (R2 outer root, 2 Ø2 corner rods) + 2 Ø8 carbon prongs (ESTIMATE, 2026-11-20)
+Method: `strength_r5b/tall_prong.py`, using the same contact model. The prongs remove a share of the yaw and twist from the tongue and the slot walls. The shares are assumed, not modelled, and are conservative: 35 % yaw / 60 % twist, and 50 % / 70 %. The real split depends on the rod grade and the bore fit (mount_research.md O1).
+- The prong bearing in the blade bores is taken from mount_research.md: SF ≈ 2.5–3.5 at a 300 N lean.
+- It is scaled by the corner/lean yaw ratio (1.44) to get ≈ 1.75–2.4 for the corner knock.
+
+**Prong holes** (S frame, Ø8 solid carbon in Ø8.2 bores with 3 crush ribs, centred at d' 5.5):
+
+| Prong | Centre z | Bore z | Bore t' (depth) | Walls / clearances |
+|---|---|---|---|---|
+| Lower | **204.0** | 199.9–208.1 | 2 → 20 (**18 deep**) | ≈ 3 to S1 (S1's front edge is at t' ≈ 25 at this d'; estimate); 5.9 to the inner face at z 200; 11.7 above the z 186 hole |
+| Upper | **288.7** | 284.6–292.8 | 2 → 32 (**30 deep**) | above S1 (ends z 272); ≈ 3 to the teardrop (t' 35); ≥ 6 to both clean blade faces |
+
+- **The notch and nose must grow to z ≈ 196–297 (101 tall, was 74)**, so that ≥ 4 mm of nose surrounds each prong root.
+- The tongue stays at z 214.3–278.3, with 6 mm webs to the bores.
+- The bare wing would show a 101 mm notch (or a blank cap) with two Ø8.2 rounded holes in its back face, above and below the slot.
+
+**SF at 300 N** (lean / corner knock):
+
+| Part | Prongs take 35 % yaw / 60 % twist | Prongs take 50 % / 70 % |
+|---|---|---|
+| Tongue | 3.05 / 2.17 | 3.60 / 2.63 |
+| Wing slot wall, peak bearing (dent onset) | 3.23 / 2.18 | 4.35 / 2.90 |
+| Tooth bearing | 4.4 / 3.2 | 5.0 / 3.8 |
+| Prong bores (from O1) | ≈ 2.5–3.5 / 1.75–2.4 | ≈ 2.5–3.5 / 1.75–2.4 |
+| Arm (r5b, unchanged) | 1.90 / 1.24 | 1.90 / 1.24 |
+| Tenon nut slot (the fuse) | 2.87 / 1.16 | 2.87 / 1.16 |
+
+**The mount itself reaches ≈ 2.2–3 at a corner knock and ≥ 2.5 in a lean.** The limit then moves to the arm (1.90 / 1.24) and the tenon fuse (1.16 corner, by design). So the system at 300 N is ≈ 1.9 / 1.16, and SF 3 for the whole kit would also need a stronger arm.
+
+## Load at which each variant first gives (lean / corner knock, N; ESTIMATE = 300 × lowest SF)
+| Variant | Lean (part) | Corner (part) |
+|---|---|---|
+| r5b tongue (as built) | ≈ 240 (wing dent) | ≈ 170 (wing dent) |
+| Tall tongue | ≈ 470 (tongue) | ≈ 330 (tongue) |
+| Tall + R2 root | ≈ 480 (wing dent) | ≈ 345 (wing dent) |
+| Tall + 2 Ø2 rods | ≈ 515 (tongue) | ≈ 350 (tenon fuse / tongue, a tie) |
+| Tall + R2 + 2 Ø2 rods | ≈ 570 (tongue / arm) | ≈ 350 (tenon fuse) |
+| Tall + R2 + rods + 2 Ø8 prongs | ≈ 570 (arm) | ≈ 350 (tenon fuse) |
+
+With the prongs, a corner knock now breaks the tenon fuse first (≈ 350 N) and the wing dents only at ≈ 650 N. A centred lean breaks the arm first (≈ 570 N). That is the intended order for the corner knock, and the arm is a reprintable part.
