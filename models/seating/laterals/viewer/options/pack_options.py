@@ -17,9 +17,12 @@ P = lambda *a: os.path.join(*a)
 MESHES = [('armrest', 'raw:ps1_J_D'),
           ('wing_cad', 'wing_cad_fixed.stl'), ('car_cad', P(FIT, 'GBG-SP-AR-L-L-LO-r5.stl')), ('btn_cad', P(FIT, 'GBG-SP-BT-L-r5.stl')),
           ('sleeve_cad', P(FIT, 'GBG-SP-TS-r5_L.stl')), ('depth', P(FIT, 'GBG-SP-DP-D0-T0-r5_L.stl')), ('pad', P(FIT, 'GBG-SP-PD-r5_L.stl')),
-          ('ring', P(FIT, 'GBG-SP-RG-r5_L.stl')), ('cover', P(FIT, 'GBG-SP-CV-r5_L.stl'))] + \
-         [(n, n + '.stl') for n in ('prong_wing', 'prong_carrier', 'prong_rods', 'tall_wing', 'tall_kit')] + \
-         [('feat_slits', P(MB, 'feat_slits.stl')), ('feat_tear', P(MB, 'feat_tear.stl')), ('feat_holes', P(MB, 'feat_holes.stl'))]
+          ('ring', P(FIT, 'GBG-SP-RG-r5_L.stl')), ('cover', P(FIT, 'GBG-SP-CV-r5_L.stl')),
+          ('stay_short', 'stay_short.stl'), ('stay_long', 'stay_long.stl')] + \
+         [(n, n + '.stl') for n in ('hi_carrier', 'hi_button', 'hi_sleeve', 'hi_depth', 'hi_pad', 'hi_ring', 'hi_cover')] + \
+         [(n, n + '.stl') for n in ('saddle2_wing', 'saddle2_kit', 'prong_wing', 'prong_carrier', 'prong_rods', 'slots2_wing', 'slots2_car_up', 'socket_wing', 'socket_kit')] + \
+         [
+          ('feat_slits', P(MB, 'feat_slits.stl')), ('feat_tear', P(MB, 'feat_tear.stl')), ('feat_holes', P(MB, 'feat_holes.stl'))]
 def thin(a, tol=0.06):
     # simplify with manifold3d when the mesh is a valid solid (keeps the page small); otherwise keep it as it is
     try:
@@ -34,7 +37,7 @@ buf = bytearray(); man = []
 for name, f in MESHES:
     if not f.startswith('raw:') and not os.path.exists(f): print('MISSING', name, f); continue
     a = raw(f[4:]) if f.startswith('raw:') else stl(f)
-    a = thin(a, 0.02 if name.startswith(('prong_wing', 'prong_carrier', 'tall_')) else 0.06)
+    a = thin(a, 0.025 if name.startswith(('prong_wing', 'prong_carrier', 'saddle2', 'socket', 'slots2_wing')) else 0.06)
     u, inv = np.unique(np.round(a * 500).astype(np.int64), axis=0, return_inverse=True)
     pos = (u / 500.0).astype(np.float32); idx = inv.reshape(-1).astype(np.uint32)
     o = len(buf); buf += pos.tobytes(); o2 = len(buf); buf += idx.tobytes()

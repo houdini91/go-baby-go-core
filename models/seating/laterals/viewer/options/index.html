@@ -35,104 +35,166 @@ table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}th,td{bord
 .box{background:light-dark(#eef4ff,#14203a);padding:10px 14px;border-radius:8px;max-width:92ch}.rec{background:light-dark(#e9f7ef,#12301f);padding:10px 14px;border-radius:8px}
 .tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;margin-right:6px;vertical-align:3px;background:light-dark(#fff1e6,#3a2416);color:light-dark(#b4500f,#ffa463)}
 @media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.pc{grid-template-columns:1fr}}
-.l.big{font-size:14px;font-weight:600;border-width:2px}.l.w{border-color:#8b867c}.l.amb{border-color:#d08a00;color:light-dark(#9a5b00,#ffb454)}
-.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;margin:8px 0}.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.25)}
-.d svg{max-height:440px}.tl{font-size:4.4px}.tl.b{font-weight:600}
-details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:12px}summary{cursor:pointer;font-weight:600}
-td.win{background:light-dark(#e9f7ef,#12301f)}td.lose{background:light-dark(#fde2df,#3a1714)}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body><main>
-<h1>Side pad: how to hold the arm on the wing — three to choose from</h1>
-<p>A focused review of the three mounts still in the running, each on the real chair (left side, the Onshape round-5 build):</p>
-<ul><li><b>A · Current tongue</b> (as built): the baseline.</li><li><b>B · Tongue + two carbon prongs</b>.</li><li><b>C · Tall tongue</b>: today's tongue, but 64 mm tall instead of 32.</li></ul>
-<p>For each one you get a labelled exploded view, a top-down cut showing how it resists a child leaning on the pad, a step-through of connecting and releasing it with the push button, and a check of the child's seating with the kit on and off. A side-by-side table against A is at the end.</p>
-<div class="legend"><span><i style="background:#d8d4cc"></i>chair (wing)</span><span><i style="background:#e9edf2"></i>kit (carrier, nose, tongue)</span><span><i style="background:#ff6a2a"></i>push button / orange "not latched" ring</span><span><i style="background:#1d1f22"></i>carbon rod</span><span><i style="background:#5d82b5"></i>kit, cut face</span><span><i style="background:#8b867c"></i>wing, cut face</span><span><i style="background:#e8b89a"></i>child (rough proxy)</span><span><i style="background:#e0302a"></i>forces</span></div>
-<p class="box"><b>Strength numbers</b> are safety factors at a 300 N lean on the pad (1 = at the limit; target 3), from the CAD agent's hand estimates (viewer/review_r5/cad/mount_options.md, option6.md, mount_research.md). They are estimates, not tests.</p>
+<h1>Side pad: how to hold the arm on the wing</h1>
+<p>Six ways to fix the side pad's arm to the chair's wing are compared here. Each one is shown here on the real chair (left side), with the kit on and with the kit off. A top-down cut of the wing shows how each one resists a child leaning on the pad. Each option also gets a strength line, an honest note on looks, and pros and cons. A comparison and a recommendation are at the end.</p>
+<p class="box"><b>How to read the strength numbers.</b> A child leaning on the pad (about 80 mm in front of the mount) twists the mount. The numbers are <b>safety factors</b>: 1 means the part is just at its limit, and the target is <b>3 at a 300 N lean</b> and <b>2 at a 900 N knock</b>. They are hand estimates by the CAD agent (<i>viewer/review_r5/cad/mount_options.md</i>), not test results. The 900 N figures are the 300 N corner values divided by 3.</p>
+<p class="mu">All views use the chair's wing with the old mount removed. Options 1 and 3 use the round-5 build (the real Onshape parts). Option 2 is a mockup on the clean wing. Dropped: the <b>slim saddle</b> with 3 mm jaws, because its jaws bend (safety about 0.2 at 300 N).</p>
 
-<section id="optA">
-  <h2><span class="tag">A</span> Current tongue (as built, the baseline)</h2>
+<p class="box"><b>Geometry:</b> every view starts from the Onshape round-5 build (the wing STL repaired to a watertight solid). New openings, recesses, jaws and plugs are real booleans on it. Their rounded, flared rims come from fine local distance fields (0.2 mm voxels, smoothed) around each feature only; the rest of the wing is the exact mesh. <b>Still approximate:</b> the stays (path not yet checked against the arm rest's top contour); option 5's upper slot is shown with today's carrier, where a 0-drop arm would be used; option 6's arm is a sweep of the 22 × 31 section along a simple curve; the child proxies are cylinders and capsules from the measurement table.</p>
+
+<section id="opt1">
+  <h2><span class="tag">Option 1</span> Tongue + support stay</h2>
   <div class="grid">
     <div>
-      <div class="v" id="A-v"><div class="load">Loading…</div></div>
-      <div class="row" id="A-c1"></div><div class="row" id="A-c2"></div><div class="row" id="A-c3"></div><p class="st" id="A-st"></p>
+      <div class="v" id="stay-v"><div class="load">Loading…</div></div>
+      <div class="row" id="stay-c1"></div><div class="row" id="stay-c2"></div><p class="st" id="stay-st"></p>
     </div>
     <div>
-      <div class="d" id="A-d"></div>
-      <p><b>What it is:</b> the carrier's nose replaces a 40 mm piece of the wing's front edge, and a solid tongue 15.8 wide × 32 tall × 24.5 deep slides back into a slot in the wing. The push button on the nose's outer (parent) side is also the catch: its tooth clicks into a groove in the wing.</p>
-      <p><b>Looks:</b> kit on, only the 40 mm nose shows, with hairline seams. Kit off, a 40 mm notch with the slot behind it; the blank cap closes it.</p>
-      <p><b>Strength:</b> <span class="bad">0.95 at a 300 N lean (0.65 corner)</span>: the wing's slot mouth would dent first, from about 170–240 N. The tongue resists the twist with two pushes only about 8 mm apart.</p>
-      
+      <div class="d" id="stay-d"></div>
+      <p><b>What it is:</b> the tongue mount as built (a solid 15.8 × 32.1 tongue, 24.5 deep, with a swell behind the cheek), plus a slim <b>20 × 30 mm post</b>. The post runs from the underside of the depth piece's foot down to the arm rest top, fixed by 2 × M5 into inserts. It carries the pad's load straight into the arm rest, so the mount only has to locate the kit. Its length depends on the setting (40–120 mm): 2–3 lengths, or one sliding post with a pin. It sits under the pad on the parent's side, behind the pad from the child's side. It is clear of the strap slits, and well forward of the car wall (nothing behind the chair below z 260).</p>
+      <p><b>Looks:</b> the mount stays slim: only the nose shows on the wing. The post is a second visible part under the pad, styled like the headrest pod (one soft body, flared ends). Kit off: the notch needs its blank cap, and two small inserts show on the arm rest top.</p>
+      <p><b>Strength (300 N lean / 300 N corner / 900 N):</b> tongue ≈ <span class="good">3–8 / similar</span> with a short post; <span class="warn">900 N not estimated</span>. The post itself: ≈ 2.2–6.7 (short post best).</p>
+      <div class="pc"><div><b class="good">For</b><ul><li>Keeps the slim tongue look on the wing.</li><li>The strongest of the three with a short post: the load goes into the arm rest.</li><li>The tenon stays the weak point for knocks that bypass the post.</li></ul></div>
+      <div><b class="bad">Against</b><ul><li>An extra part, in 2–3 lengths or adjustable.</li><li>The arm rest has to change (2 inserts).</li><li>A visible post under the pad.</li><li>Not checked yet: the arm rest's top contour and the tilt feet.</li></ul></div></div>
     </div>
   </div>
 </section>
-<section id="optB">
-  <h2><span class="tag">B</span> Tongue + two carbon prongs</h2>
+
+<section id="opt2">
+  <h2><span class="tag">Option 2</span> Thick saddle</h2>
   <div class="grid">
     <div>
-      <div class="v" id="B-v"><div class="load">Loading…</div></div>
-      <div class="row" id="B-c1"></div><div class="row" id="B-c2"></div><div class="row" id="B-c3"></div><p class="st" id="B-st"></p>
+      <div class="v" id="saddle-v"><div class="load">Loading…</div></div>
+      <div class="row" id="saddle-c1"></div><div class="row" id="saddle-c2"></div><p class="st" id="saddle-st"></p>
     </div>
     <div>
-      <div class="d" id="B-d"></div>
-      <p><b>What it is:</b> today's solid tongue plus <b>two Ø8 carbon rods</b> fixed in a 69 mm nose, 24 mm above and 24 mm below the tongue. Like a three-pin plug, they slide into two holes in the blade as the carrier goes on. Four Ø2 rods run through the tongue's corners into the arm. Use <i>Exploded</i> to see each part and where it goes. Measured: both holes are 18 mm deep, ≥ 3.2 mm from strap slit S1, and 3.4 mm from the filled old bolt hole.</p>
-      <p><b>Looks:</b> kit on, everything is hidden behind a 69 mm nose. Kit off, the front edge shows a 69 mm notch with the slot and two round holes, with rounded, flared mouths. It needs a cap with the same three prongs.</p>
-      <p><b>Strength:</b> ≈ 1.6–2.6 at a 300 N lean (1.1–1.8 corner), depending on the rod grade and how tight the holes are. The prongs bear on thick blade, about 14 mm apart along each hole. <b>Risks:</b> tight holes (crush ribs), stock rod quality (3-point bend test first), and a hot car (~60 °C: PETG at about a third of its strength, like every printed option).</p>
-      
+      <div class="d" id="saddle-d"></div>
+      <p><b>What it is:</b> a clip over the wing's edge, like a clothes peg on a board, gripping both faces. The jaws are <b>12 mm thick</b> with tapered edges. The outer jaw is <b>100 mm tall</b> and about 48 mm long. The child-side jaw is 69 mm tall and only <b>28 mm</b> long, because strap slit S1 is in the way. It uses the same arm and a flush button on the outer jaw (the button is not drawn in this mock).</p>
+      <p><b>Looks:</b> bulky. On a 20 mm blade, 12 mm jaws on both faces make the mount about twice the blade's thickness. It reads as a clamp, even rounded. Recessing helps little: 6 mm per side would leave 8 mm of blade. Kit off: the best of the three, because the front edge is intact and only a small rounded catch notch shows.</p>
+      <p><b>Strength (300 N lean / 300 N corner / 900 N):</b> <span class="good">≈ 5.0 / 3.5</span> / <span class="bad">≈ 1.2</span>. Reaching 2 at 900 N would need about 24 mm jaws. The wing itself is well within its limits (bearing under 5 MPa).</p>
+      <div class="pc"><div><b class="good">For</b><ul><li>Meets the 300 N target on its own; no other part changes.</li><li>The bare wing keeps its front edge: the cleanest kit-off look.</li><li>The wing doesn't dent; the tenon stays the fuse.</li></ul></div>
+      <div><b class="bad">Against</b><ul><li>Bulky clamp on the blade's front: the look the owner rejected before.</li><li>Still short of 900 N.</li><li>Big prints, and the child-side jaw sits next to the strap slit.</li></ul></div></div>
     </div>
   </div>
 </section>
-<section id="optC">
-  <h2><span class="tag">C</span> Tall tongue (15.8 × 64)</h2>
+
+<section id="opt3">
+  <h2><span class="tag">Option 3</span> Tongue as built + load test</h2>
   <div class="grid">
     <div>
-      <div class="v" id="C-v"><div class="load">Loading…</div></div>
-      <div class="row" id="C-c1"></div><div class="row" id="C-c2"></div><div class="row" id="C-c3"></div><p class="st" id="C-st"></p>
+      <div class="v" id="asis-v"><div class="load">Loading…</div></div>
+      <div class="row" id="asis-c1"></div><div class="row" id="asis-c2"></div><p class="st" id="asis-st"></p>
     </div>
     <div>
-      <div class="d" id="C-d"></div>
-      <p><b>What it is:</b> today's tongue at the same width but <b>64 mm tall</b> instead of 32, inside the height the chair's old mount used. The nose grows to 69 mm and the cheek swell is carried up to z 281. The push button, latch and nose look stay the same. CLEARANCES</p>
-      <p><b>Looks:</b> kit on, a 69 mm nose that looks like today's, only taller. Kit off, a 69 mm notch with a tall slot whose mouth is rounded and slightly flared ("exhaust tip"); the blank cap closes it.</p>
-      <p><b>Strength:</b> <span class="good">≈ 2.5 at a 300 N lean with the root stress concentration (≈ 4 nominal)</span>, CAD agent's hand estimate. The lever is the same as A's, but the section is twice as tall.</p>
-      <div class="cov" id="C-cov"></div>
+      <div class="d" id="asis-d"></div>
+      <p><b>What it is:</b> the round-5 build with nothing added. Print it and load-test it to find out whether the hand estimate is too pessimistic.</p>
+      <p><b>Where it would give way first</b> (red in 3D, weakest first): (1) the wing's slot mouth dents locally from about 170–240 N; (2) the tongue root at about 195–285 N; (3) the tenon, the planned weak point, at about 350–410 N in a corner knock.</p>
+      <p><b>The planned load test:</b> pad on the long arm, 300 N outward at the pad centre, then 150 N forward pull. Watch the slot mouth (z 214–223), the skin behind the catch groove and the tongue at the mouth. The model expects the first damage below 300 N.</p>
+      <p><b>Looks:</b> the slimmest: only the 40 mm nose shows. Kit off: the notch needs its blank cap.</p>
+      <p><b>Strength (300 N lean / 300 N corner / 900 N):</b> <span class="bad">≈ 1.0–1.5 / 0.65–1.0 / ≈ 0.2–0.3</span>.</p>
+      <div class="pc"><div><b class="good">For</b><ul><li>Already built; the slimmest look.</li><li>A test is cheap and settles the question.</li></ul></div>
+      <div><b class="bad">Against</b><ul><li>Below target by the estimate; the wing could dent first, and the wing is the chair.</li><li>If the test fails, we're back to option 1 or 2.</li></ul></div></div>
     </div>
   </div>
+</section>
+
+<section id="opt4">
+  <h2><span class="tag">Option 4</span> Three-prong plug (the owner's carbon idea)</h2>
+  <div class="grid">
+    <div>
+      <div class="v" id="prong-v"><div class="load">Loading…</div></div>
+      <div class="row" id="prong-c1"></div><div class="row" id="prong-c2"></div><p class="st" id="prong-st"></p>
+    </div>
+    <div>
+      <div class="d" id="prong-d"></div>
+      <p><b>What it is:</b> the solid tongue as built (latch out of the tongue), plus <b>two solid Ø8 carbon rods</b> fixed in a 69 mm nose, 24 mm above and 24 mm below the tongue. Like a three-pin mains plug, the rods slide front-to-back with the tongue into blind holes in the blade. Four <b>Ø2 carbon rods</b> run through the tongue's corners into the arm. The rods carry most of the twist and bear on thick blade, not on the slot's thin walls. Make them 2–3 mm longer than the tongue so they also act as guide pins: the mount centres itself as it goes in.</p>
+      <p><b>Measured on the wing</b> (bores Ø8.2, kept ≥ 3 mm from strap slit S1 and from both blade faces): lower rod at z 206: <b>18 mm deep</b>, 3.2 mm to S1, walls 5.8 mm. Upper rod at z 254: <b>18 mm deep</b>, 4.3 mm to S1, <b>3.4 mm to the filled M5 hole</b>, walls 7.2 mm. S1 limits both holes to about 18 mm, less than the research's ~24 mm, so expect the lower end of the strength range.</p>
+      <p><b>Looks:</b> kit on, everything is hidden: only the 69 mm nose shows, with hairline seams. Kit off, the front edge shows a 69 mm notch with the slot and two round holes, all with flared, radiused mouths: a deliberate three-opening pattern, like a twin exhaust. From the front it is still a bite out of the edge, so it needs a blank cap with the same three prongs. Side and back views: pass.</p>
+      <p><b>Strength (research estimate, mount_research.md):</b> 300 N lean <span class="good">≈ 2.5–5, about 3 typical</span> (≈ 2.2–4 with strength.md's 24 N·m); 300 N corner knock ≈ 1.9–3.4; <span class="bad">900 N ≈ 0.6–1.1</span>. It is limited by the PETG bearing at the hole mouths and ends.</p>
+      <div class="pc"><div><b class="good">For</b><ul><li>Everything is hidden; the slimmest strong option.</li><li>No extra part, and no arm-rest change.</li><li>The guide pins make it easier to put on.</li><li>Also stiffens roll (the rods are 48 mm apart).</li></ul></div>
+      <div><b class="bad">Risks</b><ul><li>The holes must be a tight fit: crush ribs, or ream to 8.0 by hand.</li><li>Stock rod quality varies widely: do a 3-point bend test on one rod first.</li><li>Hot car (~60 °C): PETG drops to about 1/3 strength (all printed options share this).</li><li>A 69 mm notch: needs the three-prong blank cap when the kit is off.</li><li>Rods are fitted at a print pause (an extra step).</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="opt5">
+  <h2><span class="tag">Option 5</span> More, better-placed slots, shorter arms</h2>
+  <div class="grid">
+    <div>
+      <div class="v" id="slots-v"><div class="load">Loading…</div></div>
+      <div class="row" id="slots-c1"></div><div class="row" id="slots-c2"></div><p class="st" id="slots-st"></p>
+    </div>
+    <div>
+      <div class="d" id="slots-d"></div>
+      <p class="box"><b>Main finding:</b> shorter arms barely help: <b>safety 0.95 → 1.10</b> at a 300 N lean. The twist on the mount comes from the pad sitting about <b>80 mm in front of the wing</b>, and that distance is the same at every height. A slot at the pad's height removes the up-and-down lever, not the forward one.</p>
+      <p><b>Layouts</b> (pick with the buttons; ★ is the CAD agent's pick among the slot layouts):</p>
+      <table><thead><tr><th>Layout</th><th>Slots (z)</th><th>Pad heights served</th><th>SF lean / corner, 300 N</th><th>Bare wing</th></tr></thead><tbody>
+        <tr><td>1 slot (today)</td><td>227</td><td>all 6 (172–282) with long and short arms</td><td class="bad">0.95 / 0.65 worst; 1.1 / 0.73 best</td><td>one notch at mid-height</td></tr>
+        <tr><td>2 slots ★</td><td>227 + 271 (swell carried up to z 291)</td><td>227: 172–238; 271: 260 / 282</td><td class="bad">0.95–1.1 / 0.65–0.73</td><td>two equal slots 44 mm apart: a "double vent"</td></tr>
+        <tr><td>3 slots</td><td>no room below 207; a 3rd could only go to z ≈ 315</td><td>no pad height served</td><td>–</td><td>no benefit</td></tr>
+        <tr><td>1 slot + 2 Ø8 prongs</td><td>227 (+ bores ≈ 203 / 251)</td><td>all 6</td><td class="warn">1.6–2.6 / 1.1–1.8 (drop 55); 2.0–3.3 / 1.3–2.2 (drop 0)</td><td>slot + two round holes: a "three-dot" pattern (option 4)</td></tr>
+      </tbody></table>
+      <div class="cov" id="slots-cov"></div>
+      <p><b>Looks:</b> two slots read as a deliberate double vent on the front edge, and the swell grows 14 mm taller. Kit on, the second carrier looks the same as the first, one slot higher. Kit off, both notches need caps.</p>
+      <div class="pc"><div><b class="good">For</b><ul><li>Shorter, simpler arms for the upper heights.</li><li>A tidy, symmetric pattern on the wing.</li></ul></div>
+      <div><b class="bad">Against</b><ul><li>Barely stronger (1.1 at best): the forward 80 mm stays.</li><li>A second notch to cap; a taller swell.</li><li>Only pays off together with the prongs.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="opt6">
+  <h2><span class="tag">Option 6</span> Socket in the child-side face</h2>
+  <div class="grid">
+    <div>
+      <div class="v" id="socket-v"><div class="load">Loading…</div></div>
+      <div class="row" id="socket-c1"></div><div class="row" id="socket-c2"></div><p class="st" id="socket-st"></p>
+    </div>
+    <div>
+      <div class="d" id="socket-d"></div>
+      <p><b>What it is (the CAD agent's recommendation):</b> a shallow, wide pocket in the wing's <b>child-side face</b>, about 25 front-to-back × 32 tall × 14 deep, at mount height. The carrier is a plug that goes in from the child's side. Its rim stands about 4 mm proud and feathers into the wing. The arm leaves the plug straight toward the pad. The twist is taken by the pocket's front and back walls bearing over a large area. A lean pushes the plug <i>in</i>; only an inward knock pulls it out, and the latch takes that.</p>
+      <p><b>Fit with a child:</b> in the rough check, the large 5-year-old's upper arm <b>touches</b> the rim and the small 2-year-old clears it by about 12 mm. Use the child buttons to see it. The torso and upper arm are rough proxies from the measurement table (a small 2-year-old and a large 5-year-old). The label shows how far the upper arm stays from the mount.</p>
+      <p><b>Looks:</b> kit on, the parent's side and the front edge are untouched; on the child's side a soft 4 mm rim sits round the plug, at shoulder height. Kit off: one shallow rounded pocket on the child side, and nothing on the outside or the front. Side (outer) and front views: pass; child side: a neat rounded recess.</p>
+      <p><b>Strength (rough hand estimates, mount_options.md):</b> plug <span class="good">≈ 5–8</span>, pocket wall bearing <span class="good">≈ 6.5</span> at a 300 N lean; corner knock and 900 N not estimated yet.</p>
+      <div class="pc"><div><b class="good">For</b><ul><li>The strongest estimates of any slim option.</li><li>Front edge and parent side stay intact.</li><li>A lean pushes it home rather than out.</li></ul></div>
+      <div><b class="bad">Against</b><ul><li>The mount is on the child's side at shoulder height: check for rubbing.</li><li>New arm shapes (they leave from the inner face).</li><li>The pocket is 25 long, not 28: the front 3 mm of the blade is kept as wall.</li><li>Estimates only; needs the CAD build and the contact-model check.</li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="opt7">
+  <h2><span class="tag">More</span> Other research ideas</h2>
+  <p class="mu">The rest of the carbon research (a vertical cross-rod key, a fixed pin with a forked tongue, twin rods without a tongue) ranks below option 4; see viewer/review_r5/mount_research.md.</p>
+</section>
+
+<section id="family">
+  <h2>Family look</h2>
+  <p>The chair's other add-ons, for the look to match: one soft, rounded body hugging the chair (headrest pod), and a clip sitting in a shallow recess with a ramp and a large rim radius (pommel). Options 4 and 6 follow the same language: everything hidden, or a soft rim on a shallow recess.</p>
+  <div class="fam"><figure><img src="img/fam_headrest_pod.png" alt="Headrest button pod"><figcaption>Headrest pod</figcaption></figure><figure><img src="img/fam_pommel_recess.png" alt="Pommel in its shallow recess"><figcaption>Pommel in its shallow seat recess</figcaption></figure></div>
 </section>
 
 
 <section id="compare">
-  <h2>Side by side, against A (today's tongue)</h2>
-  <table><thead><tr><th></th><th>A · Current tongue</th><th>B · + two carbon prongs</th><th>C · Tall tongue</th></tr></thead><tbody>
-    <tr><td><b>Strength</b>, 300 N lean / corner</td><td class="lose">0.95 / 0.65 (1.49 / 1.01 nominal)</td><td>≈ 1.6–2.6 / 1.1–1.8 (prongs take 35–70 % of the twist; rod grade and fit decide)</td><td class="win">≈ 2.5 with the root stress concentration (≈ 4 nominal); corner ≈ 1.7 (scaled)</td></tr>
-    <tr><td><b>Look, kit on</b></td><td>40 mm nose, hairline seams</td><td>69 mm nose, hairlines; prongs hidden</td><td>69 mm nose, hairlines; same look, taller</td></tr>
-    <tr><td><b>Look, kit off</b></td><td>40 mm notch + slot (blank cap)</td><td class="lose">69 mm notch + slot + 2 round holes (cap with prongs)</td><td>69 mm notch + tall slot with a rounded mouth (cap)</td></tr>
-    <tr><td><b>Seating</b> (child, kit on / off)</td><td colspan="3" id="seat-row">see each option: nothing on the child's side changes; numbers in the views</td></tr>
-    <tr><td><b>Ease of use</b></td><td>press, slide back, click; press, pull</td><td>same; a little stiffer to slide on (the prongs guide it in)</td><td>same as A</td></tr>
-    <tr><td><b>Part count</b></td><td>carrier, button, sleeve, spring</td><td class="lose">+ 2 Ø8 carbon rods (+ 4 Ø2) set in at a print pause</td><td class="win">same as A</td></tr>
-    <tr><td><b>Print risk</b></td><td>slot ceiling bridge; wedge and rib fit</td><td class="lose">+ straight, tight-fit holes in the wing; rod bond; stock rod quality</td><td>taller slot bridge; the swell grows by 4 mm up to z 281</td></tr>
-    <tr><td><b>Pad heights</b></td><td>172–282, six heights</td><td>same as A</td><td>same arms: 186.5–296.5 (mount 14.5 higher); new arm drops would restore 172</td></tr>
+  <h2>Comparison</h2>
+  <table><thead><tr><th>Option</th><th>300 N lean</th><th>300 N corner</th><th>900 N</th><th>Wing dents first?</th><th>Look, kit on</th><th>Look, kit off</th><th>Cost</th></tr></thead><tbody>
+    <tr><td>1 · Tongue + stay</td><td class="good">≈ 3–8</td><td class="good">similar</td><td class="warn">not estimated</td><td class="good">no</td><td>slim nose + a post under the pad</td><td>notch + cap; 2 inserts on the arm rest</td><td>extra part (2–3 lengths), arm rest change</td></tr>
+    <tr><td>2 · Thick saddle</td><td class="good">≈ 5.0</td><td class="good">≈ 3.5</td><td class="bad">≈ 1.2</td><td class="good">no</td><td class="bad">bulky clamp, 12 mm jaws</td><td class="good">edge intact, small catch notch</td><td>big prints; wing unchanged</td></tr>
+    <tr><td>4 · Three-prong plug</td><td class="good">≈ 2.5–5 (≈ 3)</td><td class="warn">≈ 1.9–3.4</td><td class="bad">≈ 0.6–1.1</td><td class="good">no (bears on thick blade)</td><td class="good">slim, all hidden</td><td>69 mm notch + 3 openings; cap</td><td>rods at a print pause; tight holes; rod bend test</td></tr>
+    <tr><td>3 · Tongue as built</td><td class="bad">≈ 1.0–1.5</td><td class="bad">≈ 0.65–1.0</td><td class="bad">≈ 0.2–0.3</td><td class="bad">yes, from ≈ 170–240 N</td><td class="good">slimmest</td><td>notch + cap</td><td>none; a load test</td></tr>
+    <tr><td>5 · Two slots (★ layout)</td><td class="bad">≈ 0.95–1.1</td><td class="bad">≈ 0.65–0.73</td><td class="bad">≈ 0.2–0.3</td><td class="bad">yes</td><td class="good">slim; double vent</td><td>two notches + caps</td><td>a 2nd slot, taller swell</td></tr>
+    <tr><td>6 · Child-side socket</td><td class="good">≈ 5–8 (plug), 6.5 (bearing)</td><td class="warn">not estimated</td><td class="warn">not estimated</td><td class="good">no (large bearing)</td><td>parent side clean; 4 mm rim on the child side</td><td class="good">edge intact; one rounded pocket on the child side</td><td>new arm shapes; fit check with the child</td></tr>
+    <tr><td class="mu">Slim saddle (dropped)</td><td class="bad">≈ 0.2</td><td class="bad">≈ 0.15</td><td class="bad">–</td><td>–</td><td>neat</td><td>edge intact</td><td>jaws bend</td></tr>
   </tbody></table>
-  <p class="rec" id="rec"><b>Recommendation: C, the tall tongue.</b> It keeps today's look, push button and parts, and in the estimate it is the only one near the target (≈ 2.5 against 3), without carbon or new techniques. B is the fallback if a taller nose is unwelcome, after a rod bend test and a one-prong coupon. A alone stays below 1.</p>
-</section>
-
-<section id="also">
-  <details><summary>Also considered (not in the running)</summary>
-  <ul>
-    <li><b>Tongue + support stay</b> to the arm rest: ≈ 3–8 at a 300 N lean with a short post, but an extra part in 2–3 lengths, a visible post under the pad and an arm-rest change.</li>
-    <li><b>Thick saddle</b> (12–14 mm jaws over both faces): ≈ 3.5–5 / 2.4–3.5, but a bulky clamp on a 20 mm blade. Thin 3 mm jaws: ≈ 0.2 (they bend).</li>
-    <li><b>More, better-placed slots</b> (shorter arms): ≈ 0.95 → 1.10 only: the twist comes from the pad sitting 80 mm in front of the wing, and that doesn't change.</li>
-    <li><b>Child-side socket</b> (flush plug in the inner face): seating is fine, and a recess with rounded lips when the kit is off. But the plug can only be about 10 mm thick in a 20 mm blade, so it fails at ≈ 0.83 / 0.57.</li>
-  </ul></details>
+  <p class="rec"><b>Recommendation: option 4 (three-prong plug) or option 6 (child-side socket); the fit decides.</b> Option 6 has the highest strength estimates of the slim options and keeps the front edge and the parent's side untouched. But in the rough fit check the large 5-year-old's upper arm <b>touches</b> its rim; the small 2-year-old clears it by about 12 mm. So check option 6 with a real child first. If it rubs, choose <b>option 4</b>: everything hidden, about 3 at a 300 N lean, after a rod bend test and a one-prong coupon. Option 1's stay can be added to either. Option 5 alone does not reach the target.</p>
 </section>
 </main>
 <script type="module">
-import { mountReview } from './options.js';
-mountReview().then((o) => { const r = {}; for (const k in o) r[k] = o[k].clearances(); window.__clear = r;
-  const row = document.getElementById('seat-row'); if (row && r.A) { const f = (k) => Object.entries(r[k]).map(([n, d]) => `${n}: ${d > 0 ? d + ' mm' : 'touches'}`).join('; ');
-    row.outerHTML = ['A', 'B', 'C'].map((k) => `<td>${r[k] ? f(k) : ''}</td>`).join(''); } })
-  .catch((e) => { console.error(e); document.querySelectorAll('.load').forEach((l) => l.textContent = 'Failed to load: ' + e.message); });
+import { mountOptions } from './options.js';
+mountOptions().catch((e) => { console.error(e); document.querySelectorAll('.load').forEach((l) => l.textContent = 'Failed to load: ' + e.message); });
 </script>
 </body>
 </html>
