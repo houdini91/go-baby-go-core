@@ -1,0 +1,154 @@
+{
+ "Kt 1.8/1.3 (as r5b roots)": {
+  "lean 300": {
+   "tongue": 1.57,
+   "wall_peak": 1.61,
+   "wall_mean": 3.45,
+   "tooth_F": 687
+  },
+  "corner 300": {
+   "tongue": 1.09,
+   "wall_peak": 1.15,
+   "wall_mean": 2.5,
+   "tooth_F": 932
+  },
+  "lean 600": {
+   "tongue": 0.78,
+   "wall_peak": 0.81,
+   "wall_mean": 1.72,
+   "tooth_F": 1374
+  },
+  "corner 600": {
+   "tongue": 0.55,
+   "wall_peak": 0.58,
+   "wall_mean": 1.25,
+   "tooth_F": 1865
+  },
+  "lean 900": {
+   "tongue": 0.52,
+   "wall_peak": 0.54,
+   "wall_mean": 1.15,
+   "tooth_F": 2062
+  },
+  "corner 900": {
+   "tongue": 0.36,
+   "wall_peak": 0.38,
+   "wall_mean": 0.83,
+   "tooth_F": 2797
+  }
+ },
+ "nominal": {
+  "lean 300": {
+   "tongue": 1.88,
+   "wall_peak": 1.61,
+   "wall_mean": 3.45,
+   "tooth_F": 687
+  },
+  "corner 300": {
+   "tongue": 1.31,
+   "wall_peak": 1.15,
+   "wall_mean": 2.5,
+   "tooth_F": 932
+  },
+  "lean 600": {
+   "tongue": 0.94,
+   "wall_peak": 0.81,
+   "wall_mean": 1.72,
+   "tooth_F": 1374
+  },
+  "corner 600": {
+   "tongue": 0.66,
+   "wall_peak": 0.58,
+   "wall_mean": 1.25,
+   "tooth_F": 1865
+  },
+  "lean 900": {
+   "tongue": 0.63,
+   "wall_peak": 0.54,
+   "wall_mean": 1.15,
+   "tooth_F": 2062
+  },
+  "corner 900": {
+   "tongue": 0.44,
+   "wall_peak": 0.38,
+   "wall_mean": 0.83,
+   "tooth_F": 2797
+  }
+ },
+ "outer root R2 (Kt 1.4/1.3)": {
+  "lean 300": {
+   "tongue": 1.73,
+   "wall_peak": 1.61,
+   "wall_mean": 3.45,
+   "tooth_F": 687
+  },
+  "corner 300": {
+   "tongue": 1.2,
+   "wall_peak": 1.15,
+   "wall_mean": 2.5,
+   "tooth_F": 932
+  },
+  "lean 600": {
+   "tongue": 0.86,
+   "wall_peak": 0.81,
+   "wall_mean": 1.72,
+   "tooth_F": 1374
+  },
+  "corner 600": {
+   "tongue": 0.6,
+   "wall_peak": 0.58,
+   "wall_mean": 1.25,
+   "tooth_F": 1865
+  },
+  "lean 900": {
+   "tongue": 0.58,
+   "wall_peak": 0.54,
+   "wall_mean": 1.15,
+   "tooth_F": 2062
+  },
+  "corner 900": {
+   "tongue": 0.4,
+   "wall_peak": 0.38,
+   "wall_mean": 0.83,
+   "tooth_F": 2797
+  }
+ },
+ "+ 2 \u00d82 corner rods (4.8 N.m yaw relief), Kt 1.8/1.3": {
+  "lean 300": {
+   "tongue": 1.72,
+   "wall_peak": 1.92,
+   "wall_mean": 4.14,
+   "tooth_F": 586
+  },
+  "corner 300": {
+   "tongue": 1.17,
+   "wall_peak": 1.3,
+   "wall_mean": 2.83,
+   "tooth_F": 831
+  },
+  "lean 600": {
+   "tongue": 0.82,
+   "wall_peak": 0.88,
+   "wall_mean": 1.88,
+   "tooth_F": 1273
+  },
+  "corner 600": {
+   "tongue": 0.57,
+   "wall_peak": 0.61,
+   "wall_mean": 1.33,
+   "tooth_F": 1763
+  },
+  "lean 900": {
+   "tongue": 0.54,
+   "wall_peak": 0.57,
+   "wall_mean": 1.22,
+   "tooth_F": 1960
+  },
+  "corner 900": {
+   "tongue": 0.37,
+   "wall_peak": 0.4,
+   "wall_mean": 0.87,
+   "tooth_F": 2695
+  }
+ }
+}

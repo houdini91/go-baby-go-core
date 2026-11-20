@@ -58,4 +58,4 @@ The plug is the limit. Reaching SF 3 at 300 N would need a plug about 17 mm thic
 ## 5. Recommendation
 - Do not build Option 6 as the strength fix. It is clean for seating, but the blade's 20 mm thickness caps the plug, and its SF is lower than today's tongue.
 - The thing that actually raises the yaw capacity is the **section of the connector**. PETG at SF 3 needs a section modulus of about 1800–2700 mm³: for example a 15.8 mm wide tongue 64–69 mm tall (inside a cheek-width envelope), or the tongue plus Ø8 prongs.
-- Of the flush, child-safe options, I would test **Option 4 (prongs)** next, or a **tall tongue** (15.8 × 64 in the old mount's envelope; nominal SF ≈ 4, ≈ 2.5 with the root stress concentration, hand estimate).
+- Of the flush, child-safe options, I would test **Option 4 (prongs)** next, or a **tall tongue** (15.8 × 64 in the old mount's envelope). Checked properly in tall_tongue.md: SF 1.57 / 1.09 at 300 N (lean / corner), so it needs the prongs too.

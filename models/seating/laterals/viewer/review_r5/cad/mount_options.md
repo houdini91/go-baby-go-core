@@ -114,4 +114,4 @@ Offsets of the pad centre from the mount (tongue reference, world):
 ### Recommendation (corrected 2026-11-20)
 - The inner-face socket is NOT the strong option: its plug is capped at ~10 mm by the blade (option6.md).
 - No slot placement reaches SF 3, because the 80 mm forward offset sets the yaw.
-- The strength has to come from the connector section. The candidates are the tongue plus Ø8 prongs (Option 4), or a tall 15.8 × 64 tongue in the old mount's envelope.
+- The strength has to come from the connector section. The candidates are the tongue plus Ø8 prongs (Option 4), or a tall 15.8 × 64 tongue in the old mount's envelope (SF 1.57 / 1.09 alone, tall_tongue.md; it needs the prongs to reach 3).
