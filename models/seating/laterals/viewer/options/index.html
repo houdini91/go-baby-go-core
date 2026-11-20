@@ -47,7 +47,7 @@ td.win{background:light-dark(#e9f7ef,#12301f)}td.lose{background:light-dark(#fde
 <body><main>
 <h1>Side pad: how to hold the arm on the wing</h1>
 <p>A focused review of the mounts still in the running, each on the real chair (left side, the Onshape round-5 build):</p>
-<ul><li><b>A · Current tongue</b> (as built): the baseline.</li><li><b>B · Tongue + two carbon prongs</b>.</li><li><b>C · Tall tongue</b>: today's tongue, but 64 mm tall instead of 32 (with an R2 root and two Ø2 corner rods).</li><li><b>D · Tall tongue + two carbon prongs</b>: C plus two Ø8 carbon rods beside the tongue.</li></ul>
+<ul><li><b>A · Current tongue</b> (as built): the baseline.</li><li><b>B · Tongue + two carbon prongs</b>.</li><li><b>C · Tall tongue</b>: today's tongue, but 64 mm tall instead of 32 (with an R2 root and two Ø2 corner rods).</li><li><b>D · Tall tongue + two carbon prongs</b>: C plus two Ø8 carbon rods beside the tongue.</li><li><b>New study: hide the mount</b> (side pocket, H5): see the study section below.</li></ul>
 <p>For each one you get a labelled exploded view, a top-down cut showing how it resists a child leaning on the pad, a step-through of connecting and releasing it with the push button, and a check of the child's seating with the kit on and off. A side-by-side table against A is at the end.</p>
 <div class="legend"><span><i style="background:#d8d4cc"></i>chair (wing)</span><span><i style="background:#e9edf2"></i>kit (carrier, nose, tongue)</span><span><i style="background:#ff6a2a"></i>push button / orange "not latched" ring</span><span><i style="background:#1d1f22"></i>carbon rod</span><span><i style="background:#5d82b5"></i>kit, cut face</span><span><i style="background:#8b867c"></i>wing, cut face</span><span><i style="background:#e8b89a"></i>child (rough proxy)</span><span><i style="background:#e0302a"></i>forces</span></div>
 <p class="box"><b>Strength numbers</b> are safety factors at a 300 N lean on the pad (1 = at the limit; target 3), from the CAD agent's hand estimates (viewer/review_r5/cad/mount_options.md, tall_tongue.md, mount_research.md). They are estimates, not tests.</p>
@@ -118,6 +118,57 @@ td.win{background:light-dark(#e9f7ef,#12301f)}td.lose{background:light-dark(#fde
       <p><b>Risks:</b> tight-fit holes (crush ribs), stock rod quality (3-point bend test first), the rods set in at a print pause, and a tall 101 mm nose.</p>
     </div>
   </div>
+</section>
+
+<section id="hidden">
+  <h2><span class="tag">Study</span> Keep the push-button tongue, make it as strong as possible, and hide the mount</h2>
+  <p>The owner's direction: keep today's concept (push-button tongue, same quick release); carbon prongs optional per arm; the no-prong version as strong as possible; and <b>no hole in the wing seen from the front</b>. Elsewhere the opening may show, but it must look like a deliberate, rounded "exhaust tip", never a cut-through.</p>
+
+  <h3>1 · How strong can the no-prong tongue get?</h3>
+  <p>The CAD agent's contact model (strength_r5b/tall.py, unchanged method; only the tongue height changes; R2 outer root). At 64 mm it reproduces the CAD agent's numbers. "First gives" is 300 N × the lowest safety factor of: the wing's slot wall (dent onset), the tongue, the arm (1.90 / 1.24) and the tenon fuse (2.87 / 1.16).</p>
+  <table><thead><tr><th>Front-edge tongue, no prongs</th><th>Tongue SF lean / corner</th><th>Wing dent onset</th><th>First gives (lean / corner)</th></tr></thead><tbody>
+    <tr><td>64 mm tall (C)</td><td>1.73 / 1.20</td><td class="lose">484 / 346 N</td><td class="lose">484 / 346 N: the WING dents</td></tr>
+    <tr><td>80 mm tall</td><td>1.76 / 1.26</td><td>601 / 432 N</td><td class="win">529 N: tongue / 348 N: tenon fuse (kit parts)</td></tr>
+    <tr><td>90 mm tall</td><td>1.76 / 1.27</td><td>673 / 484 N</td><td class="win">528 N: tongue / 348 N: tenon fuse (kit parts)</td></tr>
+  </tbody></table>
+  <p class="m">From about 80 mm tall, a reprintable kit part gives before the wing, even without prongs. The tongue's own number stops rising, because the model's twist term keeps tall.py's 32 mm height (conservative). But this is still a front-edge tongue: <b>it shows a notch from the front</b>, which the owner now rules out. That is why the layouts below matter.</p>
+
+  <h3>2 · Where can the entry go?</h3>
+  <table><thead><tr><th>Layout</th><th>Verdict</th><th>Why (measured on the real chair)</th></tr></thead><tbody>
+    <tr><td>H1 · Underside (tongue goes up into the tip)</td><td class="lose">not possible</td><td>The wing tip sits on the arm rest: the gap is 0 to 0.4 mm along the whole tip (t' −12…20). There is no room for a hand or the carrier below it.</td></tr>
+    <tr><td>H2 · Front entry under a cowl</td><td class="lose">not possible</td><td>An opening that faces forward is always visible from the front. A cowl that hid it would have to open downwards, which runs into H1's arm rest.</td></tr>
+    <tr><td>H3 · Rear entry (from behind the wing)</td><td class="lose">not possible below z 260</td><td>A mouth at the back of the cheek sits at about y 124; the wing's rear edge, against the car wall, is at y 144. That leaves about 20 mm, against about 60 mm needed for the carrier's stroke (25), its body (15) and fingers (20). No hand or thumb room.</td></tr>
+    <tr><td>H4 · Top drop-in (into a bigger outer cheek)</td><td class="warn">possible, but weak</td><td>The twist on the mount becomes torsion of a vertical post: a 14 × 30 post gives about 1 at a 300 N lean (hand estimate). It also needs a cheek about 23 mm proud.</td></tr>
+    <tr><td><b>H5 · Side pocket on the parent's side, hook-and-drop</b></td><td class="good"><b>possible and strong</b></td><td>Front, back, child side and top stay whole. The opening is a rounded pocket on the outer face, recessed in the cheek. The plug goes in sideways, then drops 8 mm onto a hook. Plastic carries the lean (the hook) and the twist (the plug bends the strong way, walls 25 mm apart); the button only stops it lifting off.</td></tr>
+  </tbody></table>
+
+  <h3>3 · H5: side pocket with hook-and-drop</h3>
+  <div class="grid">
+    <div>
+      <div class="v" id="H5-v"><div class="load">Loading…</div></div>
+      <div class="row" id="H5-c1"></div><div class="row" id="H5-c2"></div><div class="row" id="H5-c3"></div><p class="st" id="H5-st"></p>
+    </div>
+    <div>
+      <div class="d" id="H5-d"></div>
+      <p><b>What it is:</b> a rounded pocket in the wing's outer (parent-side) face, 30 long × 42 tall × about 19 deep (down to d' 6, leaving a 10 mm inner wall), with a flared "exhaust tip" rim. The carrier's plug goes in sideways toward the child and drops 8 mm, so a hook at its foot sits under a lip in the pocket floor. A flange 6 mm proud covers the drop gap and feathers into the face. The push button on the flange's outer face only stops the plug lifting off; the plastic carries the load. Measured: 6.2 mm from strap slit S1, 21.8 mm above the z 186 hole, a 6.3 mm front wall and a 10.4 mm inner wall.</p>
+      <p><b>Load paths:</b> an outward lean pulls the plug outward along its insertion axis, and the hook carries that, not the latch. The twist (yaw) bends the 30 mm long plug the strong way, with the pocket's front and back walls about 25 mm apart (today: about 8 mm). Downward loads and gravity seat it on the hook. Only an upward load (lifting the pad) reaches the button's block.</p>
+      <p><b>Connect / release (parent):</b> from the parent's side, put the plug into the pocket, push it in, let it drop: it clicks. To release, press the button, lift 8 mm, pull outward. The button is on the parent's side, facing outward. <b>It needs hand room beside the car's side wall</b> (about 25 mm stroke plus fingers outboard of the flange). That depends on the car and is not checked. <b>The mock carrier also reaches x 178, 13 mm past the arm-rest line (x 165)</b>, because the arm leaves from the outer side: the arm path has to be tucked in CAD.</p>
+      <p><b>Arm and seating:</b> the arm leaves the flange's front and runs round the front edge to the pad, like today's arm. So the large 5-year-old's ~25 mm overlap with the arm is unchanged, and needs the same fit check. The child side of the wing is untouched with the kit on and off.</p>
+      <p><b>Strength (HAND ESTIMATES, not the contact model):</b> plug in yaw ≈ 7 lean / 5 corner; plug in twist ≈ 10; pocket wall bearing ≈ 8 / 5.4; the 6 mm front wall in shear ≈ 3.7 at a 300 N lean. So the mount is no longer the limit. The kit gives at the arm (≈ 570 N lean) and the tenon fuse (≈ 350 N corner), and the wing would not dent below about 1000 N. <b>Prongs are not needed</b> by this estimate. If wanted on an arm, two Ø8 rods along the insertion axis would sit inside the pocket, with keyhole bores for the drop: hidden, like everything else. <b>The CAD agent should run the contact model on H5 before it is trusted.</b></p>
+      <p><b>Mock limits:</b> the hook ledge, latch groove and spring are not modelled. The arm is a sweep of the 22 × 31 section along a simple curve. The connect animation moves along one diagonal instead of in then down. Two thin lines visible deep inside the pocket in the close-up are a mesh artefact of the mock, not geometry.</p>
+    </div>
+  </div>
+
+  <h3>4 · Compared with B, C and D</h3>
+  <table><thead><tr><th></th><th>B · tongue + prongs</th><th>C · tall tongue</th><th>D · tall + prongs</th><th>H5 · side pocket, hook-and-drop</th></tr></thead><tbody>
+    <tr><td>Hole from the front</td><td class="lose">69 mm notch + 2 holes</td><td class="lose">74 mm notch</td><td class="lose">101 mm notch + 2 holes</td><td class="win">none</td></tr>
+    <tr><td>First gives, lean / corner</td><td>≈ 480–780 / 330–540 N</td><td class="lose">wing dents 483 / 345 N</td><td class="win">arm 570 / fuse 350 N</td><td class="win">arm ≈ 570 / fuse ≈ 350 N (hand estimate)</td></tr>
+    <tr><td>Prongs</td><td>always</td><td>none</td><td>always</td><td>not needed (optional, hidden)</td></tr>
+    <tr><td>Use</td><td>press, slide back, click</td><td>same</td><td>same</td><td class="warn">push in from the side, drop, click; press, lift, pull out. Needs room beside the car wall</td></tr>
+    <tr><td>Looks, kit off</td><td>front notch</td><td>front notch</td><td>front notch</td><td>a rounded pocket on the parent's side only</td></tr>
+    <tr><td>Looks, kit on</td><td>nose in the front edge</td><td>same</td><td>same</td><td>a flange on the parent's side; the arm wraps the front edge</td></tr>
+  </tbody></table>
+  <p class="rec"><b>Recommendation:</b> <b>H5, the side pocket with hook-and-drop</b>. It is the only layout that keeps the front, child side and top whole, and by the hand estimate it is also the strongest without prongs: the kit's arm or fuse gives first, never the wing. Before CAD: (1) the CAD agent runs the contact model on H5; (2) check the hand room beside the car's side wall; (3) a fit check of the arm against a large 5-year-old. If H5 fails (2), the fallback is an 80 mm front-edge tongue (no prongs; kit gives before the wing), which shows a front notch.</p>
 </section>
 
 <section id="compare">

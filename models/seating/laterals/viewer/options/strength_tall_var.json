@@ -1,0 +1,50 @@
+{
+ "64 mm tall (z 214.3-278.3), R2 outer root": {
+  "lean": {
+   "tongue": 1.73,
+   "wing_peak": 1.61,
+   "first_gives_N": 484,
+   "part": "wing dent",
+   "wing_dent_N": 484
+  },
+  "corner": {
+   "tongue": 1.2,
+   "wing_peak": 1.15,
+   "first_gives_N": 346,
+   "part": "wing dent",
+   "wing_dent_N": 346
+  }
+ },
+ "80 mm tall (z 214.3-294.3), R2 outer root": {
+  "lean": {
+   "tongue": 1.76,
+   "wing_peak": 2.0,
+   "first_gives_N": 529,
+   "part": "tongue",
+   "wing_dent_N": 601
+  },
+  "corner": {
+   "tongue": 1.26,
+   "wing_peak": 1.44,
+   "first_gives_N": 348,
+   "part": "tenon fuse",
+   "wing_dent_N": 432
+  }
+ },
+ "90 mm tall (z 214.3-304.3), R2 outer root": {
+  "lean": {
+   "tongue": 1.76,
+   "wing_peak": 2.24,
+   "first_gives_N": 528,
+   "part": "tongue",
+   "wing_dent_N": 673
+  },
+  "corner": {
+   "tongue": 1.27,
+   "wing_peak": 1.61,
+   "first_gives_N": 348,
+   "part": "tenon fuse",
+   "wing_dent_N": 484
+  }
+ }
+}

@@ -19,7 +19,7 @@ const ease = (u) => u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u);
 const lerp = (a, b, u) => a + (b - a) * u;
 const COL = { chair: 0xd8d4cc, kit: 0xe9edf2, btn: 0xff6a2a, pad: 0xa9b6c2, foam: 0x22304d, carbon: 0x1d1f22, feat: 0x7b3fe4, skin: 0xe8b89a };
 const M = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .58, ...o });
-const SMOOTH = /^(prong_wing|prong_carrier|tall_wing|tall_kit|tallp_wing|tallp_kit)/;
+const SMOOTH = /^(prong_wing|prong_carrier|tall_wing|tall_kit|tallp_wing|tallp_kit|h5_)/;
 
 async function loadGeo() {
   const man = await (await fetch('geo.json', { cache: 'no-cache' })).json();
@@ -97,7 +97,7 @@ const OPT = {
   B: { title: 'three-prong plug', wing: 'prong_wing', kit: ['prong_carrier'], rods: 'prong_rods', btnAxis: () => dirD.clone().negate(), approach: () => sv(0, -70, 0), press: 4.0,
     labels: [['Ø8 carbon prong', [6, 12, 254.4]], ['Ø8 carbon prong', [6, 12, 206.4]], ['tongue', [10, 14, 232]], ['push button', [26, -6, 240]], ['69 mm nose', [8, -14, 264]], ['holes in the wing', [6, 4, 268], 'w'], ['slot', [10, 4, 222], 'w']],
     guides: [[[5.92, 19.4 - 70, 206.35], [5.92, 2, 206.35]], [[7.46, 19.6 - 70, 254.35], [7.46, 2, 254.35]], [[10, 25.5 - 70, 230], [10, 1, 230]]] },
-  C: null, D: null                                     // filled in from tall.json / tallp.json (gen_tall.py C / D)
+  C: null, D: null, H5: null                                     // filled in from tall.json / tallp.json (gen_tall.py C / D)
 };
 
 function optionView(el, rows, st, geo, key, cfg) {
@@ -110,7 +110,7 @@ function optionView(el, rows, st, geo, key, cfg) {
   for (const k of cfg.kit) kit.add(cm(geo[k], COL.kit, 0x5d82b5));
   if (cfg.rods) kit.add(cm(geo[cfg.rods], COL.carbon, 0x000000, { roughness: .35, metalness: .2 }));
   const button = new THREE.Group(); button.add(cm(geo[cfg.btn || 'btn_cad'], COL.btn, 0xb8471a, { roughness: .45 })); kit.add(button);
-  const sleeve = cm(geo[cfg.sleeve || 'sleeve_cad'], 0xff8f4a, 0xb8471a, { roughness: .45, emissive: 0x401000 }); kit.add(sleeve);
+  const sleeve = cfg.sleeve === 'none' ? new THREE.Group() : cm(geo[cfg.sleeve || 'sleeve_cad'], 0xff8f4a, 0xb8471a, { roughness: .45, emissive: 0x401000 }); kit.add(sleeve);
   const pad = new THREE.Group(); for (const [k, c] of [['depth', COL.kit], ['pad', COL.pad], ['ring', 0x5e6a77], ['cover', COL.foam]]) pad.add(cm(geo[(cfg.padPre || '') + k] || geo[k], c, 0x333333)); kit.add(pad);
   // labels (S-frame anchors) and the exploded view's dashed guide lines
   const labs = cfg.labels.map(([t, p, cls]) => ({ L: v.label(t, QS(...p), 'big ' + (cls || '')), p: QS(...p), wing: cls === 'w' }));
@@ -129,7 +129,8 @@ function optionView(el, rows, st, geo, key, cfg) {
     ['4 · To take it off: press the button again.', (u) => ({ k: 0, b: ease(u) })],
     ['5 · …and pull the carrier off. Let go of the button.', (u) => ({ k: ease(u), b: u > .97 ? 0 : 1 })]
   ];
-  const clickL = v.label('click', QS(28, -6, 252), 'grn big');
+  if (cfg.stepTexts) cfg.stepTexts.forEach((t, i) => { if (STEPS[i]) STEPS[i][0] = t; });
+  const clickL = v.label('click', cfg.clickAt ? QS(...cfg.clickAt) : QS(28, -6, 252), 'grn big');
   const pose = (s) => {
     kit.position.copy(APP.clone().multiplyScalar(s.k)); button.position.copy(AX.clone().multiplyScalar(cfg.press * s.b));
     clickL.on = !!s.click;
@@ -238,17 +239,17 @@ function loadBars(el) {
 }
 export async function mountReview() {
   const J = (f) => fetch(f, { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null);
-  const [geo, S, SP, O6, O7] = await Promise.all([loadGeo(), J('sections.json'), J('prong_sections2.json'), J('tall.json'), J('tallp.json')]);
+  const [geo, S, SP, O6, O7, O8] = await Promise.all([loadGeo(), J('sections.json'), J('prong_sections2.json'), J('tall.json'), J('tallp.json'), J('h5.json')]);
   const SECT = {
     A: { wing: S.tongue.wing, kit: S.tongue.kit, forces: [[19.5, 5, -1, 'outer wall'], [0.5, 13, 1, 'inner wall']], lever: [5, 13, '≈ 8 mm'],
       notes: [[22, -2, 'tongue', 'tl b'], [24, 28, 'wing', 'tl mu']] },
     B: { wing: SP.tongue.wing, kit: SP.tongue.kit, rods: SP.rod.rods, forces: [[19.5, 5, -1, 'tongue'], [0.5, 13, 1, ''], [11, 3.5, -1, 'prong'], [1, 18, 1, 'prong']], lever: [3.5, 18, '≈ 14 mm'],
       notes: [[20, 22, 'black: Ø8 prong (24 mm', 'tl'], [20, 26.5, 'above and below)', 'tl']] }
   };
-  for (const [k, O] of [['C', O6], ['D', O7]]) if (O) { OPT[k] = O.cfg; OPT[k].btnAxis = () => sv(...O.cfg.btnAxisS).normalize(); OPT[k].approach = () => sv(...O.cfg.approachS); OPT[k].close = () => [QS(...O.cfg.closeCam[0]), QS(...O.cfg.closeCam[1])]; SECT[k] = O.section; }
-  S.A = SECT.A; S.B = SECT.B; if (SECT.C) S.C = SECT.C; if (SECT.D) S.D = SECT.D;
+  for (const [k, O] of [['C', O6], ['D', O7], ['H5', O8]]) if (O) { OPT[k] = O.cfg; OPT[k].btnAxis = () => sv(...O.cfg.btnAxisS).normalize(); OPT[k].approach = () => sv(...O.cfg.approachS); OPT[k].close = () => [QS(...O.cfg.closeCam[0]), QS(...O.cfg.closeCam[1])]; SECT[k] = O.section; }
+  S.A = SECT.A; S.B = SECT.B; if (SECT.C) S.C = SECT.C; if (SECT.D) S.D = SECT.D; if (SECT.H5) S.H5 = SECT.H5;
   const out = {};
-  for (const key of ['A', 'B', 'C', 'D']) {
+  for (const key of ['A', 'B', 'C', 'D', 'H5']) {
     const q = (s) => document.getElementById(key + '-' + s);
     if (!q('v')) continue;
     if (!OPT[key]) { q('v').querySelector('.load').textContent = 'Geometry missing (run gen_tall.py).'; continue; }

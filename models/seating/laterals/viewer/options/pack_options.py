@@ -18,7 +18,7 @@ MESHES = [('armrest', 'raw:ps1_J_D'),
           ('wing_cad', 'wing_cad_fixed.stl'), ('car_cad', P(FIT, 'GBG-SP-AR-L-L-LO-r5.stl')), ('btn_cad', P(FIT, 'GBG-SP-BT-L-r5.stl')),
           ('sleeve_cad', P(FIT, 'GBG-SP-TS-r5_L.stl')), ('depth', P(FIT, 'GBG-SP-DP-D0-T0-r5_L.stl')), ('pad', P(FIT, 'GBG-SP-PD-r5_L.stl')),
           ('ring', P(FIT, 'GBG-SP-RG-r5_L.stl')), ('cover', P(FIT, 'GBG-SP-CV-r5_L.stl'))] + \
-         [(n, n + '.stl') for n in ('prong_wing', 'prong_carrier', 'prong_rods', 'tall_wing', 'tall_kit', 'tall_rods', 'tall_btn', 'tall_sleeve', 'tallp_wing', 'tallp_kit', 'tallp_rods')] + \
+         [(n, n + '.stl') for n in ('prong_wing', 'prong_carrier', 'prong_rods', 'tall_wing', 'tall_kit', 'tall_rods', 'tall_btn', 'tall_sleeve', 'tallp_wing', 'tallp_kit', 'tallp_rods', 'h5_wing', 'h5_kit', 'h5_btn')] + \
          [('feat_slits', P(MB, 'feat_slits.stl')), ('feat_tear', P(MB, 'feat_tear.stl')), ('feat_holes', P(MB, 'feat_holes.stl'))]
 def thin(a, tol=0.06):
     # simplify with manifold3d when the mesh is a valid solid (keeps the page small); otherwise keep it as it is
@@ -34,7 +34,7 @@ buf = bytearray(); man = []
 for name, f in MESHES:
     if not f.startswith('raw:') and not os.path.exists(f): print('MISSING', name, f); continue
     a = raw(f[4:]) if f.startswith('raw:') else stl(f)
-    a = thin(a, 0.02 if name.startswith(('prong_wing', 'prong_carrier', 'tall_wing', 'tall_kit', 'tallp_wing', 'tallp_kit')) else 0.06)
+    a = thin(a, 0.02 if name.startswith(('prong_wing', 'prong_carrier', 'tall_wing', 'tall_kit', 'tallp_wing', 'tallp_kit', 'h5_wing', 'h5_kit')) else 0.06)
     u, inv = np.unique(np.round(a * 500).astype(np.int64), axis=0, return_inverse=True)
     pos = (u / 500.0).astype(np.float32); idx = inv.reshape(-1).astype(np.uint32)
     o = len(buf); buf += pos.tobytes(); o2 = len(buf); buf += idx.tobytes()
