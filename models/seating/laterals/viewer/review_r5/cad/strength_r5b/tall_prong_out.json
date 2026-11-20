@@ -1,26 +1,26 @@
 {
- "prongs take 35 % yaw / 60 % twist": {
+ "prongs take 35 % yaw / 60 % twist (rods 0 for the wall)": {
   "lean": {
-   "tongue": 3.05,
-   "wall_peak": 3.23,
-   "tooth": 4.38
+   "tongue": 2.72,
+   "wall_peak": 2.45,
+   "tooth": 3.69
   },
   "corner": {
-   "tongue": 2.17,
-   "wall_peak": 2.18,
-   "tooth": 3.24
+   "tongue": 1.99,
+   "wall_peak": 1.8,
+   "tooth": 2.85
   }
  },
- "prongs take 50 % yaw / 70 % twist": {
+ "prongs take 50 % yaw / 70 % twist (rods 0 for the wall)": {
   "lean": {
-   "tongue": 3.6,
-   "wall_peak": 4.35,
-   "tooth": 5.01
+   "tongue": 3.2,
+   "wall_peak": 3.05,
+   "tooth": 4.19
   },
   "corner": {
-   "tongue": 2.63,
-   "wall_peak": 2.9,
-   "tooth": 3.77
+   "tongue": 2.38,
+   "wall_peak": 2.26,
+   "tooth": 3.27
   }
  }
 }

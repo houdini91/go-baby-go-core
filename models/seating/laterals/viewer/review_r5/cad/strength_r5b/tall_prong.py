@@ -17,5 +17,5 @@ def run2(kt_out, kt_in, rod_Nm, s, sr):
                     po = max(po, r['outer wall']['pmax']); ft = max(ft, r['tooth (latch)']['F'])
             out[nm] = dict(tongue=round(tongue_sf(rows, 2.0, kt_out, kt_in)[0], 2), wall_peak=round(25 / po, 2), tooth=round(25 / (ft / 77.0), 2))
     return out
-R = {f'prongs take {int(s*100)} % yaw / {int(sr*100)} % twist': run2(1.4, 1.3, 4.8, s, sr) for s, sr in ((0.35, 0.6), (0.5, 0.7))}
+R = {f"prongs take {int(s*100)} % yaw / {int(sr*100)} % twist (rods 0 for the wall)": run2(1.4, 1.3, 0.0, s, sr) for s, sr in ((0.35, 0.6), (0.5, 0.7))}
 print(json.dumps(R, indent=1)); json.dump(R, open('tall_prong_out.json', 'w'), indent=1)
