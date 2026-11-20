@@ -1,0 +1,26 @@
+{
+ "prongs take 35 % yaw / 60 % twist": {
+  "lean": {
+   "tongue": 3.05,
+   "wall_peak": 3.23,
+   "tooth": 4.38
+  },
+  "corner": {
+   "tongue": 2.17,
+   "wall_peak": 2.18,
+   "tooth": 3.24
+  }
+ },
+ "prongs take 50 % yaw / 70 % twist": {
+  "lean": {
+   "tongue": 3.6,
+   "wall_peak": 4.35,
+   "tooth": 5.01
+  },
+  "corner": {
+   "tongue": 2.63,
+   "wall_peak": 2.9,
+   "tooth": 3.77
+  }
+ }
+}
