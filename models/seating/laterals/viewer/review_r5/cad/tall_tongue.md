@@ -97,22 +97,26 @@ Method: `strength_r5b/tall_prong.py`, using the same contact model. The prongs r
 | Part | Prongs take 35 % yaw / 60 % twist | Prongs take 50 % / 70 % |
 |---|---|---|
 | Tongue | 3.05 / 2.17 | 3.60 / 2.63 |
-| Wing slot wall, peak bearing (dent onset) | 3.23 / 2.18 | 4.35 / 2.90 |
-| Tooth bearing | 4.4 / 3.2 | 5.0 / 3.8 |
+| Wing slot wall, peak bearing (dent onset; the Ø2 rods do not help here) | 2.45 / 1.80 | 3.05 / 2.26 |
+| Tooth bearing (no help from the rods either) | 3.7 / 2.9 | 4.2 / 3.3 |
 | Prong bores (from O1) | ≈ 2.5–3.5 / 1.75–2.4 | ≈ 2.5–3.5 / 1.75–2.4 |
 | Arm (r5b, unchanged) | 1.90 / 1.24 | 1.90 / 1.24 |
 | Tenon nut slot (the fuse) | 2.87 / 1.16 | 2.87 / 1.16 |
 
-**The mount itself reaches ≈ 2.2–3 at a corner knock and ≥ 2.5 in a lean.** The limit then moves to the arm (1.90 / 1.24) and the tenon fuse (1.16 corner, by design). So the system at 300 N is ≈ 1.9 / 1.16, and SF 3 for the whole kit would also need a stronger arm.
+**The mount itself reaches ≈ 1.75–2.6 at a corner knock and ≈ 2.45–3.6 in a lean.** The prong bores and the slot-wall bearing are the wing-side limits. The limit then moves to the arm (1.90 / 1.24) and the tenon fuse (1.16 corner, by design). So the system at 300 N is ≈ 1.9 / 1.16, and SF 3 for the whole kit would also need a stronger arm.
 
-## Load at which each variant first gives (lean / corner knock, N; ESTIMATE = 300 × lowest SF)
-| Variant | Lean (part) | Corner (part) |
-|---|---|---|
-| r5b tongue (as built) | ≈ 240 (wing dent) | ≈ 170 (wing dent) |
-| Tall tongue | ≈ 470 (tongue) | ≈ 330 (tongue) |
-| Tall + R2 root | ≈ 480 (wing dent) | ≈ 345 (wing dent) |
-| Tall + 2 Ø2 rods | ≈ 515 (tongue) | ≈ 350 (tenon fuse / tongue, a tie) |
-| Tall + R2 + 2 Ø2 rods | ≈ 570 (tongue / arm) | ≈ 350 (tenon fuse) |
-| Tall + R2 + rods + 2 Ø8 prongs | ≈ 570 (arm) | ≈ 350 (tenon fuse) |
+## Load at which each variant first gives (lean / corner knock, N; ESTIMATE = 300 × lowest SF). Corrected 2026-11-20
+**Correction to the earlier version of this table.** The Ø2 corner rods only strengthen the tongue's root (they bridge nose to tongue). They do not change how the moment reaches the wing: the slot walls still take it. My first "+ rods" runs applied the rods' yaw relief to the whole moment, which wrongly relieved the wing walls as well. The wall numbers below are now without rods. The R2 root changes only the tongue's stress concentration (its 1.5 mm shorter outer contact is not modelled, so the R2 rows' wing dent is slightly optimistic).
 
-With the prongs, a corner knock now breaks the tenon fuse first (≈ 350 N) and the wing dents only at ≈ 650 N. A centred lean breaks the arm first (≈ 570 N). That is the intended order for the corner knock, and the arm is a reprintable part.
+| Variant | Wing dent onset (lean / corner) | First kit part (lean / corner) | **First gives (lean / corner)** |
+|---|---|---|---|
+| r5b tongue (as built) | 240 / 170 (slot wall) | 285 / 195 (tongue) | **240 / 170: wing dents** |
+| Tall tongue | 483 / 345 (slot wall) | 471 / 327 (tongue) | **471 / 327: tongue** |
+| Tall + R2 root | 483 / 345 | 519 (tongue) / 350 (tenon fuse) | **483 / 345: wing dents** |
+| Tall + 2 Ø2 rods | 483 / 345 | 516 (tongue) / 350 (fuse; tongue 351) | **483 / 345: wing dents** |
+| **Tall + R2 + rods (C)** | **483 / 345** | ≈ 570 (tongue / arm) / 350 (fuse) | **483 / 345: wing dents** |
+| Tall + R2 + rods + 2 Ø8 prongs (35 % share) | 735 (slot wall) / 525 (prong bores) | 570 (arm) / 350 (fuse) | **570 / 350: arm (lean), tenon fuse (corner)** |
+| same, 50 % share | 750 (prong bores) / 525 (prong bores) | 570 / 350 | **570 / 350: arm, fuse** |
+
+- **For C (tall + R2 + 2 Ø2 rods), the wing starts to dent at ≈ 483 N in a lean and ≈ 345 N in a corner knock**, the same as the tall tongue alone. That comes before every kit part, so the wing gives first. The tenon fuse (≈ 350 N) is no better than a tie with the wing in a corner knock.
+- **Only with the Ø8 prongs does the wing stop limiting.** It dents from ≈ 735–750 N (lean) and ≈ 525 N (corner), at the prong bores. A corner knock then breaks the tenon fuse first (≈ 350 N), and a lean breaks the arm first (≈ 570 N).
