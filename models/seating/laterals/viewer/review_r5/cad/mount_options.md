@@ -93,7 +93,7 @@ Offsets of the pad centre from the mount (tongue reference, world):
   - Depth 24.5 is available.
 - **Without the swell (clean 20 mm blade):** 5.8 mm walls leave only a 7.5 mm wide tongue. Yaw capacity scales with width², so it is about 0.25 of today's tongue. Not viable.
 - **Top edge:** too far from every pad height.
-- **Inner (child-side) face near the front: the strong alternative.** A shallow, wide socket in the inner face, entered along +d:
+- **Inner (child-side) face near the front.** A shallow, wide socket in the inner face. **CORRECTED 2026-11-20 (see option6.md):** the yaw bends the plug across its ≤ 10 mm thickness, not its 28 mm length, so plug SF ≈ 0.8–1.0 at 300 N lean. The figures below are kept only to show the original estimate:
   - Socket: t −14…+14 (28 long), 32 tall, 14 deep, leaving a 6 mm outer wall. S1 starts at t ≈ 17, so clearance is ≥ 3.
   - The yaw is then a bearing couple on the socket's front and back walls (arm = depth 14): ≈ 1.7 kN on 450 mm², ≈ 3.8 MPa, **bearing SF ≈ 6.5**.
   - The plug's own section (28 × 32) is ~5× stiffer in yaw than today's tongue: **plug SF ≈ 5–8** (hand estimate).
@@ -108,10 +108,10 @@ Offsets of the pad centre from the mount (tongue reference, world):
 | **2 slots** | 227 + 271 (front edge; swell to z 291) | 227: 216/238 (drop 0, screw ±11) and 172/194 (drop 44/22 LOW). 271: 260/282 (drop 0) | none | 0-drop + S + L LOW at 227, 0-drop at 271: 3 shapes × L/R = 6 (one arm shape with no drop serves 4 heights) | 0.95–1.1 / 0.65–0.73 (the low heights stay at drop 22–44) | two equal exhaust-tip slots 44 mm apart (centre to centre), stacked on the front edge: reads as a deliberate double vent |
 | **3 slots** | 227 + 271 + (none below: no room) | as 2 slots | low heights still need a long LOW drop | as 2 slots | as 2 slots | a 3rd slot can only go higher (z ≈ 315, swell to 335); it serves no pad height (282 max), so no benefit |
 | **1 slot + 2 Ø8 prongs** | 227 (+ bores at ≈ 203 and ≈ 251) | all 6 (today's arms) | none | 8 (as today) | ≈ 1.6–2.6 / 1.1–1.8 at drop 55; ≈ 2.0–3.3 / 1.3–2.2 at drop 0 (prong grade and bearing decide) | one slot plus two Ø8 round holes above and below it (small, rounded): a "three-dot" pattern |
-| **Inner-face socket (alternative)** | 227 (child-side face, t −14…14) | all 6 via drops (same arm logic, shorter inboard reach) | none | 8 (arm shapes change: they leave from the inner face) | plug ≈ 5–8, bearing ≈ 6.5 (hand estimates) | one shallow rounded pocket on the child-side face; the parent side and the front edge stay intact |
+| Inner-face socket (alternative) | 227 (child-side face, t −14…14) | all 6 via drops | none | 8 | **plug ≈ 0.83 / 0.57 (corrected, option6.md)**; wing bearing fine | one shallow rounded pocket on the child-side face; the parent side and the front edge stay intact |
 | Stacked simultaneous tongues (side note) | 2 × 25.8 tall inside z 208–277 | as today | – | 8 | ≈ 2.3 / 1.6 (3.8 / 2.6 nominal) | double slot |
 
-### Recommendation
-- If the owner can accept the carrier on the child-side face, use **the inner-face socket**. It is the only layout that reaches SF ≥ 3 at 300 N in my estimates without a stay or a bulky saddle. It keeps the front edge and the parent side of the wing intact. The wing only gets one rounded shallow pocket.
-- Next step: a fit check against the child's arm at 2y P5 and 5y P95, then a CAD build and the contact-model check.
-- Shortening the reach with 2–3 front-edge slots does not get the tongue past SF ≈ 1.1. It only pays off combined with the Ø8 prongs, and even then only at the heights served at drop 0.
+### Recommendation (corrected 2026-11-20)
+- The inner-face socket is NOT the strong option: its plug is capped at ~10 mm by the blade (option6.md).
+- No slot placement reaches SF 3, because the 80 mm forward offset sets the yaw.
+- The strength has to come from the connector section. The candidates are the tongue plus Ø8 prongs (Option 4), or a tall 15.8 × 64 tongue in the old mount's envelope.
