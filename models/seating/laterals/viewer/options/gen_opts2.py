@@ -48,7 +48,7 @@ if '4' in sel:
     car4 = ((car + nose) - rods_m)
     car4 = max(car4.decompose(), key=lambda m: m.volume())
     wing4 = max((wing4 - mf.Manifold.batch_boolean(rodm[:2], mf.OpType.Add)).decompose(), key=lambda m: m.volume())   # only the Ø8 rods reach into the wing
-    wing4 = max((wing4 - box(-40, 60, -40, 0.5, NZ[0] + 4.0, NZ[1] - 4.0)).decompose(), key=lambda m: m.volume())   # clear slivers left inside the notch
+    wing4 = max((wing4 - box(-40, 60, -40, 0.5, NZ[0] + 1.0, NZ[1] - 1.0)).decompose(), key=lambda m: m.volume())   # clear slivers left inside the notch
     save_W(wing4, 'prong_wing.stl'); save_W(car4, 'prong_carrier.stl'); save_W(rods_m, 'prong_rods.stl')
     rep['4'] = dict(k_round=k, clash=round((car4 ^ wing4).volume(), 2), rods_clash=round((rods_m ^ wing4).volume(), 2))
     json.dump(dict(tongue=dict(z=ZT, wing=sec_polys(wing4, ZT), kit=sec_polys(car4, ZT)), rod=dict(z=rods[0][1], rods=sec_polys(rods_m, rods[0][1]))), open('prong_sections2.json', 'w'))
