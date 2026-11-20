@@ -36,9 +36,9 @@ Method: `strength_r5b/tall.py` (the r5b contact model, the same patches and latc
 | Wing slot wall, peak bearing (dent onset) | 1.61 | 1.15 | 0.81 | 0.58 | 0.54 | 0.38 |
 | Wing slot wall, mean bearing | 3.45 | 2.50 | 1.72 | 1.25 | 1.15 | 0.83 |
 | Tooth bearing (2.4 × 32 = 77 mm²) | 2.8 | 2.1 | 1.4 | 1.0 | 0.9 | 0.7 |
-| Wing shoulder (15 × 33 shear) | > 10 | 7.9 | > 5 | 3.9 | 3.6 | 2.6 |
+| Wing shoulder (15 × 33 shear, 10.9 kN) | 15.9 | 11.7 | 7.9 | 5.8 | 5.3 | 3.9 |
 | Arm (r5b 22 × 31) | 1.90 | 1.24 | 0.95 | 0.62 | 0.63 | 0.41 |
-| Tenon root / nut slot (the fuse) | 3.55 / 2.87 | 1.36 / 1.16 | 1.77 / 1.43 | 0.68 / 0.58 | 1.18 / 0.96 | 0.45 / 0.39 |
+| Tenon root / nut slot (the fuse) | 3.55 / 2.87 | 1.36 / 1.16 | 1.77 / 1.43 | 0.57 / 0.58 | 1.10 / 0.96 | 0.35 / 0.39 |
 
 **Ordering in a corner knock** (the load at SF 1):
 
