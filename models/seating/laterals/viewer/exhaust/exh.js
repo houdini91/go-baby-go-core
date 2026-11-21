@@ -21,7 +21,7 @@ async function loadGeo() {
   const geo = {};
   for (const m of man) {
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(bin, m.pos[0], m.pos[1] * 3), 3));
-    g.setIndex(new THREE.BufferAttribute(new Uint32Array(bin, m.idx[0], m.idx[1]), 1)); geo[m.name] = toCreasedNormals(g, /^exh_/.test(m.name) ? Math.PI / 3.3 : Math.PI / 7);
+    g.setIndex(new THREE.BufferAttribute(new Uint32Array(bin, m.idx[0], m.idx[1]), 1)); geo[m.name] = toCreasedNormals(g, /^(exh_|h2h_)/.test(m.name) ? Math.PI / 3.3 : Math.PI / 7);
   }
   return geo;
 }
@@ -153,8 +153,9 @@ function lockView(el, rows, st, geo) {
   return { v, set: (o) => { if (o.lock) lock = o.lock; if ('u' in o) u = o.u; if ('prong' in o) prong = o.prong; apply(); if (o.view) v.view(o.view); } };
 }
 
-export async function mountExh() {
-  const geo = await loadGeo(); const q = (id) => document.getElementById(id); const out = {};
+export { loadGeo, makeView, radio, toggle, mesh, QS, S2W, dirD, dirT, V, COL, M, VIEWS };
+export async function mountExh(geo) {
+  geo = geo || await loadGeo(); const q = (id) => document.getElementById(id); const out = {};
   try { out.look = lookView(q('look-v'), [q('look-c1'), q('look-c2')], q('look-st'), geo); q('look-v').querySelector('.load')?.remove(); } catch (e) { console.error(e); q('look-v').querySelector('.load').textContent = 'Failed: ' + e.message; }
   try { out.lock = lockView(q('lock-v'), [q('lock-c1'), q('lock-c2'), q('lock-c3')], q('lock-st'), geo); q('lock-v').querySelector('.load')?.remove(); } catch (e) { console.error(e); q('lock-v').querySelector('.load').textContent = 'Failed: ' + e.message; }
   window.__exh = out; return out;
