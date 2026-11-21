@@ -1,0 +1,27 @@
+{
+ "A": {
+  "arm_x_max": 163.9,
+  "kit_x_max": 163.9,
+  "clash": -0.0,
+  "button_face_d": 25.1
+ },
+ "B": {
+  "arm_x_max": 163.9,
+  "kit_x_max": 163.9,
+  "clash": 0.0,
+  "button_face_d": 25.1
+ },
+ "C": {
+  "arm_x_max": 163.9,
+  "kit_x_max": 163.9,
+  "clash": 0.0,
+  "button_face_d": 25.1
+ },
+ "clearances": {
+  "pocket_to_S1": 6.18,
+  "mouth_bottom_to_hole_z186": 17.75,
+  "proud": 6.0,
+  "mouth": "30 (t) x 50 (z), centre t' 7.0, z 231.0",
+  "floor_d": 6.0
+ }
+}

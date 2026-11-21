@@ -6,3 +6,4 @@ r5cad/
 options/*.stl
 options/log*.txt
 options/__pycache__/
+exhaust/*.stl

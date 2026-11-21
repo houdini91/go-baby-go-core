@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Side pad: the exhaust-tip side mount</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f6f6f4,#121416);--panel:light-dark(#ffffff,#1b1e21);--ink:light-dark(#17191c,#e8eaec);--mute:light-dark(#5d646c,#9aa3ab);--line:light-dark(#dcdfe2,#2c3136);--acc:#ff6a2a}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:1400px;margin:0 auto;padding:22px max(3vw,14px) 60px}
+h1{font-size:30px;line-height:1.15;margin:0 0 6px}h2{font-size:23px;margin:0 0 6px}
+p{max-width:92ch;margin:0 0 10px}.mu{color:var(--mute)}
+section{border-top:1px solid var(--line);padding-top:20px;margin-top:24px}
+.v{position:relative;height:min(68vh,640px);min-height:380px;background:light-dark(#eceeef,#0c0e10);border-radius:10px;overflow:hidden;touch-action:none}
+.v canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.load{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;align-items:center}
+button.b{font:inherit;font-size:14px;min-height:36px;padding:4px 10px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;cursor:pointer}
+button.b:hover{border-color:var(--mute)}button.b.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input[type=range]{accent-color:var(--acc);height:28px;width:260px}
+.st{font-size:14px;min-height:2.6em;margin:6px 0 0}
+.lab{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.l{position:absolute;transform:translate(-50%,-130%);font-size:13px;padding:2px 7px;border-radius:6px;white-space:nowrap;background:light-dark(rgba(255,255,255,.92),rgba(20,22,25,.88));border:1px solid var(--line)}.l.big{font-weight:600}.l.mu{color:var(--mute)}
+.stills{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.stills figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}.stills img{width:100%;display:block}.stills figcaption{font-size:13px;padding:5px 8px}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0}th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{color:var(--mute);font-weight:600}
+.good{color:light-dark(#0b7a44,#4fd18b)}.bad{color:light-dark(#b42318,#ff7b70)}.warn{color:light-dark(#9a5b00,#ffb454)}
+.box{background:light-dark(#eef4ff,#14203a);padding:10px 14px;border-radius:8px;max-width:92ch}.rec{background:light-dark(#e9f7ef,#12301f);padding:10px 14px;border-radius:8px}
+@media(max-width:900px){.stills{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body><main>
+<h1>Side pad: the "exhaust-tip" side mount</h1>
+<p>A look study. The mount sits in a slightly extended wing tip on the parent's (outer) side, as a rounded mouth like a car exhaust in a bumper. All the mechanics are inside. From the front there is no opening, only a natural swell of the wing. Shown on the real chair (Onshape round-5 wing with its old notch filled), left side.</p>
+
+<section id="look">
+  <h2>1 · Three mouth shapes</h2>
+  <div class="v" id="look-v"><div class="load">Loading…</div></div>
+  <div class="row" id="look-c1"></div><div class="row" id="look-c2"></div><p class="st" id="look-st"></p>
+  <p>Each mouth is about 30 (front-to-back) × 50 (tall) mm, centred at the old mount height. The r5 wing's square mount slab is gone: the tip now stands about 6 mm proud of the wing's normal face in one smooth swell that blends into the face and runs into the front edge. The lip is rolled (R ≈ 2.5) and the pocket has a smooth, rounded floor. CLEARANCES Kit on: the plug fills the pocket, a trim collar seats on the lip, and an orange stadium push button sits in the collar's centre. The arm leaves the collar's front, runs round the front edge and goes to the pad, inside the arm-rest line ARMX.</p>
+  <p class="mu"><b>Approximate:</b> the lock inside is <b>TBD</b> (not modelled; see section 2). The arm is a sweep of the 22 × 31 section along a simple curve. The swell, lip and pocket come from a 0.25 mm distance field (smoothed), rebuilt over the whole wing tip. The raised panel edge higher up (about z 292) is the CAD wing's own, unchanged. The collar and button are mock solids.</p>
+  <div class="stills" id="stills"><figure><img src="shots/look_A_off_parent.png" alt="Oval mouth, kit off, parent side" loading="lazy"><figcaption>A · Oval: kit off, parent side</figcaption></figure><figure><img src="shots/look_A_off_front.png" alt="Oval mouth, kit off, from the front" loading="lazy"><figcaption>A · Oval: kit off, from the front</figcaption></figure><figure><img src="shots/look_A_off_close.png" alt="Oval mouth, close-up of the mouth" loading="lazy"><figcaption>A · Oval: close-up of the mouth</figcaption></figure><figure><img src="shots/look_A_on_p34.png" alt="Oval mouth, kit on, 3/4" loading="lazy"><figcaption>A · Oval: kit on, 3/4</figcaption></figure><figure><img src="shots/look_B_off_parent.png" alt="Stadium mouth, kit off, parent side" loading="lazy"><figcaption>B · Stadium: kit off, parent side</figcaption></figure><figure><img src="shots/look_B_off_front.png" alt="Stadium mouth, kit off, from the front" loading="lazy"><figcaption>B · Stadium: kit off, from the front</figcaption></figure><figure><img src="shots/look_B_off_close.png" alt="Stadium mouth, close-up of the mouth" loading="lazy"><figcaption>B · Stadium: close-up of the mouth</figcaption></figure><figure><img src="shots/look_B_on_p34.png" alt="Stadium mouth, kit on, 3/4" loading="lazy"><figcaption>B · Stadium: kit on, 3/4</figcaption></figure><figure><img src="shots/look_C_off_parent.png" alt="Curved rectangle mouth, kit off, parent side" loading="lazy"><figcaption>C · Curved rectangle: kit off, parent side</figcaption></figure><figure><img src="shots/look_C_off_front.png" alt="Curved rectangle mouth, kit off, from the front" loading="lazy"><figcaption>C · Curved rectangle: kit off, from the front</figcaption></figure><figure><img src="shots/look_C_off_close.png" alt="Curved rectangle mouth, close-up of the mouth" loading="lazy"><figcaption>C · Curved rectangle: close-up of the mouth</figcaption></figure><figure><img src="shots/look_C_on_p34.png" alt="Curved rectangle mouth, kit on, 3/4" loading="lazy"><figcaption>C · Curved rectangle: kit on, 3/4</figcaption></figure></div>
+  <p class="mu">All 27 stills (6 kit-off and 3 kit-on views per shape) are in <code>exhaust/shots/</code>.</p>
+</section>
+
+<section id="lock">
+  <h2>2 · How it locks: options (rough 3D)</h2>
+  <p>The plug goes in sideways, so a child's outward lean pulls along the plug's axis. In each option the <b>plastic carries that lean</b>, and the push button only locks. The wing is shown see-through. Blue: the lock parts on the plug. Tan: the matching features in the wing. Black: the optional Ø8 carbon prongs (toggle).</p>
+  <div class="v" id="lock-v"><div class="load">Loading…</div></div>
+  <div class="row" id="lock-c1"></div><div class="row" id="lock-c2"></div><div class="row" id="lock-c3"></div><p class="st" id="lock-st"></p>
+  <div class="stills" style="grid-template-columns:repeat(3,minmax(0,1fr))"><figure><img src="shots/lock_hook.png" alt="1 · Hook-and-drop, halfway in" loading="lazy"><figcaption>1 · Hook-and-drop, halfway in</figcaption></figure><figure><img src="shots/lock_turn.png" alt="2 · Quarter-turn, halfway in" loading="lazy"><figcaption>2 · Quarter-turn, halfway in</figcaption></figure><figure><img src="shots/lock_slant.png" alt="3 · Slanted plug, halfway in" loading="lazy"><figcaption>3 · Slanted plug, halfway in</figcaption></figure></div>
+  <table><thead><tr><th></th><th>1 · Hook-and-drop</th><th>2 · Quarter-turn</th><th>3 · Slanted plug</th></tr></thead><tbody>
+    <tr><td>Motion</td><td>push in sideways, drop 8 mm, click; release: press, lift, pull</td><td>push in, turn 20–30°, click; release: press, turn back, pull</td><td>push in on the slant, click; release: press, pull</td></tr>
+    <tr><td>One-handed, for a parent</td><td class="good">yes; gravity seats it</td><td class="bad">awkward: the whole arm and pad turn with it (or it needs a separate turning collar)</td><td class="good">yes, the simplest motion</td></tr>
+    <tr><td>Lean path (estimate)</td><td class="good">hook ledge in shear, ≈ 5+ at a 300 N lean (hand estimate)</td><td class="good">two lugs in shear, ≈ 4–5 (hand estimate)</td><td class="warn">a lean presses it in, but a knock the other way pulls it out against the latch: depends on the angle (not estimated)</td></tr>
+    <tr><td>Looks</td><td>same mouth; 8 mm of drop room hidden by the collar</td><td>same mouth</td><td>the mouth is tilted, reads less calm</td></tr>
+    <tr><td>Print complexity</td><td>a ledge inside the pocket (an overhang: needs a 45° roof)</td><td class="bad">two L-slots inside the pocket (hard to print and clean)</td><td class="good">a plain angled pocket</td></tr>
+  </tbody></table>
+  <p class="rec"><b>Recommendation:</b> <b>hook-and-drop</b>. It works one-handed, gravity holds it home, and the hook carries the lean in plastic. The quarter-turn swings the pad, and the slanted plug only protects against a lean in one direction.</p>
+  <p class="mu">Rough 3D: the plug, hook, lugs, slots and prongs are simple shapes placed by hand to show the idea; strength figures are hand estimates.</p>
+</section>
+</main>
+<script type="module">
+import { mountExh } from './exh.js';
+fetch('exh.json', { cache: 'no-cache' }).then((r) => r.json()).then((j) => {
+  const c = j.clearances; const ax = Math.max(j.A.kit_x_max, j.B.kit_x_max, j.C.kit_x_max);
+  document.querySelectorAll('p').forEach((p) => { p.innerHTML = p.innerHTML.replace('CLEARANCES', `Measured: ${c.pocket_to_S1} mm from strap slit S1 and ${c.mouth_bottom_to_hole_z186} mm above the hole at z 186; no existing slot or hole moves.`).replace('ARMX', `(kit x max ${ax} mm against the arm rest's 165)`); });
+}).catch(() => {});
+mountExh().catch((e) => { console.error(e); document.querySelectorAll('.load').forEach((l) => l.textContent = 'Failed: ' + e.message); });
+</script>
+</body>
+</html>
