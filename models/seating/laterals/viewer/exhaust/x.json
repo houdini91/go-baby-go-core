@@ -1,0 +1,18 @@
+{
+ "plug": "stadium 13 x 80, mouth to t' 6.0",
+ "engaged_depth": 20.3,
+ "start_tilt_deg": 15.0,
+ "pivot_S": [
+  -15.27,
+  298.0
+ ],
+ "pocket_to_S1_in_its_z_range": 11.65,
+ "kit_x_max": 163.0,
+ "clash": 0.0,
+ "bulge_max": 4.5,
+ "button_S": [
+  16.25,
+  -18.27,
+  236.0
+ ]
+}

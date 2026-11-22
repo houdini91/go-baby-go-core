@@ -1,0 +1,113 @@
+{
+ "model": "same as h2h_strength.py (r5b contact model, zero gaps, 300 N); ESTIMATE",
+ "X twist-in": {
+  "lean": {
+   "first_gives_N": 570,
+   "part": "arm (kit)",
+   "wing_dent_N": 723,
+   "worst_wing_face": "catch (rotate-back)",
+   "plug_N": 976,
+   "hook_or_tooth_load_N": 537,
+   "hook_or_tooth_N": 633,
+   "catch_load_N": 328,
+   "catch_N": 916,
+   "ring_share_pct": 195
+  },
+  "corner": {
+   "first_gives_N": 348,
+   "part": "tenon fuse (kit)",
+   "wing_dent_N": 523,
+   "worst_wing_face": "catch (rotate-back)",
+   "plug_N": 649,
+   "hook_or_tooth_load_N": 793,
+   "hook_or_tooth_N": 428,
+   "catch_load_N": 447,
+   "catch_N": 671,
+   "ring_share_pct": 310
+  }
+ },
+ "X plain push": {
+  "lean": {
+   "first_gives_N": 391,
+   "part": "wing dent",
+   "wing_dent_N": 391,
+   "worst_wing_face": "latch tooth (pull-out)",
+   "plug_N": 878,
+   "hook_or_tooth_load_N": 792,
+   "hook_or_tooth_N": 728,
+   "catch_load_N": 0,
+   "catch_N": null,
+   "ring_share_pct": 203
+  },
+  "corner": {
+   "first_gives_N": 305,
+   "part": "wing dent",
+   "wing_dent_N": 305,
+   "worst_wing_face": "latch tooth (pull-out)",
+   "plug_N": 568,
+   "hook_or_tooth_load_N": 1010,
+   "hook_or_tooth_N": 570,
+   "catch_load_N": 0,
+   "catch_N": null,
+   "ring_share_pct": 276
+  }
+ },
+ "X plain push + prongs": {
+  "lean": {
+   "first_gives_N": 570,
+   "part": "arm (kit)",
+   "wing_dent_N": 672,
+   "worst_wing_face": "latch tooth (pull-out)",
+   "plug_N": 803,
+   "hook_or_tooth_load_N": 470,
+   "hook_or_tooth_N": 1225,
+   "catch_load_N": 0,
+   "catch_N": null,
+   "ring_share_pct": 96
+  },
+  "corner": {
+   "first_gives_N": 348,
+   "part": "tenon fuse (kit)",
+   "wing_dent_N": 530,
+   "worst_wing_face": "latch tooth (pull-out)",
+   "plug_N": 528,
+   "hook_or_tooth_load_N": 588,
+   "hook_or_tooth_N": 979,
+   "catch_load_N": 0,
+   "catch_N": null,
+   "ring_share_pct": 135
+  }
+ },
+ "F 80 + rods": {
+  "lean": {
+   "first_gives_N": 554,
+   "part": "tongue (kit)",
+   "wing_dent_N": 716,
+   "socket_part_N": 554,
+   "worst_wing_face": "outer wall"
+  },
+  "corner": {
+   "first_gives_N": 348,
+   "part": "tenon fuse (kit)",
+   "wing_dent_N": 488,
+   "socket_part_N": 389,
+   "worst_wing_face": "outer wall"
+  }
+ },
+ "F 80 + rods + prongs": {
+  "lean": {
+   "first_gives_N": 570,
+   "part": "arm (kit)",
+   "wing_dent_N": 812,
+   "socket_part_N": 841,
+   "worst_wing_face": "prongs"
+  },
+  "corner": {
+   "first_gives_N": 348,
+   "part": "tenon fuse (kit)",
+   "wing_dent_N": 560,
+   "socket_part_N": 517,
+   "worst_wing_face": "prongs"
+  }
+ }
+}

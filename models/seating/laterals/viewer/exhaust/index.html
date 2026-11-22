@@ -39,8 +39,96 @@ td.num{white-space:nowrap}.small{font-size:13px}
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body><main>
-<h1>Side pad mount: front vs side</h1>
-<p class="mu">Head to head first; the earlier exhaust-tip look study and lock sketches are collapsed at the bottom.</p>
+<h1>Side pad mount: the closed exhaust socket (X)</h1>
+<p class="mu">X, the design direction, compared with F; then how click-and-pop connections work. The earlier studies (front vs side, exhaust-tip look, lock sketches) are collapsed at the bottom.</p>
+<section id="xsec">
+  <h2>X · the closed exhaust socket: insert, rotate, click</h2>
+  <p>The wing stays <b>whole</b>. A stadium mouth on the leading edge has a rolled lip, and the wing forms a closed ring round it, with a faired bulge of at most 4.5 mm per side. Behind a short throat is a pocket. Its shape is the <b>swept volume of the plug's own motion</b>, so every inside face guides the plug. The kit is the <b>real Onshape arm, carrier, depth piece and pad</b>, unchanged outside, ending in a collar bezel that seats in the lip with a hairline seam. The plug is 13 × 80 mm. The wing is about 20 mm thick, and with at most a 4.5 mm bulge per side, 13 mm is the widest plug that keeps walls of at least 4.3 mm. It is engaged 20 mm deep.</p>
+  <div class="pair">
+    <div><p class="pt">X · closed exhaust socket (insert + rotate 15°, push-button release)</p><div class="v" id="x-X"><div class="load">Loading…</div></div><p class="st" id="x-Xt"></p></div>
+    <div><p class="pt">F · front edge: tall tongue (80 mm, R2 root, Ø2 corner rods)</p><div class="v" id="x-F"><div class="load">Loading…</div></div><p class="st" id="x-Ft"></p></div>
+  </div>
+  <div class="row" id="x-c1"></div>
+  <div class="row" id="x-c2"><input type="range" id="x-u" min="0" max="2" step="0.005" value="0.999" aria-label="connect (0 to 1) and release (1 to 2)"></div>
+  <p class="mu small">One camera drives both panes. Slider: 0 → 1 connects, 1 → 2 releases. The cutaway (red: wing, blue: kit) slices both through the middle of the socket, seen from the parent side; with X seated and the cutaway on, the ledge, beak hook, wedges, catch and rod are labelled. The red arrow shows X's rotation. <b>Approximate:</b> the socket end comes from a 0.25 mm distance field; the catch, the return spring and the button rod are drawn as mock parts.</p>
+  <div class="stills" id="x-stills"><figure><img src="shots/x_off_lead.png" alt="Kit off: the leading edge, whole, with the stadium mouth" loading="lazy"><figcaption>X · Kit off: the leading edge, whole, with the stadium mouth</figcaption></figure><figure><img src="shots/x_off_34.png" alt="Kit off, 3/4: a faired bulge, no notch" loading="lazy"><figcaption>X · Kit off, 3/4: a faired bulge, no notch</figcaption></figure><figure><img src="shots/x_off_mouth.png" alt="Mouth close-up: rolled lip, dark throat" loading="lazy"><figcaption>X · Mouth close-up: rolled lip, dark throat</figcaption></figure><figure><img src="shots/x_on_34.png" alt="Kit on: the collar bezel in the lip" loading="lazy"><figcaption>X · Kit on: the collar bezel in the lip</figcaption></figure><figure><img src="shots/x_cutaway.png" alt="Cutaway (red wing, blue kit): plug, ledge, beak, wedges, rod" loading="lazy"><figcaption>X · Cutaway (red wing, blue kit): plug, ledge, beak, wedges, rod</figcaption></figure><figure><img src="shots/x_connect_rotate.png" alt="Connecting: tilted 15° in, then rotate (arrow)" loading="lazy"><figcaption>X · Connecting: tilted 15° in, then rotate (arrow)</figcaption></figure><figure><img src="shots/x_release_springback.png" alt="Release: the spring rotates it back and nudges it out" loading="lazy"><figcaption>X · Release: the spring rotates it back and nudges it out</figcaption></figure><figure><img src="shots/x_on_lead.png" alt="Kit on, from the front" loading="lazy"><figcaption>X · Kit on, from the front</figcaption></figure></div>
+
+  <h3>How it works</h3>
+  <table><tbody>
+    <tr><td>Connect (one motion)</td><td>Hold the arm tilted 15° nose-up and push the plug straight back into the mouth. As it bottoms out it rotates 15° nose-down about a pitch axis at the top of the mouth (the pad's weight helps). The beak behind the plug's top rises behind the internal <b>ledge</b>, the tapered rear seats on the ceiling and the <b>guide wedges</b>, and the collar seats in the lip. <b>Click:</b> a steel-spring catch with a sharp drop-off and a hard stop snaps in, and the orange tell ring hides.</td></tr>
+    <tr><td>Why pitch</td><td>The plug's two large faces (13 mm apart) are the socket walls, and pitch is the only rotation those walls allow. Yaw or roll would drive the plug into them, and a round plug that could spin is what limited S. The pitch axis is at the mouth's top so that the collar swings away from the wing while it rotates.</td></tr>
+    <tr><td>What carries what</td><td>Pull-out: the beak on the ledge (plastic, along the layers). Lean and yaw: the socket walls and the collar on the closed ring. Weight: the seat (gravity pulls it towards locked). The button's catch only blocks the rotate-back.</td></tr>
+    <tr><td>Release</td><td>Press the button on the collar's parent side. A Ø4 rod pulls the catch, a steel return spring rotates the arm back 15°, and it nudges out 3 mm: free. Then pull. It only nudges; the arm does not drop. Under a child's lean, the friction on the catch is far larger than the spring force, so it won't release.</td></tr>
+    <tr><td>Guidance and feel</td><td>The rolled lip and the throat lead the plug in. The plug only enters one way: the beak is on top, and the tilt only works nose-up. The tapered rear self-centres on the wedges as it rotates. The finish is a crisp, audible click with the tell ring hiding.</td></tr>
+  </tbody></table>
+
+  <h3>Strength: X vs F (same contact model as the head-to-head; ESTIMATES)</h3>
+  <p class="small mu">This is the r5b contact model: a rigid kit on Winkler springs, all 8 arm, kit and pad settings, seated, at 300 N. "First gives" = 300 N × the lowest safety factor, using PETG allowables of 40 / 22 / 25 MPa. The arm (1.90 / 1.24) and the tenon fuse (2.87 / 1.16) are the r5b values for all options. <span class="bad">Red</span> = the wing gives first. Script: <code>exhaust/x_strength.py</code>.</p>
+  <table><thead><tr><th></th><th>X · twist-in</th><th>X · plain push (comparison)</th><th>X · plain push + Ø8 prongs</th><th>F · tall tongue 80 + rods</th><th>F + Ø8 prongs</th></tr></thead><tbody>
+    <tr><td>First gives, lean</td><td class="num">570 N arm (kit)</td><td class="num bad">391 N wing dent (catch notch)</td><td class="num">570 N arm (kit)</td><td class="num">554 N tongue (kit)</td><td class="num">570 N arm (kit)</td></tr>
+    <tr><td>First gives, corner</td><td class="num">348 N tenon fuse (kit)</td><td class="num bad">305 N wing dent</td><td class="num">348 N tenon fuse (kit)</td><td class="num">348 N tenon fuse (kit)</td><td class="num">348 N tenon fuse (kit)</td></tr>
+    <tr><td>Wing starts to dent (lean / corner)</td><td class="num good">723 / 523 N (at the catch notch)</td><td class="num">391 / 305 N</td><td class="num">672 / 530 N</td><td class="num">716 / 488 N</td><td class="num">812 / 560 N</td></tr>
+    <tr><td>Pull-out part at 300 N (lean / corner)</td><td class="num">beak on ledge: 537 / 793 N; gives at 633 / 428 N</td><td class="num">deep catch 792 / 1010 N</td><td class="num">catch 470 / 588 N</td><td class="num">catch 557 / 749 N</td><td class="num">catch 257 / 319 N</td></tr>
+    <tr><td>Rotate-back catch at 300 N</td><td class="num">328 / 447 N on a 10 × 4.0 face (gives at 916 / 671 N)</td><td colspan="4" class="mu">no rotation</td></tr>
+    <tr><td>Plug at the throat gives at</td><td class="num">976 / 649 N</td><td class="num">878 / 568 N</td><td class="num">803 / 528 N</td><td class="num" colspan="2">tongue: as first gives</td></tr>
+    <tr><td><b>Twist-in vs plain push</b></td><td colspan="5">The same plug pushed straight in, latched only by the deep catch, dents the wing at the catch notch at 391 / 305 N, before the fuse. The twist puts the pull-out on a large hook and ledge, and the catch then only holds the rotation. That raises the wing's dent load to 723 / 523 N, so a kit part gives first. Prongs would recover the plain push (672 / 530 N), but a rotating plug can't take straight prongs, so <b>X has no prong option, and doesn't need one</b>.</td></tr>
+    <tr><td>Closed-ring effect</td><td colspan="5">The collar bears on the whole ring round the mouth. The model gives it a reaction of up to 2–3× the pad load (a lever couple), which keeps the plug from rocking. The model counts the ring as bearing only: the ring's hoop stiffness, which stops the walls spreading, is not credited (a bonus). The thinnest wall is about 4.3 mm.</td></tr>
+  </tbody></table>
+
+  <h3>Printability</h3>
+  <table><tbody>
+    <tr><td>Wing (prints upright, as now)</td><td>The socket axis is horizontal, so the CAD version gets a 45° teardrop roof on the throat and pocket ceilings. That changes the inside by 2 mm or less and isn't visible. The mock here still has round ends. The ledge's underside is 45°, the beak recess is 45° at the top, and bridges are 10 mm or less, so it prints without supports inside the wing. The pull-out runs along t′, which is in the layer plane.</td></tr>
+    <tr><td>Carrier with the plug</td><td>Printed on its side (d′ down), so the plug, beak and collar bend in the layer plane. The beak root is R2.</td></tr>
+    <tr><td>Button</td><td>Cap down, as r5b. The rod is Ø4 steel or carbon, and the catch spring is steel (not printed: printed spring arms creep).</td></tr>
+    <tr><td>Clearances</td><td>Plug in pocket 0.35 per side (swept); collar to lip 0.25. Catch interference 1.0 mm, with a 30° entry ramp and a sharp 6° locking face for the click, 4.0 travel to a hard stop. Confirm on the latch coupon: press 8–12 N, insertion ≤ 25 N, pull-out ≥ 600 N, 200 cycles, wobble ≤ 0.5 mm at 60 mm.</td></tr>
+  </tbody></table>
+
+  <h3>Pros and cons</h3>
+  <table><thead><tr><th></th><th>X · closed exhaust socket</th><th>F · front-edge tongue</th></tr></thead><tbody>
+    <tr><td>Elegance</td><td class="good">The wing stays whole: a faired leading edge with a rolled stadium mouth (an exhaust tip). Connected, a slim bezel sits in the lip with a hairline seam.</td><td class="warn">A clean swell and nose when connected, but a 90 mm notch in the front edge with the kit off.</td></tr>
+    <tr><td>Looks, kit off</td><td class="good">Only the mouth shows; inside is a dark throat.</td><td class="warn">An open notch with a slot.</td></tr>
+    <tr><td>Looks, kit on</td><td class="good">A bezel on the leading edge; the arm comes from the front.</td><td class="good">The nose fills the swell flush.</td></tr>
+    <tr><td>Ease of use</td><td class="good">Push in and let it drop 15°, one motion; one hand.</td><td class="good">A straight push and a click; one hand.</td></tr>
+    <tr><td>Guidance and feel</td><td class="good">Lip, throat, swept guide faces and wedges; the gravity-assisted rotation falls into a crisp click.</td><td class="good">The long tapered tongue finds the slot.</td></tr>
+    <tr><td>Release feel</td><td class="good">Press: it rotates back and nudges 3 mm; pull.</td><td class="good">Press: a 3 mm nudge; pull.</td></tr>
+    <tr><td>Strength</td><td class="good">Kit parts give first (570 / 348 N); the wing holds to 723 / 523 N, with no prongs needed.</td><td class="good">Kit gives first (554 / 348 N); wing 716 / 488 N (812 / 560 N with prongs).</td></tr>
+    <tr><td>Printability</td><td class="warn">A closed internal pocket: it needs the teardrop roofs and 45° ledges (planned, no supports).</td><td class="good">An open notch and slot: easy.</td></tr>
+    <tr><td>Change from the as-built CAD</td><td class="warn">A new wing tip (mouth and pocket) and a new socket end on the arm (collar, plug, catch, rod); the button parts are re-used.</td><td class="good">Small: the r5b parts, taller.</td></tr>
+  </tbody></table>
+  <p class="rec"><b>Recommendation: X (insert, rotate, click).</b> It keeps the wing whole and looks the most deliberate. It is at least as strong as F, and protects the wing better: a kit part gives first, and the wing holds to 723 / 523 N against F's 716 / 488 N.</p>
+  <p class="small mu"><b>Checks:</b> <code>check_features.py</code> (S1 and the z 186 hole still open), pocket to S1 PS1 mm, kit x max KX mm (limit 165). All looked at in Chrome from the leading edge, both sides, top, low 3/4 and a mouth close-up, kit on and off. <b>Still visible:</b> looking straight into the mouth, a small step shows at the top of the throat (the guide surface the plug's top-front sweeps on the way in; the CAD's teardrop roof will fair it). The faint short line on the parent side, higher up (about z 292), is the CAD wing's own panel edge.</p>
+</section>
+
+<section id="learn">
+  <h2>How click-and-pop connections work (and our tolerances)</h2>
+  <div class="cards">
+    <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="lens bayonet sketch"><circle cx="70" cy="55" r="40" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="70" cy="55" r="24" fill="none" stroke="currentColor" stroke-width="2"/><path d="M70 15 l-8 -6 h16z" fill="#ff6a2a"/><path d="M110 55 l-10 -6 v12z" fill="#ff6a2a"/><circle cx="104" cy="30" r="4" fill="#2a6df4"/><path d="M120 40 a50 50 0 0 1 0 30" fill="none" stroke="#e0302a" stroke-width="3" marker-end="url(#ah)"/><defs><marker id="ah" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6z" fill="#e0302a"/></marker></defs><text x="130" y="30" font-size="11" fill="currentColor">spring pin</text><text x="130" y="78" font-size="11" fill="currentColor">turn to lock</text></svg>
+      <h3>Camera lens bayonet</h3><p class="small">A spring pin drops into a hole at the end of the turn. The button pulls the pin back, so release is "hold the button and turn back". <b>We borrow:</b> lugs carry the load, a spring catch only stops the turn back, and release takes two actions.</p></div>
+    <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="Quad Lock sketch"><rect x="40" y="25" width="60" height="60" rx="8" fill="none" stroke="currentColor" stroke-width="3" transform="rotate(-45 70 55)"/><rect x="48" y="33" width="44" height="44" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="58" y="88" width="24" height="8" rx="3" fill="#ff6a2a"/><path d="M118 30 a40 40 0 0 1 10 40" fill="none" stroke="#e0302a" stroke-width="3" marker-end="url(#ah)"/><text x="130" y="40" font-size="11" fill="currentColor">push at 45°,</text><text x="130" y="54" font-size="11" fill="currentColor">twist to lock</text><text x="90" y="106" font-size="11" fill="currentColor">collar / lever</text></svg>
+      <h3>Quad Lock phone mount</h3><p class="small">Push in at an angle and twist to lock. Press the collar or lever and twist back to release. Their "dual-stage lock" is built for vibration and impacts. <b>We borrow:</b> the start-turned-then-twist motion (S) and a release you can't trigger by accident.</p></div>
+    <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="ISOFIX sketch"><rect x="20" y="40" width="90" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M110 48 h40 a7 7 0 0 1 0 14 h-40" fill="none" stroke="currentColor" stroke-width="3"/><rect x="40" y="30" width="22" height="10" rx="3" fill="#ff6a2a"/><rect x="74" y="44" width="16" height="10" rx="2" fill="#2ea043"/><text x="20" y="22" font-size="11" fill="currentColor">button</text><text x="70" y="92" font-size="11" fill="currentColor">green = latched</text><text x="140" y="40" font-size="11" fill="currentColor">click</text></svg>
+      <h3>ISOFIX child-seat connector</h3><p class="small">Push straight in: an audible click and a red/green indicator. Press the button to release. <b>We borrow:</b> the straight push and click (F), and a visible tell, which is our orange sleeve going flush.</p></div>
+  </div>
+  <table><thead><tr><th>Our design, mapped</th><th>F</th><th>S</th></tr></thead><tbody>
+    <tr><td>Lead-in and guides</td><td>rolled, flared notch and slot mouth; tapered tongue</td><td>rolled mouth, bore flare, keyed lugs, helical ramp</td></tr>
+    <tr><td>What carries the load</td><td>the tongue in the slot walls (80 tall)</td><td>two lugs behind wing ledges</td></tr>
+    <tr><td>Spring</td><td colspan="2">steel, not printed: printed spring arms creep. Button spring SS304 OD 6 × 0.55, 8 coils (r5b); ejector (F) and return torsion spring (S) also steel.</td></tr>
+    <tr><td>Button</td><td>retracts the deep catch from its groove</td><td>retracts the catch from its notch, freeing the turn back</td></tr>
+    <tr><td>Eject nudge</td><td>3 mm, from a small compression spring at the tongue tip</td><td>4 mm, from the return spring through the helix</td></tr>
+  </tbody></table>
+  <p class="small"><b>Trade-off:</b> an auto-eject is convenient, but then an accidental press unlatches. So the eject stays a small nudge of a few mm. It unlatches without dropping the arm: the arm still hangs on the tongue or plug until the parent pulls. Under load (a child leaning), friction on the catch is much larger than the spring, so it won't pop. <b>Who can reach the button:</b> both buttons are on the parent (outer) side of the wing. The child sits inboard, behind the wing and the pad, and can't reach F's button on the nose's outer face or S's button on the collar. F's nose sits at the front edge, so it is easier to reach round to than S's collar (check on the chair).</p>
+  <table><thead><tr><th>Tolerance (PETG, FDM; starting points, confirm with a printed coupon)</th><th>Typical</th><th>F (planned)</th><th>S (planned)</th></tr></thead><tbody>
+    <tr><td>Sliding fit, per side</td><td>0.2–0.3 mm</td><td>tongue in slot 0.2; nose in notch 0.25</td><td>plug in bore 0.3</td></tr>
+    <tr><td>Lug or tongue to ledge, running gap</td><td>0.2–0.4 mm</td><td>tongue top and bottom 0.2</td><td>lug to ledge 0.3 axial, 1.0 angular</td></tr>
+    <tr><td>Click (snap) interference, with a ramp</td><td>≈ 0.5–1 mm</td><td>deep catch 2.4 reach (spring-driven, not a flexing snap), 45° entry ramp, 6° locking face</td><td>same catch, in the collar</td></tr>
+    <tr><td>Fillets at roots that flex or carry load</td><td>generous</td><td>tongue outer root R2, slot mouth R4</td><td>lug roots R1.5, lip R2.5</td></tr>
+    <tr><td>Print orientation</td><td>loads and flex not across layers</td><td>as r5b: tongue layers along its length</td><td>plug axis horizontal, so the lugs are not across layers</td></tr>
+    <tr><td>Coupon</td><td>±0.05–0.1 mm steps</td><td colspan="2">latch coupon test: press 8–12 N, insertion ≤ 25 N, pull-out ≥ 600 N, 200 cycles, wobble ≤ 0.5 mm at 60 mm; slot widths in ±0.1 steps</td></tr>
+  </tbody></table>
+  <p class="small mu">Sources: <a href="https://qidi3d.com/blogs/print-lab/3d-printed-snap-fit-joints-clearance-guide">QIDI snap-fit clearance guide</a> · <a href="https://makersmakingchange.github.io/OpenAT_Design_Guide/Design_Elements_For_3D_Printed_Parts/Snap_Fits.html">OpenAT design guide: snap fits</a> · <a href="https://www.youtube.com/watch?v=XKrDUnZCmQQ">Slant 3D: tolerances (video)</a> · <a href="https://makiuto.github.io/p/ultimate-guide-to-connecting-3d-printed-parts-pins-fins-slots-snaps.html">Connecting 3D-printed parts</a> · <a href="https://www.thule.com/en-gb/articles/guides/how-to-use-quad-lock-with-your-bike">Quad Lock how-to (Thule)</a> · <a href="https://Www.Wikipedia.org/wiki/Lens_mount">Lens mount (Wikipedia)</a> · <a href="https://www.carwow.co.uk/guides/glossary/what-is-isofix-child-seat-connection">ISOFIX (carwow)</a> · <a href="https://www.core77.com/posts/68745/">Core77</a></p>
+</section>
+
+<details class="old"><summary>Earlier studies (front vs side head-to-head, exhaust-tip look, lock options)</summary>
 <section id="h2h">
   <h2>Front vs side: head to head</h2>
   <p>Both options use the <b>real Onshape arm, carrier, depth piece and pad</b>, unchanged on the outside, and keep every r5b feature: 4 carriers per arm length, the drop-in button with its split orange tell sleeve, one-way barb and 8-coil spring in a counterbore, the deep catch (4.0 travel, hard stop, 0.8 crown, 6° face, click entry), the 22 × 31 arm, the 16 × 24 tenon with 4 Ø2 × 29 carbon pins (the reprintable fuse), the 27 × 48 R10 foot, the child-side pad screw with its dovetail snap stop, and R ≥ 1.5 rounds. There is no Ø6 rod. Only the socket end and the inside differ.</p>
@@ -99,36 +187,7 @@ td.num{white-space:nowrap}.small{font-size:13px}
   </tbody></table>
 </section>
 
-<section id="learn">
-  <h2>How click-and-pop connections work (and our tolerances)</h2>
-  <div class="cards">
-    <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="lens bayonet sketch"><circle cx="70" cy="55" r="40" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="70" cy="55" r="24" fill="none" stroke="currentColor" stroke-width="2"/><path d="M70 15 l-8 -6 h16z" fill="#ff6a2a"/><path d="M110 55 l-10 -6 v12z" fill="#ff6a2a"/><circle cx="104" cy="30" r="4" fill="#2a6df4"/><path d="M120 40 a50 50 0 0 1 0 30" fill="none" stroke="#e0302a" stroke-width="3" marker-end="url(#ah)"/><defs><marker id="ah" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6z" fill="#e0302a"/></marker></defs><text x="130" y="30" font-size="11" fill="currentColor">spring pin</text><text x="130" y="78" font-size="11" fill="currentColor">turn to lock</text></svg>
-      <h3>Camera lens bayonet</h3><p class="small">A spring pin drops into a hole at the end of the turn. The button pulls the pin back, so release is "hold the button and turn back". <b>We borrow:</b> lugs carry the load, a spring catch only stops the turn back, and release takes two actions.</p></div>
-    <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="Quad Lock sketch"><rect x="40" y="25" width="60" height="60" rx="8" fill="none" stroke="currentColor" stroke-width="3" transform="rotate(-45 70 55)"/><rect x="48" y="33" width="44" height="44" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="58" y="88" width="24" height="8" rx="3" fill="#ff6a2a"/><path d="M118 30 a40 40 0 0 1 10 40" fill="none" stroke="#e0302a" stroke-width="3" marker-end="url(#ah)"/><text x="130" y="40" font-size="11" fill="currentColor">push at 45°,</text><text x="130" y="54" font-size="11" fill="currentColor">twist to lock</text><text x="90" y="106" font-size="11" fill="currentColor">collar / lever</text></svg>
-      <h3>Quad Lock phone mount</h3><p class="small">Push in at an angle and twist to lock. Press the collar or lever and twist back to release. Their "dual-stage lock" is built for vibration and impacts. <b>We borrow:</b> the start-turned-then-twist motion (S) and a release you can't trigger by accident.</p></div>
-    <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="ISOFIX sketch"><rect x="20" y="40" width="90" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M110 48 h40 a7 7 0 0 1 0 14 h-40" fill="none" stroke="currentColor" stroke-width="3"/><rect x="40" y="30" width="22" height="10" rx="3" fill="#ff6a2a"/><rect x="74" y="44" width="16" height="10" rx="2" fill="#2ea043"/><text x="20" y="22" font-size="11" fill="currentColor">button</text><text x="70" y="92" font-size="11" fill="currentColor">green = latched</text><text x="140" y="40" font-size="11" fill="currentColor">click</text></svg>
-      <h3>ISOFIX child-seat connector</h3><p class="small">Push straight in: an audible click and a red/green indicator. Press the button to release. <b>We borrow:</b> the straight push and click (F), and a visible tell, which is our orange sleeve going flush.</p></div>
-  </div>
-  <table><thead><tr><th>Our design, mapped</th><th>F</th><th>S</th></tr></thead><tbody>
-    <tr><td>Lead-in and guides</td><td>rolled, flared notch and slot mouth; tapered tongue</td><td>rolled mouth, bore flare, keyed lugs, helical ramp</td></tr>
-    <tr><td>What carries the load</td><td>the tongue in the slot walls (80 tall)</td><td>two lugs behind wing ledges</td></tr>
-    <tr><td>Spring</td><td colspan="2">steel, not printed: printed spring arms creep. Button spring SS304 OD 6 × 0.55, 8 coils (r5b); ejector (F) and return torsion spring (S) also steel.</td></tr>
-    <tr><td>Button</td><td>retracts the deep catch from its groove</td><td>retracts the catch from its notch, freeing the turn back</td></tr>
-    <tr><td>Eject nudge</td><td>3 mm, from a small compression spring at the tongue tip</td><td>4 mm, from the return spring through the helix</td></tr>
-  </tbody></table>
-  <p class="small"><b>Trade-off:</b> an auto-eject is convenient, but then an accidental press unlatches. So the eject stays a small nudge of a few mm. It unlatches without dropping the arm: the arm still hangs on the tongue or plug until the parent pulls. Under load (a child leaning), friction on the catch is much larger than the spring, so it won't pop. <b>Who can reach the button:</b> both buttons are on the parent (outer) side of the wing. The child sits inboard, behind the wing and the pad, and can't reach F's button on the nose's outer face or S's button on the collar. F's nose sits at the front edge, so it is easier to reach round to than S's collar (check on the chair).</p>
-  <table><thead><tr><th>Tolerance (PETG, FDM; starting points, confirm with a printed coupon)</th><th>Typical</th><th>F (planned)</th><th>S (planned)</th></tr></thead><tbody>
-    <tr><td>Sliding fit, per side</td><td>0.2–0.3 mm</td><td>tongue in slot 0.2; nose in notch 0.25</td><td>plug in bore 0.3</td></tr>
-    <tr><td>Lug or tongue to ledge, running gap</td><td>0.2–0.4 mm</td><td>tongue top and bottom 0.2</td><td>lug to ledge 0.3 axial, 1.0 angular</td></tr>
-    <tr><td>Click (snap) interference, with a ramp</td><td>≈ 0.5–1 mm</td><td>deep catch 2.4 reach (spring-driven, not a flexing snap), 45° entry ramp, 6° locking face</td><td>same catch, in the collar</td></tr>
-    <tr><td>Fillets at roots that flex or carry load</td><td>generous</td><td>tongue outer root R2, slot mouth R4</td><td>lug roots R1.5, lip R2.5</td></tr>
-    <tr><td>Print orientation</td><td>loads and flex not across layers</td><td>as r5b: tongue layers along its length</td><td>plug axis horizontal, so the lugs are not across layers</td></tr>
-    <tr><td>Coupon</td><td>±0.05–0.1 mm steps</td><td colspan="2">latch coupon test: press 8–12 N, insertion ≤ 25 N, pull-out ≥ 600 N, 200 cycles, wobble ≤ 0.5 mm at 60 mm; slot widths in ±0.1 steps</td></tr>
-  </tbody></table>
-  <p class="small mu">Sources: <a href="https://qidi3d.com/blogs/print-lab/3d-printed-snap-fit-joints-clearance-guide">QIDI snap-fit clearance guide</a> · <a href="https://makersmakingchange.github.io/OpenAT_Design_Guide/Design_Elements_For_3D_Printed_Parts/Snap_Fits.html">OpenAT design guide: snap fits</a> · <a href="https://www.youtube.com/watch?v=XKrDUnZCmQQ">Slant 3D: tolerances (video)</a> · <a href="https://makiuto.github.io/p/ultimate-guide-to-connecting-3d-printed-parts-pins-fins-slots-snaps.html">Connecting 3D-printed parts</a> · <a href="https://www.thule.com/en-gb/articles/guides/how-to-use-quad-lock-with-your-bike">Quad Lock how-to (Thule)</a> · <a href="https://Www.Wikipedia.org/wiki/Lens_mount">Lens mount (Wikipedia)</a> · <a href="https://www.carwow.co.uk/guides/glossary/what-is-isofix-child-seat-connection">ISOFIX (carwow)</a> · <a href="https://www.core77.com/posts/68745/">Core77</a></p>
-</section>
 
-<details class="old"><summary>Earlier studies (exhaust-tip look, lock options)</summary>
 <p>A look study. The mount sits in a slightly extended wing tip on the parent's (outer) side, as a rounded mouth like a car exhaust in a bumper. All the mechanics are inside. From the front there is no opening, only a natural swell of the wing. Shown on the real chair (Onshape round-5 wing with its old notch filled), left side.</p>
 
 <section id="look">
@@ -163,12 +222,15 @@ td.num{white-space:nowrap}.small{font-size:13px}
 <script type="module">
 import { mountExh, loadGeo } from './exh.js';
 import { mountH2H } from './h2h.js';
+import { mountX } from './x.js';
 fetch('exh.json', { cache: 'no-cache' }).then((r) => r.json()).then((j) => {
   const c = j.clearances; const ax = Math.max(j.A.kit_x_max, j.B.kit_x_max, j.C.kit_x_max);
   document.querySelectorAll('p').forEach((p) => { p.innerHTML = p.innerHTML.replace('CLEARANCES', `Measured: ${c.pocket_to_S1} mm from strap slit S1 and ${c.mouth_bottom_to_hole_z186} mm above the hole at z 186; no existing slot or hole moves.`).replace('ARMX', `(kit x max ${ax} mm against the arm rest's 165)`); });
 }).catch(() => {});
 (async () => {
   const geo = await loadGeo(); const S = await (await fetch('h2h_S.json', { cache: 'no-cache' })).json();
+  try { const X = await (await fetch('x.json', { cache: 'no-cache' })).json(); mountX(geo, { X }); document.querySelectorAll('#xsec .load').forEach((l) => l.remove());
+    document.querySelectorAll('#xsec .small.mu').forEach((p) => { p.innerHTML = p.innerHTML.replace('PS1', X.pocket_to_S1_in_its_z_range).replace('KX', X.kit_x_max); }); } catch (e) { console.error(e); }
   try { mountH2H(geo, { S }); document.querySelectorAll('#h2h .load').forEach((l) => l.remove()); } catch (e) { console.error(e); }
   await mountExh(geo);
 })().catch((e) => { console.error(e); document.querySelectorAll('.load').forEach((l) => l.textContent = 'Failed: ' + e.message); });

@@ -7,3 +7,4 @@ options/*.stl
 options/log*.txt
 options/__pycache__/
 exhaust/*.stl
+exhaust/x_*.stl

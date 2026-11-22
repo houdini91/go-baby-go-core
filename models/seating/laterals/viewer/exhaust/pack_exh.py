@@ -20,6 +20,7 @@ MESHES = [('armrest', 'raw:ps1_J_D', 0.06), ('depth', P(FIT, 'GBG-SP-DP-D0-T0-r5
 for s in 'ABC': MESHES += [(f'exh_wing_{s}', f'exh_wing_{s}.stl', 0.02), (f'exh_kit_{s}', f'exh_kit_{s}.stl', 0.02), (f'exh_btn_{s}', f'exh_btn_{s}.stl', 0.0)]
 for n in ('h2h_F_wing', 'h2h_F_kit', 'h2h_F_rods', 'h2h_F_btn', 'h2h_F_sleeve', 'h2h_FP_wing', 'h2h_FP_kit', 'h2h_FP_rods', 'h2h_S_wing', 'h2h_S_kit', 'h2h_S_btn'):
     MESHES.append((n, n + '.stl', 0.0 if n.endswith(('_btn', '_rods', '_sleeve')) else 0.02))
+MESHES += [('x_wing', 'x_wing.stl', 0.02), ('x_kit', 'x_kit.stl', 0.02), ('x_btn', 'x_btn.stl', 0.0), ('x_rod', 'x_rod.stl', 0.0)]
 buf = bytearray(); man = []
 for name, f, tol in MESHES:
     if not f.startswith("raw:") and not os.path.exists(P(HERE, f) if not os.path.isabs(f) else f): print("skip", name); continue

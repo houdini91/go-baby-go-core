@@ -18,10 +18,10 @@ function pane(el, camera, geo, cfg) {
   const lab = document.createElement('div'); lab.className = 'lab'; el.appendChild(lab);
   const p = { el, r, scene, labels: [], clip: [cfg.cut], cutOn: false, parts: {} };
   const mat = (c, o = {}) => M(c, { clippingPlanes: p.clip, ...o });
-  const add = (name, c, parent, o = {}) => {
-    const g = geo[name]; if (!g) { console.warn('missing', name); return null; }
+  const add = (name, c, parent, o0 = {}) => {
+    const { cap: capC, ...o } = o0; const g = geo[name]; if (!g) { console.warn('missing', name); return null; }
     const m = new THREE.Mesh(g, mat(c, o)); parent.add(m);
-    const cap = new THREE.Mesh(g, mat(cfg.capColor || 0xc0392b, { side: THREE.BackSide })); cap.visible = false; parent.add(cap); m.userData.cap = cap; p.parts[name] = m; return m;
+    const cap = new THREE.Mesh(g, mat(capC || cfg.capColor || 0xc0392b, { side: THREE.BackSide })); cap.visible = false; parent.add(cap); m.userData.cap = cap; p.parts[name] = m; return m;
   };
   p.label = (html, pos, cls = '') => { const d = document.createElement('div'); d.className = 'l ' + cls; d.innerHTML = html; lab.appendChild(d); const L = { d, pos, on: true, obj: null }; p.labels.push(L); return L; };
   p.resize = () => { const w = el.clientWidth, h = el.clientHeight; r.setSize(w, h, false); }; new ResizeObserver(p.resize).observe(el); p.resize();
@@ -35,6 +35,7 @@ function pane(el, camera, geo, cfg) {
 function kitGroup(scene) { const g = new THREE.Group(); g.matrixAutoUpdate = false; scene.add(g); return g; }
 function setS(g, A) { g.matrix.copy(S2W).multiply(A).multiply(W2S); g.matrixWorldNeedsUpdate = true; }
 
+export { pane, kitGroup, setS, planeD, planeZ, seg, W2S };
 export function mountH2H(geo, J) {
   const q = (id) => document.getElementById(id);
   const cam = new THREE.PerspectiveCamera(30, 1, 1, 5000); cam.up.set(0, 0, 1);

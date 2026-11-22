@@ -1,11 +1,5 @@
 {
- "h2h_F_wing.stl": {
-  "S1 solid mm2 at z 210": 0.0,
-  "S1 solid mm2 at z 240": 0.0,
-  "S1 solid mm2 at z 265": 0.0,
-  "z186 hole open": true
- },
- "h2h_FP_wing.stl": {
+ "x_wing.stl": {
   "S1 solid mm2 at z 210": 0.0,
   "S1 solid mm2 at z 240": 0.0,
   "S1 solid mm2 at z 265": 0.0,
