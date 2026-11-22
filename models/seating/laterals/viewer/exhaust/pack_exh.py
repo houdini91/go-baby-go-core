@@ -21,7 +21,7 @@ for s in 'ABC': MESHES += [(f'exh_wing_{s}', f'exh_wing_{s}.stl', 0.02), (f'exh_
 for n in ('h2h_F_wing', 'h2h_F_kit', 'h2h_F_rods', 'h2h_F_btn', 'h2h_F_sleeve', 'h2h_FP_wing', 'h2h_FP_kit', 'h2h_FP_rods', 'h2h_S_wing', 'h2h_S_kit', 'h2h_S_btn'):
     MESHES.append((n, n + '.stl', 0.0 if n.endswith(('_btn', '_rods', '_sleeve')) else 0.02))
 MESHES += [('x_wing', 'x_wing.stl', 0.02), ('x_kit', 'x_kit.stl', 0.02), ('x_btn', 'x_btn.stl', 0.0), ('x_rod', 'x_rod.stl', 0.0)]
-MESHES += [(n, n + '.stl', 0.02 if n in ('xi_wing', 'xi_kit') else 0.0) for n in ('xi_wing', 'xi_kit', 'xi_catch', 'xi_catch_spring', 'xi_rod', 'xi_button', 'xi_tell', 'xi_ret_spring')]
+MESHES += [(n, n + '.stl', 0.02 if n in ('xi_wing', 'xi_kit') else 0.0) for n in ('xi_wing', 'xi_kit', 'xi_catch', 'xi_catch_spring', 'xi_rod', 'xi_button', 'xi_tell', 'xi_ret_spring', 'xi_pin', 'xi_nut', 'xi_pin_cap')]
 KEEP = {'armrest', 'depth', 'pad', 'ring', 'cover'} | {m[0] for m in MESHES if m[0].startswith('xi_')}   # the page is X-only
 MESHES = [m for m in MESHES if m[0] in KEEP]
 buf = bytearray(); man = []

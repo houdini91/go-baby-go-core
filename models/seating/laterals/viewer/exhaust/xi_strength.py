@@ -1,4 +1,4 @@
-# X FINAL internals (gen_xi.py): plug 15 x 80 to t' 10, beak 11 x 11 on the ledge, catch 11 x 3.0, Ø6 cam bosses.
+# X FINAL internals (gen_xi.py, fine-tuned): blade 17 x 90 to t' 10, beak 11 x 11 on the ledge, catch 11 x 3.0, Ø6 cam bosses at t' 6.
 # Derived from x_strength.py: option X (closed "exhaust" socket in the leading edge, insert-and-rotate-in) vs F, on the SAME model as h2h_strength.py:
 # the CAD agent's r5b contact solver (loads.py via sf_r5b.py), zero fit gaps, 300 N lean (pad centre) and knock (pad corners),
 # all 8 arm/kit/pad settings; arm 1.90 / 1.24 and tenon fuse 2.87 / 1.16 (r5b). Every number is an ESTIMATE.
@@ -16,14 +16,14 @@ src = open(os.path.join(HERE, 'h2h_strength.py')).read().split("OUT = {'model'")
     "HERE = os.path.dirname(os.path.abspath(__file__))", "HERE = %r" % HERE)
 g = {}; exec(src, g)
 base, run_cases, peak, prong_pts, ARM, FUSE, P = (g[k] for k in ('base', 'run_cases', 'peak', 'prong_pts', 'ARM', 'FUSE', 'P'))
-D0, D1, Z0, Z1, T_END = -1.5, 13.5, 214.0, 294.0, 10.0
+D0, D1, Z0, Z1, T_END = -1.5, 15.5, 210.0, 300.0, 10.0
 DC = (D0 + D1) / 2
-TP, ZP = -15.27, 298.0
+TP, ZP = -15.27, 304.0
 CATCH_A = 11.0 * 3.0
 def _loc(phi, sh, t, z):    # boss path in the plug frame (gen_xi.py motion): rotate 15° while pushing the last 12 mm
     c, s_ = math.cos(math.radians(phi)), math.sin(math.radians(phi)); t = t + sh * c; z = z + sh * s_
     c2, s2 = math.cos(math.radians(-phi)), math.sin(math.radians(-phi)); return TP + (t - TP) * c2 - (z - ZP) * s2, ZP + (t - TP) * s2 + (z - ZP) * c2
-_a = _loc(-15.0 * 0.03, 12.0 * 0.03, 2.0, 250.0); _b = _loc(0.0, 0.0, 2.0, 250.0)
+_a = _loc(-15.0 * 0.03, 12.0 * 0.03, 6.0, 255.0); _b = _loc(0.0, 0.0, 6.0, 255.0)
 BT = (_b[0] - _a[0], _b[1] - _a[1]); _n = math.hypot(*BT); BT = (BT[0] / _n, BT[1] / _n)                      # rotation pivot: just in front of the mouth's top (pitch axis along d')
 def xmount(twist=True, prongs=False):
     ns = {}; exec(base, ns); np = ns['np']; TF = ns['T_FRONT']
@@ -53,7 +53,7 @@ def xmount(twist=True, prongs=False):
         r = np.array([T_END - 2 - TP, Z0 + 2 - ZP]); m = np.array([r[1], -r[0]]); m = m / np.linalg.norm(m)   # rotate-back motion
         PT['catch (rotate-back)'] = np.array([(d, T_END - 5, Z0 - 1.5, 0, -m[0], -m[1], 0.0, CATCH_A / 4) for d in np.linspace(DC - 4.5, DC + 4.5, 4)], float)   # 11 wide x 3.0 drop
         # cam bosses (Ø6, 2.5 proud) in the plug's grooves, both walls: bear across the groove at the seated end
-        PT['cam bosses'] = np.array([(dB, 2.0, 250.0, *nv, 0.0, 6.0 * 2.5) for dB in (D0 + 1.25, D1 - 1.25) for nv in ((0, BT[1], -BT[0]), (0, -BT[1], BT[0]))], float)
+        PT['cam bosses'] = np.array([(dB, 6.0, 255.0, *nv, 0.0, 6.0 * 2.5) for dB in (D0 + 1.25, D1 - 1.25) for nv in ((0, BT[1], -BT[0]), (0, -BT[1], BT[0]))], float)
     else:
         PT['rear floor'] = np.array(area(lambda d, t, A: (d, t, Z0, 0, 0, 1, 0.0, A), D0 + 2, D1 - 2, -6.0, T_END, 6, 6), float)
         PT['latch tooth (pull-out)'] = np.array(area(lambda d, z, A: (d, T_END - 3, z, 0, 1, 0, 0.0, A), D1 - 2.4, D1, Z1 - 34, Z1 - 2, 3, 12), float)
@@ -101,5 +101,5 @@ def xmount(twist=True, prongs=False):
 OUT = {'model': 'same as h2h_strength.py / x_strength.py (r5b contact model, zero gaps, 300 N); ESTIMATE'}
 OUT['X final'] = xmount(twist=True); print('X final', OUT['X final'], flush=True)
 XS = json.load(open(os.path.join(HERE, 'x_strength.json')))
-OUT['X current'] = XS['X twist-in']; OUT['F 80 + rods'] = XS['F 80 + rods']; OUT['F 80 + rods + prongs'] = XS['F 80 + rods + prongs']
+OUT['X v1'] = XS['X twist-in']; OUT['F 80 + rods'] = XS['F 80 + rods']; OUT['F 80 + rods + prongs'] = XS['F 80 + rods + prongs']
 json.dump(OUT, open(os.path.join(HERE, 'xi_strength.json'), 'w'), indent=1)

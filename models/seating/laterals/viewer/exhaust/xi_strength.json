@@ -4,35 +4,35 @@
   "lean": {
    "first_gives_N": 570,
    "part": "arm (kit)",
-   "wing_dent_N": 760,
+   "wing_dent_N": 774,
    "worst_wing_face": "catch (rotate-back)",
-   "plug_N": 1104,
-   "hook_or_tooth_load_N": 349,
-   "hook_or_tooth_N": 973,
-   "catch_load_N": 273,
-   "catch_N": 907,
-   "boss_load_N": 30,
-   "boss_N": 7564,
-   "ledge_shear_N": 2496,
-   "ring_share_pct": 98
+   "plug_N": 1368,
+   "hook_or_tooth_load_N": 190,
+   "hook_or_tooth_N": 1783,
+   "catch_load_N": 267,
+   "catch_N": 927,
+   "boss_load_N": 28,
+   "boss_N": 8177,
+   "ledge_shear_N": 4576,
+   "ring_share_pct": 16
   },
   "corner": {
    "first_gives_N": 348,
    "part": "tenon fuse (kit)",
-   "wing_dent_N": 574,
+   "wing_dent_N": 584,
    "worst_wing_face": "catch (rotate-back)",
-   "plug_N": 730,
-   "hook_or_tooth_load_N": 516,
-   "hook_or_tooth_N": 658,
-   "catch_load_N": 355,
-   "catch_N": 698,
-   "boss_load_N": 39,
-   "boss_N": 5725,
-   "ledge_shear_N": 1689,
-   "ring_share_pct": 164
+   "plug_N": 930,
+   "hook_or_tooth_load_N": 292,
+   "hook_or_tooth_N": 1161,
+   "catch_load_N": 347,
+   "catch_N": 713,
+   "boss_load_N": 42,
+   "boss_N": 5413,
+   "ledge_shear_N": 2979,
+   "ring_share_pct": 30
   }
  },
- "X current": {
+ "X v1": {
   "lean": {
    "first_gives_N": 570,
    "part": "arm (kit)",

@@ -17,8 +17,8 @@ export function mountXI(geo, J) {
   const G = {};
   G.kit = grp(KIT); P.add('xi_kit', COL.kit, G.kit, { cap: 0x2a6df4 });
   for (const [k, c] of [['depth', COL.kit], ['pad', COL.pad], ['ring', 0x5e6a77], ['cover', COL.foam]]) P.add(k, c, G.kit);
-  const parts = [['catch', 'xi_catch', 0x2ea043], ['cspring', 'xi_catch_spring', 0x9aa4ad], ['rod', 'xi_rod', 0x6b7785], ['button', 'xi_button', COL.btn], ['tell', 'xi_tell', 0xff8a3d], ['rspring', 'xi_ret_spring', 0x9aa4ad]];
-  for (const [k, n, c] of parts) { G[k] = grp(KIT); P.add(n, c, G[k], { metalness: k.includes('spring') || k === 'rod' ? .6 : 0, cap: 0x2a6df4 }); }
+  const parts = [['catch', 'xi_catch', 0x2ea043], ['cspring', 'xi_catch_spring', 0x9aa4ad], ['rod', 'xi_rod', 0x6b7785], ['button', 'xi_button', COL.btn], ['tell', 'xi_tell', 0xff8a3d], ['rspring', 'xi_ret_spring', 0x9aa4ad], ['pin', 'xi_pin', 0x30363d], ['nut', 'xi_nut', 0x8a96a3], ['cap', 'xi_pin_cap', COL.chair]];
+  for (const [k, n, c] of parts) { G[k] = grp(k === 'cap' ? P.scene : KIT); P.add(n, c, G[k], { metalness: k.includes('spring') || k === 'rod' || k === 'pin' || k === 'nut' ? .6 : 0, cap: k === 'cap' ? 0xc0392b : 0x2a6df4 }); }
   // rotation arrow about the pitch axis (parent side)
   const arc = new THREE.Group(); arc.matrixAutoUpdate = false; arc.matrix.copy(S2W); P.scene.add(arc);
   const pts = []; for (let i = 0; i <= 30; i++) { const th = (-122 + 30 * i / 30) * Math.PI / 180; pts.push(V(26, TP + 70 * Math.cos(th), ZP + 70 * Math.sin(th))); }
@@ -28,15 +28,21 @@ export function mountXI(geo, J) {
   // labels (S frame, seated pose; they follow the kit)
   const LB = (txt, d, t, z, parent) => { const l = P.label(txt, V(d, t, z), 'mu'); l.obj = parent || null; l.local = true; return l; };
   const B = X.button_S, R = X.rod, RS = X.ret_spring;
+  const PC = X.parts;                                       // part centres (S frame, seated)
+  // exploded: the plug + arm slide forward; the small parts are laid out in rows in the free space above the arm, in front of the wing
+  const LAY = { catch: [25, -112, 370], cspring: [25, -86, 370], button: [25, -60, 370], tell: [25, -34, 370], rod: [25, -104, 344], rspring: [25, -70, 344], pin: [25, -40, 344], nut: [25, -88, 318], cap: [25, -56, 318] };
+  const EXP = { kit: [0, -95, 0] };
+  for (const k in LAY) EXP[k] = [LAY[k][0] - PC[k][0], LAY[k][1] - PC[k][1], LAY[k][2] - PC[k][2]];
   const labs = {
-    assembled: [['ledge (pull-out)', 6, 4, 304], ['beak hook', 6, 15, 300], ['guide wedges + seat', 6, 8, 286], ['cam boss in groove', -1, 2, 250], ['catch + notch', 6, 6, 208],
-      ['rod', 6, -4, 214], ['button + tell', B[0], B[1], B[2] + 10], ['return spring', 6, 6, 262], ['pitch axis', 6, TP - 6, ZP + 10]],
-    exploded: [['catch (steel-spring)', 6, 5, 186], ['catch spring', 6, 5, 202], ['rod Ø4', 6, -30, 214], ['button', B[0] + 30, B[1], B[2] + 10], ['tell ring', B[0] + 18, B[1], B[2] - 12], ['return spring', 6, 40, 262], ['plug + arm (real r5cad arm)', 6, -70, 300]]
+    assembled: [['ledge (pull-out)', 7, 2, 312], ['beak hook', 7, 16, 309], ['guide wedges + seat', 7, 10, 290], ['cam boss in groove', -1, 6, 255], ['catch + notch', 7, 6, 203],
+      ['rod', 7, -6, 210], ['button (r5b, 12 × 24)', B[0] + 2, B[1], B[2] + 16], ['return spring', 7, 6, 268], ['static pin (M5, optional)', X.pin_S[0] + 2, X.pin_S[1], X.pin_S[2] - 9], ['pitch axis', 7, TP - 6, ZP + 10]],
+    exploded: [['plug + arm (real r5cad arm)', 'kit', [7, -14, 262]], ['catch', 'catch'], ['catch spring', 'cspring'], ['rod Ø4', 'rod'], ['button (r5b)', 'button'],
+      ['tell sleeve', 'tell'], ['return spring', 'rspring'], ['M5 × 16', 'pin'], ['M5 nut', 'nut'], ['pin cap', 'cap']]
   };
   const labObjs = {};
-  for (const k in labs) labObjs[k] = labs[k].map(([t, d, tt, z]) => { const l = P.label(t, new THREE.Vector3(), 'mu'); l.S = [d, tt, z]; l.on = false; return l; });
-  const EXP = { kit: [0, -70, 0], catch: [0, 0, -28], cspring: [0, 0, -14], rod: [0, -26, 0], button: [30, 0, 0], tell: [18, 0, 0], rspring: [0, 34, 0] };
-  const st = { kit: true, mode: 'assembled', wing: 'solid', sec: 'none', u: 0.999, play: false, last: 0 };
+  labObjs.assembled = labs.assembled.map(([t, d, tt, z]) => { const l = P.label(t, new THREE.Vector3(), 'mu'); l.S = [d, tt, z]; l.on = false; return l; });
+  labObjs.exploded = labs.exploded.map(([t, key, at]) => { const l = P.label(t, new THREE.Vector3(), 'mu'); const c = at || PC[key]; const e = EXP[key]; l.S = [c[0] + e[0], c[1] + e[1], c[2] + e[2] + 6]; l.on = false; return l; });
+  const st = { kit: true, pin: false, mode: 'assembled', wing: 'solid', sec: 'none', u: 0.999, play: false, last: 0 };
   const T = [[0, .5, 'Tilt the arm 15° nose-up and push the plug in: the mouth and throat centre it; the catch rides up on the floor (tell ring shows).'],
     [.5, .9, 'The cam bosses enter the plug\'s grooves: the last 12 mm of push turns it 15° nose-down (red arrow); the beak rises behind the ledge, the rear seats on the wedges, the return spring loads.'],
     [.9, 1, 'CLICK: the catch drops 3 mm into its notch (sharp drop-off, hard stop); the button comes out flush and hides the orange tell.'],
@@ -54,7 +60,8 @@ export function mountXI(geo, J) {
     horiz: () => new THREE.Plane(new THREE.Vector3(0, 0, -1), 254),
     hook: () => planeS(0, true, 6.0),          // keep d' < 6 (mid-plug): hook, ledge, catch, rod, return spring
     rails: () => planeS(0, true, -0.25),       // keep d' < -0.25: through the inner wall's cam boss and groove
-    catch: () => planeS(1, false, 5.0)         // keep t' > 5: across the catch, seen from the front
+    catch: () => planeS(1, false, 5.0),        // keep t' > 5: across the catch, seen from the front
+    pin: () => new THREE.Plane(new THREE.Vector3(0, 0, -1), 224)   // level through the static pin
   };
   function planeS(axis, keepLess, c) {         // S coordinate s(p) = row . p + e12 (from W2S); keep s < c or s > c
     const e = W2S.elements; const n = new THREE.Vector3(e[axis], e[axis + 4], e[axis + 8]); const k = n.length();
@@ -76,7 +83,9 @@ export function mountXI(geo, J) {
     setG(G.cspring, local(off('cspring').multiply(new THREE.Matrix4().makeTranslation(0, 0, 214 + 9.0)).multiply(new THREE.Matrix4().makeScale(1, 1, Math.max(.35, 1 - (ex ? 0 : c) / 4.5 * .6))).multiply(new THREE.Matrix4().makeTranslation(0, 0, -(214 + 9.0)))));
     setG(G.rod, local(off('rod', [0, ex ? 0 : c, 0])));
     setG(G.button, local(off('button', [ex ? 0 : -c, 0, 0])));
-    setG(G.tell, local(off('tell'))); G.tell.visible = ex || c > .5;
+    setG(G.tell, local(off('tell', [ex ? 0 : -c, 0, 0]))); G.tell.visible = ex || c > .5;
+    setG(G.pin, local(off('pin'))); setG(G.nut, local(off('nut'))); G.pin.visible = ex || (st.pin && u > .95 && u < 1.0); G.nut.visible = true;
+    G.cap.matrix.copy(local(off('cap'))); G.cap.matrixWorldNeedsUpdate = true; G.cap.visible = ex || !st.pin;
     // return spring: seated length when home, free (x1.35) once it has pushed the plug out
     const seated = u >= .88 && u < 1.12; const free = ex || !seated; const ks = free ? 1.35 : 1;
     setG(G.rspring, local(off('rspring').multiply(new THREE.Matrix4().makeTranslation(0, RS[1], 0)).multiply(new THREE.Matrix4().makeScale(1, ks, 1)).multiply(new THREE.Matrix4().makeTranslation(0, -RS[1], 0))));
@@ -101,7 +110,10 @@ export function mountXI(geo, J) {
     lead: () => [T0.clone().add(dirT.clone().multiplyScalar(-400)).add(V(0, 0, 25)), T0],
     child: () => [T0.clone().add(dirD.clone().multiplyScalar(-400)).add(dirT.clone().multiplyScalar(-60)).add(V(0, 0, 25)), T0],
     low34: () => [T0.clone().add(dirD.clone().multiplyScalar(250)).add(dirT.clone().multiplyScalar(-240)).add(V(0, 0, -150)), T0],
-    close: () => [T0.clone().add(dirD.clone().multiplyScalar(150)).add(dirT.clone().multiplyScalar(-90)).add(V(0, 0, 40)), T0.clone().add(V(0, 0, -5))]
+    close: () => [T0.clone().add(dirD.clone().multiplyScalar(150)).add(dirT.clone().multiplyScalar(-90)).add(V(0, 0, 40)), T0.clone().add(V(0, 0, -5))],
+    button: () => { const b = QS(X.button_S[0], X.button_S[1], X.button_S[2]); return [b.clone().add(dirD.clone().multiplyScalar(110)).add(dirT.clone().multiplyScalar(-40)).add(V(0, 0, 25)), b]; },
+    pinv: () => { const b = QS(X.pin_S[0], X.pin_S[1], X.pin_S[2]); return [b.clone().add(dirD.clone().multiplyScalar(110)).add(dirT.clone().multiplyScalar(-30)).add(V(0, 0, -25)), b]; },
+    expl: () => { const c = QS(10, -62, 300); return [c.clone().add(dirD.clone().multiplyScalar(470)).add(V(0, 0, 30)), c]; }
   };
   const view = (k) => { const [p, t] = VIEWS[k](); cam.position.copy(p); ctl.target.copy(t); ctl.update(); };
   new ResizeObserver(() => { cam.aspect = P.el.clientWidth / P.el.clientHeight; cam.updateProjectionMatrix(); }).observe(P.el);
@@ -114,13 +126,14 @@ export function mountXI(geo, J) {
   });
   const mk = (row, items, on, fn) => { const bs = items.map(([k, label]) => { const b = document.createElement('button'); b.className = 'b' + (k === on ? ' on' : ''); b.textContent = label; b.onclick = () => { bs.forEach((x) => x.classList.toggle('on', x === b)); fn(k); }; row.appendChild(b); return b; }); };
   mk(q('xi-c1'), [['on', 'Kit on'], ['off', 'Kit off']], 'on', (k) => { st.kit = k === 'on'; apply(); });
-  mk(q('xi-c1'), [['assembled', 'Assembled'], ['exploded', 'Exploded']], 'assembled', (k) => { st.mode = k; apply(); });
+  mk(q('xi-c1'), [['cap', 'Static pin: unused (flush cap)'], ['pin', 'Static pin: fitted']], 'cap', (k) => { st.pin = k === 'pin'; if (st.pin) st.u = 0.999; apply(); });
+  mk(q('xi-c1'), [['assembled', 'Assembled'], ['exploded', 'Exploded']], 'assembled', (k) => { st.mode = k; apply(); if (k === 'exploded') view('expl'); });
   mk(q('xi-c1'), [['solid', 'Wing solid'], ['ghost', 'Wing see-through'], ['hidden', 'Wing hidden']], 'solid', (k) => { st.wing = k; apply(); });
-  mk(q('xi-c2'), [['none', 'No section'], ['horiz', 'Section: level, mid-plug'], ['hook', 'Section: vertical, hook + catch'], ['rails', 'Section: through the cam bosses'], ['catch', 'Section: across the catch']], 'none', (k) => { st.sec = k; apply(); });
+  mk(q('xi-c2'), [['none', 'No section'], ['horiz', 'Section: level, mid-plug'], ['hook', 'Section: vertical, hook + catch'], ['rails', 'Section: through the cam bosses'], ['catch', 'Section: across the catch'], ['pin', 'Section: through the static pin']], 'none', (k) => { st.sec = k; apply(); });
   const row3 = q('xi-c3');
   const pb = document.createElement('button'); pb.className = 'b'; pb.textContent = '▶ Play connect + release'; pb.onclick = () => { st.mode = 'assembled'; st.u = 0; st.play = true; }; row3.appendChild(pb);
   const sl = q('xi-u'); sl.oninput = () => { st.u = +sl.value; st.play = false; apply(); }; row3.appendChild(sl);
-  for (const [k, label] of [['p34', '3/4'], ['close', 'Close-up'], ['parent', 'Parent side'], ['lead', 'Leading edge'], ['child', 'Child side'], ['top', 'Top'], ['low34', 'Low 3/4']]) { const b = document.createElement('button'); b.className = 'b'; b.textContent = label; b.onclick = () => view(k); row3.appendChild(b); }
+  for (const [k, label] of [['p34', '3/4'], ['close', 'Close-up'], ['button', 'Button close-up'], ['pinv', 'Pin close-up (parent side)'], ['parent', 'Parent side'], ['lead', 'Leading edge'], ['child', 'Child side'], ['top', 'Top'], ['low34', 'Low 3/4'], ['expl', 'Exploded view']]) { const b = document.createElement('button'); b.className = 'b'; b.textContent = label; b.onclick = () => view(k); row3.appendChild(b); }
   apply(); view('p34');
   const api = { set: (o) => { Object.assign(st, o); apply(); if (o.view) view(o.view); }, view, P }; window.__xi = api; return api;
 }
