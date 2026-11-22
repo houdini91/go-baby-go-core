@@ -21,7 +21,7 @@ async function loadGeo() {
   const geo = {};
   for (const m of man) {
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(bin, m.pos[0], m.pos[1] * 3), 3));
-    g.setIndex(new THREE.BufferAttribute(new Uint32Array(bin, m.idx[0], m.idx[1]), 1)); geo[m.name] = toCreasedNormals(g, /^(exh_|h2h_|x_)/.test(m.name) ? Math.PI / 3.3 : Math.PI / 7);
+    g.setIndex(new THREE.BufferAttribute(new Uint32Array(bin, m.idx[0], m.idx[1]), 1)); geo[m.name] = toCreasedNormals(g, /^(exh_|h2h_|x_|xi_(wing|kit))/.test(m.name) ? Math.PI / 3.3 : Math.PI / 7);
   }
   return geo;
 }

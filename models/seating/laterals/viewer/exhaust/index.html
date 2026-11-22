@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Side pad: the exhaust-tip side mount</title>
+<title>Side pad mount X: closed exhaust socket</title>
 <style>
 :root{color-scheme:light dark;--bg:light-dark(#f6f6f4,#121416);--panel:light-dark(#ffffff,#1b1e21);--ink:light-dark(#17191c,#e8eaec);--mute:light-dark(#5d646c,#9aa3ab);--line:light-dark(#dcdfe2,#2c3136);--acc:#ff6a2a}
 *{box-sizing:border-box;min-width:0}
@@ -39,200 +39,153 @@ td.num{white-space:nowrap}.small{font-size:13px}
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body><main>
-<h1>Side pad mount: the closed exhaust socket (X)</h1>
-<p class="mu">X, the design direction, compared with F; then how click-and-pop connections work. The earlier studies (front vs side, exhaust-tip look, lock sketches) are collapsed at the bottom.</p>
-<section id="xsec">
-  <h2>X · the closed exhaust socket: insert, rotate, click</h2>
-  <p>The wing stays <b>whole</b>. A stadium mouth on the leading edge has a rolled lip, and the wing forms a closed ring round it, with a faired bulge of at most 4.5 mm per side. Behind a short throat is a pocket. Its shape is the <b>swept volume of the plug's own motion</b>, so every inside face guides the plug. The kit is the <b>real Onshape arm, carrier, depth piece and pad</b>, unchanged outside, ending in a collar bezel that seats in the lip with a hairline seam. The plug is 13 × 80 mm. The wing is about 20 mm thick, and with at most a 4.5 mm bulge per side, 13 mm is the widest plug that keeps walls of at least 4.3 mm. It is engaged 20 mm deep.</p>
-  <div class="pair">
-    <div><p class="pt">X · closed exhaust socket (insert + rotate 15°, push-button release)</p><div class="v" id="x-X"><div class="load">Loading…</div></div><p class="st" id="x-Xt"></p></div>
-    <div><p class="pt">F · front edge: tall tongue (80 mm, R2 root, Ø2 corner rods)</p><div class="v" id="x-F"><div class="load">Loading…</div></div><p class="st" id="x-Ft"></p></div>
-  </div>
-  <div class="row" id="x-c1"></div>
-  <div class="row" id="x-c2"><input type="range" id="x-u" min="0" max="2" step="0.005" value="0.999" aria-label="connect (0 to 1) and release (1 to 2)"></div>
-  <p class="mu small">One camera drives both panes. Slider: 0 → 1 connects, 1 → 2 releases. The cutaway (red: wing, blue: kit) slices both through the middle of the socket, seen from the parent side; with X seated and the cutaway on, the ledge, beak hook, wedges, catch and rod are labelled. The red arrow shows X's rotation. <b>Approximate:</b> the socket end comes from a 0.25 mm distance field; the catch, the return spring and the button rod are drawn as mock parts.</p>
-  <div class="stills" id="x-stills"><figure><img src="shots/x_off_lead.png" alt="Kit off: the leading edge, whole, with the stadium mouth" loading="lazy"><figcaption>X · Kit off: the leading edge, whole, with the stadium mouth</figcaption></figure><figure><img src="shots/x_off_34.png" alt="Kit off, 3/4: a faired bulge, no notch" loading="lazy"><figcaption>X · Kit off, 3/4: a faired bulge, no notch</figcaption></figure><figure><img src="shots/x_off_mouth.png" alt="Mouth close-up: rolled lip, dark throat" loading="lazy"><figcaption>X · Mouth close-up: rolled lip, dark throat</figcaption></figure><figure><img src="shots/x_on_34.png" alt="Kit on: the collar bezel in the lip" loading="lazy"><figcaption>X · Kit on: the collar bezel in the lip</figcaption></figure><figure><img src="shots/x_cutaway.png" alt="Cutaway (red wing, blue kit): plug, ledge, beak, wedges, rod" loading="lazy"><figcaption>X · Cutaway (red wing, blue kit): plug, ledge, beak, wedges, rod</figcaption></figure><figure><img src="shots/x_connect_rotate.png" alt="Connecting: tilted 15° in, then rotate (arrow)" loading="lazy"><figcaption>X · Connecting: tilted 15° in, then rotate (arrow)</figcaption></figure><figure><img src="shots/x_release_springback.png" alt="Release: the spring rotates it back and nudges it out" loading="lazy"><figcaption>X · Release: the spring rotates it back and nudges it out</figcaption></figure><figure><img src="shots/x_on_lead.png" alt="Kit on, from the front" loading="lazy"><figcaption>X · Kit on, from the front</figcaption></figure></div>
-
-  <h3>How it works</h3>
-  <table><tbody>
-    <tr><td>Connect (one motion)</td><td>Hold the arm tilted 15° nose-up and push the plug straight back into the mouth. As it bottoms out it rotates 15° nose-down about a pitch axis at the top of the mouth (the pad's weight helps). The beak behind the plug's top rises behind the internal <b>ledge</b>, the tapered rear seats on the ceiling and the <b>guide wedges</b>, and the collar seats in the lip. <b>Click:</b> a steel-spring catch with a sharp drop-off and a hard stop snaps in, and the orange tell ring hides.</td></tr>
-    <tr><td>Why pitch</td><td>The plug's two large faces (13 mm apart) are the socket walls, and pitch is the only rotation those walls allow. Yaw or roll would drive the plug into them, and a round plug that could spin is what limited S. The pitch axis is at the mouth's top so that the collar swings away from the wing while it rotates.</td></tr>
-    <tr><td>What carries what</td><td>Pull-out: the beak on the ledge (plastic, along the layers). Lean and yaw: the socket walls and the collar on the closed ring. Weight: the seat (gravity pulls it towards locked). The button's catch only blocks the rotate-back.</td></tr>
-    <tr><td>Release</td><td>Press the button on the collar's parent side. A Ø4 rod pulls the catch, a steel return spring rotates the arm back 15°, and it nudges out 3 mm: free. Then pull. It only nudges; the arm does not drop. Under a child's lean, the friction on the catch is far larger than the spring force, so it won't release.</td></tr>
-    <tr><td>Guidance and feel</td><td>The rolled lip and the throat lead the plug in. The plug only enters one way: the beak is on top, and the tilt only works nose-up. The tapered rear self-centres on the wedges as it rotates. The finish is a crisp, audible click with the tell ring hiding.</td></tr>
-  </tbody></table>
-
-  <h3>Strength: X vs F (same contact model as the head-to-head; ESTIMATES)</h3>
-  <p class="small mu">This is the r5b contact model: a rigid kit on Winkler springs, all 8 arm, kit and pad settings, seated, at 300 N. "First gives" = 300 N × the lowest safety factor, using PETG allowables of 40 / 22 / 25 MPa. The arm (1.90 / 1.24) and the tenon fuse (2.87 / 1.16) are the r5b values for all options. <span class="bad">Red</span> = the wing gives first. Script: <code>exhaust/x_strength.py</code>.</p>
-  <table><thead><tr><th></th><th>X · twist-in</th><th>X · plain push (comparison)</th><th>X · plain push + Ø8 prongs</th><th>F · tall tongue 80 + rods</th><th>F + Ø8 prongs</th></tr></thead><tbody>
-    <tr><td>First gives, lean</td><td class="num">570 N arm (kit)</td><td class="num bad">391 N wing dent (catch notch)</td><td class="num">570 N arm (kit)</td><td class="num">554 N tongue (kit)</td><td class="num">570 N arm (kit)</td></tr>
-    <tr><td>First gives, corner</td><td class="num">348 N tenon fuse (kit)</td><td class="num bad">305 N wing dent</td><td class="num">348 N tenon fuse (kit)</td><td class="num">348 N tenon fuse (kit)</td><td class="num">348 N tenon fuse (kit)</td></tr>
-    <tr><td>Wing starts to dent (lean / corner)</td><td class="num good">723 / 523 N (at the catch notch)</td><td class="num">391 / 305 N</td><td class="num">672 / 530 N</td><td class="num">716 / 488 N</td><td class="num">812 / 560 N</td></tr>
-    <tr><td>Pull-out part at 300 N (lean / corner)</td><td class="num">beak on ledge: 537 / 793 N; gives at 633 / 428 N</td><td class="num">deep catch 792 / 1010 N</td><td class="num">catch 470 / 588 N</td><td class="num">catch 557 / 749 N</td><td class="num">catch 257 / 319 N</td></tr>
-    <tr><td>Rotate-back catch at 300 N</td><td class="num">328 / 447 N on a 10 × 4.0 face (gives at 916 / 671 N)</td><td colspan="4" class="mu">no rotation</td></tr>
-    <tr><td>Plug at the throat gives at</td><td class="num">976 / 649 N</td><td class="num">878 / 568 N</td><td class="num">803 / 528 N</td><td class="num" colspan="2">tongue: as first gives</td></tr>
-    <tr><td><b>Twist-in vs plain push</b></td><td colspan="5">The same plug pushed straight in, latched only by the deep catch, dents the wing at the catch notch at 391 / 305 N, before the fuse. The twist puts the pull-out on a large hook and ledge, and the catch then only holds the rotation. That raises the wing's dent load to 723 / 523 N, so a kit part gives first. Prongs would recover the plain push (672 / 530 N), but a rotating plug can't take straight prongs, so <b>X has no prong option, and doesn't need one</b>.</td></tr>
-    <tr><td>Closed-ring effect</td><td colspan="5">The collar bears on the whole ring round the mouth. The model gives it a reaction of up to 2–3× the pad load (a lever couple), which keeps the plug from rocking. The model counts the ring as bearing only: the ring's hoop stiffness, which stops the walls spreading, is not credited (a bonus). The thinnest wall is about 4.3 mm.</td></tr>
-  </tbody></table>
-
-  <h3>Printability</h3>
-  <table><tbody>
-    <tr><td>Wing (prints upright, as now)</td><td>The socket axis is horizontal, so the CAD version gets a 45° teardrop roof on the throat and pocket ceilings. That changes the inside by 2 mm or less and isn't visible. The mock here still has round ends. The ledge's underside is 45°, the beak recess is 45° at the top, and bridges are 10 mm or less, so it prints without supports inside the wing. The pull-out runs along t′, which is in the layer plane.</td></tr>
-    <tr><td>Carrier with the plug</td><td>Printed on its side (d′ down), so the plug, beak and collar bend in the layer plane. The beak root is R2.</td></tr>
-    <tr><td>Button</td><td>Cap down, as r5b. The rod is Ø4 steel or carbon, and the catch spring is steel (not printed: printed spring arms creep).</td></tr>
-    <tr><td>Clearances</td><td>Plug in pocket 0.35 per side (swept); collar to lip 0.25. Catch interference 1.0 mm, with a 30° entry ramp and a sharp 6° locking face for the click, 4.0 travel to a hard stop. Confirm on the latch coupon: press 8–12 N, insertion ≤ 25 N, pull-out ≥ 600 N, 200 cycles, wobble ≤ 0.5 mm at 60 mm.</td></tr>
-  </tbody></table>
-
-  <h3>Pros and cons</h3>
-  <table><thead><tr><th></th><th>X · closed exhaust socket</th><th>F · front-edge tongue</th></tr></thead><tbody>
-    <tr><td>Elegance</td><td class="good">The wing stays whole: a faired leading edge with a rolled stadium mouth (an exhaust tip). Connected, a slim bezel sits in the lip with a hairline seam.</td><td class="warn">A clean swell and nose when connected, but a 90 mm notch in the front edge with the kit off.</td></tr>
-    <tr><td>Looks, kit off</td><td class="good">Only the mouth shows; inside is a dark throat.</td><td class="warn">An open notch with a slot.</td></tr>
-    <tr><td>Looks, kit on</td><td class="good">A bezel on the leading edge; the arm comes from the front.</td><td class="good">The nose fills the swell flush.</td></tr>
-    <tr><td>Ease of use</td><td class="good">Push in and let it drop 15°, one motion; one hand.</td><td class="good">A straight push and a click; one hand.</td></tr>
-    <tr><td>Guidance and feel</td><td class="good">Lip, throat, swept guide faces and wedges; the gravity-assisted rotation falls into a crisp click.</td><td class="good">The long tapered tongue finds the slot.</td></tr>
-    <tr><td>Release feel</td><td class="good">Press: it rotates back and nudges 3 mm; pull.</td><td class="good">Press: a 3 mm nudge; pull.</td></tr>
-    <tr><td>Strength</td><td class="good">Kit parts give first (570 / 348 N); the wing holds to 723 / 523 N, with no prongs needed.</td><td class="good">Kit gives first (554 / 348 N); wing 716 / 488 N (812 / 560 N with prongs).</td></tr>
-    <tr><td>Printability</td><td class="warn">A closed internal pocket: it needs the teardrop roofs and 45° ledges (planned, no supports).</td><td class="good">An open notch and slot: easy.</td></tr>
-    <tr><td>Change from the as-built CAD</td><td class="warn">A new wing tip (mouth and pocket) and a new socket end on the arm (collar, plug, catch, rod); the button parts are re-used.</td><td class="good">Small: the r5b parts, taller.</td></tr>
-  </tbody></table>
-  <p class="rec"><b>Recommendation: X (insert, rotate, click).</b> It keeps the wing whole and looks the most deliberate. It is at least as strong as F, and protects the wing better: a kit part gives first, and the wing holds to 723 / 523 N against F's 716 / 488 N.</p>
-  <p class="small mu"><b>Checks:</b> <code>check_features.py</code> (S1 and the z 186 hole still open), pocket to S1 PS1 mm, kit x max KX mm (limit 165). All looked at in Chrome from the leading edge, both sides, top, low 3/4 and a mouth close-up, kit on and off. <b>Still visible:</b> looking straight into the mouth, a small step shows at the top of the throat (the guide surface the plug's top-front sweeps on the way in; the CAD's teardrop roof will fair it). The faint short line on the parent side, higher up (about z 292), is the CAD wing's own panel edge.</p>
+<h1>Side pad mount X: the closed exhaust socket</h1>
+<p class="box"><b>Agreed direction.</b> The wing stays whole. A stadium exhaust mouth sits on the leading edge, inside a closed ring. The arm pushes in from the front, rotates 15° into place (cam-guided, one motion) and clicks; a push button releases it. The kit is the real Onshape arm, carrier, depth piece and pad, unchanged outside. Only the socket end and the inside are new.</p>
+<section id="xisec">
+  <h2>1 · The design: real geometry, kit on and off, the inside</h2>
+  <div class="v" id="xi-v" style="height:min(74vh,680px)"><div class="load">Loading…</div></div>
+  <div class="row" id="xi-c1"></div><div class="row" id="xi-c2"></div>
+  <div class="row" id="xi-c3"><input type="range" id="xi-u" min="0" max="2" step="0.005" value="0.999" aria-label="connect (0 to 1) and release (1 to 2)"></div>
+  <p class="st" id="xi-t"></p>
+  <p class="mu small">Parts: green, the catch; grey, the steel springs and the rod; orange, the button and the tell ring. Section caps: red, the wing; blue, the kit. Labels appear in a section or with the wing see-through. The slider runs 0 → 1 to connect and 1 → 2 to release.</p>
+  <div class="stills" id="xi-stills"><figure><img src="shots/xi_on_34.png" alt="Kit on, 3/4: the collar bezel in the lip" loading="lazy"><figcaption>Kit on, 3/4: the collar bezel in the lip</figcaption></figure><figure><img src="shots/xi_off_lead.png" alt="Kit off: the whole leading edge and the mouth" loading="lazy"><figcaption>Kit off: the whole leading edge and the mouth</figcaption></figure><figure><img src="shots/xi_off_34.png" alt="Kit off, 3/4: a faired bulge, no notch" loading="lazy"><figcaption>Kit off, 3/4: a faired bulge, no notch</figcaption></figure><figure><img src="shots/xi_seethrough.png" alt="See-through wing: plug, cam boss, catch, button" loading="lazy"><figcaption>See-through wing: plug, cam boss, catch, button</figcaption></figure><figure><img src="shots/xi_section_hook.png" alt="Section through the hook and catch" loading="lazy"><figcaption>Section through the hook and catch</figcaption></figure><figure><img src="shots/xi_section_rails.png" alt="Section through the cam bosses" loading="lazy"><figcaption>Section through the cam bosses</figcaption></figure><figure><img src="shots/xi_exploded.png" alt="Exploded: plug + arm, catch, springs, rod, button, tell" loading="lazy"><figcaption>Exploded: plug + arm, catch, springs, rod, button, tell</figcaption></figure><figure><img src="shots/xi_connect_rotate.png" alt="Connecting: push, and the cams rotate it 15°" loading="lazy"><figcaption>Connecting: push, and the cams rotate it 15°</figcaption></figure></div>
 </section>
+<section><h2>2 · How it works</h2>
+  <table><tbody>
+    <tr><td>Connect (one motion)</td><td>Hold the arm tilted 15° nose-up and push the plug into the mouth: the throat centres it. For the last 12 mm, the two cam bosses in the socket walls run in the plug's cam grooves, so the push turns the plug 15° nose-down about a pitch axis at the mouth's top. The beak behind the plug's top rises behind the internal <b>ledge</b>, the tapered rear seats on the <b>guide wedges</b>, and the return spring loads. <b>Click:</b> the steel-spring catch drops 3 mm into its notch (sharp drop-off, hard stop), and the button comes out flush, hiding the orange tell ring.</td></tr>
+    <tr><td>What carries what</td><td>Pull-out: the beak on the ledge (plastic, along the layers). Lean and yaw: the socket walls and the collar on the closed ring. Weight: the seat (gravity pulls it towards locked). The cam bosses only guide. The catch only blocks the rotate-back.</td></tr>
+    <tr><td>Release</td><td>Press the button. Its 45° cam pushes the Ø4 rod back, and the rod's 45° tip lifts the catch. The preloaded steel return spring turns the arm back 15° along the grooves and nudges it out 3 mm, so it's free; then pull. It only nudges: the arm does not drop. Under a child's lean, the friction on the catch is far larger than the spring force, so it won't release.</td></tr>
+    <tr><td>Why pitch</td><td>The plug's two large faces are the socket walls, and pitch is the only rotation the walls allow. Yaw would drive the plug into them, and a round plug (which could spin) would be far weaker.</td></tr>
+  </tbody></table></section>
+<section><h2>3 · Inside: concepts considered</h2><p class="small mu">Scored 1 (poor) to 5 (best). D is the design shown on this page.</p>
+  <table><thead><tr><th>Concept</th><th>Tongue</th><th>Guide</th><th>Twist</th><th>Click</th><th>Strength</th><th>Click feel / sound</th><th>Guidance (blind, one hand)</th><th>Printability</th><th>Wear / creep, 200+ cycles</th><th>Parts</th><th>Total</th></tr></thead><tbody>
+    <tr><td>A · first X (plain blade)</td><td>flat blade 13</td><td>swept walls only</td><td>pitch hook + ledge</td><td>steel catch</td><td>4</td><td>3</td><td>3</td><td>4</td><td>4</td><td>5</td><td>23</td></tr>
+    <tr><td>B · I-section on rails</td><td>I-section (two flanges + web), slides on long wall rails</td><td>full-length rails</td><td>hook + ledge</td><td>cantilever snap + steel back-up spring</td><td>4</td><td>4</td><td>4</td><td class="bad">2 (long rails overhang; tight)</td><td>3 (printed snap creeps)</td><td>4</td><td>21</td></tr>
+    <tr><td>C · dovetail key + helical channel</td><td>dovetail-keyed blade</td><td>helical channel</td><td>helix (yaw)</td><td>catch + detent</td><td class="bad">2 (yaw is blocked by the walls; needs a round core)</td><td>4</td><td>3</td><td>2</td><td>3</td><td>3</td><td>17</td></tr>
+    <tr><td class="good"><b>D · cam-groove blade (chosen)</b></td><td>15 × 80 blade, ribbed by its two cam grooves</td><td>Ø6 boss on each wall in a cam groove</td><td>pitch: the last 12 mm of push turns it 15°; hook + ledge</td><td>sliding steel-spring catch, sharp drop, hard stop</td><td class="good">5</td><td class="good">5</td><td class="good">5</td><td>4</td><td class="good">5 (steel springs, wide plastic faces)</td><td>4</td><td class="good"><b>28</b></td></tr>
+  </tbody></table>
+  <p class="small"><b>Why D:</b> the cam grooves turn "push" into "push + rotate", so the motion finds itself blind, with one hand. The two Ø6 bosses steer it and stiffen the plug's faces like ribs. The pull-out stays on the big beak hook behind the ledge, in plastic. The steel catch only stops the rotate-back, so it clicks crisply without being a structural part. The springs are steel, so nothing printed creeps. Internal support: the closed ring plus the bulge (now up to 6 mm) give walls of at least 4.4 mm (see below), printed solid around the socket. I preferred that to webs, which would cost wall thickness.</p>
 
-<section id="learn">
-  <h2>How click-and-pop connections work (and our tolerances)</h2>
-  <div class="cards">
+  </section>
+<section><h2>4 · Features, dimensions and clearances</h2>
+  <table><thead><tr><th>Feature</th><th>Where / size</th><th>Clearance or travel</th></tr></thead><tbody>
+    <tr><td>Mouth + throat</td><td>stadium on the leading edge, rolled lip R ≈ 3; throat ≈ 7 mm</td><td>sweeps the 15° tilt; collar to lip 0.25</td></tr>
+    <tr><td>Plug (tongue)</td><td>15 × 80 stadium blade, d′ −1.5..13.5, z 214–294, mouth to t′ 10 (24.3 deep); rear tapered 7.5 → 6.0 over 6 mm (guide wedges)</td><td>0.3 per side in the swept pocket</td></tr>
+    <tr><td>Cam bosses + grooves</td><td>Ø6 boss 2.5 proud on each socket wall at t′ 2, z 250; a cam groove in each plug face (the boss's path, flared entry at the rear)</td><td>0.25 running clearance in the groove</td></tr>
+    <tr><td>Beak hook + ledge</td><td>beak 12 wide behind the plug top (t′ 9.4–15.4, z 286.5–299.5), R2 root; the ledge is the wing above the plug's top, in front of the beak</td><td>0.3; pull-out face square to the motion</td></tr>
+    <tr><td>Catch + notch</td><td>steel-spring sliding catch, 11 × 6 × 7.5, drops 3.0 below the plug floor into a notch in the pocket floor</td><td>0.2 per side in its pocket; 3.0 interference; sharp 90° drop-off, hard stop at the notch floor</td></tr>
+    <tr><td>Catch spring</td><td>steel, Ø5 × 0.5 wire, above the catch</td><td>≈ 3 N preload, ≈ 5 N lifted</td></tr>
+    <tr><td>Rod</td><td>Ø4 along t′ in the plug floor, from the collar to the catch; 45° tip under the catch's 45° ramp</td><td>Ø4.4 channel; 3 mm travel</td></tr>
+    <tr><td>Button + tell</td><td>8 × 16 stadium cap on the collar's parent side, with a stem and a 45° cam onto the rod; orange tell ring in the bore</td><td>0.25 bore; the tell shows whenever the catch is up</td></tr>
+    <tr><td>Return spring</td><td>steel, Ø7 × 0.8 wire, in a Ø8.4 pocket at the plug's rear (d′ 6, z 262), preloaded on the pocket's rear wall</td><td>≈ 9 N seated (rotates it back + 3 mm nudge)</td></tr>
+  </tbody></table>
+  <p class="small">Measured on the model: thinnest wall WALLS mm; socket to strap slit S1 XS1 mm (≥ 6 required); kit x max XKX mm (≤ 165). Slit S1 and the hole column are untouched, and the z 186 hole is re-drilled on its own axis through the bulge (<code>check_features.py</code>: open). <b>Approximate:</b> the springs are drawn at their seated length (scaled in the animation); the button and rod cams are drawn as simple 45° faces.</p>
+
+  </section>
+<section><h2>5 · Strength</h2>
+  <table><thead><tr><th>X (300 N; ESTIMATES)</th><th>Lean (pad centre)</th><th>Corner knock (pad corner)</th></tr></thead><tbody>
+    <tr><td><b>First gives</b></td><td class="num"><b>570 N, arm 22 × 31 (kit)</b></td><td class="num"><b>348 N, tenon fuse (kit, by design)</b></td></tr>
+    <tr><td>Wing starts to dent</td><td class="num good">760 N (at the catch notch)</td><td class="num good">574 N</td></tr>
+    <tr><td>Beak hook on the ledge: load at 300 N → gives at</td><td class="num">349 N → 973 N</td><td class="num">516 N → 658 N</td></tr>
+    <tr><td>Ledge shear-out (wing) gives at</td><td class="num">2496 N</td><td class="num">1689 N</td></tr>
+    <tr><td>Catch (rotate-back only): load → gives at</td><td class="num">273 N → 907 N</td><td class="num">355 N → 698 N</td></tr>
+    <tr><td>Cam bosses (guides): load → gives at</td><td class="num">30 N → &gt; 5000 N</td><td class="num">39 N → &gt; 5000 N</td></tr>
+    <tr><td>Plug at the throat gives at</td><td class="num">1104 N</td><td class="num">730 N</td></tr>
+    <tr><td>Press / insert force</td><td colspan="2">≈ 10–12 N press (catch spring through two 45° cams + friction); ≈ 15–20 N to insert (return-spring preload + catch ramp + cam friction). Targets: press 8–12 N, insert ≤ 25 N.</td></tr>
+  </tbody></table>
+  <p class="small"><b>The mount is no longer the limit.</b> In a lean the arm (22 × 31) gives first at 570 N. In a corner knock the deliberate tenon fuse gives at 348 N, while the wing holds to 574 N: the wing has 1.65× the fuse load (226 N) in hand.</p>
+
+  <h3>Strength features: decided</h3>
+  <ul class="small">
+    <li><b>Arm:</b> stays as r5b, 22 × 31. No carbon tube for now; it is a fallback only if the load test shows a need. If it's added later, size it so the arm still gives before the wing (about 700 N or less in a lean, against the wing's 760 N). Rules for the tube, if it is ever designed in:
+      <ul>
+        <li>Optional, and inserted after printing through an entry hole or slot in the arm.</li>
+        <li>Held by crush ribs or another positive retention, so it can't slide out.</li>
+        <li>The entry is closed or finished (a flush cap, or hidden inside the socket or collar), never a bare open hole.</li>
+        <li>The arm looks and works the same with or without the tube.</li>
+        <li>Its length goes in the rod cutting gauge.</li>
+      </ul></li>
+    <li><b>Prongs:</b> no Ø8 prongs on X. The plug rotates as it seats, and they aren't needed.</li>
+    <li><b>Tenon:</b> the tenon's 4 × Ø2 carbon pins stay. They are the fuse.</li>
+  </ul>
+  <h3>Strength: how we got here</h3>
+  <p class="small"><b>Method, the same throughout</b> (<code>sf_r5b.py</code> → <code>tall.py</code> → <code>h2h_strength.py</code> → <code>x_strength.py</code> → <code>xi_strength.py</code>):</p>
+  <ul class="small">
+    <li><b>Loads:</b> 300 N lean at the pad centre and 300 N knock at each pad corner, in all 8 arm, kit and pad settings. The lever to the mount reference is 81–97 mm for a lean and 45–145 mm for a corner.</li>
+    <li><b>Model:</b> the CAD agent's r5b contact model, a rigid kit on bearing-only Winkler springs (k 400 N/mm³) with zero fit gaps.</li>
+    <li><b>Allowables:</b> PETG 40 / 22 / 25 MPa (along the layers / shear / bearing), with Kt at the roots.</li>
+    <li><b>First gives</b> = 300 N × the lowest safety factor. These are hand estimates, not FEA.</li>
+    <li><b>Target:</b> the original was SF 3 at 300 N (900 N). It was rescoped to "a reprintable kit part gives before the wing".</li>
+  </ul>
+  <table><thead><tr><th>Design</th><th>First gives, lean / corner (N)</th><th>What gives</th><th>Wing dents at, lean / corner (N)</th></tr></thead><tbody>
+    <tr><td>A · r5b as built</td><td class="num bad">240 / 170</td><td class="bad">wing (slot wall)</td><td class="num">240 / 170</td></tr>
+    <tr><td>B · A + 2 Ø8 prongs (rough, prong-share estimate)</td><td class="num">480–780 / 330–540</td><td>tongue (kit)</td><td class="num">n/a</td></tr>
+    <tr><td>C · tall tongue 64 + R2 + Ø2 rods</td><td class="num bad">483 / 345</td><td class="bad">wing</td><td class="num">483 / 345</td></tr>
+    <tr><td>D · C + 2 Ø8 prongs (prong-share estimate)</td><td class="num">570 / 348</td><td>arm / tenon fuse (kit)</td><td class="num">735–750 / 525</td></tr>
+    <tr><td>F · tall tongue 80 + R2 + rods</td><td class="num">554 / 348</td><td>tongue / tenon fuse (kit)</td><td class="num">716 / 488</td></tr>
+    <tr><td>F + 2 Ø8 prongs (contact patches)</td><td class="num">570 / 348</td><td>arm / tenon fuse (kit)</td><td class="num">812 / 560</td></tr>
+    <tr><td>S · side twist-in (Ø33 bayonet)</td><td class="num bad">128 / 90</td><td class="bad">lugs (kit), wing next</td><td class="num">393 / 273</td></tr>
+    <tr><td>X first version</td><td class="num">570 / 348</td><td>arm / tenon fuse (kit)</td><td class="num">723 / 523</td></tr>
+    <tr><td><b>X final (this page)</b></td><td class="num"><b>570 / 348</b></td><td><b>arm / tenon fuse (kit)</b></td><td class="num good"><b>760 / 574</b></td></tr>
+  </tbody></table>
+  <p class="small mu">Checked against the outputs: <code>tall_tongue.md</code> (A–D, first-gives table corrected 2026-11-20), <code>h2h_strength.json</code> (F, S), <code>x_strength.json</code> (X first version) and <code>xi_strength.json</code> (X final). Corrections to the brief: D's corner figure is 348 N (300 × 1.16; the earlier table rounded it to 350), and its wing dent is 735–750 / 525 N. B's figures are a range (it depends on the prong share), and the tongue gives first, not the wing. A and S were checked against the outputs and are unchanged.</p>
+</section>
+<section><h2>6 · Printability</h2>
+  <table><tbody>
+    <tr><td>Wing</td><td>Prints upright, as now. The socket axis is horizontal. The throat and pocket ceilings get a 45° teardrop roof in the CAD (the mesh here still has round tops, which a printer bridges as ≤ 15 mm arcs). The ledge's underside and the beak recess top are ≤ 45° from vertical. The cam bosses are short horizontal pins, with a 45° teardrop top in the CAD. The catch notch is ≤ 11 mm wide, so its roof bridges in ≤ 11 mm. No supports are needed inside the wing. The hook load runs along t′, in the layer plane. Print solid (a modifier volume) for 8 mm round the socket.</td></tr>
+    <tr><td>Carrier with the plug</td><td>On its side (d′ down). The plug blade, beak and grooves then lie in the layer plane, so the hook and plug bend along the layers. The grooves face up and down (no overhang). The catch, rod and spring pockets are vertical holes (they print).</td></tr>
+    <tr><td>Catch</td><td>Flat on its large face; the drop-off edge stays sharp.</td></tr>
+    <tr><td>Button</td><td>Cap down (as r5b).</td></tr>
+    <tr><td>Steel</td><td>The catch spring, the return spring and the Ø4 rod (steel or carbon rod).</td></tr>
+  </tbody></table>
+  </section>
+<section id="learn"><h2>7 · How click-and-pop connections work, and our tolerances</h2>
+<div class="cards">
     <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="lens bayonet sketch"><circle cx="70" cy="55" r="40" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="70" cy="55" r="24" fill="none" stroke="currentColor" stroke-width="2"/><path d="M70 15 l-8 -6 h16z" fill="#ff6a2a"/><path d="M110 55 l-10 -6 v12z" fill="#ff6a2a"/><circle cx="104" cy="30" r="4" fill="#2a6df4"/><path d="M120 40 a50 50 0 0 1 0 30" fill="none" stroke="#e0302a" stroke-width="3" marker-end="url(#ah)"/><defs><marker id="ah" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6z" fill="#e0302a"/></marker></defs><text x="130" y="30" font-size="11" fill="currentColor">spring pin</text><text x="130" y="78" font-size="11" fill="currentColor">turn to lock</text></svg>
       <h3>Camera lens bayonet</h3><p class="small">A spring pin drops into a hole at the end of the turn. The button pulls the pin back, so release is "hold the button and turn back". <b>We borrow:</b> lugs carry the load, a spring catch only stops the turn back, and release takes two actions.</p></div>
     <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="Quad Lock sketch"><rect x="40" y="25" width="60" height="60" rx="8" fill="none" stroke="currentColor" stroke-width="3" transform="rotate(-45 70 55)"/><rect x="48" y="33" width="44" height="44" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="58" y="88" width="24" height="8" rx="3" fill="#ff6a2a"/><path d="M118 30 a40 40 0 0 1 10 40" fill="none" stroke="#e0302a" stroke-width="3" marker-end="url(#ah)"/><text x="130" y="40" font-size="11" fill="currentColor">push at 45°,</text><text x="130" y="54" font-size="11" fill="currentColor">twist to lock</text><text x="90" y="106" font-size="11" fill="currentColor">collar / lever</text></svg>
-      <h3>Quad Lock phone mount</h3><p class="small">Push in at an angle and twist to lock. Press the collar or lever and twist back to release. Their "dual-stage lock" is built for vibration and impacts. <b>We borrow:</b> the start-turned-then-twist motion (S) and a release you can't trigger by accident.</p></div>
+      <h3>Quad Lock phone mount</h3><p class="small">Push in at an angle and twist to lock. Press the collar or lever and twist back to release. Their "dual-stage lock" is built for vibration and impacts. <b>We borrow:</b> the start-turned-then-rotate motion and a release you can't trigger by accident.</p></div>
     <div class="card"><svg viewBox="0 0 200 110" role="img" aria-label="ISOFIX sketch"><rect x="20" y="40" width="90" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M110 48 h40 a7 7 0 0 1 0 14 h-40" fill="none" stroke="currentColor" stroke-width="3"/><rect x="40" y="30" width="22" height="10" rx="3" fill="#ff6a2a"/><rect x="74" y="44" width="16" height="10" rx="2" fill="#2ea043"/><text x="20" y="22" font-size="11" fill="currentColor">button</text><text x="70" y="92" font-size="11" fill="currentColor">green = latched</text><text x="140" y="40" font-size="11" fill="currentColor">click</text></svg>
-      <h3>ISOFIX child-seat connector</h3><p class="small">Push straight in: an audible click and a red/green indicator. Press the button to release. <b>We borrow:</b> the straight push and click (F), and a visible tell, which is our orange sleeve going flush.</p></div>
+      <h3>ISOFIX child-seat connector</h3><p class="small">Push straight in: an audible click and a red/green indicator. Press the button to release. <b>We borrow:</b> the push-and-click, and a visible tell (our orange ring that hides when locked).</p></div>
   </div>
-  <table><thead><tr><th>Our design, mapped</th><th>F</th><th>S</th></tr></thead><tbody>
-    <tr><td>Lead-in and guides</td><td>rolled, flared notch and slot mouth; tapered tongue</td><td>rolled mouth, bore flare, keyed lugs, helical ramp</td></tr>
-    <tr><td>What carries the load</td><td>the tongue in the slot walls (80 tall)</td><td>two lugs behind wing ledges</td></tr>
-    <tr><td>Spring</td><td colspan="2">steel, not printed: printed spring arms creep. Button spring SS304 OD 6 × 0.55, 8 coils (r5b); ejector (F) and return torsion spring (S) also steel.</td></tr>
-    <tr><td>Button</td><td>retracts the deep catch from its groove</td><td>retracts the catch from its notch, freeing the turn back</td></tr>
-    <tr><td>Eject nudge</td><td>3 mm, from a small compression spring at the tongue tip</td><td>4 mm, from the return spring through the helix</td></tr>
+  <table><thead><tr><th>X, mapped to these</th><th></th></tr></thead><tbody>
+    <tr><td>Lead-in and guides</td><td>rolled mouth, throat, swept guide faces, cam bosses and grooves, wedges</td></tr>
+    <tr><td>What carries the load</td><td>the blade in the closed ring; the beak on the ledge</td></tr>
+    <tr><td>Springs</td><td>steel only (catch spring, return spring): printed spring arms creep</td></tr>
+    <tr><td>Button</td><td>retracts the catch through a 45° cam, the Ø4 rod and a second 45° cam</td></tr>
+    <tr><td>Eject</td><td>a small nudge (3 mm, 15° back); it unlatches without dropping the arm</td></tr>
+    <tr><td>Who can reach the button</td><td>it is on the collar's parent side, out of the child's reach behind the wing and the pad</td></tr>
   </tbody></table>
-  <p class="small"><b>Trade-off:</b> an auto-eject is convenient, but then an accidental press unlatches. So the eject stays a small nudge of a few mm. It unlatches without dropping the arm: the arm still hangs on the tongue or plug until the parent pulls. Under load (a child leaning), friction on the catch is much larger than the spring, so it won't pop. <b>Who can reach the button:</b> both buttons are on the parent (outer) side of the wing. The child sits inboard, behind the wing and the pad, and can't reach F's button on the nose's outer face or S's button on the collar. F's nose sits at the front edge, so it is easier to reach round to than S's collar (check on the chair).</p>
-  <table><thead><tr><th>Tolerance (PETG, FDM; starting points, confirm with a printed coupon)</th><th>Typical</th><th>F (planned)</th><th>S (planned)</th></tr></thead><tbody>
-    <tr><td>Sliding fit, per side</td><td>0.2–0.3 mm</td><td>tongue in slot 0.2; nose in notch 0.25</td><td>plug in bore 0.3</td></tr>
-    <tr><td>Lug or tongue to ledge, running gap</td><td>0.2–0.4 mm</td><td>tongue top and bottom 0.2</td><td>lug to ledge 0.3 axial, 1.0 angular</td></tr>
-    <tr><td>Click (snap) interference, with a ramp</td><td>≈ 0.5–1 mm</td><td>deep catch 2.4 reach (spring-driven, not a flexing snap), 45° entry ramp, 6° locking face</td><td>same catch, in the collar</td></tr>
-    <tr><td>Fillets at roots that flex or carry load</td><td>generous</td><td>tongue outer root R2, slot mouth R4</td><td>lug roots R1.5, lip R2.5</td></tr>
-    <tr><td>Print orientation</td><td>loads and flex not across layers</td><td>as r5b: tongue layers along its length</td><td>plug axis horizontal, so the lugs are not across layers</td></tr>
-    <tr><td>Coupon</td><td>±0.05–0.1 mm steps</td><td colspan="2">latch coupon test: press 8–12 N, insertion ≤ 25 N, pull-out ≥ 600 N, 200 cycles, wobble ≤ 0.5 mm at 60 mm; slot widths in ±0.1 steps</td></tr>
+  <table><thead><tr><th>Tolerance (PETG, FDM; starting points, confirm with a coupon)</th><th>Typical</th><th>X (planned)</th></tr></thead><tbody>
+    <tr><td>Sliding fit, per side</td><td>0.2–0.3 mm</td><td>plug in pocket 0.3; collar to lip 0.25; button 0.25; catch 0.2</td></tr>
+    <tr><td>Running gap (guides)</td><td>0.2–0.4 mm</td><td>boss in groove 0.25; rod in channel 0.2</td></tr>
+    <tr><td>Click interference, with a ramp</td><td>≈ 0.5–1 mm</td><td>catch drop 3.0 (spring-driven, not a flexing snap), entry ramp, sharp 90° drop-off</td></tr>
+    <tr><td>Fillets at loaded roots</td><td>generous</td><td>beak root R2, lip R ≈ 3, guide edges R ≥ 1.5</td></tr>
+    <tr><td>Print orientation</td><td>loads not across layers</td><td>see Printability</td></tr>
+    <tr><td>Coupon</td><td>±0.05–0.1 mm steps</td><td>the latch coupon: press 8–12 N, insert ≤ 25 N, pull-out ≥ 600 N, 200 cycles, wobble ≤ 0.5 mm at 60 mm</td></tr>
   </tbody></table>
   <p class="small mu">Sources: <a href="https://qidi3d.com/blogs/print-lab/3d-printed-snap-fit-joints-clearance-guide">QIDI snap-fit clearance guide</a> · <a href="https://makersmakingchange.github.io/OpenAT_Design_Guide/Design_Elements_For_3D_Printed_Parts/Snap_Fits.html">OpenAT design guide: snap fits</a> · <a href="https://www.youtube.com/watch?v=XKrDUnZCmQQ">Slant 3D: tolerances (video)</a> · <a href="https://makiuto.github.io/p/ultimate-guide-to-connecting-3d-printed-parts-pins-fins-slots-snaps.html">Connecting 3D-printed parts</a> · <a href="https://www.thule.com/en-gb/articles/guides/how-to-use-quad-lock-with-your-bike">Quad Lock how-to (Thule)</a> · <a href="https://Www.Wikipedia.org/wiki/Lens_mount">Lens mount (Wikipedia)</a> · <a href="https://www.carwow.co.uk/guides/glossary/what-is-isofix-child-seat-connection">ISOFIX (carwow)</a> · <a href="https://www.core77.com/posts/68745/">Core77</a></p>
 </section>
-
-<details class="old"><summary>Earlier studies (front vs side head-to-head, exhaust-tip look, lock options)</summary>
-<section id="h2h">
-  <h2>Front vs side: head to head</h2>
-  <p>Both options use the <b>real Onshape arm, carrier, depth piece and pad</b>, unchanged on the outside, and keep every r5b feature: 4 carriers per arm length, the drop-in button with its split orange tell sleeve, one-way barb and 8-coil spring in a counterbore, the deep catch (4.0 travel, hard stop, 0.8 crown, 6° face, click entry), the 22 × 31 arm, the 16 × 24 tenon with 4 Ø2 × 29 carbon pins (the reprintable fuse), the 27 × 48 R10 foot, the child-side pad screw with its dovetail snap stop, and R ≥ 1.5 rounds. There is no Ø6 rod. Only the socket end and the inside differ.</p>
-  <div class="pair">
-    <div><p class="pt">F · front edge: tall tongue (80 mm, R2 root, Ø2 corner rods)</p><div class="v" id="h2h-F"><div class="load">Loading…</div></div><p class="st" id="h2h-Ft"></p></div>
-    <div><p class="pt">S · side: twist-in (bayonet), stadium "exhaust" mouth</p><div class="v" id="h2h-S"><div class="load">Loading…</div></div><p class="st" id="h2h-St"></p></div>
-  </div>
-  <div class="row" id="h2h-c1"></div>
-  <div class="row" id="h2h-c2"><input type="range" id="h2h-u" min="0" max="2" step="0.005" value="0.999" aria-label="connect (0 to 1) and release (1 to 2)"></div>
-  <p class="mu small">One camera drives both panes. Slider: 0 → 1 connects, 1 → 2 releases. Cutaway: F is cut level through the tongue, and S is cut through the lug chambers, seen from the parent side. The red arrow shows S's turn. The ejector spring (F), and the return spring with its helix (S), are drawn as mock parts. <b>Approximate:</b> the S socket end (cheek, collar, plug, lugs) comes from a 0.25 mm distance field, and the F nose and tongue are built from the as-built r5b parts, stretched to 80 mm.</p>
-
-  <div class="stills"><figure><img src="shots/h2h_on_34.png" alt="Kit on, 3/4" loading="lazy"><figcaption>Kit on, 3/4</figcaption></figure><figure><img src="shots/h2h_off_34.png" alt="Kit off, 3/4" loading="lazy"><figcaption>Kit off, 3/4</figcaption></figure><figure><img src="shots/h2h_off_front.png" alt="Kit off, from the front" loading="lazy"><figcaption>Kit off, from the front</figcaption></figure><figure><img src="shots/h2h_cutaway_parent.png" alt="Cutaway: F tongue, S lugs in their chambers" loading="lazy"><figcaption>Cutaway: F tongue, S lugs in their chambers</figcaption></figure><figure><img src="shots/h2h_on_close.png" alt="Close-up: hairline seams (F), mound (S)" loading="lazy"><figcaption>Close-up: hairline seams (F), mound (S)</figcaption></figure><figure><img src="shots/h2h_connect_turn.png" alt="Connecting: S turns 30° (arrow)" loading="lazy"><figcaption>Connecting: S turns 30° (arrow)</figcaption></figure><figure><img src="shots/h2h_release_pop.png" alt="Release: F nudges 3 mm, S unwinds and pops" loading="lazy"><figcaption>Release: F nudges 3 mm, S unwinds and pops</figcaption></figure><figure><img src="shots/h2h_off_parent.png" alt="Kit off, parent side" loading="lazy"><figcaption>Kit off, parent side</figcaption></figure></div>
-  <h3>Guidance: no hunting for the slot</h3>
-  <table><thead><tr><th></th><th>F · front edge</th><th>S · side twist-in</th></tr></thead><tbody>
-    <tr><td>Lead-in</td><td>the notch rim and the slot mouth are rolled (R ≈ 1.5) and the tongue's tapered rear leads in</td><td>the stadium mouth is rolled (R ≈ 2.5), with a flare into the Ø33 bore</td></tr>
-    <tr><td>Keyed, one way in</td><td>the tongue's tapered rear (9 → 2.2) only fits the slot one way up; the nose fills the notch</td><td>the lugs only pass the two ends of the mouth, with the pad held turned 30°</td></tr>
-    <tr><td>Self-centring</td><td>the taper and the nose cheeks pull the tongue to the middle as it slides back</td><td>the round plug centres in the bore before the lugs reach the ledges</td></tr>
-    <tr><td>Finishing move</td><td>a straight push back; the 45° back of the catch cams in and clicks</td><td>a helical ramp at the chamber entry turns the plug as it is pushed, so the turn "falls" into the click</td></tr>
-  </tbody></table>
-
-  <h3>Strength (same contact model for both; ESTIMATES)</h3>
-  <p class="small mu">This is the CAD agent's r5b contact model (<code>sf_r5b.py</code> / <code>loads.py</code>: rigid kit on Winkler springs, k 400 N/mm³, all 8 arm, kit and pad settings, seated) at 300 N. "First gives" = 300 N × the lowest safety factor, using PETG allowables of 40 / 22 / 25 MPa (along layers / shear / bearing). The arm (1.90 / 1.24) and the tenon fuse (2.87 / 1.16) are the r5b values for both options. <span class="bad">Red</span> = the wing gives (not reprintable); grey = a reprintable kit part. Script: <code>exhaust/h2h_strength.py</code>.</p>
-  <table><thead><tr><th></th><th>F · tall tongue 80 + rods</th><th>F + Ø8 prongs</th><th>S · twist-in (best that fits)</th><th>S + prongs</th></tr></thead><tbody>
-    <tr><td>First gives, lean (pad centre)</td><td class="num">554 N tongue (kit)</td><td class="num">570 N arm (kit)</td><td class="num">128 N lugs (kit)</td><td rowspan="5" class="mu">not possible: the plug turns as it seats, so straight prongs can't enter the wing</td></tr>
-    <tr><td>First gives, corner knock</td><td class="num">348 N tenon fuse (kit)</td><td class="num">348 N tenon fuse (kit)</td><td class="num">90 N lugs (kit)</td></tr>
-    <tr><td>Wing starts to dent at (lean / corner)</td><td class="num">716 / 488 N</td><td class="num">812 / 560 N</td><td class="num bad">393 / 273 N (lug ledges, button notch)</td></tr>
-    <tr><td>Latch or lug load at 300 N (lean / corner)</td><td class="num">catch 557 / 749 N on 2.4 × 32 → bearing SF 3.5 / 2.6</td><td class="num">catch 257 / 319 N</td><td class="num bad">lugs 1000 / 1420 N each; button catch 528 / 771 N (SF 1.4 / 0.9)</td></tr>
-    <tr><td>Without the rods (F) / notes</td><td colspan="2">F 80 without rods: 529 / 348 N, wing 601 / 432 N. F 90 + rods: 546 / 348 N, wing 802 / 547 N.</td><td>Wing tip depth and slit S1 cap the plug at Ø33 (front wall 4.8, 4.5 to S1). A Ø40 plug would only reach 356 / 254 N, and it does not fit. The cheek round the front edge is modelled 14 × 62 mm (12 mm: 462 / 313 N). The modelled wrap keeps below the plug axis so the kit can turn; that makes the real section smaller, so S's cheek figure is optimistic.</td></tr>
-    <tr><td>Engaged depth</td><td class="num">tongue 24.5 deep × 80 tall (nose 90 tall)</td><td class="num">same + prongs 18 / 30 deep</td><td class="num" colspan="2">plug 14 deep (d′ 5 → 19), lugs 8.5 thick behind 5 mm ledges</td></tr>
-    <tr><td>Parent's press force</td><td class="num">≈ 9–10 N (r5b spring 4.9 → 8.9 N, + ≈ 1 N ejector friction)</td><td></td><td class="num" colspan="2">≈ 13 N (same button, + friction from the return-spring torque on the catch)</td></tr>
-    <tr><td>Push in / turn</td><td class="num">≈ 10–15 N push back (catch ramp + ejector spring)</td><td></td><td class="num" colspan="2">≈ 15–20 N push; the helix does the 30° turn (≈ 0.3 N·m: the pad swings, no wrist twist needed)</td></tr>
-    <tr><td>Eject travel, release feel</td><td class="num">3 mm nudge: press, it lets go and hangs, pull forward</td><td></td><td class="num" colspan="2">turns back 30° and pops 4 mm: press, it unwinds, pull out</td></tr>
-  </tbody></table>
-
-  <h3>Pros and cons</h3>
-  <table><thead><tr><th></th><th>F · front edge, tall tongue</th><th>S · side twist-in</th></tr></thead><tbody>
-    <tr><td>Elegance (one flowing piece of the chair?)</td><td class="good">Yes. The front edge swells smoothly (C2 fades over 45 mm) into a nose band, and the nose is the front of that swell, so connected it reads as one piece with hairline seams. Kit off, the 90 mm notch is a clean rolled-rim cut, but it is still a notch.</td><td class="warn">Kit off, it's the nicest: a round exhaust swell with a stadium mouth, though the bayonet chambers show inside. Kit on, the 14 mm wrap round the front edge (needed for strength) makes a thick pad on the face. The wrap stops below the axis so it can turn, so its outline is uneven.</td></tr>
-    <tr><td>Looks, kit on</td><td class="good">the nose fills the swell flush; hairline seams</td><td class="warn">a smooth but thick mound on the parent face</td></tr>
-    <tr><td>Looks, kit off</td><td class="warn">a 90 mm notch with a slot in the front edge (rounded, but visible)</td><td class="good">the front edge stays whole; a neat stadium mouth on the parent side</td></tr>
-    <tr><td>Looks, from the front</td><td class="warn">the notch faces you</td><td class="good">only the swell</td></tr>
-    <tr><td>Ease of use</td><td class="good">one straight push back and a click; one hand</td><td class="warn">push and let the pad swing 30°; the pad must start tilted, near the arm rest</td></tr>
-    <tr><td>Guidance and feel</td><td class="good">long tapered tongue: it finds the slot and centres itself</td><td>keyed lugs and a helical ramp, but you must line up the angle before the lugs drop in</td></tr>
-    <tr><td>Release feel</td><td class="good">press: a 3 mm nudge, then pull</td><td class="good">press: it unwinds and pops, then pull</td></tr>
-    <tr><td>Strength</td><td class="good">the kit gives first (fuse 348 N, tongue 554 N); the wing holds to 488–716 N</td><td class="bad">the lugs give at 90–128 N; the wing dents from 273 N</td></tr>
-    <tr><td>Print complexity</td><td class="good">as r5b: an open slot, printable as built</td><td class="bad">two sealed undercut lug chambers in the wing (bridged roofs), a helical ramp, and a torsion spring</td></tr>
-    <tr><td>Change from the as-built CAD</td><td class="good">small: the same parts, taller (tongue 32 → 80, nose up to z 297), + Ø2 rods and an ejector spring</td><td class="bad">large: a new socket end (14 mm cheek, collar, plug, lugs) and a new wing tip</td></tr>
-  </tbody></table>
-  <p class="small"><b>Look verdicts.</b> F: deliberate and calm. The swell gives the front edge a soft, solid nose in the family of the headrest and pommel. Its weak spot is the open notch when the kit is off. S: the most elegant empty wing, but a bulkier, less resolved part once connected.</p>
-  <p class="rec"><b>Recommendation: F, the tall front-edge tongue (80 mm, R2 root, Ø2 corner rods, optional prongs).</b> S looks cleaner but isn't as good. It fits only a Ø33 plug in the wing tip, so its lugs give at about a quarter of F's load and the wing dents before the fuse. F protects the wing.</p>
-
-  <h3>Self-review (three passes) and what changed</h3>
-  <table><thead><tr><th>Pass</th><th>Found</th><th>Fixed / remaining</th></tr></thead><tbody>
-    <tr><td>Designer: looks and family fit</td><td>F's nose read as a box: it filled the old square r5 slab, and a hump sat above it. A strip of the tongue showed through a thin skin, and the as-built arm's old flat nose face stood 2.7 mm proud of the new rounded nose, reading as a rib below the button. S had a boxy collar and a slab-like cheek.</td><td><b>Fixed:</b> F's slab is now one C2 swell along the front edge (long fades, plateau over the tongue). The nose is the front of that swell, with R ≈ 1.5 rims and hairline seams. The arm keeps its outside, but its old nose face is replaced by the new nose. S's collar and cheek are now one smooth mound. <b>Remaining:</b> F's notch is open with the kit off (the r5b blank cap would close it). S stays bulky with the kit on, and its outline is uneven because the front wrap stays below the axis so it can turn. The upper lug chamber sweeps to within about 3 mm of the front face, which leaves a thin wall and a faint crease at the mouth's front. Pulling it back means a smaller turn or smaller lugs, and S is already the weaker option.</td></tr>
-    <tr><td>Mechanical: guidance, latch, eject, tolerances, assembly</td><td>F keeps the r5b latch unchanged, moved up 33 mm; the button still drops in from the nose top, hidden in the notch. S needs the whole pad and arm to swing 30°, a sealed undercut chamber in the wing, a re-oriented button, a torsion spring and a helix.</td><td><b>F:</b> the ejector is a small steel spring (≈ 3 N, 3 mm) at the slot's rear wall, a mock here. <b>S:</b> the pad's 30° sweep near the arm rest is not clash-checked. Its turn-back catch carries 528 / 771 N at 300 N, over the r5b catch's capacity at the corner (SF 0.9).</td></tr>
-    <tr><td>Strength: same model, honest SFs</td><td>Both use the same contact solver, loads and zero gaps, with the r5b arm and fuse. F's prongs are contact patches in the wing bores. S can't take prongs. S's lugs and cheek are checked with hand formulas.</td><td>S's cheek figure is optimistic (the wrap is smaller than modelled). <code>check_features.py</code> confirms slit S1 and the z 186 hole are still open in all three wings. Everything here is an estimate to confirm with the latch coupon.</td></tr>
-  </tbody></table>
-</section>
-
-
-<p>A look study. The mount sits in a slightly extended wing tip on the parent's (outer) side, as a rounded mouth like a car exhaust in a bumper. All the mechanics are inside. From the front there is no opening, only a natural swell of the wing. Shown on the real chair (Onshape round-5 wing with its old notch filled), left side.</p>
-
-<section id="look">
-  <h2>1 · Three mouth shapes</h2>
-  <div class="v" id="look-v"><div class="load">Loading…</div></div>
-  <div class="row" id="look-c1"></div><div class="row" id="look-c2"></div><p class="st" id="look-st"></p>
-  <p>Each mouth is about 30 (front-to-back) × 50 (tall) mm, centred at the old mount height. The r5 wing's square mount slab is gone: the tip now stands about 6 mm proud of the wing's normal face in one smooth swell that blends into the face and runs into the front edge. The lip is rolled (R ≈ 2.5) and the pocket has a smooth, rounded floor. CLEARANCES Kit on: the plug fills the pocket, a trim collar seats on the lip, and an orange stadium push button sits in the collar's centre. The arm leaves the collar's front, runs round the front edge and goes to the pad, inside the arm-rest line ARMX.</p>
-  <p class="mu"><b>Approximate:</b> the lock inside is <b>TBD</b> (not modelled; see section 2). The arm is a sweep of the 22 × 31 section along a simple curve. The swell, lip and pocket come from a 0.25 mm distance field (smoothed), rebuilt over the whole wing tip. The raised panel edge higher up (about z 292) is the CAD wing's own, unchanged. The collar and button are mock solids.</p>
-  <div class="stills" id="stills"><figure><img src="shots/look_A_off_parent.png" alt="Oval mouth, kit off, parent side" loading="lazy"><figcaption>A · Oval: kit off, parent side</figcaption></figure><figure><img src="shots/look_A_off_front.png" alt="Oval mouth, kit off, from the front" loading="lazy"><figcaption>A · Oval: kit off, from the front</figcaption></figure><figure><img src="shots/look_A_off_close.png" alt="Oval mouth, close-up of the mouth" loading="lazy"><figcaption>A · Oval: close-up of the mouth</figcaption></figure><figure><img src="shots/look_A_on_p34.png" alt="Oval mouth, kit on, 3/4" loading="lazy"><figcaption>A · Oval: kit on, 3/4</figcaption></figure><figure><img src="shots/look_B_off_parent.png" alt="Stadium mouth, kit off, parent side" loading="lazy"><figcaption>B · Stadium: kit off, parent side</figcaption></figure><figure><img src="shots/look_B_off_front.png" alt="Stadium mouth, kit off, from the front" loading="lazy"><figcaption>B · Stadium: kit off, from the front</figcaption></figure><figure><img src="shots/look_B_off_close.png" alt="Stadium mouth, close-up of the mouth" loading="lazy"><figcaption>B · Stadium: close-up of the mouth</figcaption></figure><figure><img src="shots/look_B_on_p34.png" alt="Stadium mouth, kit on, 3/4" loading="lazy"><figcaption>B · Stadium: kit on, 3/4</figcaption></figure><figure><img src="shots/look_C_off_parent.png" alt="Curved rectangle mouth, kit off, parent side" loading="lazy"><figcaption>C · Curved rectangle: kit off, parent side</figcaption></figure><figure><img src="shots/look_C_off_front.png" alt="Curved rectangle mouth, kit off, from the front" loading="lazy"><figcaption>C · Curved rectangle: kit off, from the front</figcaption></figure><figure><img src="shots/look_C_off_close.png" alt="Curved rectangle mouth, close-up of the mouth" loading="lazy"><figcaption>C · Curved rectangle: close-up of the mouth</figcaption></figure><figure><img src="shots/look_C_on_p34.png" alt="Curved rectangle mouth, kit on, 3/4" loading="lazy"><figcaption>C · Curved rectangle: kit on, 3/4</figcaption></figure></div>
-  <p class="mu">All 27 stills (6 kit-off and 3 kit-on views per shape) are in <code>exhaust/shots/</code>.</p>
-</section>
-
-<section id="lock">
-  <h2>2 · How it locks: options (rough 3D)</h2>
-  <p>The plug goes in sideways, so a child's outward lean pulls along the plug's axis. In each option the <b>plastic carries that lean</b>, and the push button only locks. The wing is shown see-through. Blue: the lock parts on the plug. Tan: the matching features in the wing. Black: the optional Ø8 carbon prongs (toggle).</p>
-  <div class="v" id="lock-v"><div class="load">Loading…</div></div>
-  <div class="row" id="lock-c1"></div><div class="row" id="lock-c2"></div><div class="row" id="lock-c3"></div><p class="st" id="lock-st"></p>
-  <div class="stills" style="grid-template-columns:repeat(3,minmax(0,1fr))"><figure><img src="shots/lock_hook.png" alt="1 · Hook-and-drop, halfway in" loading="lazy"><figcaption>1 · Hook-and-drop, halfway in</figcaption></figure><figure><img src="shots/lock_turn.png" alt="2 · Quarter-turn, halfway in" loading="lazy"><figcaption>2 · Quarter-turn, halfway in</figcaption></figure><figure><img src="shots/lock_slant.png" alt="3 · Slanted plug, halfway in" loading="lazy"><figcaption>3 · Slanted plug, halfway in</figcaption></figure></div>
-  <table><thead><tr><th></th><th>1 · Hook-and-drop</th><th>2 · Quarter-turn</th><th>3 · Slanted plug</th></tr></thead><tbody>
-    <tr><td>Motion</td><td>push in sideways, drop 8 mm, click; release: press, lift, pull</td><td>push in, turn 20–30°, click; release: press, turn back, pull</td><td>push in on the slant, click; release: press, pull</td></tr>
-    <tr><td>One-handed, for a parent</td><td class="good">yes; gravity seats it</td><td class="bad">awkward: the whole arm and pad turn with it (or it needs a separate turning collar)</td><td class="good">yes, the simplest motion</td></tr>
-    <tr><td>Lean path (estimate)</td><td class="good">hook ledge in shear, ≈ 5+ at a 300 N lean (hand estimate)</td><td class="good">two lugs in shear, ≈ 4–5 (hand estimate)</td><td class="warn">a lean presses it in, but a knock the other way pulls it out against the latch: depends on the angle (not estimated)</td></tr>
-    <tr><td>Looks</td><td>same mouth; 8 mm of drop room hidden by the collar</td><td>same mouth</td><td>the mouth is tilted, reads less calm</td></tr>
-    <tr><td>Print complexity</td><td>a ledge inside the pocket (an overhang: needs a 45° roof)</td><td class="bad">two L-slots inside the pocket (hard to print and clean)</td><td class="good">a plain angled pocket</td></tr>
-  </tbody></table>
-  <p class="small"><b>Look verdicts.</b> F: deliberate and calm. The swell gives the front edge a soft, solid nose in the family of the headrest and pommel. Its weak spot is the open notch when the kit is off. S: the most elegant empty wing, but a bulkier, less resolved part once connected.</p>
-  <p class="rec"><b>Recommendation:</b> <b>hook-and-drop</b>. It works one-handed, gravity holds it home, and the hook carries the lean in plastic. The quarter-turn swings the pad, and the slanted plug only protects against a lean in one direction.</p>
-  <p class="mu">Rough 3D: the plug, hook, lugs, slots and prongs are simple shapes placed by hand to show the idea; strength figures are hand estimates.</p>
-</section>
-</details>
+<section><h2>8 · Open items</h2>
+  <ul>
+    <li><b>CAD:</b> model D in Onshape (not started; nothing is being built yet). This includes the 45° teardrop roofs (the mesh still has round tops) and the cam bosses' teardrop tops.</li>
+    <li><b>Coupon:</b> test the catch drop, the cam groove clearance and the boss-in-groove feel in the latch coupon: press 8–12 N, insert ≤ 25 N, pull-out ≥ 600 N, 200 cycles, wobble ≤ 0.5 mm at 60 mm.</li>
+    <li><b>Springs:</b> pick the catch spring (≈ 3 N preload) and the return spring (≈ 9 N seated). Check the return torque against the pad's weight, which pulls it towards locked.</li>
+    <li><b>Mouth view:</b> looking straight into the mouth (kit off), the two cam bosses show about 16 mm inside, and a small step shows at the top of the throat. Moving the bosses 4 mm deeper (to t′ 6) would hide them; check the S1 web (8.1 mm now) if you do.</li>
+    <li><b>Thin wall:</b> the thinnest wall is 3.9 mm at the top of the pocket, by the beak recess (5.3–6.2 mm elsewhere). Thicken it locally if the coupon shows creep.</li>
+    <li><b>Re-drilled hole:</b> the z 186 hole is re-drilled through the bulge on its own axis. Confirm that its function is unchanged.</li>
+    <li><b>Load test:</b> run it, then decide on the arm carbon tube. If the tube is added, it follows the tube rules above (optional, fitted after printing, held by crush ribs, entry closed, the arm looks and works the same, length in the rod cutting gauge), and the arm must still give before the wing.</li>
+    <li><b>Estimates:</b> all strength numbers are hand estimates on the contact model; they still need a test.</li>
+  </ul></section>
 </main>
 <script type="module">
-import { mountExh, loadGeo } from './exh.js';
-import { mountH2H } from './h2h.js';
-import { mountX } from './x.js';
-fetch('exh.json', { cache: 'no-cache' }).then((r) => r.json()).then((j) => {
-  const c = j.clearances; const ax = Math.max(j.A.kit_x_max, j.B.kit_x_max, j.C.kit_x_max);
-  document.querySelectorAll('p').forEach((p) => { p.innerHTML = p.innerHTML.replace('CLEARANCES', `Measured: ${c.pocket_to_S1} mm from strap slit S1 and ${c.mouth_bottom_to_hole_z186} mm above the hole at z 186; no existing slot or hole moves.`).replace('ARMX', `(kit x max ${ax} mm against the arm rest's 165)`); });
-}).catch(() => {});
+import { loadGeo } from './exh.js';
+import { mountXI } from './xi.js';
 (async () => {
-  const geo = await loadGeo(); const S = await (await fetch('h2h_S.json', { cache: 'no-cache' })).json();
-  try { const X = await (await fetch('x.json', { cache: 'no-cache' })).json(); mountX(geo, { X }); document.querySelectorAll('#xsec .load').forEach((l) => l.remove());
-    document.querySelectorAll('#xsec .small.mu').forEach((p) => { p.innerHTML = p.innerHTML.replace('PS1', X.pocket_to_S1_in_its_z_range).replace('KX', X.kit_x_max); }); } catch (e) { console.error(e); }
-  try { mountH2H(geo, { S }); document.querySelectorAll('#h2h .load').forEach((l) => l.remove()); } catch (e) { console.error(e); }
-  await mountExh(geo);
+  const geo = await loadGeo(); const XI = await (await fetch('xi.json', { cache: 'no-cache' })).json();
+  mountXI(geo, { XI }); document.querySelectorAll('#xisec .load').forEach((l) => l.remove());
+  const w = Object.values(XI.thinnest_wall).filter((v) => v != null);
+  document.querySelectorAll('p.small').forEach((p) => { p.innerHTML = p.innerHTML.replace('WALLS', Math.min(...w).toFixed(1) + ' (top of the pocket; 5.3–6.2 elsewhere)').replace('XS1', XI.socket_to_S1).replace('XKX', XI.kit_x_max); });
 })().catch((e) => { console.error(e); document.querySelectorAll('.load').forEach((l) => l.textContent = 'Failed: ' + e.message); });
 </script>
 </body>
